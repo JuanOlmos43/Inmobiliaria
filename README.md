@@ -40,13 +40,17 @@ inmobiliaria/
 
 ### 1. Instalar Dependencias
 
-```bash
-# Desde la raíz del proyecto
-npm install
+Este proyecto es un **monorepo sin workspaces**, por lo que las dependencias deben instalarse en cada carpeta.
+Desde la raíz del proyecto:
 
-# Instalar dependencias de frontend y backend
+```bash
 npm run install:all
-```
+
+Este comando:
+- Instala dependencias del root
+- Instala dependencias del frontend
+- Instala dependencias del backend
+- Genera automáticamente el Prisma Client (postinstall)
 
 ### 2. Configurar Supabase
 
@@ -62,7 +66,8 @@ npm run install:all
 **Backend** - Crea `backend/.env` basado en `backend/.env.example`:
 
 ```env
-DATABASE_URL="postgresql://postgres:[PASSWORD]@[HOST]:[PORT]/[DATABASE]"
+DATABASE_URL="postgresql://..."
+DIRECT_URL="postgresql://..."
 PORT=3001
 FRONTEND_URL=http://localhost:3000
 NODE_ENV=development
@@ -76,7 +81,15 @@ NEXT_PUBLIC_SUPABASE_URL=your-supabase-url
 NEXT_PUBLIC_SUPABASE_ANON_KEY=your-supabase-anon-key
 ```
 
-### 4. Configurar Base de Datos
+### 4. Base de Datos y Prisma
+
+El backend usa Prisma 7 con adapter PostgreSQL.
+
+La generación del cliente Prisma se ejecuta automáticamente en:
+npm install
+npm run start:dev
+
+Si necesitás hacerlo manualmente:
 
 ```bash
 cd backend
@@ -104,6 +117,8 @@ Esto iniciará:
 
 - **Frontend**: http://localhost:3000
 - **Backend**: http://localhost:3001
+
+No levantar frontend o backend manualmente si usás npm run dev, para evitar conflictos de puertos.
 
 ### Ejecutar por separado
 
@@ -183,17 +198,16 @@ Personaliza este modelo según las necesidades de tu aplicación inmobiliaria (p
 - ✅ **ESLint** para calidad de código
 - ✅ **Hot-reload** en desarrollo para ambos proyectos
 
-## 📁 Próximos Pasos
+## 📁 Problemas comunes
 
-1. ✅ Estructura del proyecto creada
-2. ✅ Frontend Next.js inicializado
-3. ✅ Backend Nest.js inicializado
-4. ✅ Prisma ORM configurado
-5. ⏳ **Configurar Supabase y variables de entorno**
-6. ⏳ **Ejecutar migraciones de Prisma**
-7. ⏳ Desarrollar modelos de datos específicos para inmobiliaria
-8. ⏳ Crear módulos y controladores en Nest.js
-9. ⏳ Desarrollar páginas y componentes en Next.js
+### Puerto ocupado (Windows)
+
+Si aparece EADDRINUSE:
+
+```bash
+taskkill /F /IM node.exe
+npm run dev
+```
 
 ## 📚 Recursos
 
