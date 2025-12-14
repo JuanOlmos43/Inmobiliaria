@@ -1,0 +1,25 @@
+{
+  "name": "inmobiliaria-monorepo",
+  "version": "1.0.0",
+  "description": "Full-stack application with Next.js, Nest.js, PostgreSQL/Supabase, and Prisma",
+  "private": true,
+  "scripts": {
+    "dev": "concurrently \"npm run dev:frontend\" \"npm run dev:backend\"",
+    "dev:frontend": "cd frontend && npm run dev",
+    "dev:backend": "cd backend && npm run start:dev",
+    "install:all": "npm install && cd frontend && npm install && cd ../backend && npm install",
+    "build:all": "cd frontend && npm run build && cd ../backend && npm run build"
+  },
+  "keywords": [
+    "nextjs",
+    "nestjs",
+    "prisma",
+    "supabase",
+    "postgresql"
+  ],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  }
+}
