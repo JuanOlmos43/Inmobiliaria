@@ -13,7 +13,7 @@ export default function Navbar() {
           </div>
 
           {/* Navigation Links */}
-          <div className="hidden md:flex space-x-8">
+          <div className="hidden md:flex space-x-8 items-center">
             <Link 
               href="/" 
               className="text-white hover:text-[#C69B56] transition-colors font-medium"
@@ -37,6 +37,14 @@ export default function Navbar() {
               className="text-white hover:text-[#C69B56] transition-colors font-medium"
             >
               Contacto
+            </Link>
+            
+            {/* Login Button */}
+            <Link 
+              href="/login"
+              className="ml-4 px-6 py-2 bg-gradient-to-r from-[#C69B56] to-[#B38A45] text-white font-semibold rounded-lg hover:from-[#B38A45] hover:to-[#A27934] transition-all duration-300 shadow-md hover:shadow-lg transform hover:-translate-y-0.5"
+            >
+              Iniciar Sesión
             </Link>
           </div>
 
