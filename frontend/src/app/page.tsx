@@ -24,9 +24,6 @@ export default function Home() {
 
         {/* Featured Properties */}
         <FeaturedProperties />
-
-        {/* Content Section */}
-    
       </main>
 
       <Footer />

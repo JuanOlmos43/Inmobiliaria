@@ -1,8 +1,6 @@
 import 'dotenv/config';
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-console.log("DATABASE_URL present?", Boolean(process.env.DATABASE_URL));
-
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);

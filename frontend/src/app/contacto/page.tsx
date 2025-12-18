@@ -142,9 +142,6 @@ export default function ContactoPage() {
                 </div>
               </div>
             </div>
-
-            
-
           </div>
 
           {/* Formulario de Contacto */}
@@ -174,7 +171,7 @@ export default function ContactoPage() {
                     value={formData.nombre}
                     onChange={handleChange}
                     required
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#C69B56] focus:border-transparent transition-all duration-300"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#C69B56] focus:border-transparent transition-all duration-300 bg-white text-gray-900 placeholder-gray-500 [color-scheme:light]"
                     placeholder="Tu nombre"
                   />
                 </div>
@@ -191,7 +188,7 @@ export default function ContactoPage() {
                     value={formData.email}
                     onChange={handleChange}
                     required
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#C69B56] focus:border-transparent transition-all duration-300"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#C69B56] focus:border-transparent transition-all duration-300 bg-white text-gray-900 placeholder-gray-500 [color-scheme:light]"
                     placeholder="tu@email.com"
                   />
                 </div>
@@ -207,7 +204,7 @@ export default function ContactoPage() {
                     name="telefono"
                     value={formData.telefono}
                     onChange={handleChange}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#C69B56] focus:border-transparent transition-all duration-300"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#C69B56] focus:border-transparent transition-all duration-300 bg-white text-gray-900 placeholder-gray-500 [color-scheme:light]"
                     placeholder="+54 11 1234-5678"
                   />
                 </div>
@@ -223,7 +220,7 @@ export default function ContactoPage() {
                     value={formData.asunto}
                     onChange={handleChange}
                     required
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#C69B56] focus:border-transparent transition-all duration-300"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#C69B56] focus:border-transparent transition-all duration-300 bg-white text-gray-900 [color-scheme:light]"
                   >
                     <option value="">Selecciona un asunto</option>
                     <option value="compra">Consulta sobre Compra</option>
@@ -246,7 +243,7 @@ export default function ContactoPage() {
                     onChange={handleChange}
                     required
                     rows={5}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#C69B56] focus:border-transparent transition-all duration-300 resize-none"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#C69B56] focus:border-transparent transition-all duration-300 resize-none bg-white text-gray-900 placeholder-gray-500 [color-scheme:light]"
                     placeholder="Cuéntanos cómo podemos ayudarte..."
                   />
                 </div>
