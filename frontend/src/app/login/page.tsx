@@ -2,15 +2,44 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 
 export default function LoginPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const router = useRouter();
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // TODO: Implementar lógica de autenticación
-    console.log('Login attempt:', { email, password });
+    setError('');
+    setIsLoading(true);
+
+    // Validar credenciales para Agente
+    if (email === 'Agente01@email.com' && password === 'Agente01') {
+      localStorage.setItem('isAuthenticated', 'true');
+      localStorage.setItem('userEmail', email);
+      localStorage.setItem('userRole', 'agente');
+      
+      setTimeout(() => {
+        router.push('/agente');
+      }, 500);
+    } 
+    // Validar credenciales para Dueño
+    else if (email === 'Duenio01@email.com' && password === 'Duenio01') {
+      localStorage.setItem('isAuthenticated', 'true');
+      localStorage.setItem('userEmail', email);
+      localStorage.setItem('userRole', 'owner');
+      
+      setTimeout(() => {
+        router.push('/duenio');
+      }, 500);
+    } 
+    else {
+      setIsLoading(false);
+      setError('Credenciales incorrectas. Por favor, verifica tu correo y contraseña.');
+    }
   };
 
   return (
@@ -68,12 +97,20 @@ export default function LoginPage() {
               </Link>
             </div>
 
+            {/* Error Message */}
+            {error && (
+              <div className="bg-red-500/20 border border-red-500/50 rounded-lg p-3 text-red-200 text-sm">
+                {error}
+              </div>
+            )}
+
             {/* Submit Button */}
             <button
               type="submit"
-              className="w-full bg-gradient-to-r from-[#C69B56] to-[#B38A45] text-white font-semibold py-3 px-6 rounded-lg hover:from-[#B38A45] hover:to-[#A27934] transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
+              disabled={isLoading}
+              className="w-full bg-gradient-to-r from-[#C69B56] to-[#B38A45] text-white font-semibold py-3 px-6 rounded-lg hover:from-[#B38A45] hover:to-[#A27934] transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
             >
-              Iniciar Sesión
+              {isLoading ? 'Iniciando sesión...' : 'Iniciar Sesión'}
             </button>
           </form>
 

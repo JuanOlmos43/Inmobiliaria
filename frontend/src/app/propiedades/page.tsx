@@ -10,101 +10,122 @@ import PropertyCard from '@/components/PropertyCard';
 const allProperties = [
   {
     id: 1,
-    title: 'Casa + Local Comercial',
+    title: 'Casa',
     price: 98000,
     location: 'Blas Parera 272',
     bedrooms: 4,
     bathrooms: 3,
     area: 400,
     type: 'venta' as const,
+    propertyType: 'casa',
     image: '/property1.png',
   },
   {
     id: 2,
-    title: 'Casa premium a estrenar',
+    title: 'Casa',
     price: 255000,
     location: 'López Jordán y Carlos Darwin',
     bedrooms: 3,
     bathrooms: 3,
     area: 240,
     type: 'venta' as const,
+    propertyType: 'casa',
     image: '/property2.png',
   },
   {
     id: 3,
-    title: 'Terreno vista del Norte',
+    title: 'Terreno',
     price: 39000,
     location: 'Paraná',
     bedrooms: 0,
     bathrooms: 0,
     area: 450,
     type: 'venta' as const,
+    propertyType: 'terreno',
     image: '/property3.png',
   },
   {
     id: 4,
-    title: 'Departamento 2 ambientes',
+    title: 'Departamento',
     price: 850,
     location: 'Centro, Buenos Aires',
     bedrooms: 1,
     bathrooms: 1,
     area: 45,
     type: 'alquiler' as const,
+    propertyType: 'departamento',
     image: '/property4.png',
   },
   {
     id: 5,
-    title: 'Duplex moderno amoblado',
+    title: 'Duplex',
     price: 1200,
     location: 'Palermo, Buenos Aires',
     bedrooms: 2,
     bathrooms: 2,
     area: 85,
     type: 'alquiler' as const,
+    propertyType: 'duplex',
     image: '/property5.png',
   },
   {
     id: 6,
-    title: 'Lote 875 m2 tierra del sol',
+    title: 'Terreno',
     price: 51000,
     location: 'Miguel Lanús y Cicles Tanah',
     bedrooms: 0,
     bathrooms: 0,
     area: 875,
     type: 'venta' as const,
+    propertyType: 'terreno',
     image: '/property3.png',
   },
   {
     id: 7,
-    title: 'ALQUILER - Departamento 2 dormitorios',
+    title: 'Departamento',
     price: 320000,
     location: 'Guzmán 333',
     bedrooms: 2,
     bathrooms: 1,
     area: 83,
     type: 'venta' as const,
+    propertyType: 'departamento',
     image: '/property4.png',
   },
   {
     id: 8,
-    title: 'Casa 2 dormitorios - opta crédito',
+    title: 'Casa',
     price: 64000,
     location: 'Montevideo 903',
     bedrooms: 2,
     bathrooms: 1,
     area: 161,
     type: 'venta' as const,
+    propertyType: 'casa',
     image: '/property1.png',
   },
   {
     id: 9,
-    title: 'Casa 2 dormitorios - opta crédito',
+    title: 'Casa',
     price: 64000,
     location: 'Montevideo 1111',
     bedrooms: 2,
     bathrooms: 1,
     area: 180,
     type: 'venta' as const,
+    propertyType: 'casa',
+    image: '/property2.png',
+  },
+  {
+    id: 10,
+    title: 'Monoambiente',
+    price: 64000,
+    location: 'video 11121',
+    bedrooms: 1,
+    bathrooms: 1,
+    area: 180,
+    type: 'venta' as const,
+    propertyType: 'monoambiente',
     image: '/property2.png',
   },
 ];
@@ -112,12 +133,22 @@ const allProperties = [
 export default function PropiedadesPage() {
   const searchParams = useSearchParams();
   
-  const [operationType, setOperationType] = useState<'todos' | 'venta' | 'alquiler'>('todos');
-  const [propertyType, setPropertyType] = useState('');
-  const [bedrooms, setBedrooms] = useState('');
-  const [bathrooms, setBathrooms] = useState('');
-  const [minPrice, setMinPrice] = useState('');
-  const [maxPrice, setMaxPrice] = useState('');
+  // Estados para los filtros aplicados (los que realmente filtran)
+  const [appliedOperationType, setAppliedOperationType] = useState<'todos' | 'venta' | 'alquiler'>('todos');
+  const [appliedPropertyType, setAppliedPropertyType] = useState('');
+  const [appliedBedrooms, setAppliedBedrooms] = useState('');
+  const [appliedBathrooms, setAppliedBathrooms] = useState('');
+  const [appliedMinPrice, setAppliedMinPrice] = useState('');
+  const [appliedMaxPrice, setAppliedMaxPrice] = useState('');
+  
+  // Estados temporales para los inputs (los que el usuario está editando)
+  const [tempOperationType, setTempOperationType] = useState<'todos' | 'venta' | 'alquiler'>('todos');
+  const [tempPropertyType, setTempPropertyType] = useState('');
+  const [tempBedrooms, setTempBedrooms] = useState('');
+  const [tempBathrooms, setTempBathrooms] = useState('');
+  const [tempMinPrice, setTempMinPrice] = useState('');
+  const [tempMaxPrice, setTempMaxPrice] = useState('');
+  
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 6;
 
@@ -130,26 +161,57 @@ export default function PropiedadesPage() {
     const urlMinPrice = searchParams.get('minPrice');
     const urlMaxPrice = searchParams.get('maxPrice');
 
-    if (urlOperationType) setOperationType(urlOperationType as any);
-    if (urlPropertyType) setPropertyType(urlPropertyType);
-    if (urlBedrooms) setBedrooms(urlBedrooms);
-    if (urlBathrooms) setBathrooms(urlBathrooms);
-    if (urlMinPrice) setMinPrice(urlMinPrice);
-    if (urlMaxPrice) setMaxPrice(urlMaxPrice);
+    if (urlOperationType) {
+      setAppliedOperationType(urlOperationType as any);
+      setTempOperationType(urlOperationType as any);
+    }
+    if (urlPropertyType) {
+      setAppliedPropertyType(urlPropertyType);
+      setTempPropertyType(urlPropertyType);
+    }
+    if (urlBedrooms) {
+      setAppliedBedrooms(urlBedrooms);
+      setTempBedrooms(urlBedrooms);
+    }
+    if (urlBathrooms) {
+      setAppliedBathrooms(urlBathrooms);
+      setTempBathrooms(urlBathrooms);
+    }
+    if (urlMinPrice) {
+      setAppliedMinPrice(urlMinPrice);
+      setTempMinPrice(urlMinPrice);
+    }
+    if (urlMaxPrice) {
+      setAppliedMaxPrice(urlMaxPrice);
+      setTempMaxPrice(urlMaxPrice);
+    }
   }, [searchParams]);
 
-  // Resetear a página 1 cuando cambian los filtros
+  // Resetear a página 1 cuando cambian los filtros aplicados
   useEffect(() => {
     setCurrentPage(1);
-  }, [operationType, propertyType, bedrooms, bathrooms, minPrice, maxPrice]);
+  }, [appliedOperationType, appliedPropertyType, appliedBedrooms, appliedBathrooms, appliedMinPrice, appliedMaxPrice]);
 
-  // Filtrar propiedades
+  // Filtrar propiedades con los filtros aplicados
   const filteredProperties = allProperties.filter((property) => {
-    if (operationType !== 'todos' && property.type !== operationType) return false;
-    if (bedrooms && property.bedrooms < parseInt(bedrooms)) return false;
-    if (bathrooms && property.bathrooms < parseInt(bathrooms)) return false;
-    if (minPrice && property.price < parseFloat(minPrice)) return false;
-    if (maxPrice && property.price > parseFloat(maxPrice)) return false;
+    // Filtro por tipo de operación (venta/alquiler)
+    if (appliedOperationType !== 'todos' && property.type !== appliedOperationType) return false;
+    
+    // Filtro por tipo de propiedad (casa/departamento/etc)
+    if (appliedPropertyType && property.propertyType !== appliedPropertyType) return false;
+    
+    // Filtro por dormitorios (exacto)
+    if (appliedBedrooms && property.bedrooms !== parseInt(appliedBedrooms)) return false;
+    
+    // Filtro por baños (exacto)
+    if (appliedBathrooms && property.bathrooms !== parseInt(appliedBathrooms)) return false;
+    
+    // Filtro por precio mínimo
+    if (appliedMinPrice && property.price < parseFloat(appliedMinPrice)) return false;
+    
+    // Filtro por precio máximo
+    if (appliedMaxPrice && property.price > parseFloat(appliedMaxPrice)) return false;
+    
     return true;
   });
 
@@ -159,13 +221,29 @@ export default function PropiedadesPage() {
   const endIndex = startIndex + itemsPerPage;
   const currentProperties = filteredProperties.slice(startIndex, endIndex);
 
+  // Aplicar los filtros temporales
+  const handleSearch = () => {
+    setAppliedOperationType(tempOperationType);
+    setAppliedPropertyType(tempPropertyType);
+    setAppliedBedrooms(tempBedrooms);
+    setAppliedBathrooms(tempBathrooms);
+    setAppliedMinPrice(tempMinPrice);
+    setAppliedMaxPrice(tempMaxPrice);
+  };
+
   const handleReset = () => {
-    setOperationType('todos');
-    setPropertyType('');
-    setBedrooms('');
-    setBathrooms('');
-    setMinPrice('');
-    setMaxPrice('');
+    setTempOperationType('todos');
+    setTempPropertyType('');
+    setTempBedrooms('');
+    setTempBathrooms('');
+    setTempMinPrice('');
+    setTempMaxPrice('');
+    setAppliedOperationType('todos');
+    setAppliedPropertyType('');
+    setAppliedBedrooms('');
+    setAppliedBathrooms('');
+    setAppliedMinPrice('');
+    setAppliedMaxPrice('');
     setCurrentPage(1);
   };
 
@@ -198,8 +276,8 @@ export default function PropiedadesPage() {
                     Tipo de operación
                   </label>
                   <select
-                    value={operationType}
-                    onChange={(e) => setOperationType(e.target.value as any)}
+                    value={tempOperationType}
+                    onChange={(e) => setTempOperationType(e.target.value as any)}
                     className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-[#C69B56] focus:border-transparent bg-white text-gray-900"
                   >
                     <option value="todos">Todos</option>
@@ -214,14 +292,15 @@ export default function PropiedadesPage() {
                     Tipo de inmueble
                   </label>
                   <select
-                    value={propertyType}
-                    onChange={(e) => setPropertyType(e.target.value)}
+                    value={tempPropertyType}
+                    onChange={(e) => setTempPropertyType(e.target.value)}
                     className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-[#C69B56] focus:border-transparent bg-white text-gray-900"
                   >
                     <option value="">Todos</option>
                     <option value="casa">Casa</option>
                     <option value="departamento">Departamento</option>
                     <option value="duplex">Duplex</option>
+                    <option value="terreno">Terreno</option>
                     <option value="monoambiente">Monoambiente</option>
                   </select>
                 </div>
@@ -232,8 +311,8 @@ export default function PropiedadesPage() {
                     Dormitorios
                   </label>
                   <select
-                    value={bedrooms}
-                    onChange={(e) => setBedrooms(e.target.value)}
+                    value={tempBedrooms}
+                    onChange={(e) => setTempBedrooms(e.target.value)}
                     className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-[#C69B56] focus:border-transparent bg-white text-gray-900"
                   >
                     <option value="">Todos</option>
@@ -250,8 +329,8 @@ export default function PropiedadesPage() {
                     Baños
                   </label>
                   <select
-                    value={bathrooms}
-                    onChange={(e) => setBathrooms(e.target.value)}
+                    value={tempBathrooms}
+                    onChange={(e) => setTempBathrooms(e.target.value)}
                     className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-[#C69B56] focus:border-transparent bg-white text-gray-900"
                   >
                     <option value="">Todos</option>
@@ -270,19 +349,27 @@ export default function PropiedadesPage() {
                     <input
                       type="number"
                       placeholder="Precio mínimo"
-                      value={minPrice}
-                      onChange={(e) => setMinPrice(e.target.value)}
+                      value={tempMinPrice}
+                      onChange={(e) => setTempMinPrice(e.target.value)}
                       className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-[#C69B56] focus:border-transparent bg-white text-gray-900"
                     />
                     <input
                       type="number"
                       placeholder="Precio máximo"
-                      value={maxPrice}
-                      onChange={(e) => setMaxPrice(e.target.value)}
+                      value={tempMaxPrice}
+                      onChange={(e) => setTempMaxPrice(e.target.value)}
                       className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-[#C69B56] focus:border-transparent bg-white text-gray-900"
                     />
                   </div>
                 </div>
+
+                {/* Botón Buscar */}
+                <button
+                  onClick={handleSearch}
+                  className="w-full bg-[#C69B56] hover:bg-[#B08A4A] text-white font-semibold py-2 px-4 rounded-lg transition-colors mb-3"
+                >
+                  Buscar
+                </button>
 
                 {/* Botón Limpiar filtros */}
                 <button
