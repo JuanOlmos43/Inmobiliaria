@@ -131,13 +131,13 @@ export default function DashboardPage() {
   });
 
   return (
-    <div className="min-h-screen bg-[#F4F6F8]">
+    <div className="min-h-screen bg-[#f8fafc]">
       {/* Header */}
-      <header className="bg-gradient-to-r from-[#0A2647] to-[#061829] shadow-lg sticky top-0 z-40">
+      <header className="bg-gradient-to-r from-[#0f172a] to-[#1e293b] shadow-lg sticky top-0 z-40">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
           <div className="flex justify-between items-center">
             <div>
-              <h1 className="text-2xl font-bold text-[#C69B56]">Dashboard Inmobiliario</h1>
+              <h1 className="text-2xl font-bold text-[#14b8a6]">Dashboard Inmobiliario</h1>
               <p className="text-sm text-gray-300">Bienvenido, {userEmail}</p>
             </div>
             <button
@@ -161,25 +161,25 @@ export default function DashboardPage() {
             title="Total Propiedades"
             value={properties.length}
             icon="🏠"
-            color="from-[#0A2647] to-[#144272]"
+            color="from-[#0f172a] to-[#334155]"
           />
           <StatsCard
             title="Activas"
             value={properties.filter(p => p.status === 'Activa').length}
             icon="✅"
-            color="from-[#C69B56] to-[#B38A45]"
+            color="from-[#14b8a6] to-[#0d9488]"
           />
           <StatsCard
             title="Pausadas"
             value={properties.filter(p => p.status === 'Pausada').length}
             icon="⏸️"
-            color="from-[#205295] to-[#144272]"
+            color="from-[#475569] to-[#334155]"
           />
           <StatsCard
             title="En Venta"
             value={properties.filter(p => p.type === 'Venta').length}
             icon="💰"
-            color="from-[#144272] to-[#0A2647]"
+            color="from-[#334155] to-[#0f172a]"
           />
         </div>
 
@@ -193,7 +193,7 @@ export default function DashboardPage() {
                   placeholder="Buscar propiedades..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#C69B56] focus:border-transparent"
+                  className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#14b8a6] focus:border-transparent"
                 />
                 <svg className="w-5 h-5 text-gray-400 absolute left-3 top-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
@@ -205,7 +205,7 @@ export default function DashboardPage() {
               <select
                 value={filterStatus}
                 onChange={(e) => setFilterStatus(e.target.value as any)}
-                className="px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#C69B56] focus:border-transparent"
+                className="px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#14b8a6] focus:border-transparent"
               >
                 <option value="all">Todos los estados</option>
                 <option value="Activa">Activas</option>
@@ -214,7 +214,7 @@ export default function DashboardPage() {
               
               <button
                 onClick={handleAddProperty}
-                className="px-6 py-3 bg-gradient-to-r from-[#C69B56] to-[#B38A45] text-white font-semibold rounded-lg hover:from-[#B38A45] hover:to-[#A27934] transition-all duration-300 shadow-lg hover:shadow-xl flex items-center gap-2 whitespace-nowrap"
+                className="px-6 py-3 bg-gradient-to-r from-[#14b8a6] to-[#0d9488] text-white font-semibold rounded-lg hover:from-[#0d9488] hover:to-[#0f766e] transition-all duration-300 shadow-lg hover:shadow-xl flex items-center gap-2 whitespace-nowrap"
               >
                 <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
@@ -233,7 +233,7 @@ export default function DashboardPage() {
             <p className="text-gray-500 mb-6">Comienza agregando tu primera propiedad</p>
             <button
               onClick={handleAddProperty}
-              className="px-6 py-3 bg-gradient-to-r from-[#C69B56] to-[#B38A45] text-white font-semibold rounded-lg hover:from-[#B38A45] hover:to-[#A27934] transition-all duration-300"
+              className="px-6 py-3 bg-gradient-to-r from-[#14b8a6] to-[#0d9488] text-white font-semibold rounded-lg hover:from-[#0d9488] hover:to-[#0f766e] transition-all duration-300"
             >
               Agregar Propiedad
             </button>
@@ -307,7 +307,7 @@ function PropertyCard({
           }`}>
             {property.status}
           </span>
-          <span className="px-3 py-1 bg-[#0A2647] text-white rounded-full text-xs font-semibold">
+          <span className="px-3 py-1 bg-[#0f172a] text-white rounded-full text-xs font-semibold">
             {property.type}
           </span>
         </div>
@@ -315,8 +315,8 @@ function PropertyCard({
 
       {/* Content */}
       <div className="p-5">
-        <h3 className="text-lg font-bold text-[#0A2647] mb-2 line-clamp-1">{property.title}</h3>
-        <p className="text-2xl font-bold text-[#C69B56] mb-3">
+        <h3 className="text-lg font-bold text-[#0f172a] mb-2 line-clamp-1">{property.title}</h3>
+        <p className="text-2xl font-bold text-[#14b8a6] mb-3">
           ${property.price.toLocaleString()}
           {property.type === 'Alquiler' && <span className="text-sm text-gray-500">/mes</span>}
         </p>
@@ -348,7 +348,7 @@ function PropertyCard({
         <div className="flex gap-2 pt-4 border-t border-gray-200">
           <button
             onClick={() => onEdit(property)}
-            className="flex-1 px-3 py-2 bg-[#0A2647] text-white rounded-lg hover:bg-[#144272] transition-colors text-sm font-medium flex items-center justify-center gap-1"
+            className="flex-1 px-3 py-2 bg-[#0f172a] text-white rounded-lg hover:bg-[#334155] transition-colors text-sm font-medium flex items-center justify-center gap-1"
           >
             <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
@@ -359,8 +359,8 @@ function PropertyCard({
             onClick={() => onToggleStatus(property.id)}
             className={`flex-1 px-3 py-2 rounded-lg transition-colors text-sm font-medium flex items-center justify-center gap-1 ${
               property.status === 'Activa'
-                ? 'bg-[#C69B56] text-white hover:bg-[#B38A45]'
-                : 'bg-[#205295] text-white hover:bg-[#144272]'
+                ? 'bg-[#14b8a6] text-white hover:bg-[#0d9488]'
+                : 'bg-[#475569] text-white hover:bg-[#334155]'
             }`}
           >
             {property.status === 'Activa' ? '⏸️ Pausar' : '▶️ Activar'}
@@ -411,7 +411,7 @@ function PropertyModal({
     <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
       <div className="bg-white rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
         <div className="sticky top-0 bg-white border-b border-gray-200 px-6 py-4 flex justify-between items-center">
-          <h2 className="text-2xl font-bold text-[#0A2647]">
+          <h2 className="text-2xl font-bold text-[#0f172a]">
             {property ? 'Editar Propiedad' : 'Nueva Propiedad'}
           </h2>
           <button
@@ -432,7 +432,7 @@ function PropertyModal({
               required
               value={formData.title}
               onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#C69B56] focus:border-transparent"
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#14b8a6] focus:border-transparent"
               placeholder="Ej: Casa Moderna en Zona Norte"
             />
           </div>
@@ -443,7 +443,7 @@ function PropertyModal({
               <select
                 value={formData.type}
                 onChange={(e) => setFormData({ ...formData, type: e.target.value as 'Venta' | 'Alquiler' })}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#C69B56] focus:border-transparent"
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#14b8a6] focus:border-transparent"
               >
                 <option value="Venta">Venta</option>
                 <option value="Alquiler">Alquiler</option>
@@ -455,7 +455,7 @@ function PropertyModal({
               <select
                 value={formData.status}
                 onChange={(e) => setFormData({ ...formData, status: e.target.value as 'Activa' | 'Pausada' })}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#C69B56] focus:border-transparent"
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#14b8a6] focus:border-transparent"
               >
                 <option value="Activa">Activa</option>
                 <option value="Pausada">Pausada</option>
@@ -473,7 +473,7 @@ function PropertyModal({
               min="0"
               value={formData.price}
               onChange={(e) => setFormData({ ...formData, price: Number(e.target.value) })}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#C69B56] focus:border-transparent"
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#14b8a6] focus:border-transparent"
               placeholder="0"
             />
           </div>
@@ -485,7 +485,7 @@ function PropertyModal({
               required
               value={formData.location}
               onChange={(e) => setFormData({ ...formData, location: e.target.value })}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#C69B56] focus:border-transparent"
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#14b8a6] focus:border-transparent"
               placeholder="Ej: Zona Norte, Ciudad"
             />
           </div>
@@ -499,7 +499,7 @@ function PropertyModal({
                 min="1"
                 value={formData.bedrooms}
                 onChange={(e) => setFormData({ ...formData, bedrooms: Number(e.target.value) })}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#C69B56] focus:border-transparent"
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#14b8a6] focus:border-transparent"
               />
             </div>
 
@@ -511,7 +511,7 @@ function PropertyModal({
                 min="1"
                 value={formData.bathrooms}
                 onChange={(e) => setFormData({ ...formData, bathrooms: Number(e.target.value) })}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#C69B56] focus:border-transparent"
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#14b8a6] focus:border-transparent"
               />
             </div>
 
@@ -523,7 +523,7 @@ function PropertyModal({
                 min="1"
                 value={formData.area}
                 onChange={(e) => setFormData({ ...formData, area: Number(e.target.value) })}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#C69B56] focus:border-transparent"
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#14b8a6] focus:border-transparent"
               />
             </div>
           </div>
@@ -535,7 +535,7 @@ function PropertyModal({
               value={formData.description}
               onChange={(e) => setFormData({ ...formData, description: e.target.value })}
               rows={3}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#C69B56] focus:border-transparent"
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#14b8a6] focus:border-transparent"
               placeholder="Describe las características principales de la propiedad..."
             />
           </div>
@@ -550,7 +550,7 @@ function PropertyModal({
             </button>
             <button
               type="submit"
-              className="flex-1 px-6 py-3 bg-gradient-to-r from-[#C69B56] to-[#B38A45] text-white font-semibold rounded-lg hover:from-[#B38A45] hover:to-[#A27934] transition-all duration-300 shadow-lg hover:shadow-xl"
+              className="flex-1 px-6 py-3 bg-gradient-to-r from-[#14b8a6] to-[#0d9488] text-white font-semibold rounded-lg hover:from-[#0d9488] hover:to-[#0f766e] transition-all duration-300 shadow-lg hover:shadow-xl"
             >
               {property ? 'Guardar Cambios' : 'Crear Propiedad'}
             </button>

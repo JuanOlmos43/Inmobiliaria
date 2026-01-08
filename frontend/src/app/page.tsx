@@ -9,9 +9,8 @@ export default function Home() {
       <Navbar />
       <SearchBlock />
       
-      <main className="flex-grow bg-[#F4F6F8]">
-
-
+      <main className="flex-grow bg-[#f8fafc]">
+        
         {/* Featured Properties */}
         <FeaturedProperties />
       </main>

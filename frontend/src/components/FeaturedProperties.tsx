@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import PropertyCard from './PropertyCard';
 
 const properties = [
@@ -63,7 +63,8 @@ const properties = [
 
 export default function FeaturedProperties() {
   const [currentIndex, setCurrentIndex] = useState(0);
-  const itemsPerPage = 3;
+  const [isPaused, setIsPaused] = useState(false);
+  const itemsPerPage = 3; // Mostrar 3 propiedades a la vez
   const maxIndex = Math.max(0, properties.length - itemsPerPage);
 
   const handlePrev = () => {
@@ -74,14 +75,25 @@ export default function FeaturedProperties() {
     setCurrentIndex((prev) => (prev >= maxIndex ? 0 : prev + 1));
   };
 
+  // Auto-play: avanzar automáticamente cada 5 segundos
+  useEffect(() => {
+    if (!isPaused) {
+      const interval = setInterval(() => {
+        handleNext();
+      }, 5000); // Cambia cada 5 segundos
+
+      return () => clearInterval(interval);
+    }
+  }, [currentIndex, isPaused]);
+
   const visibleProperties = properties.slice(currentIndex, currentIndex + itemsPerPage);
 
   return (
-    <section className="py-12 bg-[#F4F6F8]">
+    <section className="py-12 bg-[#f8fafc]">
       {/* Header */}
-      <div className="bg-[#0A2647] py-4 mb-8">
+      <div className="bg-gradient-to-r from-[#0f172a] to-[#334155] py-6 mb-8 shadow-lg">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="text-white text-2xl md:text-3xl font-bold text-center">
+          <h2 className="text-white text-3xl md:text-4xl font-bold text-center">
             Propiedades Destacadas
           </h2>
         </div>
@@ -89,13 +101,17 @@ export default function FeaturedProperties() {
 
       {/* Properties Grid */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="relative">
+        <div 
+          className="relative"
+          onMouseEnter={() => setIsPaused(true)}
+          onMouseLeave={() => setIsPaused(false)}
+        >
           {/* Navigation Arrows */}
           {properties.length > itemsPerPage && (
             <>
               <button
                 onClick={handlePrev}
-                className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-4 z-10 bg-[#0A2647] hover:bg-[#C69B56] text-white p-3 rounded-full shadow-lg transition-colors hidden lg:block"
+                className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-4 z-10 bg-gradient-to-r from-[#0f172a] to-[#334155] hover:from-[#14b8a6] hover:to-[#0d9488] text-white p-4 rounded-full shadow-xl transition-all duration-300 hidden lg:block transform hover:scale-110"
                 aria-label="Anterior"
               >
                 <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -105,7 +121,7 @@ export default function FeaturedProperties() {
 
               <button
                 onClick={handleNext}
-                className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-4 z-10 bg-[#0A2647] hover:bg-[#C69B56] text-white p-3 rounded-full shadow-lg transition-colors hidden lg:block"
+                className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-4 z-10 bg-gradient-to-r from-[#0f172a] to-[#334155] hover:from-[#14b8a6] hover:to-[#0d9488] text-white p-4 rounded-full shadow-xl transition-all duration-300 hidden lg:block transform hover:scale-110"
                 aria-label="Siguiente"
               >
                 <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -115,11 +131,21 @@ export default function FeaturedProperties() {
             </>
           )}
 
-          {/* Cards Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {visibleProperties.map((property) => (
-              <PropertyCard key={property.id} {...property} />
-            ))}
+          {/* Cards Grid con animación de deslizamiento */}
+          <div className="overflow-hidden">
+            <div 
+              className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 transition-transform duration-700 ease-in-out"
+              style={{
+                transform: `translateX(-${currentIndex * (100 / itemsPerPage)}%)`,
+                display: 'grid',
+                gridTemplateColumns: `repeat(${properties.length}, minmax(0, 1fr))`,
+                width: `${(properties.length / itemsPerPage) * 100}%`
+              }}
+            >
+              {properties.map((property) => (
+                <PropertyCard key={property.id} {...property} />
+              ))}
+            </div>
           </div>
         </div>
 
@@ -129,8 +155,8 @@ export default function FeaturedProperties() {
             <button
               key={index}
               onClick={() => setCurrentIndex(index)}
-              className={`w-2 h-2 rounded-full transition-colors ${
-                index === currentIndex ? 'bg-[#C69B56]' : 'bg-gray-400'
+              className={`w-3 h-3 rounded-full transition-all duration-300 ${
+                index === currentIndex ? 'bg-gradient-to-r from-[#14b8a6] to-[#0d9488] w-8' : 'bg-gray-300'
               }`}
               aria-label={`Ir a propiedad ${index + 1}`}
             />

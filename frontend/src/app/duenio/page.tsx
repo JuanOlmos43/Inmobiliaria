@@ -4,42 +4,24 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 
 // Tipos
-interface WebStats {
-  totalVisits: number;
+interface OrganizationStats {
   totalProperties: number;
-  activeAgents: number;
-  totalInquiries: number;
-  monthlyRevenue: number;
-  conversionRate: number;
-}
-
-interface MonthlyData {
-  month: string;
-  visits: number;
-  inquiries: number;
-  sales: number;
+  occupancyRate: number;
+  avgMarketTime: number;
+  activeContracts: number;
+  completedContracts: number;
 }
 
 export default function DashboardOwnerPage() {
   const router = useRouter();
   const [userEmail, setUserEmail] = useState('');
-  const [stats, setStats] = useState<WebStats>({
-    totalVisits: 12450,
-    totalProperties: 45,
-    activeAgents: 3,
-    totalInquiries: 234,
-    monthlyRevenue: 45000,
-    conversionRate: 18.5
+  const [stats, setStats] = useState<OrganizationStats>({
+    totalProperties: 127,
+    occupancyRate: 78.5,
+    avgMarketTime: 45,
+    activeContracts: 89,
+    completedContracts: 234
   });
-
-  const [monthlyData] = useState<MonthlyData[]>([
-    { month: 'Enero', visits: 1200, inquiries: 45, sales: 8 },
-    { month: 'Febrero', visits: 1350, inquiries: 52, sales: 10 },
-    { month: 'Marzo', visits: 1500, inquiries: 58, sales: 12 },
-    { month: 'Abril', visits: 1650, inquiries: 65, sales: 14 },
-    { month: 'Mayo', visits: 1800, inquiries: 72, sales: 15 },
-    { month: 'Junio', visits: 1950, inquiries: 80, sales: 18 }
-  ]);
 
   // Verificar autenticación y rol
   useEffect(() => {
@@ -62,13 +44,13 @@ export default function DashboardOwnerPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#F4F6F8]">
+    <div className="min-h-screen bg-[#f8fafc]">
       {/* Header */}
-      <header className="bg-gradient-to-r from-[#0A2647] to-[#061829] shadow-lg sticky top-0 z-40">
+      <header className="bg-gradient-to-r from-[#0f172a] to-[#1e293b] shadow-lg sticky top-0 z-40">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
           <div className="flex justify-between items-center">
             <div>
-              <h1 className="text-2xl font-bold text-[#C69B56]">Dashboard del Propietario</h1>
+              <h1 className="text-2xl font-bold text-[#14b8a6]">Dueño</h1>
               <p className="text-sm text-gray-300">Bienvenido, {userEmail}</p>
             </div>
             <button
@@ -88,164 +70,48 @@ export default function DashboardOwnerPage() {
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Overview Stats */}
         <div className="mb-8">
-          <h2 className="text-2xl font-bold text-[#0A2647] mb-6">📊 Resumen General</h2>
+          <h2 className="text-2xl font-bold text-[#0f172a] mb-6">📊 Estadísticas de la Organización</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             <StatsCard
-              title="Visitas Totales"
-              value={stats.totalVisits.toLocaleString()}
-              icon="👥"
-              color="from-[#0A2647] to-[#144272]"
-              trend="+12.5%"
-              trendUp={true}
-            />
-            <StatsCard
-              title="Propiedades Publicadas"
+              title="Cantidad de Propiedades"
               value={stats.totalProperties}
-              icon="🏠"
-              color="from-[#C69B56] to-[#B38A45]"
-              trend="+5"
+              icon="🏢"
+              color="from-[#0f172a] to-[#334155]"
+              trend="+8 este mes"
               trendUp={true}
             />
             <StatsCard
-              title="Agentes Activos"
-              value={stats.activeAgents}
-              icon="👔"
-              color="from-[#205295] to-[#144272]"
-              trend="Estable"
-              trendUp={true}
-            />
-            <StatsCard
-              title="Consultas Recibidas"
-              value={stats.totalInquiries}
-              icon="📧"
-              color="from-[#144272] to-[#0A2647]"
-              trend="+18.3%"
-              trendUp={true}
-            />
-            <StatsCard
-              title="Ingresos Mensuales"
-              value={`$${stats.monthlyRevenue.toLocaleString()}`}
-              icon="💰"
-              color="from-[#C69B56] to-[#B38A45]"
-              trend="+22.1%"
-              trendUp={true}
-            />
-            <StatsCard
-              title="Tasa de Conversión"
-              value={`${stats.conversionRate}%`}
-              icon="📈"
-              color="from-[#0A2647] to-[#144272]"
-              trend="+3.2%"
-              trendUp={true}
-            />
-          </div>
-        </div>
-
-        {/* Monthly Performance */}
-        <div className="mb-8">
-          <h2 className="text-2xl font-bold text-[#0A2647] mb-6">📅 Rendimiento Mensual</h2>
-          <div className="bg-white rounded-xl shadow-md overflow-hidden">
-            <div className="overflow-x-auto">
-              <table className="w-full">
-                <thead className="bg-gradient-to-r from-[#0A2647] to-[#144272] text-white">
-                  <tr>
-                    <th className="px-6 py-4 text-left text-sm font-semibold">Mes</th>
-                    <th className="px-6 py-4 text-left text-sm font-semibold">Visitas</th>
-                    <th className="px-6 py-4 text-left text-sm font-semibold">Consultas</th>
-                    <th className="px-6 py-4 text-left text-sm font-semibold">Ventas</th>
-                    <th className="px-6 py-4 text-left text-sm font-semibold">Conversión</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-gray-200">
-                  {monthlyData.map((data, index) => {
-                    const conversion = ((data.sales / data.inquiries) * 100).toFixed(1);
-                    return (
-                      <tr key={index} className="hover:bg-gray-50 transition-colors">
-                        <td className="px-6 py-4 text-sm font-medium text-[#0A2647]">{data.month}</td>
-                        <td className="px-6 py-4 text-sm text-gray-700">{data.visits.toLocaleString()}</td>
-                        <td className="px-6 py-4 text-sm text-gray-700">{data.inquiries}</td>
-                        <td className="px-6 py-4 text-sm text-gray-700">{data.sales}</td>
-                        <td className="px-6 py-4 text-sm">
-                          <span className="px-3 py-1 bg-green-100 text-green-800 rounded-full font-semibold">
-                            {conversion}%
-                          </span>
-                        </td>
-                      </tr>
-                    );
-                  })}
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-
-        {/* Quick Actions */}
-        <div className="mb-8">
-          <h2 className="text-2xl font-bold text-[#0A2647] mb-6">⚡ Acciones Rápidas</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-            <ActionCard
-              title="Ver Reportes"
+              title="Ocupación Global"
+              value={`${stats.occupancyRate}%`}
               icon="📊"
-              description="Reportes detallados"
-              color="bg-[#0A2647]"
+              color="from-[#14b8a6] to-[#0d9488]"
+              trend="+5.2%"
+              trendUp={true}
             />
-            <ActionCard
-              title="Gestionar Agentes"
-              icon="👥"
-              description="Administrar equipo"
-              color="bg-[#C69B56]"
+            <StatsCard
+              title="Tiempo Promedio en Mercado"
+              value={`${stats.avgMarketTime} días`}
+              icon="⏱️"
+              color="from-[#475569] to-[#334155]"
+              trend="-7 días"
+              trendUp={true}
             />
-            <ActionCard
-              title="Configuración"
-              icon="⚙️"
-              description="Ajustes del sitio"
-              color="bg-[#205295]"
+            <StatsCard
+              title="Contratos Activos"
+              value={stats.activeContracts}
+              icon="📝"
+              color="from-[#14b8a6] to-[#0d9488]"
+              trend="+12"
+              trendUp={true}
             />
-            <ActionCard
-              title="Soporte"
-              icon="💬"
-              description="Ayuda y contacto"
-              color="bg-[#144272]"
+            <StatsCard
+              title="Contratos Finalizados"
+              value={stats.completedContracts}
+              icon="✅"
+              color="from-[#334155] to-[#0f172a]"
+              trend="Total histórico"
+              trendUp={true}
             />
-          </div>
-        </div>
-
-        {/* Recent Activity */}
-        <div>
-          <h2 className="text-2xl font-bold text-[#0A2647] mb-6">🔔 Actividad Reciente</h2>
-          <div className="bg-white rounded-xl shadow-md p-6">
-            <div className="space-y-4">
-              <ActivityItem
-                icon="🏠"
-                title="Nueva propiedad publicada"
-                description="Casa Moderna en Zona Norte - Agente01"
-                time="Hace 2 horas"
-              />
-              <ActivityItem
-                icon="📧"
-                title="Nueva consulta recibida"
-                description="Cliente interesado en Departamento Céntrico"
-                time="Hace 4 horas"
-              />
-              <ActivityItem
-                icon="💰"
-                title="Venta completada"
-                description="Propiedad vendida por $250,000"
-                time="Hace 1 día"
-              />
-              <ActivityItem
-                icon="👔"
-                title="Nuevo agente registrado"
-                description="Agente02 se unió al equipo"
-                time="Hace 2 días"
-              />
-              <ActivityItem
-                icon="📈"
-                title="Incremento en visitas"
-                description="Las visitas aumentaron un 15% esta semana"
-                time="Hace 3 días"
-              />
-            </div>
           </div>
         </div>
       </main>
@@ -279,51 +145,6 @@ function StatsCard({
       </div>
       <p className="text-sm opacity-90 mb-1">{title}</p>
       <p className="text-3xl font-bold">{value}</p>
-    </div>
-  );
-}
-
-// Action Card Component
-function ActionCard({ 
-  title, 
-  icon, 
-  description, 
-  color 
-}: { 
-  title: string; 
-  icon: string; 
-  description: string;
-  color: string;
-}) {
-  return (
-    <button className={`${color} text-white rounded-xl p-6 hover:opacity-90 transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl text-left`}>
-      <div className="text-4xl mb-3">{icon}</div>
-      <h3 className="text-lg font-bold mb-1">{title}</h3>
-      <p className="text-sm opacity-90">{description}</p>
-    </button>
-  );
-}
-
-// Activity Item Component
-function ActivityItem({ 
-  icon, 
-  title, 
-  description, 
-  time 
-}: { 
-  icon: string; 
-  title: string; 
-  description: string;
-  time: string;
-}) {
-  return (
-    <div className="flex items-start gap-4 p-4 rounded-lg hover:bg-gray-50 transition-colors">
-      <div className="text-3xl">{icon}</div>
-      <div className="flex-1">
-        <h4 className="font-semibold text-[#0A2647] mb-1">{title}</h4>
-        <p className="text-sm text-gray-600 mb-1">{description}</p>
-        <p className="text-xs text-gray-400">{time}</p>
-      </div>
     </div>
   );
 }
