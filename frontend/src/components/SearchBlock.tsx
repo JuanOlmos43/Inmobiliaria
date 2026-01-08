@@ -45,7 +45,7 @@ export default function SearchBlock() {
   };
 
   return (
-    <section className="relative bg-gradient-to-br from-[#0f172a] via-[#0f172a] to-[#334155] py-16">
+    <section className="relative bg-gradient-to-b from-[#1e293b] via-[#0f172a] to-[#0f172a] pt-16">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Title */}
         <h2 className="text-white text-4xl md:text-5xl font-bold mb-10 text-center animate-fade-in">

@@ -137,7 +137,7 @@ export default function DashboardPage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
           <div className="flex justify-between items-center">
             <div>
-              <h1 className="text-2xl font-bold text-[#14b8a6]">Dashboard Inmobiliario</h1>
+              <h1 className="text-2xl font-bold text-[#14b8a6]">Agente</h1>
               <p className="text-sm text-gray-300">Bienvenido, {userEmail}</p>
             </div>
             <button
@@ -156,71 +156,73 @@ export default function DashboardPage() {
       {/* Main Content */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Stats Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-          <StatsCard
-            title="Total Propiedades"
-            value={properties.length}
-            icon="🏠"
-            color="from-[#0f172a] to-[#334155]"
-          />
-          <StatsCard
-            title="Activas"
-            value={properties.filter(p => p.status === 'Activa').length}
-            icon="✅"
-            color="from-[#14b8a6] to-[#0d9488]"
-          />
-          <StatsCard
-            title="Pausadas"
-            value={properties.filter(p => p.status === 'Pausada').length}
-            icon="⏸️"
-            color="from-[#475569] to-[#334155]"
-          />
-          <StatsCard
-            title="En Venta"
-            value={properties.filter(p => p.type === 'Venta').length}
-            icon="💰"
-            color="from-[#334155] to-[#0f172a]"
-          />
+        <div className="mb-8">
+          <h2 className="text-2xl font-bold text-[#0f172a] mb-6">Resumen de Propiedades</h2>
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+            <StatsCard
+              title="Total Propiedades"
+              value={properties.length}
+              color="from-[#0f172a] to-[#334155]"
+            />
+            <StatsCard
+              title="Activas"
+              value={properties.filter(p => p.status === 'Activa').length}
+              color="from-[#14b8a6] to-[#0d9488]"
+            />
+            <StatsCard
+              title="Pausadas"
+              value={properties.filter(p => p.status === 'Pausada').length}
+              color="from-[#475569] to-[#334155]"
+            />
+            <StatsCard
+              title="En Venta"
+              value={properties.filter(p => p.type === 'Venta').length}
+              color="from-[#334155] to-[#0f172a]"
+            />
+          </div>
         </div>
 
         {/* Toolbar */}
-        <div className="bg-white rounded-xl shadow-md p-6 mb-8">
-          <div className="flex flex-col md:flex-row gap-4 items-center justify-between">
-            <div className="flex-1 w-full md:w-auto">
-              <div className="relative">
-                <input
-                  type="text"
-                  placeholder="Buscar propiedades..."
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#14b8a6] focus:border-transparent"
-                />
-                <svg className="w-5 h-5 text-gray-400 absolute left-3 top-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                </svg>
+        <div className="mb-8">
+          <h2 className="text-2xl font-bold text-[#0f172a] mb-6">Gestión de Propiedades</h2>
+          <div className="bg-white rounded-xl shadow-md p-6">
+            <div className="flex flex-col md:flex-row gap-4 items-center justify-between">
+              <div className="flex-1 w-full md:w-auto">
+                <div className="relative">
+                  <input
+                    type="text"
+                    placeholder="Buscar propiedades..."
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#14b8a6] focus:border-transparent"
+                  />
+                  <svg className="w-5 h-5 text-gray-400 absolute left-3 top-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                  </svg>
+                </div>
               </div>
-            </div>
-            
-            <div className="flex gap-3 w-full md:w-auto">
-              <select
-                value={filterStatus}
-                onChange={(e) => setFilterStatus(e.target.value as any)}
-                className="px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#14b8a6] focus:border-transparent"
-              >
-                <option value="all">Todos los estados</option>
-                <option value="Activa">Activas</option>
-                <option value="Pausada">Pausadas</option>
-              </select>
               
-              <button
-                onClick={handleAddProperty}
-                className="px-6 py-3 bg-gradient-to-r from-[#14b8a6] to-[#0d9488] text-white font-semibold rounded-lg hover:from-[#0d9488] hover:to-[#0f766e] transition-all duration-300 shadow-lg hover:shadow-xl flex items-center gap-2 whitespace-nowrap"
-              >
-                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-                </svg>
-                Nueva Propiedad
-              </button>
+              <div className="flex gap-3 w-full md:w-auto">
+                <select
+                  value={filterStatus}
+                  onChange={(e) => setFilterStatus(e.target.value as any)}
+                  className="px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#14b8a6] focus:border-transparent"
+                >
+                  <option value="all">Todos los estados</option>
+                  <option value="Activa">Activas</option>
+                  <option value="Pausada">Pausadas</option>
+                </select>
+                
+                <button
+                  onClick={handleAddProperty}
+                  className="px-6 py-3 bg-gradient-to-r from-[#14b8a6] to-[#0d9488] text-white font-semibold rounded-lg hover:from-[#0d9488] hover:to-[#0f766e] transition-all duration-300 shadow-lg hover:shadow-xl flex items-center gap-2 whitespace-nowrap"
+                >
+                  <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                  </svg>
+                  Nueva Propiedad
+                </button>
+              </div>
             </div>
           </div>
         </div>
@@ -228,13 +230,18 @@ export default function DashboardPage() {
         {/* Properties Grid */}
         {filteredProperties.length === 0 ? (
           <div className="bg-white rounded-xl shadow-md p-12 text-center">
-            <div className="text-6xl mb-4">🏘️</div>
+            <svg className="w-24 h-24 mx-auto mb-4 text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+            </svg>
             <h3 className="text-xl font-semibold text-gray-700 mb-2">No hay propiedades</h3>
             <p className="text-gray-500 mb-6">Comienza agregando tu primera propiedad</p>
             <button
               onClick={handleAddProperty}
-              className="px-6 py-3 bg-gradient-to-r from-[#14b8a6] to-[#0d9488] text-white font-semibold rounded-lg hover:from-[#0d9488] hover:to-[#0f766e] transition-all duration-300"
+              className="px-6 py-3 bg-gradient-to-r from-[#14b8a6] to-[#0d9488] text-white font-semibold rounded-lg hover:from-[#0d9488] hover:to-[#0f766e] transition-all duration-300 flex items-center gap-2 mx-auto"
             >
+              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+              </svg>
               Agregar Propiedad
             </button>
           </div>
@@ -266,16 +273,11 @@ export default function DashboardPage() {
 }
 
 // Stats Card Component
-function StatsCard({ title, value, icon, color }: { title: string; value: number; icon: string; color: string }) {
+function StatsCard({ title, value, color }: { title: string; value: number; color: string }) {
   return (
     <div className={`bg-gradient-to-br ${color} rounded-xl shadow-lg p-6 text-white transform hover:scale-105 transition-transform duration-300`}>
-      <div className="flex items-center justify-between">
-        <div>
-          <p className="text-sm opacity-90 mb-1">{title}</p>
-          <p className="text-3xl font-bold">{value}</p>
-        </div>
-        <div className="text-4xl opacity-80">{icon}</div>
-      </div>
+      <p className="text-sm opacity-90 mb-1">{title}</p>
+      <p className="text-3xl font-bold">{value}</p>
     </div>
   );
 }
@@ -296,9 +298,9 @@ function PropertyCard({
     <div className="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-xl transition-shadow duration-300">
       {/* Image */}
       <div className="relative h-48 bg-gradient-to-br from-gray-200 to-gray-300">
-        <div className="absolute inset-0 flex items-center justify-center text-6xl">
-          🏠
-        </div>
+        <svg className="absolute inset-0 m-auto w-24 h-24 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+        </svg>
         <div className="absolute top-3 right-3 flex gap-2">
           <span className={`px-3 py-1 rounded-full text-xs font-semibold ${
             property.status === 'Activa' 
@@ -316,30 +318,35 @@ function PropertyCard({
       {/* Content */}
       <div className="p-5">
         <h3 className="text-lg font-bold text-[#0f172a] mb-2 line-clamp-1">{property.title}</h3>
-        <p className="text-2xl font-bold text-[#14b8a6] mb-3">
+        <p className="text-2xl font-bold text-[#0f172a] mb-3">
           ${property.price.toLocaleString()}
           {property.type === 'Alquiler' && <span className="text-sm text-gray-500">/mes</span>}
         </p>
         
-        <div className="flex items-center text-sm text-gray-600 mb-3">
-          <svg className="w-4 h-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+        <div className="flex items-center text-gray-600 mb-3">
+          <svg className="w-5 h-5 mr-2 text-[#14b8a6]" fill="currentColor" viewBox="0 0 20 20">
+            <path fillRule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clipRule="evenodd" />
           </svg>
-          {property.location}
+          <span className="text-sm font-medium">{property.location}</span>
         </div>
 
         <div className="flex gap-4 text-sm text-gray-600 mb-4">
           <div className="flex items-center">
-            <span className="mr-1">🛏️</span>
+            <svg className="w-4 h-4 mr-1 text-[#0f172a]" fill="currentColor" viewBox="0 0 640 512">
+              <path d="M32 32c17.7 0 32 14.3 32 32V320H288V160c0-17.7 14.3-32 32-32H544c53 0 96 43 96 96V448c0 17.7-14.3 32-32 32s-32-14.3-32-32V416H352 320 64v32c0 17.7-14.3 32-32 32s-32-14.3-32-32V64C0 46.3 14.3 32 32 32zm144 96a80 80 0 1 1 0 160 80 80 0 1 1 0-160z"/>
+            </svg>
             {property.bedrooms} hab
           </div>
           <div className="flex items-center">
-            <span className="mr-1">🚿</span>
+            <svg className="w-4 h-4 mr-1 text-[#0f172a]" fill="currentColor" viewBox="0 0 512 512">
+              <path d="M64 131.9C64 112.1 80.1 96 99.9 96c9.5 0 18.6 3.8 25.4 10.5l16.2 16.2c-21 38.9-17.4 87.5 10.9 123L151 247c-9.4 9.4-9.4 24.6 0 33.9s24.6 9.4 33.9 0L345 121c9.4-9.4 9.4-24.6 0-33.9s-24.6-9.4-33.9 0l-1.3 1.3c-35.5-28.3-84.2-31.9-123-10.9L170.5 61.3C151.8 42.5 126.4 32 99.9 32C44.7 32 0 76.7 0 131.9V448c0 17.7 14.3 32 32 32s32-14.3 32-32V131.9zM256 352a32 32 0 1 0 0-64 32 32 0 1 0 0 64zm64 64a32 32 0 1 0 -64 0 32 32 0 1 0 64 0zm0-128a32 32 0 1 0 0-64 32 32 0 1 0 0 64zm64 64a32 32 0 1 0 -64 0 32 32 0 1 0 64 0zm0-128a32 32 0 1 0 0-64 32 32 0 1 0 0 64zm64 64a32 32 0 1 0 -64 0 32 32 0 1 0 64 0zm32-32a32 32 0 1 0 0-64 32 32 0 1 0 0 64z"/>
+            </svg>
             {property.bathrooms} baños
           </div>
           <div className="flex items-center">
-            <span className="mr-1">📐</span>
+            <svg className="w-4 h-4 mr-1 text-[#0f172a]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4" />
+            </svg>
             {property.area}m²
           </div>
         </div>
@@ -363,7 +370,7 @@ function PropertyCard({
                 : 'bg-[#475569] text-white hover:bg-[#334155]'
             }`}
           >
-            {property.status === 'Activa' ? '⏸️ Pausar' : '▶️ Activar'}
+            {property.status === 'Activa' ? 'Pausar' : 'Activar'}
           </button>
           <button
             onClick={() => onDelete(property.id)}

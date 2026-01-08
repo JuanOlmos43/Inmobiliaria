@@ -2,70 +2,13 @@
 
 import { useState, useEffect } from 'react';
 import PropertyCard from './PropertyCard';
-
-const properties = [
-  {
-    id: 1,
-    title: 'Casa + Local Comercial',
-    price: 98000,
-    location: 'Blas Parera 272',
-    bedrooms: 4,
-    bathrooms: 3,
-    area: 400,
-    type: 'venta' as const,
-    image: '/property1.png',
-  },
-  {
-    id: 2,
-    title: 'Casa premium a estrenar',
-    price: 255000,
-    location: 'López Jordán y Carlos Darwin',
-    bedrooms: 3,
-    bathrooms: 3,
-    area: 240,
-    type: 'venta' as const,
-    image: '/property2.png',
-  },
-  {
-    id: 3,
-    title: 'Terreno vista del Norte',
-    price: 39000,
-    location: 'Paraná',
-    bedrooms: 0,
-    bathrooms: 0,
-    area: 450,
-    type: 'venta' as const,
-    image: '/property3.png',
-  },
-  {
-    id: 4,
-    title: 'Departamento 2 ambientes',
-    price: 850,
-    location: 'Centro, Buenos Aires',
-    bedrooms: 1,
-    bathrooms: 1,
-    area: 45,
-    type: 'alquiler' as const,
-    image: '/property4.png',
-  },
-  {
-    id: 5,
-    title: 'Duplex moderno amoblado',
-    price: 1200,
-    location: 'Palermo, Buenos Aires',
-    bedrooms: 2,
-    bathrooms: 2,
-    area: 85,
-    type: 'alquiler' as const,
-    image: '/property5.png',
-  },
-];
+import { featuredProperties } from '@/data/properties';
 
 export default function FeaturedProperties() {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
   const itemsPerPage = 3; // Mostrar 3 propiedades a la vez
-  const maxIndex = Math.max(0, properties.length - itemsPerPage);
+  const maxIndex = Math.max(0, featuredProperties.length - itemsPerPage);
 
   const handlePrev = () => {
     setCurrentIndex((prev) => (prev === 0 ? maxIndex : prev - 1));
@@ -86,14 +29,14 @@ export default function FeaturedProperties() {
     }
   }, [currentIndex, isPaused]);
 
-  const visibleProperties = properties.slice(currentIndex, currentIndex + itemsPerPage);
+  const visibleProperties = featuredProperties.slice(currentIndex, currentIndex + itemsPerPage);
 
   return (
-    <section className="py-12 bg-[#f8fafc]">
+    <section className="pb-12 bg-gradient-to-b from-[#0f172a] via-[#0f172a] to-[#1e293b]">
       {/* Header */}
-      <div className="bg-gradient-to-r from-[#0f172a] to-[#334155] py-6 mb-8 shadow-lg">
+      <div className="pt-8 pb-8">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="text-white text-3xl md:text-4xl font-bold text-center">
+          <h2 className="text-white text-3xl md:text-4xl font-bold text-left animate-slide-in-right">
             Propiedades Destacadas
           </h2>
         </div>
@@ -107,7 +50,7 @@ export default function FeaturedProperties() {
           onMouseLeave={() => setIsPaused(false)}
         >
           {/* Navigation Arrows */}
-          {properties.length > itemsPerPage && (
+          {featuredProperties.length > itemsPerPage && (
             <>
               <button
                 onClick={handlePrev}
@@ -138,11 +81,11 @@ export default function FeaturedProperties() {
               style={{
                 transform: `translateX(-${currentIndex * (100 / itemsPerPage)}%)`,
                 display: 'grid',
-                gridTemplateColumns: `repeat(${properties.length}, minmax(0, 1fr))`,
-                width: `${(properties.length / itemsPerPage) * 100}%`
+                gridTemplateColumns: `repeat(${featuredProperties.length}, minmax(0, 1fr))`,
+                width: `${(featuredProperties.length / itemsPerPage) * 100}%`
               }}
             >
-              {properties.map((property) => (
+              {featuredProperties.map((property) => (
                 <PropertyCard key={property.id} {...property} />
               ))}
             </div>
@@ -151,7 +94,7 @@ export default function FeaturedProperties() {
 
         {/* Mobile Navigation Dots */}
         <div className="flex justify-center gap-2 mt-6 lg:hidden">
-          {properties.map((_, index) => (
+          {featuredProperties.map((_, index) => (
             <button
               key={index}
               onClick={() => setCurrentIndex(index)}

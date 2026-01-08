@@ -26,7 +26,7 @@ export default function PropertyCard({
 }: PropertyCardProps) {
   return (
     <Link href={`/propiedades/${id}`} className="block group">
-      <div className="bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-2xl transition-all duration-500 cursor-pointer border border-gray-100 hover:border-blue-200 transform hover:-translate-y-2 animate-scale-in">
+      <div className="bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-2xl transition-all duration-500 cursor-pointer border border-gray-100 hover:border-[#14b8a6] transform hover:-translate-y-2 animate-scale-in">
       {/* Image */}
       <div className="relative h-56 bg-gradient-to-br from-gray-100 to-gray-200 overflow-hidden">
         <Image
@@ -70,7 +70,7 @@ export default function PropertyCard({
         <div className="flex items-center justify-between text-gray-700 border-t border-gray-100 pt-4">
           {/* Bedrooms */}
           <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-lg bg-blue-50 flex items-center justify-center group-hover:bg-blue-100 transition-colors">
+            <div className="w-8 h-8 rounded-lg bg-gray-50 flex items-center justify-center group-hover:bg-gray-100 transition-colors">
               <svg className="w-4 h-4 text-[#0f172a]" fill="currentColor" viewBox="0 0 640 512">
                 <path d="M32 32c17.7 0 32 14.3 32 32V320H288V160c0-17.7 14.3-32 32-32H544c53 0 96 43 96 96V448c0 17.7-14.3 32-32 32s-32-14.3-32-32V416H352 320 64v32c0 17.7-14.3 32-32 32s-32-14.3-32-32V64C0 46.3 14.3 32 32 32zm144 96a80 80 0 1 1 0 160 80 80 0 1 1 0-160z"/>
               </svg>
