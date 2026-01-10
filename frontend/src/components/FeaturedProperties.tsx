@@ -43,7 +43,7 @@ export default function FeaturedProperties() {
       </div>
 
       {/* Properties Grid */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-8">
         <div 
           className="relative"
           onMouseEnter={() => setIsPaused(true)}
@@ -75,18 +75,17 @@ export default function FeaturedProperties() {
           )}
 
           {/* Cards Grid con animación de deslizamiento */}
-          <div className="overflow-hidden">
+          <div className="overflow-hidden pt-3 pb-1 -mt-3 -mb-1">
             <div 
-              className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 transition-transform duration-700 ease-in-out"
+              className="flex gap-6 transition-transform duration-700 ease-in-out"
               style={{
-                transform: `translateX(-${currentIndex * (100 / itemsPerPage)}%)`,
-                display: 'grid',
-                gridTemplateColumns: `repeat(${featuredProperties.length}, minmax(0, 1fr))`,
-                width: `${(featuredProperties.length / itemsPerPage) * 100}%`
+                transform: `translateX(calc(-${currentIndex * 100}% - ${currentIndex * 1.5}rem))`
               }}
             >
               {featuredProperties.map((property) => (
-                <PropertyCard key={property.id} {...property} />
+                <div key={property.id} className="flex-shrink-0 w-full lg:w-[calc(33.333%-1rem)]">
+                  <PropertyCard {...property} />
+                </div>
               ))}
             </div>
           </div>

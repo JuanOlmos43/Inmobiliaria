@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import Icon from '@/components/Icon';
 
 // Tipos
 interface OrganizationStats {
@@ -49,17 +50,18 @@ export default function DashboardOwnerPage() {
       <header className="bg-gradient-to-r from-[#0f172a] to-[#1e293b] shadow-lg sticky top-0 z-40">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
           <div className="flex justify-between items-center">
-            <div>
-              <h1 className="text-2xl font-bold text-[#14b8a6]">Dueño</h1>
-              <p className="text-sm text-gray-300">Bienvenido, {userEmail}</p>
+            <div className="flex items-center gap-3">
+              <Icon name="star" className="w-8 h-8 text-[#14b8a6]" />
+              <div>
+                <h1 className="text-2xl font-bold text-[#14b8a6]">Dueño</h1>
+                <p className="text-sm text-gray-300">Bienvenido, {userEmail}</p>
+              </div>
             </div>
             <button
               onClick={handleLogout}
               className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors flex items-center gap-2 shadow-md hover:shadow-lg"
             >
-              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-              </svg>
+              <Icon name="logout" className="w-5 h-5" />
               Cerrar Sesión
             </button>
           </div>
@@ -70,47 +72,47 @@ export default function DashboardOwnerPage() {
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Overview Stats */}
         <div className="mb-8">
-          <h2 className="text-2xl font-bold text-[#0f172a] mb-6">📊 Estadísticas de la Organización</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <h2 className="text-2xl font-bold text-[#0f172a] mb-6">Estadísticas de la Organización</h2>
+          <div className="flex flex-col gap-6 max-w-2xl mx-auto">
             <StatsCard
-              title="Cantidad de Propiedades"
+              title="Total Propiedades"
               value={stats.totalProperties}
-              icon="🏢"
               color="from-[#0f172a] to-[#334155]"
               trend="+8 este mes"
               trendUp={true}
+              icon="building"
             />
             <StatsCard
-              title="Ocupación Global"
-              value={`${stats.occupancyRate}%`}
-              icon="📊"
-              color="from-[#14b8a6] to-[#0d9488]"
-              trend="+5.2%"
-              trendUp={true}
-            />
-            <StatsCard
-              title="Tiempo Promedio en Mercado"
+              title="En Venta"
               value={`${stats.avgMarketTime} días`}
-              icon="⏱️"
-              color="from-[#475569] to-[#334155]"
-              trend="-7 días"
+              color="from-[#334155] to-[#0f172a]"
+              trend="Tiempo Promedio en Mercado"
               trendUp={true}
+              icon="tag"
+            />
+            <StatsCard
+              title="En Alquiler"
+              value={`${stats.avgMarketTime} días`}
+              color="from-[#475569] to-[#334155]"
+              trend="Tiempo Promedio en Mercado"
+              trendUp={true}
+              icon="key"
             />
             <StatsCard
               title="Contratos Activos"
               value={stats.activeContracts}
-              icon="📝"
               color="from-[#14b8a6] to-[#0d9488]"
-              trend="+12"
+              trend="+12 este mes"
               trendUp={true}
+              icon="document"
             />
             <StatsCard
               title="Contratos Finalizados"
               value={stats.completedContracts}
-              icon="✅"
-              color="from-[#334155] to-[#0f172a]"
+              color="from-amber-500 to-amber-600"
               trend="Total histórico"
               trendUp={true}
+              icon="check"
             />
           </div>
         </div>
@@ -122,25 +124,27 @@ export default function DashboardOwnerPage() {
 // Stats Card Component
 function StatsCard({ 
   title, 
-  value, 
-  icon, 
+  value,  
   color, 
   trend, 
-  trendUp 
+  trendUp,
+  icon
 }: { 
   title: string; 
   value: string | number; 
-  icon: string; 
   color: string;
   trend: string;
   trendUp: boolean;
+  icon: string;
 }) {
   return (
     <div className={`bg-gradient-to-br ${color} rounded-xl shadow-lg p-6 text-white transform hover:scale-105 transition-transform duration-300`}>
-      <div className="flex items-center justify-between mb-3">
-        <div className="text-4xl opacity-80">{icon}</div>
+      <div className="flex items-start justify-between mb-3">
         <div className={`text-xs px-2 py-1 rounded-full ${trendUp ? 'bg-green-500/30' : 'bg-red-500/30'}`}>
           {trend}
+        </div>
+        <div className="opacity-80">
+          <Icon name={icon as any} className="w-8 h-8" />
         </div>
       </div>
       <p className="text-sm opacity-90 mb-1">{title}</p>

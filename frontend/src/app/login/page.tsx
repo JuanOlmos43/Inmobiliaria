@@ -16,6 +16,42 @@ export default function LoginPage() {
     setError('');
     setIsLoading(true);
 
+    // Validar credenciales para Administrador
+    if (email === 'admin@emanil.com' && password === 'admin01') {
+      localStorage.setItem('isAuthenticated', 'true');
+      localStorage.setItem('userEmail', email);
+      localStorage.setItem('userRole', 'admin');
+      
+      setTimeout(() => {
+        router.push('/admin');
+      }, 500);
+      return;
+    }
+    
+    // Validar credenciales para Inquilino
+    if (email === 'Inqui@emanil.com' && password === 'Inqui01') {
+      localStorage.setItem('isAuthenticated', 'true');
+      localStorage.setItem('userEmail', email);
+      localStorage.setItem('userRole', 'tenant');
+      
+      setTimeout(() => {
+        router.push('/inquilino');
+      }, 500);
+      return;
+    }
+    
+    // Validar credenciales para Propietario
+    if (email === 'Propietario@emanil.com' && password === 'Propietario01') {
+      localStorage.setItem('isAuthenticated', 'true');
+      localStorage.setItem('userEmail', email);
+      localStorage.setItem('userRole', 'landlord');
+      
+      setTimeout(() => {
+        router.push('/propietario');
+      }, 500);
+      return;
+    }
+    
     // Validar credenciales para Agente
     if (email === 'Agente01@email.com' && password === 'Agente01') {
       localStorage.setItem('isAuthenticated', 'true');
@@ -25,9 +61,11 @@ export default function LoginPage() {
       setTimeout(() => {
         router.push('/agente');
       }, 500);
+      return;
     } 
+    
     // Validar credenciales para Dueño
-    else if (email === 'Duenio01@email.com' && password === 'Duenio01') {
+    if (email === 'Duenio01@email.com' && password === 'Duenio01') {
       localStorage.setItem('isAuthenticated', 'true');
       localStorage.setItem('userEmail', email);
       localStorage.setItem('userRole', 'owner');
@@ -35,11 +73,58 @@ export default function LoginPage() {
       setTimeout(() => {
         router.push('/duenio');
       }, 500);
-    } 
-    else {
-      setIsLoading(false);
-      setError('Credenciales incorrectas. Por favor, verifica tu correo y contraseña.');
+      return;
     }
+    
+    // Validar contra usuarios creados dinámicamente por el administrador
+    const storedUsers = localStorage.getItem('systemUsers');
+    if (storedUsers) {
+      try {
+        const users = JSON.parse(storedUsers);
+        const user = users.find((u: any) => u.email === email && u.password === password);
+        
+        if (user && user.status === 'active') {
+          localStorage.setItem('isAuthenticated', 'true');
+          localStorage.setItem('userEmail', email);
+          
+          // Mapear el rol del usuario al formato esperado
+          let userRole = '';
+          let redirectPath = '/';
+          
+          switch(user.role) {
+            case 'tenant':
+              userRole = 'tenant';
+              redirectPath = '/'; // Los inquilinos van a la página principal
+              break;
+            case 'landlord':
+              userRole = 'landlord';
+              redirectPath = '/'; // Los propietarios también van a la página principal
+              break;
+            case 'agent':
+              userRole = 'agente';
+              redirectPath = '/agente';
+              break;
+            case 'owner':
+              userRole = 'owner';
+              redirectPath = '/duenio';
+              break;
+          }
+          
+          localStorage.setItem('userRole', userRole);
+          
+          setTimeout(() => {
+            router.push(redirectPath);
+          }, 500);
+          return;
+        }
+      } catch (error) {
+        console.error('Error parsing users:', error);
+      }
+    }
+    
+    // Si no se encontró ninguna coincidencia
+    setIsLoading(false);
+    setError('Credenciales incorrectas. Por favor, verifica tu correo y contraseña.');
   };
 
   return (
@@ -120,19 +205,6 @@ export default function LoginPage() {
               )}
             </button>
           </form>
-
-          {/* Divider */}
-          <div className="mt-8 pt-6 border-t border-white/20">
-            <p className="text-center text-gray-200 text-sm">
-              ¿No tienes una cuenta?{' '}
-              <Link 
-                href="#" 
-                className="text-[#14b8a6] hover:text-[#2dd4bf] font-medium transition-colors"
-              >
-                Regístrate aquí
-              </Link>
-            </p>
-          </div>
 
           {/* Back to Home */}
           <div className="mt-4 text-center">

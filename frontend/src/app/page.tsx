@@ -7,6 +7,7 @@ export default function Home() {
   return (
     <div className="flex flex-col min-h-screen">
       <Navbar />
+      
       <SearchBlock />
       
       <main className="flex-grow bg-[#f8fafc]">

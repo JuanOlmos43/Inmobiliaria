@@ -1,5 +1,6 @@
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
+import Icon from '@/components/Icon';
 
 export default function NosotrosPage() {
   return (
@@ -53,7 +54,7 @@ export default function NosotrosPage() {
             <div className="absolute inset-0 bg-[#0f172a] opacity-20"></div>
             <div className="absolute inset-0 flex items-center justify-center">
               <div className="text-center text-white">
-                <div className="text-6xl mb-4">🏢</div>
+                <Icon name="building" className="w-24 h-24 mb-4 mx-auto" strokeWidth={1.5} />
                 <p className="text-2xl font-bold">15+ Años</p>
                 <p className="text-lg">de Experiencia</p>
               </div>
@@ -71,9 +72,7 @@ export default function NosotrosPage() {
           <div className="grid md:grid-cols-3 gap-8">
             {/* Valor 1 */}
             <div className="bg-gradient-to-br from-[#0f172a] to-[#334155] p-8 rounded-2xl shadow-xl text-white transform hover:scale-105 transition-all duration-300 hover:shadow-2xl">
-              <svg className="w-12 h-12 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-              </svg>
+              <Icon name="check" className="w-12 h-12 mb-4" strokeWidth={2} />
               <h3 className="text-2xl font-bold mb-4">Transparencia</h3>
               <p className="text-gray-100 leading-relaxed">
                 Creemos en la honestidad total. Cada propiedad, cada precio, cada detalle 
@@ -83,9 +82,7 @@ export default function NosotrosPage() {
 
             {/* Valor 2 */}
             <div className="bg-gradient-to-br from-[#14b8a6] to-[#0d9488] p-8 rounded-2xl shadow-xl text-white transform hover:scale-105 transition-all duration-300 hover:shadow-2xl">
-              <svg className="w-12 h-12 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-              </svg>
+              <Icon name="briefcase" className="w-12 h-12 mb-4" strokeWidth={2} />
               <h3 className="text-2xl font-bold mb-4">Profesionalismo</h3>
               <p className="text-gray-50 leading-relaxed">
                 Nuestro equipo está altamente capacitado y actualizado con las últimas 
@@ -95,9 +92,7 @@ export default function NosotrosPage() {
 
             {/* Valor 3 */}
             <div className="bg-gradient-to-br from-[#0f172a] to-[#334155] p-8 rounded-2xl shadow-xl text-white transform hover:scale-105 transition-all duration-300 hover:shadow-2xl">
-              <svg className="w-12 h-12 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
-              </svg>
+              <Icon name="heart" className="w-12 h-12 mb-4" strokeWidth={2} />
               <h3 className="text-2xl font-bold mb-4">Compromiso</h3>
               <p className="text-gray-100 leading-relaxed">
                 Tu satisfacción es nuestra prioridad. Trabajamos incansablemente hasta 
@@ -144,9 +139,7 @@ export default function NosotrosPage() {
           {/* Miembro 1 */}
           <div className="bg-white rounded-2xl shadow-xl overflow-hidden transform hover:scale-105 transition-all duration-300 hover:shadow-2xl">
             <div className="h-64 bg-gradient-to-br from-[#0f172a] to-[#334155] flex items-center justify-center">
-              <svg className="w-32 h-32 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-              </svg>
+              <Icon name="user" className="w-32 h-32 text-white" strokeWidth={1.5} />
             </div>
             <div className="p-6">
               <h3 className="text-2xl font-bold text-[#0f172a] mb-2">Carlos Rodríguez</h3>
@@ -161,9 +154,7 @@ export default function NosotrosPage() {
           {/* Miembro 2 */}
           <div className="bg-white rounded-2xl shadow-xl overflow-hidden transform hover:scale-105 transition-all duration-300 hover:shadow-2xl">
             <div className="h-64 bg-gradient-to-br from-[#14b8a6] to-[#0d9488] flex items-center justify-center">
-              <svg className="w-32 h-32 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-              </svg>
+              <Icon name="user" className="w-32 h-32 text-white" strokeWidth={1.5} />
             </div>
             <div className="p-6">
               <h3 className="text-2xl font-bold text-[#0f172a] mb-2">María González</h3>
@@ -178,9 +169,7 @@ export default function NosotrosPage() {
           {/* Miembro 3 */}
           <div className="bg-white rounded-2xl shadow-xl overflow-hidden transform hover:scale-105 transition-all duration-300 hover:shadow-2xl">
             <div className="h-64 bg-gradient-to-br from-[#0f172a] to-[#334155] flex items-center justify-center">
-              <svg className="w-32 h-32 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-              </svg>
+              <Icon name="user" className="w-32 h-32 text-white" strokeWidth={1.5} />
             </div>
             <div className="p-6">
               <h3 className="text-2xl font-bold text-[#0f172a] mb-2">Juan Pérez</h3>
