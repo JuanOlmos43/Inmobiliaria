@@ -63,11 +63,11 @@ export default function PropertyDetailPage() {
                 <h1 className="text-3xl font-bold text-[#0f172a] mb-3">
                   {property.title}
                 </h1>
-                <div className="flex items-center text-gray-600 mb-4">
-                  <svg className="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                <div className="flex items-center mb-4">
+                  <svg className="w-5 h-5 mr-2 text-[#14b8a6]" fill="currentColor" viewBox="0 0 20 20">
                     <path fillRule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clipRule="evenodd" />
                   </svg>
-                  <span className="text-lg">{property.location}</span>
+                  <span className="text-lg text-gray-600">{property.location}</span>
                 </div>
                 <div className="flex flex-wrap items-center gap-4 text-gray-700 border-t pt-4">
                   {property.bedrooms > 0 && (

@@ -3,6 +3,8 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Icon from '@/components/Icon';
+import DashboardPropertyCard from '@/components/DashboardPropertyCard';
+import RentalCard from '@/components/RentalCard';
 
 // Tipos
 interface Property {
@@ -17,6 +19,9 @@ interface Property {
   image: string;
   status: 'Activa' | 'Pausada';
   description: string;
+  propertyType: string; // casa, departamento, terreno, duplex, monoambiente
+  yearBuilt?: number | null;
+  features?: string[];
   landlordName?: string;
   landlordPhone?: string;
   landlordEmail?: string;
@@ -32,6 +37,7 @@ export default function DashboardPage() {
   const [searchTerm, setSearchTerm] = useState('');
   const [filterStatus, setFilterStatus] = useState<'all' | 'Activa' | 'Pausada'>('all');
   const [userEmail, setUserEmail] = useState('');
+  const [activeTab, setActiveTab] = useState<'vencimientos' | 'propiedades'>('vencimientos');
 
   // Verificar autenticación
   useEffect(() => {
@@ -61,6 +67,9 @@ export default function DashboardPage() {
         image: '/placeholder-house.jpg',
         status: 'Activa',
         description: 'Hermosa casa moderna con acabados de lujo',
+        propertyType: 'casa',
+        yearBuilt: 2020,
+        features: ['Cochera', 'Patio', 'Cocina integrada', 'Calefacción central'],
         landlordName: 'Carlos Rodríguez',
         landlordPhone: '+54 11 2345-6789',
         landlordEmail: 'carlos.rodriguez@email.com'
@@ -77,6 +86,9 @@ export default function DashboardPage() {
         image: '/placeholder-apartment.jpg',
         status: 'Activa',
         description: 'Departamento amoblado en zona céntrica',
+        propertyType: 'departamento',
+        yearBuilt: 2015,
+        features: ['Balcón', 'Cocina equipada', 'Calefacción', 'Portero eléctrico'],
         landlordName: 'María González',
         landlordPhone: '+54 11 3456-7890',
         landlordEmail: 'maria.gonzalez@email.com'
@@ -210,83 +222,122 @@ export default function DashboardPage() {
           </div>
         </div>
 
-        {/* Toolbar */}
+        {/* Tabs Section */}
         <div className="mb-8">
-          <h2 className="text-2xl font-bold text-[#0f172a] mb-6">Gestión de Propiedades</h2>
-          <div className="bg-white rounded-xl shadow-md p-6">
-            <div className="flex flex-col md:flex-row gap-4 items-center justify-between">
-              <div className="flex-1 w-full md:w-auto">
-                <div className="relative">
-                  <input
-                    type="text"
-                    placeholder="Buscar propiedades..."
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                    className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#14b8a6] focus:border-transparent"
-                  />
-                  <svg className="w-5 h-5 text-gray-400 absolute left-3 top-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                  </svg>
-                </div>
-              </div>
-              
-              <div className="flex gap-3 w-full md:w-auto">
-                <select
-                  value={filterStatus}
-                  onChange={(e) => setFilterStatus(e.target.value as any)}
-                  className="px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#14b8a6] focus:border-transparent"
-                >
-                  <option value="all">Todos los estados</option>
-                  <option value="Activa">Activas</option>
-                  <option value="Pausada">Pausadas</option>
-                </select>
-                
-                <button
-                  onClick={handleAddProperty}
-                  className="px-6 py-3 bg-gradient-to-r from-[#14b8a6] to-[#0d9488] text-white font-semibold rounded-lg hover:from-[#0d9488] hover:to-[#0f766e] transition-all duration-300 shadow-lg hover:shadow-xl flex items-center gap-2 whitespace-nowrap"
-                >
-                  <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-                  </svg>
-                  Nueva Propiedad
-                </button>
-              </div>
+          {/* Tab Navigation */}
+          <div className="border-b border-gray-200 mb-6">
+            <div className="flex gap-8">
+              <button
+                onClick={() => setActiveTab('vencimientos')}
+                className={`pb-4 px-2 font-semibold transition-colors relative ${
+                  activeTab === 'vencimientos'
+                    ? 'text-[#14b8a6]'
+                    : 'text-gray-500 hover:text-gray-700'
+                }`}
+              >
+                Próximos Vencimientos
+                {activeTab === 'vencimientos' && (
+                  <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#14b8a6]"></div>
+                )}
+              </button>
+              <button
+                onClick={() => setActiveTab('propiedades')}
+                className={`pb-4 px-2 font-semibold transition-colors relative ${
+                  activeTab === 'propiedades'
+                    ? 'text-[#14b8a6]'
+                    : 'text-gray-500 hover:text-gray-700'
+                }`}
+              >
+                Gestión de Propiedades
+                {activeTab === 'propiedades' && (
+                  <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#14b8a6]"></div>
+                )}
+              </button>
             </div>
           </div>
-        </div>
 
-        {/* Properties Grid */}
-        {filteredProperties.length === 0 ? (
-          <div className="bg-white rounded-xl shadow-md p-12 text-center">
-            <svg className="w-24 h-24 mx-auto mb-4 text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
-            </svg>
-            <h3 className="text-xl font-semibold text-gray-700 mb-2">No hay propiedades</h3>
-            <p className="text-gray-500 mb-6">Comienza agregando tu primera propiedad</p>
-            <button
-              onClick={handleAddProperty}
-              className="px-6 py-3 bg-gradient-to-r from-[#14b8a6] to-[#0d9488] text-white font-semibold rounded-lg hover:from-[#0d9488] hover:to-[#0f766e] transition-all duration-300 flex items-center gap-2 mx-auto"
-            >
-              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-              </svg>
-              Agregar Propiedad
-            </button>
-          </div>
-        ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filteredProperties.map(property => (
-              <PropertyCard
-                key={property.id}
-                property={property}
-                onEdit={handleEditProperty}
-                onDelete={handleDeleteProperty}
-                onToggleStatus={handleToggleStatus}
-                onRent={handleRentProperty}
-              />
-            ))}
-          </div>
-        )}
+          {/* Tab Content */}
+          {activeTab === 'vencimientos' ? (
+            <UpcomingExpirations />
+          ) : (
+            <>
+              {/* Toolbar */}
+              <div className="bg-white rounded-xl shadow-md p-6 mb-6">
+                <div className="flex flex-col md:flex-row gap-4 items-center justify-between">
+                  <div className="flex-1 w-full md:w-auto">
+                    <div className="relative">
+                      <input
+                        type="text"
+                        placeholder="Buscar propiedades..."
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                        className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#14b8a6] focus:border-transparent"
+                      />
+                      <svg className="w-5 h-5 text-gray-400 absolute left-3 top-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                      </svg>
+                    </div>
+                  </div>
+                  
+                  <div className="flex gap-3 w-full md:w-auto">
+                    <select
+                      value={filterStatus}
+                      onChange={(e) => setFilterStatus(e.target.value as any)}
+                      className="px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#14b8a6] focus:border-transparent"
+                    >
+                      <option value="all">Todos los estados</option>
+                      <option value="Activa">Activas</option>
+                      <option value="Pausada">Pausadas</option>
+                    </select>
+                    
+                    <button
+                      onClick={handleAddProperty}
+                      className="px-6 py-3 bg-gradient-to-r from-[#14b8a6] to-[#0d9488] text-white font-semibold rounded-lg hover:from-[#0d9488] hover:to-[#0f766e] transition-all duration-300 shadow-lg hover:shadow-xl flex items-center gap-2 whitespace-nowrap"
+                    >
+                      <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                      </svg>
+                      Nueva Propiedad
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              {/* Properties Grid */}
+              {filteredProperties.length === 0 ? (
+                <div className="bg-white rounded-xl shadow-md p-12 text-center">
+                  <svg className="w-24 h-24 mx-auto mb-4 text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                  </svg>
+                  <h3 className="text-xl font-semibold text-gray-700 mb-2">No hay propiedades</h3>
+                  <p className="text-gray-500 mb-6">Comienza agregando tu primera propiedad</p>
+                  <button
+                    onClick={handleAddProperty}
+                    className="px-6 py-3 bg-gradient-to-r from-[#14b8a6] to-[#0d9488] text-white font-semibold rounded-lg hover:from-[#0d9488] hover:to-[#0f766e] transition-all duration-300 flex items-center gap-2 mx-auto"
+                  >
+                    <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                    </svg>
+                    Agregar Propiedad
+                  </button>
+                </div>
+              ) : (
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {filteredProperties.map(property => (
+                    <PropertyCard
+                      key={property.id}
+                      property={property}
+                      onEdit={handleEditProperty}
+                      onDelete={handleDeleteProperty}
+                      onToggleStatus={handleToggleStatus}
+                      onRent={handleRentProperty}
+                    />
+                  ))}
+                </div>
+              )}
+            </>
+          )}
+        </div>
       </main>
 
       {/* Modal */}
@@ -329,21 +380,206 @@ export default function DashboardPage() {
   );
 }
 
+// Upcoming Expirations Component
+function UpcomingExpirations() {
+  const [expiringContracts, setExpiringContracts] = useState<any[]>([]);
+  const [adjustmentContracts, setAdjustmentContracts] = useState<any[]>([]);
+
+  useEffect(() => {
+    // Cargar contratos de alquiler del localStorage o usar datos de ejemplo
+    const storedContracts = localStorage.getItem('rentalContracts');
+    let contracts = [];
+    
+    if (storedContracts) {
+      contracts = JSON.parse(storedContracts);
+    } else {
+      // Datos de ejemplo si no hay contratos en localStorage
+      const today = new Date();
+      const sampleContracts = [
+        {
+          id: '1',
+          propertyName: 'Departamento Céntrico',
+          address: 'Av. Principal 1234, Piso 5, Depto A',
+          monthlyRent: 85000,
+          startDate: '2024-01-15',
+          endDate: new Date(today.getTime() + 25 * 24 * 60 * 60 * 1000).toISOString().split('T')[0], // Vence en 25 días
+          nextAdjustmentDate: new Date(today.getTime() + 60 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+          adjustmentPercentage: 15,
+          landlordName: 'María González',
+          landlordPhone: '+54 11 4567-8901',
+          landlordEmail: 'maria.gonzalez@email.com',
+          tenantName: 'Juan Pérez',
+          tenantPhone: '+54 11 9876-5432',
+          tenantEmail: 'juan.perez@email.com',
+          agentName: 'Carlos Rodríguez',
+          agentPhone: '+54 11 2345-6789',
+          agentEmail: 'carlos.rodriguez@inmobiliaria.com',
+          status: 'active'
+        },
+        {
+          id: '2',
+          propertyName: 'Casa en Barrio Residencial',
+          address: 'Calle Los Aromos 567',
+          monthlyRent: 120000,
+          startDate: '2023-06-01',
+          endDate: new Date(today.getTime() + 45 * 24 * 60 * 60 * 1000).toISOString().split('T')[0], // Vence en 45 días
+          nextAdjustmentDate: new Date(today.getTime() + 15 * 24 * 60 * 60 * 1000).toISOString().split('T')[0], // Ajuste en 15 días
+          adjustmentPercentage: 12,
+          landlordName: 'Roberto Sánchez',
+          landlordPhone: '+54 11 5678-9012',
+          landlordEmail: 'roberto.sanchez@email.com',
+          tenantName: 'Ana Martínez',
+          tenantPhone: '+54 11 3456-7890',
+          tenantEmail: 'ana.martinez@email.com',
+          agentName: 'Carlos Rodríguez',
+          agentPhone: '+54 11 2345-6789',
+          agentEmail: 'carlos.rodriguez@inmobiliaria.com',
+          status: 'active'
+        },
+        {
+          id: '3',
+          propertyName: 'Oficina Comercial Centro',
+          address: 'Av. Comercio 890, Piso 3',
+          monthlyRent: 150000,
+          startDate: '2024-03-01',
+          endDate: new Date(today.getTime() + 90 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+          nextAdjustmentDate: new Date(today.getTime() + 20 * 24 * 60 * 60 * 1000).toISOString().split('T')[0], // Ajuste en 20 días
+          adjustmentPercentage: 18,
+          landlordName: 'Laura Fernández',
+          landlordPhone: '+54 11 6789-0123',
+          landlordEmail: 'laura.fernandez@email.com',
+          tenantName: 'Empresa Tech SRL',
+          tenantPhone: '+54 11 4567-8901',
+          tenantEmail: 'contacto@empresatech.com',
+          agentName: 'Carlos Rodríguez',
+          agentPhone: '+54 11 2345-6789',
+          agentEmail: 'carlos.rodriguez@inmobiliaria.com',
+          status: 'active'
+        }
+      ];
+      contracts = sampleContracts;
+    }
+
+    const today = new Date();
+    const thirtyDaysFromNow = new Date(today);
+    thirtyDaysFromNow.setDate(today.getDate() + 30);
+
+    // Filtrar contratos que vencen en los próximos 30 días
+    const expiring = contracts.filter((contract: any) => {
+      const endDate = new Date(contract.endDate);
+      return endDate >= today && endDate <= thirtyDaysFromNow && contract.status === 'active';
+    });
+
+    // Filtrar contratos que requieren ajuste de precio en los próximos 30 días
+    const adjustments = contracts.filter((contract: any) => {
+      if (!contract.nextAdjustmentDate || contract.status !== 'active') return false;
+      const adjustmentDate = new Date(contract.nextAdjustmentDate);
+      return adjustmentDate >= today && adjustmentDate <= thirtyDaysFromNow;
+    });
+
+    setExpiringContracts(expiring);
+    setAdjustmentContracts(adjustments);
+  }, []);
+
+  const getDaysUntil = (dateString: string) => {
+    const today = new Date();
+    const targetDate = new Date(dateString);
+    const diffTime = targetDate.getTime() - today.getTime();
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    return diffDays;
+  };
+
+  const formatDate = (dateString: string) => {
+    return new Date(dateString).toLocaleDateString('es-ES', {
+      day: 'numeric',
+      month: 'long',
+      year: 'numeric'
+    });
+  };
+
+  if (expiringContracts.length === 0 && adjustmentContracts.length === 0) {
+    return (
+      <div className="bg-white rounded-xl shadow-md p-8 text-center">
+        <Icon name="check" className="w-16 h-16 mx-auto mb-4 text-green-500" />
+        <h3 className="text-xl font-semibold text-gray-700 mb-2">No hay vencimientos próximos</h3>
+        <p className="text-gray-500">No hay contratos que venzan o requieran ajuste en los próximos 30 días</p>
+      </div>
+    );
+  }
+
+  return (
+    <div className="space-y-8">
+      {/* Contratos que vencen */}
+      {expiringContracts.length > 0 && (
+        <div>
+          <h3 className="text-lg font-bold text-[#0f172a] mb-4 flex items-center gap-2">
+            <Icon name="calendar" className="w-5 h-5 text-red-500" />
+            Contratos por Vencer ({expiringContracts.length})
+          </h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {expiringContracts.map((contract) => (
+              <RentalCard
+                key={contract.id}
+                rental={contract}
+                viewerRole="agent"
+                showExpirationWarning={true}
+                daysUntilExpiration={getDaysUntil(contract.endDate)}
+                daysUntilAdjustment={getDaysUntil(contract.nextAdjustmentDate)}
+              />
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Ajustes de precio próximos */}
+      {adjustmentContracts.length > 0 && (
+        <div>
+          <h3 className="text-lg font-bold text-[#0f172a] mb-4 flex items-center gap-2">
+            <Icon name="trending-up" className="w-5 h-5 text-amber-500" />
+            Ajustes de Precio Próximos ({adjustmentContracts.length})
+          </h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {adjustmentContracts.map((contract) => (
+              <RentalCard
+                key={contract.id}
+                rental={contract}
+                viewerRole="agent"
+                showExpirationWarning={true}
+                daysUntilExpiration={getDaysUntil(contract.endDate)}
+                daysUntilAdjustment={getDaysUntil(contract.nextAdjustmentDate)}
+              />
+            ))}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
 // Stats Card Component
 function StatsCard({ 
   title, 
-  value, 
-  color,
+  value,  
+  color, 
+  trend, 
+  trendUp,
   icon
 }: { 
   title: string; 
-  value: number; 
+  value: string | number; 
   color: string;
+  trend?: string;
+  trendUp?: boolean;
   icon: string;
 }) {
   return (
     <div className={`bg-gradient-to-br ${color} rounded-xl shadow-lg p-6 text-white transform hover:scale-105 transition-transform duration-300`}>
-      <div className="flex items-start justify-end mb-3">
+      <div className={`flex items-start ${trend ? 'justify-between' : 'justify-end'} mb-3`}>
+        {trend && (
+          <div className={`text-xs px-2 py-1 rounded-full ${trendUp ? 'bg-green-500/30' : 'bg-red-500/30'}`}>
+            {trend}
+          </div>
+        )}
         <div className="opacity-80">
           <Icon name={icon as any} className="w-8 h-8" />
         </div>
@@ -354,7 +590,7 @@ function StatsCard({
   );
 }
 
-// Property Card Component
+// Property Card Component - Using shared component
 function PropertyCard({ 
   property, 
   onEdit, 
@@ -369,108 +605,50 @@ function PropertyCard({
   onRent?: (property: Property) => void;
 }) {
   return (
-    <div className="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-xl transition-shadow duration-300">
-      {/* Image */}
-      <div className="relative h-48 bg-gradient-to-br from-gray-200 to-gray-300">
-        <svg className="absolute inset-0 m-auto w-24 h-24 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
-        </svg>
-        <div className="absolute top-3 right-3 flex gap-2">
-          <span className={`px-3 py-1 rounded-full text-xs font-semibold ${
-            property.status === 'Activa' 
-              ? 'bg-green-500 text-white' 
-              : 'bg-yellow-500 text-white'
-          }`}>
-            {property.status}
-          </span>
-          <span className="px-3 py-1 bg-[#0f172a] text-white rounded-full text-xs font-semibold">
-            {property.type}
-          </span>
-        </div>
-      </div>
-
-      {/* Content */}
-      <div className="p-5">
-        <h3 className="text-lg font-bold text-[#0f172a] mb-2 line-clamp-1">{property.title}</h3>
-        <p className="text-2xl font-bold text-[#0f172a] mb-3">
-          ${property.price.toLocaleString()}
-          {property.type === 'Alquiler' && <span className="text-sm text-gray-500">/mes</span>}
-        </p>
-        
-        <div className="flex items-center text-gray-600 mb-3">
-          <svg className="w-5 h-5 mr-2 text-[#14b8a6]" fill="currentColor" viewBox="0 0 20 20">
-            <path fillRule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clipRule="evenodd" />
-          </svg>
-          <span className="text-sm font-medium">{property.location}</span>
-        </div>
-
-        <div className="flex gap-4 text-sm text-gray-600 mb-4">
-          <div className="flex items-center">
-            <svg className="w-4 h-4 mr-1 text-[#0f172a]" fill="currentColor" viewBox="0 0 640 512">
-              <path d="M32 32c17.7 0 32 14.3 32 32V320H288V160c0-17.7 14.3-32 32-32H544c53 0 96 43 96 96V448c0 17.7-14.3 32-32 32s-32-14.3-32-32V416H352 320 64v32c0 17.7-14.3 32-32 32s-32-14.3-32-32V64C0 46.3 14.3 32 32 32zm144 96a80 80 0 1 1 0 160 80 80 0 1 1 0-160z"/>
-            </svg>
-            {property.bedrooms} hab
-          </div>
-          <div className="flex items-center">
-            <svg className="w-4 h-4 mr-1 text-[#0f172a]" fill="currentColor" viewBox="0 0 512 512">
-              <path d="M64 131.9C64 112.1 80.1 96 99.9 96c9.5 0 18.6 3.8 25.4 10.5l16.2 16.2c-21 38.9-17.4 87.5 10.9 123L151 247c-9.4 9.4-9.4 24.6 0 33.9s24.6 9.4 33.9 0L345 121c9.4-9.4 9.4-24.6 0-33.9s-24.6-9.4-33.9 0l-1.3 1.3c-35.5-28.3-84.2-31.9-123-10.9L170.5 61.3C151.8 42.5 126.4 32 99.9 32C44.7 32 0 76.7 0 131.9V448c0 17.7 14.3 32 32 32s32-14.3 32-32V131.9zM256 352a32 32 0 1 0 0-64 32 32 0 1 0 0 64zm64 64a32 32 0 1 0 -64 0 32 32 0 1 0 64 0zm0-128a32 32 0 1 0 0-64 32 32 0 1 0 0 64zm64 64a32 32 0 1 0 -64 0 32 32 0 1 0 64 0zm0-128a32 32 0 1 0 0-64 32 32 0 1 0 0 64zm64 64a32 32 0 1 0 -64 0 32 32 0 1 0 64 0zm32-32a32 32 0 1 0 0-64 32 32 0 1 0 0 64z"/>
-            </svg>
-            {property.bathrooms} baños
-          </div>
-          <div className="flex items-center">
-            <svg className="w-4 h-4 mr-1 text-[#0f172a]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4" />
-            </svg>
-            {property.area}m²
-          </div>
-        </div>
-
-        {/* Actions */}
-        <div className="flex gap-2 pt-4 border-t border-gray-200">
-          <button
-            onClick={() => onEdit(property)}
-            className="flex-1 px-3 py-2 bg-[#0f172a] text-white rounded-lg hover:bg-[#334155] transition-colors text-sm font-medium flex items-center justify-center gap-1"
-          >
+    <DashboardPropertyCard
+      property={property}
+      showStatusBadge={true}
+      showTypeBadge={true}
+      showPropertyDetails={true}
+      actions={[
+        {
+          label: 'Editar',
+          onClick: () => onEdit(property),
+          variant: 'primary',
+          icon: (
             <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
             </svg>
-            Editar
-          </button>
-          
-          {/* Botón Alquilar - solo para propiedades de alquiler activas */}
-          {property.type === 'Alquiler' && property.status === 'Activa' && onRent && (
-            <button
-              onClick={() => onRent(property)}
-              className="flex-1 px-3 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors text-sm font-medium flex items-center justify-center gap-1"
-            >
-              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-              </svg>
-              Alquilar
-            </button>
-          )}
-          
-          <button
-            onClick={() => onToggleStatus(property.id)}
-            className={`flex-1 px-3 py-2 rounded-lg transition-colors text-sm font-medium flex items-center justify-center gap-1 ${
-              property.status === 'Activa'
-                ? 'bg-[#14b8a6] text-white hover:bg-[#0d9488]'
-                : 'bg-[#475569] text-white hover:bg-[#334155]'
-            }`}
-          >
-            {property.status === 'Activa' ? 'Pausar' : 'Activar'}
-          </button>
-          <button
-            onClick={() => onDelete(property.id)}
-            className="px-3 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors text-sm font-medium"
-          >
+          )
+        },
+        {
+          label: 'Alquilar',
+          onClick: () => onRent && onRent(property),
+          variant: 'info',
+          icon: (
+            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+            </svg>
+          ),
+          show: property.type === 'Alquiler' && property.status === 'Activa' && !!onRent
+        },
+        {
+          label: property.status === 'Activa' ? 'Pausar' : 'Activar',
+          onClick: () => onToggleStatus(property.id),
+          variant: property.status === 'Activa' ? 'secondary' : 'warning'
+        },
+        {
+          label: '',
+          onClick: () => onDelete(property.id),
+          variant: 'danger',
+          icon: (
             <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
             </svg>
-          </button>
-        </div>
-      </div>
-    </div>
+          )
+        }
+      ]}
+    />
   );
 }
 
@@ -495,6 +673,9 @@ function PropertyModal({
     image: property?.image || '/placeholder-house.jpg',
     status: property?.status || 'Activa',
     description: property?.description || '',
+    propertyType: property?.propertyType || 'casa',
+    yearBuilt: property?.yearBuilt || null,
+    features: property?.features || [],
     landlordName: property?.landlordName || '',
     landlordPhone: property?.landlordPhone || '',
     landlordEmail: property?.landlordEmail || ''
@@ -503,6 +684,7 @@ function PropertyModal({
   const [landlords, setLandlords] = useState<any[]>([]);
   const [landlordSearch, setLandlordSearch] = useState('');
   const [showLandlordDropdown, setShowLandlordDropdown] = useState(false);
+  const [featureInput, setFeatureInput] = useState('');
 
   useEffect(() => {
     // Cargar propietarios del localStorage (creados por el admin)
@@ -747,6 +929,102 @@ function PropertyModal({
                 onChange={(e) => setFormData({ ...formData, area: Number(e.target.value) })}
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#14b8a6] focus:border-transparent"
               />
+            </div>
+          </div>
+
+          {/* Tipo de Propiedad y Año */}
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Tipo de Propiedad *</label>
+              <select
+                required
+                value={formData.propertyType}
+                onChange={(e) => setFormData({ ...formData, propertyType: e.target.value })}
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#14b8a6] focus:border-transparent"
+              >
+                <option value="casa">Casa</option>
+                <option value="departamento">Departamento</option>
+                <option value="terreno">Terreno</option>
+                <option value="duplex">Duplex</option>
+                <option value="monoambiente">Monoambiente</option>
+              </select>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Año de Construcción</label>
+              <input
+                type="number"
+                min="1900"
+                max={new Date().getFullYear()}
+                value={formData.yearBuilt || ''}
+                onChange={(e) => setFormData({ ...formData, yearBuilt: e.target.value ? Number(e.target.value) : null })}
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#14b8a6] focus:border-transparent"
+                placeholder="Ej: 2020"
+              />
+            </div>
+          </div>
+
+          {/* Características */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">Características</label>
+            <div className="space-y-2">
+              {/* Input para agregar características */}
+              <div className="flex gap-2">
+                <input
+                  type="text"
+                  value={featureInput}
+                  onChange={(e) => setFeatureInput(e.target.value)}
+                  onKeyPress={(e) => {
+                    if (e.key === 'Enter') {
+                      e.preventDefault();
+                      if (featureInput.trim()) {
+                        setFormData({ ...formData, features: [...(formData.features || []), featureInput.trim()] });
+                        setFeatureInput('');
+                      }
+                    }
+                  }}
+                  className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#14b8a6] focus:border-transparent"
+                  placeholder="Ej: Cochera, Patio, Piscina..."
+                />
+                <button
+                  type="button"
+                  onClick={() => {
+                    if (featureInput.trim()) {
+                      setFormData({ ...formData, features: [...(formData.features || []), featureInput.trim()] });
+                      setFeatureInput('');
+                    }
+                  }}
+                  className="px-4 py-2 bg-[#14b8a6] text-white rounded-lg hover:bg-[#0d9488] transition-colors"
+                >
+                  Agregar
+                </button>
+              </div>
+
+              {/* Lista de características */}
+              {formData.features && formData.features.length > 0 && (
+                <div className="flex flex-wrap gap-2 mt-3">
+                  {formData.features.map((feature, index) => (
+                    <div
+                      key={index}
+                      className="flex items-center gap-2 bg-gray-100 px-3 py-1 rounded-full"
+                    >
+                      <span className="text-sm text-gray-700">{feature}</span>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          const newFeatures = formData.features?.filter((_, i) => i !== index);
+                          setFormData({ ...formData, features: newFeatures });
+                        }}
+                        className="text-red-500 hover:text-red-700"
+                      >
+                        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
           </div>
 
