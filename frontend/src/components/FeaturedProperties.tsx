@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import PropertyCard from './PropertyCard';
+import UniversalPropertyCard from './UniversalPropertyCard';
 import { featuredProperties } from '@/data/properties';
 
 export default function FeaturedProperties() {
@@ -84,7 +84,22 @@ export default function FeaturedProperties() {
             >
               {featuredProperties.map((property) => (
                 <div key={property.id} className="flex-shrink-0 w-full lg:w-[calc(33.333%-1rem)]">
-                  <PropertyCard {...property} />
+                  <UniversalPropertyCard
+                    property={{
+                      id: property.id,
+                      title: property.title,
+                      price: property.price,
+                      location: property.location,
+                      bedrooms: property.bedrooms,
+                      bathrooms: property.bathrooms,
+                      area: property.area,
+                      type: property.type === 'venta' ? 'Venta' : 'Alquiler',
+                      image: property.image
+                    }}
+                    href={`/propiedades/${property.id}`}
+                    showTypeBadge={true}
+                    showPropertyDetails={true}
+                  />
                 </div>
               ))}
             </div>

@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { useSearchParams } from 'next/navigation';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
-import PropertyCard from '@/components/PropertyCard';
+import UniversalPropertyCard from '@/components/UniversalPropertyCard';
 import { allProperties } from '@/data/properties';
 
 export default function PropiedadesPage() {
@@ -270,7 +270,23 @@ export default function PropiedadesPage() {
                 <>
                   <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 mb-8">
                     {currentProperties.map((property) => (
-                      <PropertyCard key={property.id} {...property} />
+                      <UniversalPropertyCard
+                        key={property.id}
+                        property={{
+                          id: property.id,
+                          title: property.title,
+                          price: property.price,
+                          location: property.location,
+                          bedrooms: property.bedrooms,
+                          bathrooms: property.bathrooms,
+                          area: property.area,
+                          type: property.type === 'venta' ? 'Venta' : 'Alquiler',
+                          image: property.image
+                        }}
+                        href={`/propiedades/${property.id}`}
+                        showTypeBadge={true}
+                        showPropertyDetails={true}
+                      />
                     ))}
                   </div>
 

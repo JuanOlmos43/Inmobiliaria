@@ -3,8 +3,8 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Icon from '@/components/Icon';
-import RentalCard from '@/components/RentalCard';
-import DashboardPropertyCard from '@/components/DashboardPropertyCard';
+
+import UniversalPropertyCard from '@/components/UniversalPropertyCard';
 
 // Tipos
 interface Rental {
@@ -12,6 +12,9 @@ interface Rental {
   propertyName: string;
   address: string;
   monthlyRent: number;
+  bedrooms?: number;
+  bathrooms?: number;
+  area?: number;
   startDate: string;
   endDate: string;
   nextAdjustmentDate: string;
@@ -34,7 +37,7 @@ interface Property {
   bedrooms: number;
   bathrooms: number;
   area: number;
-  image: string;
+  image?: string;
   status: 'Activa' | 'Pausada';
   description: string;
 }
@@ -69,6 +72,9 @@ export default function LandlordDashboardPage() {
         propertyName: 'Oficina Comercial Centro',
         address: 'Av. Comercio 890, Piso 3',
         monthlyRent: 150000,
+        bedrooms: 0,
+        bathrooms: 2,
+        area: 120,
         startDate: '2024-03-01',
         endDate: '2026-03-01',
         nextAdjustmentDate: '2025-03-01',
@@ -97,7 +103,7 @@ export default function LandlordDashboardPage() {
         bedrooms: 4,
         bathrooms: 3,
         area: 220,
-        image: '/placeholder-house.jpg',
+
         status: 'Activa',
         description: 'Hermosa casa familiar con jardín amplio'
       },
@@ -110,7 +116,6 @@ export default function LandlordDashboardPage() {
         bedrooms: 1,
         bathrooms: 1,
         area: 55,
-        image: '/placeholder-apartment.jpg',
         status: 'Activa',
         description: 'Departamento moderno ideal para pareja'
       },
@@ -123,7 +128,6 @@ export default function LandlordDashboardPage() {
         bedrooms: 0,
         bathrooms: 2,
         area: 120,
-        image: '/placeholder-commercial.jpg',
         status: 'Activa',
         description: 'Local comercial en ubicación estratégica'
       }
@@ -264,7 +268,7 @@ export default function LandlordDashboardPage() {
   );
 }
 
-// Rental Card Component - Using shared component with integrated modal
+// Rental Card Component - Using UniversalPropertyCard with integrated modal
 function RentalCardWrapper({ 
   rental, 
   daysUntilExpiration,
@@ -275,12 +279,33 @@ function RentalCardWrapper({
   daysUntilAdjustment: number;
 }) {
   return (
-    <RentalCard
-      rental={rental}
+    <UniversalPropertyCard
+      property={{
+        id: rental.id,
+        title: rental.propertyName,
+        price: rental.monthlyRent,
+        location: rental.address,
+        type: 'Alquiler',
+        bedrooms: rental.bedrooms,
+        bathrooms: rental.bathrooms,
+        area: rental.area,
+        startDate: rental.startDate,
+        endDate: rental.endDate,
+        nextAdjustmentDate: rental.nextAdjustmentDate,
+        landlordName: rental.landlordName,
+        landlordPhone: rental.landlordPhone,
+        landlordEmail: rental.landlordEmail,
+        agentName: rental.agentName,
+        agentPhone: rental.agentPhone,
+        agentEmail: rental.agentEmail
+      }}
       viewerRole="landlord"
-      showExpirationWarning={true}
-      daysUntilExpiration={daysUntilExpiration}
-      daysUntilAdjustment={daysUntilAdjustment}
+      showPropertyDetails={true}
+      warningBadge={{
+        daysUntilExpiration,
+        daysUntilAdjustment,
+        showWarning: true
+      }}
     />
   );
 }
@@ -288,7 +313,7 @@ function RentalCardWrapper({
 // Property Card Component - Using shared component
 function PropertyCardWrapper({ property }: { property: Property }) {
   return (
-    <DashboardPropertyCard
+    <UniversalPropertyCard
       property={property}
       showStatusBadge={true}
       showTypeBadge={true}

@@ -3,8 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Icon from '@/components/Icon';
-import DashboardPropertyCard from '@/components/DashboardPropertyCard';
-import RentalCard from '@/components/RentalCard';
+import UniversalPropertyCard from '@/components/UniversalPropertyCard';
 
 // Tipos
 interface Property {
@@ -16,7 +15,7 @@ interface Property {
   bedrooms: number;
   bathrooms: number;
   area: number;
-  image: string;
+  image?: string;
   status: 'Activa' | 'Pausada';
   description: string;
   propertyType: string; // casa, departamento, terreno, duplex, monoambiente
@@ -64,7 +63,7 @@ export default function DashboardPage() {
         bedrooms: 3,
         bathrooms: 2,
         area: 180,
-        image: '/placeholder-house.jpg',
+
         status: 'Activa',
         description: 'Hermosa casa moderna con acabados de lujo',
         propertyType: 'casa',
@@ -83,7 +82,6 @@ export default function DashboardPage() {
         bedrooms: 2,
         bathrooms: 1,
         area: 85,
-        image: '/placeholder-apartment.jpg',
         status: 'Activa',
         description: 'Departamento amoblado en zona céntrica',
         propertyType: 'departamento',
@@ -401,6 +399,9 @@ function UpcomingExpirations() {
           propertyName: 'Departamento Céntrico',
           address: 'Av. Principal 1234, Piso 5, Depto A',
           monthlyRent: 85000,
+          bedrooms: 2,
+          bathrooms: 1,
+          area: 65,
           startDate: '2024-01-15',
           endDate: new Date(today.getTime() + 25 * 24 * 60 * 60 * 1000).toISOString().split('T')[0], // Vence en 25 días
           nextAdjustmentDate: new Date(today.getTime() + 60 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
@@ -421,6 +422,9 @@ function UpcomingExpirations() {
           propertyName: 'Casa en Barrio Residencial',
           address: 'Calle Los Aromos 567',
           monthlyRent: 120000,
+          bedrooms: 3,
+          bathrooms: 2,
+          area: 180,
           startDate: '2023-06-01',
           endDate: new Date(today.getTime() + 45 * 24 * 60 * 60 * 1000).toISOString().split('T')[0], // Vence en 45 días
           nextAdjustmentDate: new Date(today.getTime() + 15 * 24 * 60 * 60 * 1000).toISOString().split('T')[0], // Ajuste en 15 días
@@ -441,6 +445,9 @@ function UpcomingExpirations() {
           propertyName: 'Oficina Comercial Centro',
           address: 'Av. Comercio 890, Piso 3',
           monthlyRent: 150000,
+          bedrooms: 0,
+          bathrooms: 2,
+          area: 120,
           startDate: '2024-03-01',
           endDate: new Date(today.getTime() + 90 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
           nextAdjustmentDate: new Date(today.getTime() + 20 * 24 * 60 * 60 * 1000).toISOString().split('T')[0], // Ajuste en 20 días
@@ -518,13 +525,37 @@ function UpcomingExpirations() {
           </h3>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {expiringContracts.map((contract) => (
-              <RentalCard
+              <UniversalPropertyCard
                 key={contract.id}
-                rental={contract}
+                property={{
+                  id: contract.id,
+                  title: contract.propertyName,
+                  price: contract.monthlyRent,
+                  location: contract.address,
+                  type: 'Alquiler',
+                  bedrooms: contract.bedrooms,
+                  bathrooms: contract.bathrooms,
+                  area: contract.area,
+                  startDate: contract.startDate,
+                  endDate: contract.endDate,
+                  nextAdjustmentDate: contract.nextAdjustmentDate,
+                  landlordName: contract.landlordName,
+                  landlordPhone: contract.landlordPhone,
+                  landlordEmail: contract.landlordEmail,
+                  tenantName: contract.tenantName,
+                  tenantPhone: contract.tenantPhone,
+                  tenantEmail: contract.tenantEmail,
+                  agentName: contract.agentName,
+                  agentPhone: contract.agentPhone,
+                  agentEmail: contract.agentEmail
+                }}
                 viewerRole="agent"
-                showExpirationWarning={true}
-                daysUntilExpiration={getDaysUntil(contract.endDate)}
-                daysUntilAdjustment={getDaysUntil(contract.nextAdjustmentDate)}
+                showPropertyDetails={true}
+                warningBadge={{
+                  daysUntilExpiration: getDaysUntil(contract.endDate),
+                  daysUntilAdjustment: getDaysUntil(contract.nextAdjustmentDate),
+                  showWarning: true
+                }}
               />
             ))}
           </div>
@@ -540,13 +571,37 @@ function UpcomingExpirations() {
           </h3>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {adjustmentContracts.map((contract) => (
-              <RentalCard
+              <UniversalPropertyCard
                 key={contract.id}
-                rental={contract}
+                property={{
+                  id: contract.id,
+                  title: contract.propertyName,
+                  price: contract.monthlyRent,
+                  location: contract.address,
+                  type: 'Alquiler',
+                  bedrooms: contract.bedrooms,
+                  bathrooms: contract.bathrooms,
+                  area: contract.area,
+                  startDate: contract.startDate,
+                  endDate: contract.endDate,
+                  nextAdjustmentDate: contract.nextAdjustmentDate,
+                  landlordName: contract.landlordName,
+                  landlordPhone: contract.landlordPhone,
+                  landlordEmail: contract.landlordEmail,
+                  tenantName: contract.tenantName,
+                  tenantPhone: contract.tenantPhone,
+                  tenantEmail: contract.tenantEmail,
+                  agentName: contract.agentName,
+                  agentPhone: contract.agentPhone,
+                  agentEmail: contract.agentEmail
+                }}
                 viewerRole="agent"
-                showExpirationWarning={true}
-                daysUntilExpiration={getDaysUntil(contract.endDate)}
-                daysUntilAdjustment={getDaysUntil(contract.nextAdjustmentDate)}
+                showPropertyDetails={true}
+                warningBadge={{
+                  daysUntilExpiration: getDaysUntil(contract.endDate),
+                  daysUntilAdjustment: getDaysUntil(contract.nextAdjustmentDate),
+                  showWarning: true
+                }}
               />
             ))}
           </div>
@@ -605,7 +660,7 @@ function PropertyCard({
   onRent?: (property: Property) => void;
 }) {
   return (
-    <DashboardPropertyCard
+    <UniversalPropertyCard
       property={property}
       showStatusBadge={true}
       showTypeBadge={true}
@@ -670,7 +725,7 @@ function PropertyModal({
     bedrooms: property?.bedrooms || 1,
     bathrooms: property?.bathrooms || 1,
     area: property?.area || 0,
-    image: property?.image || '/placeholder-house.jpg',
+    image: property?.image || undefined,
     status: property?.status || 'Activa',
     description: property?.description || '',
     propertyType: property?.propertyType || 'casa',

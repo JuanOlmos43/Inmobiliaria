@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Icon from '@/components/Icon';
-import RentalCard from '@/components/RentalCard';
+import UniversalPropertyCard from '@/components/UniversalPropertyCard';
 
 // Tipos
 interface Rental {
@@ -11,6 +11,9 @@ interface Rental {
   propertyName: string;
   address: string;
   monthlyRent: number;
+  bedrooms?: number;
+  bathrooms?: number;
+  area?: number;
   startDate: string;
   endDate: string;
   nextAdjustmentDate: string;
@@ -51,6 +54,9 @@ export default function TenantDashboardPage() {
         propertyName: 'Departamento Céntrico',
         address: 'Av. Principal 1234, Piso 5, Depto A',
         monthlyRent: 85000,
+        bedrooms: 2,
+        bathrooms: 1,
+        area: 65,
         startDate: '2024-01-15',
         endDate: '2026-01-15',
         nextAdjustmentDate: '2026-01-15',
@@ -68,6 +74,9 @@ export default function TenantDashboardPage() {
         propertyName: 'Casa en Barrio Residencial',
         address: 'Calle Los Aromos 567',
         monthlyRent: 120000,
+        bedrooms: 3,
+        bathrooms: 2,
+        area: 180,
         startDate: '2023-06-01',
         endDate: '2025-12-31',
         nextAdjustmentDate: '2025-06-01',
@@ -220,7 +229,7 @@ function StatsCard({
   );
 }
 
-// Rental Card Component - Using shared component with integrated modal
+// Rental Card Component - Using UniversalPropertyCard with integrated modal
 function RentalCardWrapper({ 
   rental, 
   daysUntilExpiration,
@@ -231,12 +240,33 @@ function RentalCardWrapper({
   daysUntilAdjustment: number;
 }) {
   return (
-    <RentalCard
-      rental={rental}
+    <UniversalPropertyCard
+      property={{
+        id: rental.id,
+        title: rental.propertyName,
+        price: rental.monthlyRent,
+        location: rental.address,
+        type: 'Alquiler',
+        bedrooms: rental.bedrooms,
+        bathrooms: rental.bathrooms,
+        area: rental.area,
+        startDate: rental.startDate,
+        endDate: rental.endDate,
+        nextAdjustmentDate: rental.nextAdjustmentDate,
+        landlordName: rental.landlordName,
+        landlordPhone: rental.landlordPhone,
+        landlordEmail: rental.landlordEmail,
+        agentName: rental.agentName,
+        agentPhone: rental.agentPhone,
+        agentEmail: rental.agentEmail
+      }}
       viewerRole="tenant"
-      showExpirationWarning={true}
-      daysUntilExpiration={daysUntilExpiration}
-      daysUntilAdjustment={daysUntilAdjustment}
+      showPropertyDetails={true}
+      warningBadge={{
+        daysUntilExpiration,
+        daysUntilAdjustment,
+        showWarning: true
+      }}
     />
   );
 }
