@@ -78,6 +78,14 @@ export default function PropertyDetailPage() {
                       <span>{property.bedrooms} Dormitorios</span>
                     </div>
                   )}
+                  {property.rooms > 0 && (
+                    <div className="flex items-center">
+                      <svg className="w-6 h-6 mr-2" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M3 3h8v8H3V3zm10 0h8v8h-8V3zM3 13h8v8H3v-8zm10 0h8v8h-8v-8z"/>
+                      </svg>
+                      <span>{property.rooms} Ambientes</span>
+                    </div>
+                  )}
                   {property.bathrooms > 0 && (
                     <div className="flex items-center">
                       <svg className="w-6 h-6 mr-2" fill="currentColor" viewBox="0 0 512 512">

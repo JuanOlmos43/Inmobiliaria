@@ -53,7 +53,7 @@ export default function DashboardOwnerPage() {
             <div className="flex items-center gap-3">
               <Icon name="star" className="w-8 h-8 text-[#14b8a6]" />
               <div>
-                <h1 className="text-2xl font-bold text-[#14b8a6]">Dueño</h1>
+                <h1 className="text-2xl font-bold text-[#14b8a6]">Gerencia</h1>
                 <p className="text-sm text-gray-300">Bienvenido, {userEmail}</p>
               </div>
             </div>

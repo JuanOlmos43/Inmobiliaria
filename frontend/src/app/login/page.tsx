@@ -64,14 +64,14 @@ export default function LoginPage() {
       return;
     } 
     
-    // Validar credenciales para Dueño
+    // Validar credenciales para Gerencia
     if (email === 'Duenio01@email.com' && password === 'Duenio01') {
       localStorage.setItem('isAuthenticated', 'true');
       localStorage.setItem('userEmail', email);
       localStorage.setItem('userRole', 'owner');
       
       setTimeout(() => {
-        router.push('/duenio');
+        router.push('/gerencia');
       }, 500);
       return;
     }
@@ -106,7 +106,7 @@ export default function LoginPage() {
               break;
             case 'owner':
               userRole = 'owner';
-              redirectPath = '/duenio';
+              redirectPath = '/gerencia';
               break;
           }
           

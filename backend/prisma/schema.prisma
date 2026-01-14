@@ -120,6 +120,7 @@ model Property {
 
   // Características físicas
   bedrooms  Int   @default(0)
+  rooms     Int   @default(0) // Ambientes
   bathrooms Int   @default(0)
   area      Float // Área en m²
   yearBuilt Int?

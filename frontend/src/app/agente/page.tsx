@@ -11,8 +11,10 @@ interface Property {
   title: string;
   type: 'Venta' | 'Alquiler';
   price: number;
+  currency: 'USD' | 'ARS'; // Moneda del precio
   location: string;
   bedrooms: number;
+  rooms: number; // Ambientes
   bathrooms: number;
   area: number;
   image?: string;
@@ -59,8 +61,10 @@ export default function DashboardPage() {
         title: 'Casa Moderna en Zona Norte',
         type: 'Venta',
         price: 250000,
+        currency: 'USD',
         location: 'Zona Norte, Ciudad',
         bedrooms: 3,
+        rooms: 5,
         bathrooms: 2,
         area: 180,
 
@@ -77,9 +81,11 @@ export default function DashboardPage() {
         id: '2',
         title: 'Departamento Céntrico',
         type: 'Alquiler',
-        price: 800,
+        price: 800000,
+        currency: 'ARS',
         location: 'Centro, Ciudad',
         bedrooms: 2,
+        rooms: 3,
         bathrooms: 1,
         area: 85,
         status: 'Activa',
@@ -131,20 +137,21 @@ export default function DashboardPage() {
   };
 
   const handleSaveProperty = (property: Omit<Property, 'id'>) => {
+    // Asignar moneda automáticamente según el tipo
+    const propertyWithCurrency: Property = {
+      ...property,
+      id: editingProperty?.id || Date.now().toString(),
+      currency: property.type === 'Alquiler' ? 'ARS' : 'USD'
+    };
+
     if (editingProperty) {
       // Editar propiedad existente
       setProperties(properties.map(p => 
-        p.id === editingProperty.id 
-          ? { ...property, id: editingProperty.id } 
-          : p
+        p.id === editingProperty.id ? propertyWithCurrency : p
       ));
     } else {
       // Agregar nueva propiedad
-      const newProperty: Property = {
-        ...property,
-        id: Date.now().toString()
-      };
-      setProperties([...properties, newProperty]);
+      setProperties([...properties, propertyWithCurrency]);
     }
     setIsModalOpen(false);
   };
@@ -721,8 +728,10 @@ function PropertyModal({
     title: property?.title || '',
     type: property?.type || 'Venta',
     price: property?.price || 0,
+    currency: property?.currency || 'USD',
     location: property?.location || '',
     bedrooms: property?.bedrooms || 1,
+    rooms: property?.rooms || 1,
     bathrooms: property?.bathrooms || 1,
     area: property?.area || 0,
     image: property?.image || undefined,
@@ -853,7 +862,7 @@ function PropertyModal({
 
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
-              Precio {formData.type === 'Alquiler' && '(mensual)'}
+              Precio {formData.type === 'Alquiler' && '(mensual)'} - {formData.type === 'Alquiler' ? 'ARS' : 'USD'}
             </label>
             <input
               type="number"
@@ -949,15 +958,27 @@ function PropertyModal({
             )}
           </div>
 
-          <div className="grid grid-cols-3 gap-4">
+          <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Habitaciones</label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Dormitorios</label>
               <input
                 type="number"
                 required
-                min="1"
+                min="0"
                 value={formData.bedrooms}
                 onChange={(e) => setFormData({ ...formData, bedrooms: Number(e.target.value) })}
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#14b8a6] focus:border-transparent"
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Ambientes</label>
+              <input
+                type="number"
+                required
+                min="0"
+                value={formData.rooms}
+                onChange={(e) => setFormData({ ...formData, rooms: Number(e.target.value) })}
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#14b8a6] focus:border-transparent"
               />
             </div>

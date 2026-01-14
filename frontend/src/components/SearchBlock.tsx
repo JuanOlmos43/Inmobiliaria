@@ -166,7 +166,7 @@ export default function SearchBlock() {
               {/* Precio */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Precio
+                  Precio {activeTab === 'alquilar' ? '(ARS)' : '(USD)'}
                 </label>
                 <div className="flex gap-2">
                   <input

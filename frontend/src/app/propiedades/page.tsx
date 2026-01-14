@@ -220,7 +220,7 @@ export default function PropiedadesPage() {
                 {/* Precio */}
                 <div className="mb-6">
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Precio
+                    Precio {appliedOperationType === 'alquiler' ? '(ARS)' : appliedOperationType === 'venta' ? '(USD)' : ''}
                   </label>
                   <div className="space-y-2">
                     <input
@@ -276,6 +276,7 @@ export default function PropiedadesPage() {
                           id: property.id,
                           title: property.title,
                           price: property.price,
+                          currency: property.currency,
                           location: property.location,
                           bedrooms: property.bedrooms,
                           bathrooms: property.bathrooms,

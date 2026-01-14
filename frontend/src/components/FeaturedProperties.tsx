@@ -89,6 +89,7 @@ export default function FeaturedProperties() {
                       id: property.id,
                       title: property.title,
                       price: property.price,
+                      currency: property.currency,
                       location: property.location,
                       bedrooms: property.bedrooms,
                       bathrooms: property.bathrooms,

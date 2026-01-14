@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import Image from 'next/image';
 
 export default function Navbar() {
   return (
@@ -7,7 +8,14 @@ export default function Navbar() {
         <div className="flex justify-between items-center h-20">
           {/* Logo */}
           <div className="flex-shrink-0">
-            <Link href="/" className="text-3xl font-bold bg-gradient-to-r from-[#14b8a6] to-[#2dd4bf] bg-clip-text text-transparent hover:from-[#2dd4bf] hover:to-[#14b8a6] transition-all duration-300 transform hover:scale-105">
+            <Link href="/" className="flex items-center gap-3 text-3xl font-bold bg-gradient-to-r from-[#14b8a6] to-[#2dd4bf] bg-clip-text text-transparent hover:from-[#2dd4bf] hover:to-[#14b8a6] transition-all duration-300 transform hover:scale-105">
+              <Image 
+                src="/icon.png" 
+                alt="InmoHogar Logo" 
+                width={60} 
+                height={60}
+                className="transition-transform duration-300"
+              />
               InmoHogar
             </Link>
           </div>

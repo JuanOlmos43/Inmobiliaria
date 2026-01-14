@@ -20,7 +20,7 @@ const roleLabels = {
   tenant: 'Inquilino',
   landlord: 'Propietario',
   agent: 'Agente Inmobiliario',
-  owner: 'Dueño Inmobiliaria'
+  owner: 'Gerencia'
 };
 
 const roleColors = {
@@ -240,7 +240,7 @@ export default function AdminDashboardPage() {
               icon="briefcase"
             />
             <StatsCard
-              title="Dueños"
+              title="Gerencia"
               value={stats.owners}
               color="from-amber-500 to-amber-600"
               icon="star"
@@ -286,7 +286,7 @@ export default function AdminDashboardPage() {
                 <option value="tenant">Inquilino</option>
                 <option value="landlord">Propietario</option>
                 <option value="agent">Agente Inmobiliario</option>
-                <option value="owner">Dueño Inmobiliaria</option>
+                <option value="owner">Gerencia</option>
               </select>
             </div>
           </div>
@@ -441,7 +441,7 @@ export default function AdminDashboardPage() {
                   <option value="tenant">Inquilino</option>
                   <option value="landlord">Propietario</option>
                   <option value="agent">Agente Inmobiliario</option>
-                  <option value="owner">Dueño Inmobiliaria</option>
+                  <option value="owner">Gerencia</option>
                 </select>
               </div>
 

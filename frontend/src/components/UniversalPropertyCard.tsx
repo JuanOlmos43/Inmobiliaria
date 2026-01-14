@@ -8,11 +8,13 @@ export interface UniversalPropertyData {
   id: string | number;
   title: string;
   price: number;
+  currency?: 'USD' | 'ARS'; // Moneda del precio (opcional, por defecto USD)
   location: string;
   
   // Opcionales
   image?: string;
   bedrooms?: number;
+  rooms?: number; // Ambientes
   bathrooms?: number;
   area?: number;
   type?: 'Venta' | 'Alquiler';
@@ -204,7 +206,7 @@ export default function UniversalPropertyCard({
 
           {/* Price */}
           <p className="text-2xl font-bold bg-gradient-to-r from-[#0f172a] to-[#334155] bg-clip-text text-transparent mb-4">
-            USD {property.price.toLocaleString('es-AR')}
+            {property.currency || 'USD'} {property.price.toLocaleString('es-AR')}
             {property.type === 'Alquiler' && (
               <span className="text-sm text-gray-500 font-normal ml-1">/mes</span>
             )}
@@ -318,7 +320,7 @@ export default function UniversalPropertyCard({
                 <div className="bg-gray-50 rounded-lg p-4 space-y-2">
                   <p className="text-gray-700"><span className="font-medium">Nombre:</span> {property.title}</p>
                   <p className="text-gray-700"><span className="font-medium">Dirección:</span> {property.location}</p>
-                  <p className="text-gray-700"><span className="font-medium">Renta Mensual:</span> ${property.price.toLocaleString()}</p>
+                  <p className="text-gray-700"><span className="font-medium">Renta Mensual:</span> {property.currency || 'USD'} {property.price.toLocaleString()}</p>
                 </div>
               </div>
 
@@ -415,15 +417,6 @@ export default function UniversalPropertyCard({
                   </div>
                 </div>
               )}
-            </div>
-
-            <div className="sticky bottom-0 bg-white border-t border-gray-200 px-6 py-4">
-              <button
-                onClick={() => setShowModal(false)}
-                className="w-full px-6 py-3 bg-gradient-to-r from-[#14b8a6] to-[#0d9488] text-white font-semibold rounded-lg hover:from-[#0d9488] hover:to-[#0f766e] transition-all duration-300 shadow-lg hover:shadow-xl"
-              >
-                Cerrar
-              </button>
             </div>
           </div>
         </div>
