@@ -3,8 +3,6 @@
 import { useParams } from 'next/navigation';
 import Image from 'next/image';
 import Link from 'next/link';
-import Navbar from '@/components/Navbar';
-import Footer from '@/components/Footer';
 import { allProperties } from '@/data/properties';
 
 export default function PropertyDetailPage() {
@@ -15,29 +13,22 @@ export default function PropertyDetailPage() {
 
   if (!property) {
     return (
-      <div className="flex flex-col min-h-screen">
-        <Navbar />
-        <main className="flex-grow bg-[#f8fafc] flex items-center justify-center">
-          <div className="text-center">
-            <h1 className="text-4xl font-bold text-[#0f172a] mb-4">Propiedad no encontrada</h1>
-            <Link 
-              href="/propiedades"
-              className="text-[#14b8a6] hover:text-[#0d9488] font-semibold"
-            >
-              Volver a propiedades
-            </Link>
-          </div>
-        </main>
-        <Footer />
-      </div>
+      <main className="flex-grow bg-[#f8fafc] flex items-center justify-center">
+        <div className="text-center">
+          <h1 className="text-4xl font-bold text-[#0f172a] mb-4">Propiedad no encontrada</h1>
+          <Link 
+            href="/propiedades"
+            className="text-[#14b8a6] hover:text-[#0d9488] font-semibold"
+          >
+            Volver a propiedades
+          </Link>
+        </div>
+      </main>
     );
   }
 
   return (
-    <div className="flex flex-col min-h-screen">
-      <Navbar />
-
-      <main className="flex-grow bg-[#f8fafc]">
+    <main className="flex-grow bg-[#f8fafc]">
         {/* Property Details */}
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -167,8 +158,5 @@ export default function PropertyDetailPage() {
           </div>
         </div>
       </main>
-
-      <Footer />
-    </div>
   );
 }

@@ -1,32 +1,16 @@
-import Navbar from '@/components/Navbar';
-import Footer from '@/components/Footer';
 import Icon from '@/components/Icon';
+import HeroSection from '@/components/HeroSection';
+import ValueCard from '@/components/ValueCard';
 
 export default function NosotrosPage() {
   return (
-    <div className="flex flex-col min-h-screen">
-      <Navbar />
-      <div className="flex-grow bg-gray-50">
+    <div className="flex-grow bg-gray-50">
       {/* Hero Section */}
-      <section className="relative bg-gradient-to-br from-[#0f172a] via-[#0f172a] to-[#334155] text-white py-24 overflow-hidden">
-        {/* Decorative elements */}
-        <div className="absolute inset-0 opacity-10">
-          <div className="absolute top-0 left-0 w-96 h-96 bg-white rounded-full blur-3xl"></div>
-          <div className="absolute bottom-0 right-0 w-96 h-96 bg-[#14b8a6] rounded-full blur-3xl"></div>
-        </div>
-        
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-          <div className="text-center">
-            <h1 className="text-5xl md:text-7xl font-bold mb-6 animate-fade-in">
-              Sobre <span className="bg-gradient-to-r from-[#14b8a6] to-[#2dd4bf] bg-clip-text text-transparent">Nosotros</span>
-            </h1>
-            <p className="text-xl md:text-2xl text-gray-100 max-w-3xl mx-auto">
-              Más de 15 años ayudando a las familias a encontrar su hogar ideal
-            </p>
-          </div>
-        </div>
-
-      </section>
+      <HeroSection 
+        title="Sobre Nosotros"
+        highlightedText="Nosotros"
+        subtitle="Más de 15 años ayudando a las familias a encontrar su hogar ideal"
+      />
 
       {/* Nuestra Historia */}
       <section className="py-16 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -71,34 +55,28 @@ export default function NosotrosPage() {
           </h2>
           <div className="grid md:grid-cols-3 gap-8">
             {/* Valor 1 */}
-            <div className="bg-gradient-to-br from-[#0f172a] to-[#334155] p-8 rounded-2xl shadow-xl text-white transform hover:scale-105 transition-all duration-300 hover:shadow-2xl">
-              <Icon name="check" className="w-12 h-12 mb-4" strokeWidth={2} />
-              <h3 className="text-2xl font-bold mb-4">Transparencia</h3>
-              <p className="text-gray-100 leading-relaxed">
-                Creemos en la honestidad total. Cada propiedad, cada precio, cada detalle 
-                es presentado con claridad absoluta.
-              </p>
-            </div>
+            <ValueCard 
+              icon={<Icon name="check" className="w-12 h-12" strokeWidth={2} />}
+              title="Transparencia"
+              description="Creemos en la honestidad total. Cada propiedad, cada precio, cada detalle es presentado con claridad absoluta."
+              color="dark"
+            />
 
             {/* Valor 2 */}
-            <div className="bg-gradient-to-br from-[#14b8a6] to-[#0d9488] p-8 rounded-2xl shadow-xl text-white transform hover:scale-105 transition-all duration-300 hover:shadow-2xl">
-              <Icon name="briefcase" className="w-12 h-12 mb-4" strokeWidth={2} />
-              <h3 className="text-2xl font-bold mb-4">Profesionalismo</h3>
-              <p className="text-gray-50 leading-relaxed">
-                Nuestro equipo está altamente capacitado y actualizado con las últimas 
-                tendencias del mercado inmobiliario.
-              </p>
-            </div>
+            <ValueCard 
+              icon={<Icon name="briefcase" className="w-12 h-12" strokeWidth={2} />}
+              title="Profesionalismo"
+              description="Nuestro equipo está altamente capacitado y actualizado con las últimas tendencias del mercado inmobiliario."
+              color="aqua"
+            />
 
             {/* Valor 3 */}
-            <div className="bg-gradient-to-br from-[#0f172a] to-[#334155] p-8 rounded-2xl shadow-xl text-white transform hover:scale-105 transition-all duration-300 hover:shadow-2xl">
-              <Icon name="heart" className="w-12 h-12 mb-4" strokeWidth={2} />
-              <h3 className="text-2xl font-bold mb-4">Compromiso</h3>
-              <p className="text-gray-100 leading-relaxed">
-                Tu satisfacción es nuestra prioridad. Trabajamos incansablemente hasta 
-                encontrar la propiedad perfecta para ti.
-              </p>
-            </div>
+            <ValueCard 
+              icon={<Icon name="heart" className="w-12 h-12" strokeWidth={2} />}
+              title="Compromiso"
+              description="Tu satisfacción es nuestra prioridad. Trabajamos incansablemente hasta encontrar la propiedad perfecta para ti."
+              color="dark"
+            />
           </div>
         </div>
       </section>
@@ -200,8 +178,6 @@ export default function NosotrosPage() {
           </a>
         </div>
       </section>
-      </div>
-      <Footer />
     </div>
   );
 }
