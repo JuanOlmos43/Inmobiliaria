@@ -8,7 +8,6 @@ export default function NosotrosPage() {
       {/* Hero Section */}
       <HeroSection 
         title="Sobre Nosotros"
-        highlightedText="Nosotros"
         subtitle="Más de 15 años ayudando a las familias a encontrar su hogar ideal"
       />
 

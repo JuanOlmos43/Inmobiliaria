@@ -29,8 +29,6 @@ export default function FeaturedProperties() {
     }
   }, [currentIndex, isPaused]);
 
-  const visibleProperties = featuredProperties.slice(currentIndex, currentIndex + itemsPerPage);
-
   return (
     <section className="pb-12 bg-gradient-to-b from-[#0f172a] via-[#0f172a] to-[#1e293b]">
       {/* Header */}

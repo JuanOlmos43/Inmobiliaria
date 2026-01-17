@@ -1,6 +1,8 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import FormSelect from './FormSelect';
+import FormInput from './FormInput';
 
 export interface PropertyFiltersState {
   operationType: 'todos' | 'venta' | 'alquiler';
@@ -71,74 +73,54 @@ export default function PropertyFilters({
         <h2 className="text-xl font-bold text-[#0f172a] mb-6">Filtros</h2>
 
         {/* Tipo de operación */}
-        <div className="mb-6">
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            Tipo de operación
-          </label>
-          <select
-            value={tempOperationType}
-            onChange={(e) => setTempOperationType(e.target.value as any)}
-            className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-[#14b8a6] focus:border-transparent bg-white text-gray-900"
-          >
-            <option value="todos">Todos</option>
-            <option value="venta">Venta</option>
-            <option value="alquiler">Alquiler</option>
-          </select>
-        </div>
+        <FormSelect
+          label="Tipo de operación"
+          value={tempOperationType}
+          onChange={(e) => setTempOperationType(e.target.value as any)}
+        >
+          <option value="todos">Todos</option>
+          <option value="venta">Venta</option>
+          <option value="alquiler">Alquiler</option>
+        </FormSelect>
 
         {/* Tipo de inmueble */}
-        <div className="mb-6">
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            Tipo de inmueble
-          </label>
-          <select
-            value={tempPropertyType}
-            onChange={(e) => setTempPropertyType(e.target.value)}
-            className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-[#14b8a6] focus:border-transparent bg-white text-gray-900"
-          >
-            <option value="">Todos</option>
-            <option value="casa">Casa</option>
-            <option value="departamento">Departamento</option>
-            <option value="duplex">Duplex</option>
-            <option value="terreno">Terreno</option>
-            <option value="monoambiente">Monoambiente</option>
-          </select>
-        </div>
+        <FormSelect
+          label="Tipo de inmueble"
+          value={tempPropertyType}
+          onChange={(e) => setTempPropertyType(e.target.value)}
+        >
+          <option value="">Todos</option>
+          <option value="casa">Casa</option>
+          <option value="departamento">Departamento</option>
+          <option value="duplex">Duplex</option>
+          <option value="terreno">Terreno</option>
+          <option value="monoambiente">Monoambiente</option>
+        </FormSelect>
 
         {/* Dormitorios */}
-        <div className="mb-6">
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            Dormitorios
-          </label>
-          <select
-            value={tempBedrooms}
-            onChange={(e) => setTempBedrooms(e.target.value)}
-            className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-[#14b8a6] focus:border-transparent bg-white text-gray-900"
-          >
-            <option value="">Todos</option>
-            <option value="1">1</option>
-            <option value="2">2</option>
-            <option value="3">3</option>
-            <option value="4">4+</option>
-          </select>
-        </div>
+        <FormSelect
+          label="Dormitorios"
+          value={tempBedrooms}
+          onChange={(e) => setTempBedrooms(e.target.value)}
+        >
+          <option value="">Todos</option>
+          <option value="1">1</option>
+          <option value="2">2</option>
+          <option value="3">3</option>
+          <option value="4">4+</option>
+        </FormSelect>
 
         {/* Baños */}
-        <div className="mb-6">
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            Baños
-          </label>
-          <select
-            value={tempBathrooms}
-            onChange={(e) => setTempBathrooms(e.target.value)}
-            className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-[#14b8a6] focus:border-transparent bg-white text-gray-900"
-          >
-            <option value="">Todos</option>
-            <option value="1">1</option>
-            <option value="2">2</option>
-            <option value="3">3</option>
-          </select>
-        </div>
+        <FormSelect
+          label="Baños"
+          value={tempBathrooms}
+          onChange={(e) => setTempBathrooms(e.target.value)}
+        >
+          <option value="">Todos</option>
+          <option value="1">1</option>
+          <option value="2">2</option>
+          <option value="3">3</option>
+        </FormSelect>
 
         {/* Precio */}
         <div className="mb-6">
@@ -146,19 +128,19 @@ export default function PropertyFilters({
             Precio {appliedOperationType === 'alquiler' ? '(ARS)' : appliedOperationType === 'venta' ? '(USD)' : ''}
           </label>
           <div className="space-y-2">
-            <input
+            <FormInput
+              label=""
               type="number"
-              placeholder="Precio mínimo"
+              placeholder="Mín"
               value={tempMinPrice}
               onChange={(e) => setTempMinPrice(e.target.value)}
-              className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-[#14b8a6] focus:border-transparent bg-white text-gray-900"
             />
-            <input
+            <FormInput
+              label=""
               type="number"
-              placeholder="Precio máximo"
+              placeholder="Máx"
               value={tempMaxPrice}
               onChange={(e) => setTempMaxPrice(e.target.value)}
-              className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-[#14b8a6] focus:border-transparent bg-white text-gray-900"
             />
           </div>
         </div>

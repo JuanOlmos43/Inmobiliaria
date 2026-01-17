@@ -5,6 +5,8 @@ import { useRouter } from 'next/navigation';
 import Icon from '@/components/Icon';
 import DashboardHeader from '@/components/DashboardHeader';
 import UniversalPropertyCard from '@/components/UniversalPropertyCard';
+import FormInput from '@/components/FormInput';
+import FormSelect from '@/components/FormSelect';
 
 // Tipos
 interface Property {
@@ -160,7 +162,7 @@ export default function DashboardPage() {
   // Filtrar propiedades
   const filteredProperties = properties.filter(property => {
     const matchesSearch = property.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         property.location.toLowerCase().includes(searchTerm.toLowerCase());
+                          property.location.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesStatus = filterStatus === 'all' || property.status === filterStatus;
     return matchesSearch && matchesStatus;
   });
@@ -809,70 +811,53 @@ function PropertyModal({
         </div>
 
         <form onSubmit={handleSubmit} className="p-6 space-y-4">
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Título</label>
-            <input
-              type="text"
-              required
-              value={formData.title}
-              onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#14b8a6] focus:border-transparent"
-              placeholder="Ej: Casa Moderna en Zona Norte"
-            />
-          </div>
+          <FormInput
+            label="Título"
+            type="text"
+            required
+            value={formData.title}
+            onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+            placeholder="Ej: Casa Moderna en Zona Norte"
+          />
 
           <div className="grid grid-cols-2 gap-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Tipo</label>
-              <select
-                value={formData.type}
-                onChange={(e) => setFormData({ ...formData, type: e.target.value as 'Venta' | 'Alquiler' })}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#14b8a6] focus:border-transparent"
-              >
-                <option value="Venta">Venta</option>
-                <option value="Alquiler">Alquiler</option>
-              </select>
-            </div>
+            <FormSelect
+              label="Tipo"
+              value={formData.type}
+              onChange={(e) => setFormData({ ...formData, type: e.target.value as 'Venta' | 'Alquiler' })}
+            >
+              <option value="Venta">Venta</option>
+              <option value="Alquiler">Alquiler</option>
+            </FormSelect>
 
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Estado</label>
-              <select
-                value={formData.status}
-                onChange={(e) => setFormData({ ...formData, status: e.target.value as 'Activa' | 'Pausada' })}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#14b8a6] focus:border-transparent"
-              >
-                <option value="Activa">Activa</option>
-                <option value="Pausada">Pausada</option>
-              </select>
-            </div>
+            <FormSelect
+              label="Estado"
+              value={formData.status}
+              onChange={(e) => setFormData({ ...formData, status: e.target.value as 'Activa' | 'Pausada' })}
+            >
+              <option value="Activa">Activa</option>
+              <option value="Pausada">Pausada</option>
+            </FormSelect>
           </div>
 
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Precio {formData.type === 'Alquiler' && '(mensual)'} - {formData.type === 'Alquiler' ? 'ARS' : 'USD'}
-            </label>
-            <input
-              type="number"
-              required
-              min="0"
-              value={formData.price}
-              onChange={(e) => setFormData({ ...formData, price: Number(e.target.value) })}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#14b8a6] focus:border-transparent"
-              placeholder="0"
-            />
-          </div>
+          <FormInput
+            label={`Precio ${formData.type === 'Alquiler' ? '(mensual)' : ''} - ${formData.type === 'Alquiler' ? 'ARS' : 'USD'}`}
+            type="number"
+            required
+            min="0"
+            value={formData.price}
+            onChange={(e) => setFormData({ ...formData, price: Number(e.target.value) })}
+            placeholder="Ingrese el precio"
+          />
 
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Ubicación</label>
-            <input
-              type="text"
-              required
-              value={formData.location}
-              onChange={(e) => setFormData({ ...formData, location: e.target.value })}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#14b8a6] focus:border-transparent"
-              placeholder="Ej: Zona Norte, Ciudad"
-            />
-          </div>
+          <FormInput
+            label="Ubicación"
+            type="text"
+            required
+            value={formData.location}
+            onChange={(e) => setFormData({ ...formData, location: e.target.value })}
+            placeholder="Ej: Zona Norte, Ciudad"
+          />
 
           {/* Búsqueda de Propietario con Autocompletado */}
           <div className="relative">
@@ -946,85 +931,71 @@ function PropertyModal({
           </div>
 
           <div className="grid grid-cols-2 gap-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Dormitorios</label>
-              <input
-                type="number"
-                required
-                min="0"
-                value={formData.bedrooms}
-                onChange={(e) => setFormData({ ...formData, bedrooms: Number(e.target.value) })}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#14b8a6] focus:border-transparent"
-              />
-            </div>
+            <FormInput
+              label="Dormitorios"
+              type="number"
+              required
+              min="0"
+              value={formData.bedrooms}
+              onChange={(e) => setFormData({ ...formData, bedrooms: Number(e.target.value) })}
+              placeholder="Ej: 3"
+            />
 
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Ambientes</label>
-              <input
-                type="number"
-                required
-                min="0"
-                value={formData.rooms}
-                onChange={(e) => setFormData({ ...formData, rooms: Number(e.target.value) })}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#14b8a6] focus:border-transparent"
-              />
-            </div>
+            <FormInput
+              label="Ambientes"
+              type="number"
+              required
+              min="0"
+              value={formData.rooms}
+              onChange={(e) => setFormData({ ...formData, rooms: Number(e.target.value) })}
+              placeholder="Ej: 4"
+            />
 
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Baños</label>
-              <input
-                type="number"
-                required
-                min="1"
-                value={formData.bathrooms}
-                onChange={(e) => setFormData({ ...formData, bathrooms: Number(e.target.value) })}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#14b8a6] focus:border-transparent"
-              />
-            </div>
+            <FormInput
+              label="Baños"
+              type="number"
+              required
+              min="1"
+              value={formData.bathrooms}
+              onChange={(e) => setFormData({ ...formData, bathrooms: Number(e.target.value) })}
+              placeholder="Ej: 2"
+            />
 
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Área (m²)</label>
-              <input
-                type="number"
-                required
-                min="1"
-                value={formData.area}
-                onChange={(e) => setFormData({ ...formData, area: Number(e.target.value) })}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#14b8a6] focus:border-transparent"
-              />
-            </div>
+            <FormInput
+              label="Área (m²)"
+              type="number"
+              required
+              min="1"
+              value={formData.area}
+              onChange={(e) => setFormData({ ...formData, area: Number(e.target.value) })}
+              placeholder="Ej: 120"
+            />
           </div>
 
           {/* Tipo de Propiedad y Año */}
           <div className="grid grid-cols-2 gap-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Tipo de Propiedad *</label>
-              <select
-                required
-                value={formData.propertyType}
-                onChange={(e) => setFormData({ ...formData, propertyType: e.target.value })}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#14b8a6] focus:border-transparent"
-              >
-                <option value="casa">Casa</option>
-                <option value="departamento">Departamento</option>
-                <option value="terreno">Terreno</option>
-                <option value="duplex">Duplex</option>
-                <option value="monoambiente">Monoambiente</option>
-              </select>
-            </div>
+            <FormSelect
+              label="Tipo de Propiedad *"
+              required
+              value={formData.propertyType}
+              onChange={(e) => setFormData({ ...formData, propertyType: e.target.value })}
+            >
+              <option value="casa">Casa</option>
+              <option value="departamento">Departamento</option>
+              <option value="terreno">Terreno</option>
+              <option value="duplex">Duplex</option>
+              <option value="monoambiente">Monoambiente</option>
+            </FormSelect>
 
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Año de Construcción</label>
-              <input
-                type="number"
-                min="1900"
-                max={new Date().getFullYear()}
-                value={formData.yearBuilt || ''}
-                onChange={(e) => setFormData({ ...formData, yearBuilt: e.target.value ? Number(e.target.value) : null })}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#14b8a6] focus:border-transparent"
-                placeholder="Ej: 2020"
-              />
-            </div>
+            <FormInput
+              label="Año de Construcción"
+              type="number"
+              min="1900"
+              max={new Date().getFullYear()}
+              value={formData.yearBuilt || ''}
+              onChange={(e) => setFormData({ ...formData, yearBuilt: e.target.value ? Number(e.target.value) : null })}
+              placeholder="Ej: 2020"
+            />
           </div>
 
           {/* Características */}
