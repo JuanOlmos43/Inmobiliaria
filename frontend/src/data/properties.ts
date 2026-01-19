@@ -12,6 +12,7 @@ export interface Property {
   type: 'venta' | 'alquiler';
   propertyType: string;
   image: string;
+  images?: string[]; // Array de imágenes adicionales para el carrusel
   description?: string;
   features?: string[];
   yearBuilt?: number | null;
@@ -33,6 +34,7 @@ export const allProperties: Property[] = [
     type: 'venta',
     propertyType: 'casa',
     image: '/property1.png',
+    images: ['/property1_img1.png', '/property1_img2.png', '/property1_img3.png'],
     description: 'Excelente propiedad con local comercial en planta baja y vivienda en planta alta. Ideal para inversión o uso mixto. Ubicada en zona céntrica con alto tránsito peatonal.',
     features: [
       'Cochera para 2 vehículos',

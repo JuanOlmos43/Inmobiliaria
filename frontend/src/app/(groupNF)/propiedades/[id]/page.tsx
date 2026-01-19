@@ -1,6 +1,7 @@
 'use client';
 
 import { useParams } from 'next/navigation';
+import { useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { allProperties } from '@/data/properties';
@@ -8,6 +9,7 @@ import { allProperties } from '@/data/properties';
 export default function PropertyDetailPage() {
   const params = useParams();
   const propertyId = parseInt(params.id as string);
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
   
   const property = allProperties.find(p => p.id === propertyId);
 
@@ -27,6 +29,19 @@ export default function PropertyDetailPage() {
     );
   }
 
+  // Use images array if available, otherwise fallback to single image
+  const propertyImages = property.images && property.images.length > 0 
+    ? property.images 
+    : [property.image];
+
+  const nextImage = () => {
+    setCurrentImageIndex((prev) => (prev + 1) % propertyImages.length);
+  };
+
+  const prevImage = () => {
+    setCurrentImageIndex((prev) => (prev - 1 + propertyImages.length) % propertyImages.length);
+  };
+
   return (
     <main className="flex-grow bg-[#f8fafc]">
         {/* Property Details */}
@@ -34,19 +49,59 @@ export default function PropertyDetailPage() {
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             {/* Main Content */}
             <div className="lg:col-span-2">
-              {/* Image */}
-              <div className="relative h-96 bg-gray-200 rounded-lg overflow-hidden mb-6">
+              {/* Image Carousel */}
+              <div className="relative h-96 bg-gray-200 rounded-lg overflow-hidden mb-6 group">
                 <Image
-                  src={property.image}
-                  alt={property.title}
+                  src={propertyImages[currentImageIndex]}
+                  alt={`${property.title} - Imagen ${currentImageIndex + 1}`}
                   fill
-                  className="object-cover"
+                  className="object-cover transition-opacity duration-300"
                 />
-                <div className="absolute top-4 right-4">
+                <div className="absolute top-4 right-4 z-10">
                   <span className="bg-[#14b8a6] text-white px-4 py-2 rounded-lg text-sm font-semibold">
                     {property.type === 'venta' ? 'Venta' : 'Alquiler'}
                   </span>
                 </div>
+
+                {/* Navigation Arrows - Only show if there are multiple images */}
+                {propertyImages.length > 1 && (
+                  <>
+                    <button
+                      onClick={prevImage}
+                      className="absolute left-4 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white text-gray-800 p-3 rounded-full shadow-lg transition-all opacity-0 group-hover:opacity-100 z-10"
+                      aria-label="Imagen anterior"
+                    >
+                      <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                      </svg>
+                    </button>
+                    <button
+                      onClick={nextImage}
+                      className="absolute right-4 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white text-gray-800 p-3 rounded-full shadow-lg transition-all opacity-0 group-hover:opacity-100 z-10"
+                      aria-label="Imagen siguiente"
+                    >
+                      <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                      </svg>
+                    </button>
+
+                    {/* Image Indicators */}
+                    <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2 z-10">
+                      {propertyImages.map((_, index) => (
+                        <button
+                          key={index}
+                          onClick={() => setCurrentImageIndex(index)}
+                          className={`w-2 h-2 rounded-full transition-all ${
+                            index === currentImageIndex 
+                              ? 'bg-white w-8' 
+                              : 'bg-white/60 hover:bg-white/80'
+                          }`}
+                          aria-label={`Ir a imagen ${index + 1}`}
+                        />
+                      ))}
+                    </div>
+                  </>
+                )}
               </div>
 
               {/* Title and Location */}
@@ -139,10 +194,10 @@ export default function PropertyDetailPage() {
                 <div className="mb-6">
                   <p className="text-gray-600 text-sm mb-2">Precio</p>
                   <p className="text-4xl font-bold text-[#0f172a]">
-                    USD {property.price.toLocaleString('es-AR')}
+                    {property.currency} {property.price.toLocaleString('es-AR')}
                   </p>
                   {property.type === 'alquiler' && (
-                    <p className="text-gray-500 text-sm mt-1">por mes</p>
+                    <p className="text-[#0f172a] text-sm mt-1">por mes</p>
                   )}
                 </div>
 

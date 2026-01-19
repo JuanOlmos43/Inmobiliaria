@@ -21,6 +21,7 @@ interface Property {
   bathrooms: number;
   area: number;
   image?: string;
+  images?: string[]; // Array de imágenes de la propiedad
   status: 'Activa' | 'Pausada';
   description: string;
   propertyType: string; // casa, departamento, terreno, duplex, monoambiente
@@ -724,6 +725,7 @@ function PropertyModal({
     bathrooms: property?.bathrooms || 1,
     area: property?.area || 0,
     image: property?.image || undefined,
+    images: property?.images || [],
     status: property?.status || 'Activa',
     description: property?.description || '',
     propertyType: property?.propertyType || 'casa',
@@ -1072,6 +1074,94 @@ function PropertyModal({
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#14b8a6] focus:border-transparent"
               placeholder="Describe las características principales de la propiedad..."
             />
+          </div>
+
+          {/* Imágenes de la Propiedad */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Imágenes de la Propiedad
+              <span className="text-gray-500 text-xs ml-2">(Puedes subir múltiples imágenes)</span>
+            </label>
+            
+            {/* Input de archivo */}
+            <div className="space-y-3">
+              <div className="flex items-center gap-3">
+                <input
+                  type="file"
+                  accept="image/*"
+                  multiple
+                  onChange={(e) => {
+                    const files = Array.from(e.target.files || []);
+                    files.forEach(file => {
+                      const reader = new FileReader();
+                      reader.onloadend = () => {
+                        const imageUrl = reader.result as string;
+                        setFormData(prev => ({
+                          ...prev,
+                          images: [...(prev.images || []), imageUrl]
+                        }));
+                      };
+                      reader.readAsDataURL(file);
+                    });
+                    // Limpiar el input
+                    e.target.value = '';
+                  }}
+                  className="hidden"
+                  id="image-upload"
+                />
+                <label
+                  htmlFor="image-upload"
+                  className="flex-1 px-4 py-3 border-2 border-dashed border-gray-300 rounded-lg hover:border-[#14b8a6] transition-colors cursor-pointer flex items-center justify-center gap-2 text-gray-600 hover:text-[#14b8a6]"
+                >
+                  <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                  </svg>
+                  <span className="font-medium">Seleccionar imágenes</span>
+                </label>
+              </div>
+
+              {/* Vista previa de imágenes */}
+              {formData.images && formData.images.length > 0 && (
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                  {formData.images.map((imageUrl, index) => (
+                    <div key={index} className="relative group">
+                      <div className="aspect-video bg-gray-100 rounded-lg overflow-hidden">
+                        <img
+                          src={imageUrl}
+                          alt={`Imagen ${index + 1}`}
+                          className="w-full h-full object-cover"
+                        />
+                      </div>
+                      {/* Botón para eliminar imagen */}
+                      <button
+                        type="button"
+                        onClick={() => {
+                          const newImages = formData.images?.filter((_, i) => i !== index);
+                          setFormData({ ...formData, images: newImages });
+                        }}
+                        className="absolute top-2 right-2 bg-red-500 text-white p-1.5 rounded-full opacity-0 group-hover:opacity-100 transition-opacity shadow-lg hover:bg-red-600"
+                        title="Eliminar imagen"
+                      >
+                        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                      </button>
+                      {/* Indicador de orden */}
+                      <div className="absolute bottom-2 left-2 bg-black/60 text-white text-xs px-2 py-1 rounded">
+                        {index + 1}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+
+              {/* Mensaje informativo */}
+              <p className="text-xs text-gray-500">
+                {formData.images && formData.images.length > 0 
+                  ? `${formData.images.length} imagen${formData.images.length > 1 ? 'es' : ''} seleccionada${formData.images.length > 1 ? 's' : ''}`
+                  : 'No hay imágenes seleccionadas. Las imágenes se mostrarán en un carrusel en la página de detalle.'}
+              </p>
+            </div>
           </div>
 
           <div className="flex gap-3 pt-4">
