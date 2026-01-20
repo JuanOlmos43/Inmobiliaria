@@ -43,6 +43,23 @@ model User {
   rentalContractsAsTenant   RentalContract[] @relation("TenantContracts")
   rentalContractsAsLandlord RentalContract[] @relation("LandlordContracts")
   rentalContractsAsAgent    RentalContract[] @relation("AgentContracts")
+  refreshTokens             RefreshToken[]
+}
+
+// ============================================
+// REFRESH TOKENS
+// ============================================
+
+model RefreshToken {
+  id        String   @id @default(uuid())
+  token     String   @unique // Hash del refresh token
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+
+  @@index([userId])
+  @@index([expiresAt])
 }
 
 // ============================================
