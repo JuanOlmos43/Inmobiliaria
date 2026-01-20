@@ -36,6 +36,10 @@ export class CreatePropiedadeDto {
 
     @IsInt()
     @Min(0)
+    rooms: number;
+
+    @IsInt()
+    @Min(0)
     bathrooms: number;
 
     @IsNumber()

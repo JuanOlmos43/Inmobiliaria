@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import FormInput from '@/components/FormInput';
 
 export default function LoginPage() {
   const [email, setEmail] = useState('');
@@ -64,14 +65,14 @@ export default function LoginPage() {
       return;
     } 
     
-    // Validar credenciales para Dueño
+    // Validar credenciales para Gerencia
     if (email === 'Duenio01@email.com' && password === 'Duenio01') {
       localStorage.setItem('isAuthenticated', 'true');
       localStorage.setItem('userEmail', email);
       localStorage.setItem('userRole', 'owner');
       
       setTimeout(() => {
-        router.push('/duenio');
+        router.push('/gerencia');
       }, 500);
       return;
     }
@@ -106,7 +107,7 @@ export default function LoginPage() {
               break;
             case 'owner':
               userRole = 'owner';
-              redirectPath = '/duenio';
+              redirectPath = '/gerencia';
               break;
           }
           
@@ -141,36 +142,28 @@ export default function LoginPage() {
           {/* Form */}
           <form onSubmit={handleSubmit} className="space-y-6">
             {/* Email Input */}
-            <div>
-              <label htmlFor="email" className="block text-sm font-medium text-gray-200 mb-2">
-                Correo Electrónico
-              </label>
-              <input
-                id="email"
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-                className="w-full px-4 py-3 bg-white/10 border border-white/30 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#14b8a6] focus:border-transparent transition-all"
-                placeholder="tu@email.com"
-              />
-            </div>
+            <FormInput
+              label="Correo Electrónico"
+              id="email"
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+              placeholder="tu@email.com"
+              theme="dark"
+            />
 
             {/* Password Input */}
-            <div>
-              <label htmlFor="password" className="block text-sm font-medium text-gray-200 mb-2">
-                Contraseña
-              </label>
-              <input
-                id="password"
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-                className="w-full px-4 py-3 bg-white/10 border border-white/30 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#14b8a6] focus:border-transparent transition-all"
-                placeholder="••••••••"
-              />
-            </div>
+            <FormInput
+              label="Contraseña"
+              id="password"
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+              placeholder="••••••••"
+              theme="dark"
+            />
 
             {/* Forgot Password Link */}
             <div className="text-right">

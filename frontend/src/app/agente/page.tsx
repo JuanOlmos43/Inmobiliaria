@@ -3,7 +3,10 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Icon from '@/components/Icon';
+import DashboardHeader from '@/components/DashboardHeader';
 import UniversalPropertyCard from '@/components/UniversalPropertyCard';
+import FormInput from '@/components/FormInput';
+import FormSelect from '@/components/FormSelect';
 
 // Tipos
 interface Property {
@@ -11,11 +14,14 @@ interface Property {
   title: string;
   type: 'Venta' | 'Alquiler';
   price: number;
+  currency: 'USD' | 'ARS'; // Moneda del precio
   location: string;
   bedrooms: number;
+  rooms: number; // Ambientes
   bathrooms: number;
   area: number;
   image?: string;
+  images?: string[]; // Array de imágenes de la propiedad
   status: 'Activa' | 'Pausada';
   description: string;
   propertyType: string; // casa, departamento, terreno, duplex, monoambiente
@@ -59,8 +65,10 @@ export default function DashboardPage() {
         title: 'Casa Moderna en Zona Norte',
         type: 'Venta',
         price: 250000,
+        currency: 'USD',
         location: 'Zona Norte, Ciudad',
         bedrooms: 3,
+        rooms: 5,
         bathrooms: 2,
         area: 180,
 
@@ -77,9 +85,11 @@ export default function DashboardPage() {
         id: '2',
         title: 'Departamento Céntrico',
         type: 'Alquiler',
-        price: 800,
+        price: 800000,
+        currency: 'ARS',
         location: 'Centro, Ciudad',
         bedrooms: 2,
+        rooms: 3,
         bathrooms: 1,
         area: 85,
         status: 'Activa',
@@ -131,20 +141,21 @@ export default function DashboardPage() {
   };
 
   const handleSaveProperty = (property: Omit<Property, 'id'>) => {
+    // Asignar moneda automáticamente según el tipo
+    const propertyWithCurrency: Property = {
+      ...property,
+      id: editingProperty?.id || Date.now().toString(),
+      currency: property.type === 'Alquiler' ? 'ARS' : 'USD'
+    };
+
     if (editingProperty) {
       // Editar propiedad existente
       setProperties(properties.map(p => 
-        p.id === editingProperty.id 
-          ? { ...property, id: editingProperty.id } 
-          : p
+        p.id === editingProperty.id ? propertyWithCurrency : p
       ));
     } else {
       // Agregar nueva propiedad
-      const newProperty: Property = {
-        ...property,
-        id: Date.now().toString()
-      };
-      setProperties([...properties, newProperty]);
+      setProperties([...properties, propertyWithCurrency]);
     }
     setIsModalOpen(false);
   };
@@ -152,7 +163,7 @@ export default function DashboardPage() {
   // Filtrar propiedades
   const filteredProperties = properties.filter(property => {
     const matchesSearch = property.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         property.location.toLowerCase().includes(searchTerm.toLowerCase());
+                          property.location.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesStatus = filterStatus === 'all' || property.status === filterStatus;
     return matchesSearch && matchesStatus;
   });
@@ -160,26 +171,12 @@ export default function DashboardPage() {
   return (
     <div className="min-h-screen bg-[#f8fafc]">
       {/* Header */}
-      <header className="bg-gradient-to-r from-[#0f172a] to-[#1e293b] shadow-lg sticky top-0 z-40">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-          <div className="flex justify-between items-center">
-            <div className="flex items-center gap-3">
-              <Icon name="briefcase" className="w-8 h-8 text-[#14b8a6]" />
-              <div>
-                <h1 className="text-2xl font-bold text-[#14b8a6]">Agente</h1>
-                <p className="text-sm text-gray-300">Bienvenido, {userEmail}</p>
-              </div>
-            </div>
-            <button
-              onClick={handleLogout}
-              className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors flex items-center gap-2 shadow-md hover:shadow-lg"
-            >
-              <Icon name="logout" className="w-5 h-5" />
-              Cerrar Sesión
-            </button>
-          </div>
-        </div>
-      </header>
+      <DashboardHeader
+        title="Agente"
+        userEmail={userEmail}
+        icon="briefcase"
+        onLogout={handleLogout}
+      />
 
       {/* Main Content */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -721,11 +718,14 @@ function PropertyModal({
     title: property?.title || '',
     type: property?.type || 'Venta',
     price: property?.price || 0,
+    currency: property?.currency || 'USD',
     location: property?.location || '',
     bedrooms: property?.bedrooms || 1,
+    rooms: property?.rooms || 1,
     bathrooms: property?.bathrooms || 1,
     area: property?.area || 0,
     image: property?.image || undefined,
+    images: property?.images || [],
     status: property?.status || 'Activa',
     description: property?.description || '',
     propertyType: property?.propertyType || 'casa',
@@ -813,70 +813,53 @@ function PropertyModal({
         </div>
 
         <form onSubmit={handleSubmit} className="p-6 space-y-4">
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Título</label>
-            <input
-              type="text"
-              required
-              value={formData.title}
-              onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#14b8a6] focus:border-transparent"
-              placeholder="Ej: Casa Moderna en Zona Norte"
-            />
-          </div>
+          <FormInput
+            label="Título"
+            type="text"
+            required
+            value={formData.title}
+            onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+            placeholder="Ej: Casa Moderna en Zona Norte"
+          />
 
           <div className="grid grid-cols-2 gap-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Tipo</label>
-              <select
-                value={formData.type}
-                onChange={(e) => setFormData({ ...formData, type: e.target.value as 'Venta' | 'Alquiler' })}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#14b8a6] focus:border-transparent"
-              >
-                <option value="Venta">Venta</option>
-                <option value="Alquiler">Alquiler</option>
-              </select>
-            </div>
+            <FormSelect
+              label="Tipo"
+              value={formData.type}
+              onChange={(e) => setFormData({ ...formData, type: e.target.value as 'Venta' | 'Alquiler' })}
+            >
+              <option value="Venta">Venta</option>
+              <option value="Alquiler">Alquiler</option>
+            </FormSelect>
 
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Estado</label>
-              <select
-                value={formData.status}
-                onChange={(e) => setFormData({ ...formData, status: e.target.value as 'Activa' | 'Pausada' })}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#14b8a6] focus:border-transparent"
-              >
-                <option value="Activa">Activa</option>
-                <option value="Pausada">Pausada</option>
-              </select>
-            </div>
+            <FormSelect
+              label="Estado"
+              value={formData.status}
+              onChange={(e) => setFormData({ ...formData, status: e.target.value as 'Activa' | 'Pausada' })}
+            >
+              <option value="Activa">Activa</option>
+              <option value="Pausada">Pausada</option>
+            </FormSelect>
           </div>
 
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Precio {formData.type === 'Alquiler' && '(mensual)'}
-            </label>
-            <input
-              type="number"
-              required
-              min="0"
-              value={formData.price}
-              onChange={(e) => setFormData({ ...formData, price: Number(e.target.value) })}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#14b8a6] focus:border-transparent"
-              placeholder="0"
-            />
-          </div>
+          <FormInput
+            label={`Precio ${formData.type === 'Alquiler' ? '(mensual)' : ''} - ${formData.type === 'Alquiler' ? 'ARS' : 'USD'}`}
+            type="number"
+            required
+            min="0"
+            value={formData.price}
+            onChange={(e) => setFormData({ ...formData, price: Number(e.target.value) })}
+            placeholder="Ingrese el precio"
+          />
 
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Ubicación</label>
-            <input
-              type="text"
-              required
-              value={formData.location}
-              onChange={(e) => setFormData({ ...formData, location: e.target.value })}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#14b8a6] focus:border-transparent"
-              placeholder="Ej: Zona Norte, Ciudad"
-            />
-          </div>
+          <FormInput
+            label="Ubicación"
+            type="text"
+            required
+            value={formData.location}
+            onChange={(e) => setFormData({ ...formData, location: e.target.value })}
+            placeholder="Ej: Zona Norte, Ciudad"
+          />
 
           {/* Búsqueda de Propietario con Autocompletado */}
           <div className="relative">
@@ -949,74 +932,72 @@ function PropertyModal({
             )}
           </div>
 
-          <div className="grid grid-cols-3 gap-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Habitaciones</label>
-              <input
-                type="number"
-                required
-                min="1"
-                value={formData.bedrooms}
-                onChange={(e) => setFormData({ ...formData, bedrooms: Number(e.target.value) })}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#14b8a6] focus:border-transparent"
-              />
-            </div>
+          <div className="grid grid-cols-2 gap-4">
+            <FormInput
+              label="Dormitorios"
+              type="number"
+              required
+              min="0"
+              value={formData.bedrooms}
+              onChange={(e) => setFormData({ ...formData, bedrooms: Number(e.target.value) })}
+              placeholder="Ej: 3"
+            />
 
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Baños</label>
-              <input
-                type="number"
-                required
-                min="1"
-                value={formData.bathrooms}
-                onChange={(e) => setFormData({ ...formData, bathrooms: Number(e.target.value) })}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#14b8a6] focus:border-transparent"
-              />
-            </div>
+            <FormInput
+              label="Ambientes"
+              type="number"
+              required
+              min="0"
+              value={formData.rooms}
+              onChange={(e) => setFormData({ ...formData, rooms: Number(e.target.value) })}
+              placeholder="Ej: 4"
+            />
 
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Área (m²)</label>
-              <input
-                type="number"
-                required
-                min="1"
-                value={formData.area}
-                onChange={(e) => setFormData({ ...formData, area: Number(e.target.value) })}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#14b8a6] focus:border-transparent"
-              />
-            </div>
+            <FormInput
+              label="Baños"
+              type="number"
+              required
+              min="1"
+              value={formData.bathrooms}
+              onChange={(e) => setFormData({ ...formData, bathrooms: Number(e.target.value) })}
+              placeholder="Ej: 2"
+            />
+
+            <FormInput
+              label="Área (m²)"
+              type="number"
+              required
+              min="1"
+              value={formData.area}
+              onChange={(e) => setFormData({ ...formData, area: Number(e.target.value) })}
+              placeholder="Ej: 120"
+            />
           </div>
 
           {/* Tipo de Propiedad y Año */}
           <div className="grid grid-cols-2 gap-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Tipo de Propiedad *</label>
-              <select
-                required
-                value={formData.propertyType}
-                onChange={(e) => setFormData({ ...formData, propertyType: e.target.value })}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#14b8a6] focus:border-transparent"
-              >
-                <option value="casa">Casa</option>
-                <option value="departamento">Departamento</option>
-                <option value="terreno">Terreno</option>
-                <option value="duplex">Duplex</option>
-                <option value="monoambiente">Monoambiente</option>
-              </select>
-            </div>
+            <FormSelect
+              label="Tipo de Propiedad *"
+              required
+              value={formData.propertyType}
+              onChange={(e) => setFormData({ ...formData, propertyType: e.target.value })}
+            >
+              <option value="casa">Casa</option>
+              <option value="departamento">Departamento</option>
+              <option value="terreno">Terreno</option>
+              <option value="duplex">Duplex</option>
+              <option value="monoambiente">Monoambiente</option>
+            </FormSelect>
 
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Año de Construcción</label>
-              <input
-                type="number"
-                min="1900"
-                max={new Date().getFullYear()}
-                value={formData.yearBuilt || ''}
-                onChange={(e) => setFormData({ ...formData, yearBuilt: e.target.value ? Number(e.target.value) : null })}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#14b8a6] focus:border-transparent"
-                placeholder="Ej: 2020"
-              />
-            </div>
+            <FormInput
+              label="Año de Construcción"
+              type="number"
+              min="1900"
+              max={new Date().getFullYear()}
+              value={formData.yearBuilt || ''}
+              onChange={(e) => setFormData({ ...formData, yearBuilt: e.target.value ? Number(e.target.value) : null })}
+              placeholder="Ej: 2020"
+            />
           </div>
 
           {/* Características */}
@@ -1093,6 +1074,94 @@ function PropertyModal({
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#14b8a6] focus:border-transparent"
               placeholder="Describe las características principales de la propiedad..."
             />
+          </div>
+
+          {/* Imágenes de la Propiedad */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Imágenes de la Propiedad
+              <span className="text-gray-500 text-xs ml-2">(Puedes subir múltiples imágenes)</span>
+            </label>
+            
+            {/* Input de archivo */}
+            <div className="space-y-3">
+              <div className="flex items-center gap-3">
+                <input
+                  type="file"
+                  accept="image/*"
+                  multiple
+                  onChange={(e) => {
+                    const files = Array.from(e.target.files || []);
+                    files.forEach(file => {
+                      const reader = new FileReader();
+                      reader.onloadend = () => {
+                        const imageUrl = reader.result as string;
+                        setFormData(prev => ({
+                          ...prev,
+                          images: [...(prev.images || []), imageUrl]
+                        }));
+                      };
+                      reader.readAsDataURL(file);
+                    });
+                    // Limpiar el input
+                    e.target.value = '';
+                  }}
+                  className="hidden"
+                  id="image-upload"
+                />
+                <label
+                  htmlFor="image-upload"
+                  className="flex-1 px-4 py-3 border-2 border-dashed border-gray-300 rounded-lg hover:border-[#14b8a6] transition-colors cursor-pointer flex items-center justify-center gap-2 text-gray-600 hover:text-[#14b8a6]"
+                >
+                  <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                  </svg>
+                  <span className="font-medium">Seleccionar imágenes</span>
+                </label>
+              </div>
+
+              {/* Vista previa de imágenes */}
+              {formData.images && formData.images.length > 0 && (
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                  {formData.images.map((imageUrl, index) => (
+                    <div key={index} className="relative group">
+                      <div className="aspect-video bg-gray-100 rounded-lg overflow-hidden">
+                        <img
+                          src={imageUrl}
+                          alt={`Imagen ${index + 1}`}
+                          className="w-full h-full object-cover"
+                        />
+                      </div>
+                      {/* Botón para eliminar imagen */}
+                      <button
+                        type="button"
+                        onClick={() => {
+                          const newImages = formData.images?.filter((_, i) => i !== index);
+                          setFormData({ ...formData, images: newImages });
+                        }}
+                        className="absolute top-2 right-2 bg-red-500 text-white p-1.5 rounded-full opacity-0 group-hover:opacity-100 transition-opacity shadow-lg hover:bg-red-600"
+                        title="Eliminar imagen"
+                      >
+                        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                      </button>
+                      {/* Indicador de orden */}
+                      <div className="absolute bottom-2 left-2 bg-black/60 text-white text-xs px-2 py-1 rounded">
+                        {index + 1}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+
+              {/* Mensaje informativo */}
+              <p className="text-xs text-gray-500">
+                {formData.images && formData.images.length > 0 
+                  ? `${formData.images.length} imagen${formData.images.length > 1 ? 'es' : ''} seleccionada${formData.images.length > 1 ? 's' : ''}`
+                  : 'No hay imágenes seleccionadas. Las imágenes se mostrarán en un carrusel en la página de detalle.'}
+              </p>
+            </div>
           </div>
 
           <div className="flex gap-3 pt-4">

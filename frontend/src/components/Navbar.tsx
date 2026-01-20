@@ -1,13 +1,34 @@
+'use client';
+
 import Link from 'next/link';
+import Image from 'next/image';
+import { useState } from 'react';
 
 export default function Navbar() {
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+  const toggleMenu = () => {
+    setIsMenuOpen(!isMenuOpen);
+  };
+
+  const closeMenu = () => {
+    setIsMenuOpen(false);
+  };
+
   return (
     <nav className="bg-gradient-to-r from-[#0f172a] via-[#0f172a] to-[#1e293b] shadow-xl sticky top-0 z-50 backdrop-blur-sm bg-opacity-95">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-20">
           {/* Logo */}
           <div className="flex-shrink-0">
-            <Link href="/" className="text-3xl font-bold bg-gradient-to-r from-[#14b8a6] to-[#2dd4bf] bg-clip-text text-transparent hover:from-[#2dd4bf] hover:to-[#14b8a6] transition-all duration-300 transform hover:scale-105">
+            <Link href="/" className="flex items-center gap-3 text-3xl font-bold bg-gradient-to-r from-[#14b8a6] to-[#2dd4bf] bg-clip-text text-transparent hover:from-[#2dd4bf] hover:to-[#14b8a6] transition-all duration-300 transform hover:scale-105">
+              <Image 
+                src="/icon.png" 
+                alt="InmoHogar Logo" 
+                width={60} 
+                height={60}
+                className="transition-transform duration-300"
+              />
               InmoHogar
             </Link>
           </div>
@@ -54,12 +75,67 @@ export default function Navbar() {
 
           {/* Mobile menu button */}
           <div className="md:hidden">
-            <button className="text-white hover:text-[#14b8a6] focus:outline-none transition-colors">
-              <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-              </svg>
+            <button 
+              onClick={toggleMenu}
+              className="text-white hover:text-[#14b8a6] focus:outline-none transition-colors"
+              aria-label="Toggle menu"
+            >
+              {isMenuOpen ? (
+                <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              ) : (
+                <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+                </svg>
+              )}
             </button>
           </div>
+        </div>
+      </div>
+
+      {/* Mobile menu panel */}
+      <div 
+        className={`md:hidden overflow-hidden transition-all duration-300 ease-in-out ${
+          isMenuOpen ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'
+        }`}
+      >
+        <div className="px-4 pt-2 pb-6 space-y-2 bg-gradient-to-b from-[#1e293b] to-[#0f172a]">
+          <Link 
+            href="/" 
+            onClick={closeMenu}
+            className="block px-4 py-3 text-white hover:text-[#14b8a6] hover:bg-[#1e293b] rounded-lg transition-all duration-200 font-medium"
+          >
+            Inicio
+          </Link>
+          <Link 
+            href="/propiedades" 
+            onClick={closeMenu}
+            className="block px-4 py-3 text-white hover:text-[#14b8a6] hover:bg-[#1e293b] rounded-lg transition-all duration-200 font-medium"
+          >
+            Propiedades
+          </Link>
+          <Link 
+            href="/nosotros" 
+            onClick={closeMenu}
+            className="block px-4 py-3 text-white hover:text-[#14b8a6] hover:bg-[#1e293b] rounded-lg transition-all duration-200 font-medium"
+          >
+            Nosotros
+          </Link>
+          <Link 
+            href="/contacto" 
+            onClick={closeMenu}
+            className="block px-4 py-3 text-white hover:text-[#14b8a6] hover:bg-[#1e293b] rounded-lg transition-all duration-200 font-medium"
+          >
+            Contacto
+          </Link>
+          <Link 
+            href="/login"
+            onClick={closeMenu}
+            className="block mt-4 px-6 py-3 bg-gradient-to-r from-[#14b8a6] to-[#0d9488] text-white font-bold rounded-full hover:from-[#0d9488] hover:to-[#0f766e] transition-all duration-300 shadow-lg text-center"
+          >
+            Iniciar Sesión
+          </Link>
         </div>
       </div>
     </nav>

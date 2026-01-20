@@ -1,61 +1,107 @@
 'use client';
 
 import { useParams } from 'next/navigation';
+import { useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import Navbar from '@/components/Navbar';
-import Footer from '@/components/Footer';
 import { allProperties } from '@/data/properties';
 
 export default function PropertyDetailPage() {
   const params = useParams();
   const propertyId = parseInt(params.id as string);
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
   
   const property = allProperties.find(p => p.id === propertyId);
 
   if (!property) {
     return (
-      <div className="flex flex-col min-h-screen">
-        <Navbar />
-        <main className="flex-grow bg-[#f8fafc] flex items-center justify-center">
-          <div className="text-center">
-            <h1 className="text-4xl font-bold text-[#0f172a] mb-4">Propiedad no encontrada</h1>
-            <Link 
-              href="/propiedades"
-              className="text-[#14b8a6] hover:text-[#0d9488] font-semibold"
-            >
-              Volver a propiedades
-            </Link>
-          </div>
-        </main>
-        <Footer />
-      </div>
+      <main className="flex-grow bg-[#f8fafc] flex items-center justify-center">
+        <div className="text-center">
+          <h1 className="text-4xl font-bold text-[#0f172a] mb-4">Propiedad no encontrada</h1>
+          <Link 
+            href="/propiedades"
+            className="text-[#14b8a6] hover:text-[#0d9488] font-semibold"
+          >
+            Volver a propiedades
+          </Link>
+        </div>
+      </main>
     );
   }
 
-  return (
-    <div className="flex flex-col min-h-screen">
-      <Navbar />
+  // Use images array if available, otherwise fallback to single image
+  const propertyImages = property.images && property.images.length > 0 
+    ? property.images 
+    : [property.image];
 
-      <main className="flex-grow bg-[#f8fafc]">
+  const nextImage = () => {
+    setCurrentImageIndex((prev) => (prev + 1) % propertyImages.length);
+  };
+
+  const prevImage = () => {
+    setCurrentImageIndex((prev) => (prev - 1 + propertyImages.length) % propertyImages.length);
+  };
+
+  return (
+    <main className="flex-grow bg-[#f8fafc]">
         {/* Property Details */}
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             {/* Main Content */}
             <div className="lg:col-span-2">
-              {/* Image */}
-              <div className="relative h-96 bg-gray-200 rounded-lg overflow-hidden mb-6">
+              {/* Image Carousel */}
+              <div className="relative h-96 bg-gray-200 rounded-lg overflow-hidden mb-6 group">
                 <Image
-                  src={property.image}
-                  alt={property.title}
+                  src={propertyImages[currentImageIndex]}
+                  alt={`${property.title} - Imagen ${currentImageIndex + 1}`}
                   fill
-                  className="object-cover"
+                  className="object-cover transition-opacity duration-300"
                 />
-                <div className="absolute top-4 right-4">
+                <div className="absolute top-4 right-4 z-10">
                   <span className="bg-[#14b8a6] text-white px-4 py-2 rounded-lg text-sm font-semibold">
                     {property.type === 'venta' ? 'Venta' : 'Alquiler'}
                   </span>
                 </div>
+
+                {/* Navigation Arrows - Only show if there are multiple images */}
+                {propertyImages.length > 1 && (
+                  <>
+                    <button
+                      onClick={prevImage}
+                      className="absolute left-4 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white text-gray-800 p-3 rounded-full shadow-lg transition-all opacity-0 group-hover:opacity-100 z-10"
+                      aria-label="Imagen anterior"
+                    >
+                      <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                      </svg>
+                    </button>
+                    <button
+                      onClick={nextImage}
+                      className="absolute right-4 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white text-gray-800 p-3 rounded-full shadow-lg transition-all opacity-0 group-hover:opacity-100 z-10"
+                      aria-label="Imagen siguiente"
+                    >
+                      <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                      </svg>
+                    </button>
+
+                    {/* Image Indicators */}
+                    <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2 z-10">
+                      {propertyImages.map((_, index) => (
+                        <button
+                          key={index}
+                          onClick={() => setCurrentImageIndex(index)}
+                          className={`w-2 h-2 rounded-full transition-all ${
+                            index === currentImageIndex 
+                              ? 'bg-white w-8' 
+                              : 'bg-white/60 hover:bg-white/80'
+                          }`}
+                          aria-label={`Ir a imagen ${index + 1}`}
+                        />
+                      ))}
+                    </div>
+                  </>
+                )}
               </div>
 
               {/* Title and Location */}
@@ -76,6 +122,14 @@ export default function PropertyDetailPage() {
                         <path d="M32 32c17.7 0 32 14.3 32 32V320H288V160c0-17.7 14.3-32 32-32H544c53 0 96 43 96 96V448c0 17.7-14.3 32-32 32s-32-14.3-32-32V416H352 320 64v32c0 17.7-14.3 32-32 32s-32-14.3-32-32V64C0 46.3 14.3 32 32 32zm144 96a80 80 0 1 1 0 160 80 80 0 1 1 0-160z"/>
                       </svg>
                       <span>{property.bedrooms} Dormitorios</span>
+                    </div>
+                  )}
+                  {property.rooms > 0 && (
+                    <div className="flex items-center">
+                      <svg className="w-6 h-6 mr-2" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M3 3h8v8H3V3zm10 0h8v8h-8V3zM3 13h8v8H3v-8zm10 0h8v8h-8v-8z"/>
+                      </svg>
+                      <span>{property.rooms} Ambientes</span>
                     </div>
                   )}
                   {property.bathrooms > 0 && (
@@ -140,10 +194,10 @@ export default function PropertyDetailPage() {
                 <div className="mb-6">
                   <p className="text-gray-600 text-sm mb-2">Precio</p>
                   <p className="text-4xl font-bold text-[#0f172a]">
-                    USD {property.price.toLocaleString('es-AR')}
+                    {property.currency} {property.price.toLocaleString('es-AR')}
                   </p>
                   {property.type === 'alquiler' && (
-                    <p className="text-gray-500 text-sm mt-1">por mes</p>
+                    <p className="text-[#0f172a] text-sm mt-1">por mes</p>
                   )}
                 </div>
 
@@ -159,8 +213,5 @@ export default function PropertyDetailPage() {
           </div>
         </div>
       </main>
-
-      <Footer />
-    </div>
   );
 }

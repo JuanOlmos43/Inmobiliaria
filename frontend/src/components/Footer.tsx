@@ -1,3 +1,5 @@
+import Image from 'next/image';
+
 export default function Footer() {
   return (
     <footer className="bg-[#0f172a] text-white mt-auto">
@@ -6,7 +8,16 @@ export default function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
           {/* Company Info */}
           <div>
-            <h3 className="text-3xl font-bold text-[#14b8a6] mb-4">InmoHogar</h3>
+            <div className="flex items-center gap-3 mb-4">
+              <Image 
+                src="/icon.png" 
+                alt="InmoHogar Logo" 
+                width={60} 
+                height={60}
+                className="transition-transform duration-300"
+              />
+              <h3 className="text-3xl font-bold text-[#14b8a6]">InmoHogar</h3>
+            </div>
             <p className="text-gray-300 text-sm leading-relaxed">
               Tu socio de confianza en bienes raíces. Ayudándote a encontrar el hogar perfecto desde 2024.
             </p>

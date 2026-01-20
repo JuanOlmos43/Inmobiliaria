@@ -2,7 +2,11 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import Icon from '@/components/Icon';
+import DashboardHeader from '@/components/DashboardHeader';
+import StatsCard from '@/components/StatsCard';
+import Modal from '@/components/Modal';
+import FormInput from '@/components/FormInput';
+import FormSelect from '@/components/FormSelect';
 
 // Tipos
 interface User {
@@ -20,7 +24,7 @@ const roleLabels = {
   tenant: 'Inquilino',
   landlord: 'Propietario',
   agent: 'Agente Inmobiliario',
-  owner: 'Dueño Inmobiliaria'
+  owner: 'Gerencia'
 };
 
 const roleColors = {
@@ -182,26 +186,12 @@ export default function AdminDashboardPage() {
   return (
     <div className="min-h-screen bg-[#f8fafc]">
       {/* Header */}
-      <header className="bg-gradient-to-r from-[#0f172a] to-[#1e293b] shadow-lg sticky top-0 z-40">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-          <div className="flex justify-between items-center">
-            <div className="flex items-center gap-3">
-              <Icon name="settings" className="w-8 h-8 text-[#14b8a6]" />
-              <div>
-                <h1 className="text-2xl font-bold text-[#14b8a6]">Administrador</h1>
-                <p className="text-sm text-gray-300">Bienvenido, {userEmail}</p>
-              </div>
-            </div>
-            <button
-              onClick={handleLogout}
-              className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors flex items-center gap-2 shadow-md hover:shadow-lg"
-            >
-              <Icon name="logout" className="w-5 h-5" />
-              Cerrar Sesión
-            </button>
-          </div>
-        </div>
-      </header>
+      <DashboardHeader
+        title="Administrador"
+        userEmail={userEmail}
+        icon="settings"
+        onLogout={handleLogout}
+      />
 
       {/* Main Content */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -240,7 +230,7 @@ export default function AdminDashboardPage() {
               icon="briefcase"
             />
             <StatsCard
-              title="Dueños"
+              title="Gerencia"
               value={stats.owners}
               color="from-amber-500 to-amber-600"
               icon="star"
@@ -286,7 +276,7 @@ export default function AdminDashboardPage() {
                 <option value="tenant">Inquilino</option>
                 <option value="landlord">Propietario</option>
                 <option value="agent">Agente Inmobiliario</option>
-                <option value="owner">Dueño Inmobiliaria</option>
+                <option value="owner">Gerencia</option>
               </select>
             </div>
           </div>
@@ -367,128 +357,75 @@ export default function AdminDashboardPage() {
       </main>
 
       {/* Modal */}
-      {showModal && (
-        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-2xl shadow-2xl max-w-md w-full p-8 animate-scale-in">
-            <h3 className="text-2xl font-bold text-[#0f172a] mb-6">
-              {editingUser ? 'Editar Usuario' : 'Crear Nuevo Usuario'}
-            </h3>
-            
-            <form onSubmit={handleSubmitForm} className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Correo Electrónico
-                </label>
-                <input
-                  type="email"
-                  value={formData.email}
-                  onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                  required
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#14b8a6] focus:border-transparent"
-                  placeholder="usuario@email.com"
-                />
-              </div>
+      <Modal 
+        isOpen={showModal}
+        onClose={() => setShowModal(false)}
+        title={editingUser ? 'Editar Usuario' : 'Crear Nuevo Usuario'}
+      >
+        <form onSubmit={handleSubmitForm} className="space-y-4">
+          <FormInput
+            label="Correo Electrónico"
+            type="email"
+            value={formData.email}
+            onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+            required
+            placeholder="usuario@email.com"
+          />
 
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Contraseña
-                </label>
-                <input
-                  type="text"
-                  value={formData.password}
-                  onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                  required
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#14b8a6] focus:border-transparent"
-                  placeholder="Contraseña"
-                />
-              </div>
+          <FormInput
+            label="Contraseña"
+            type="text"
+            value={formData.password}
+            onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+            required
+            placeholder="Contraseña"
+          />
 
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Nombre Completo
-                </label>
-                <input
-                  type="text"
-                  value={formData.name}
-                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#14b8a6] focus:border-transparent"
-                  placeholder="Nombre completo del usuario"
-                />
-              </div>
+          <FormInput
+            label="Nombre Completo"
+            type="text"
+            value={formData.name}
+            onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+            placeholder="Nombre completo del usuario"
+          />
 
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Teléfono
-                </label>
-                <input
-                  type="tel"
-                  value={formData.phone}
-                  onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#14b8a6] focus:border-transparent"
-                  placeholder="+54 11 1234-5678"
-                />
-              </div>
+          <FormInput
+            label="Teléfono"
+            type="tel"
+            value={formData.phone}
+            onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+            placeholder="+54 11 1234-5678"
+          />
 
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Rol
-                </label>
-                <select
-                  value={formData.role}
-                  onChange={(e) => setFormData({ ...formData, role: e.target.value as 'tenant' | 'landlord' | 'agent' | 'owner' })}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#14b8a6] focus:border-transparent"
-                >
-                  <option value="tenant">Inquilino</option>
-                  <option value="landlord">Propietario</option>
-                  <option value="agent">Agente Inmobiliario</option>
-                  <option value="owner">Dueño Inmobiliaria</option>
-                </select>
-              </div>
+          <FormSelect
+            label="Rol"
+            value={formData.role}
+            onChange={(e) => setFormData({ ...formData, role: e.target.value as 'tenant' | 'landlord' | 'agent' | 'owner' })}
+          >
+            <option value="tenant">Inquilino</option>
+            <option value="landlord">Propietario</option>
+            <option value="agent">Agente Inmobiliario</option>
+            <option value="owner">Gerencia</option>
+          </FormSelect>
 
-              <div className="flex gap-3 pt-4">
-                <button
-                  type="button"
-                  onClick={() => setShowModal(false)}
-                  className="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
-                >
-                  Cancelar
-                </button>
-                <button
-                  type="submit"
-                  className="flex-1 px-4 py-2 bg-gradient-to-r from-[#14b8a6] to-[#0d9488] text-white rounded-lg hover:from-[#0d9488] hover:to-[#0f766e] transition-all shadow-md hover:shadow-lg"
-                >
-                  {editingUser ? 'Guardar Cambios' : 'Crear Usuario'}
-                </button>
-              </div>
-            </form>
+          <div className="flex gap-3 pt-4">
+            <button
+              type="button"
+              onClick={() => setShowModal(false)}
+              className="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
+            >
+              Cancelar
+            </button>
+            <button
+              type="submit"
+              className="flex-1 px-4 py-2 bg-gradient-to-r from-[#14b8a6] to-[#0d9488] text-white rounded-lg hover:from-[#0d9488] hover:to-[#0f766e] transition-all shadow-md hover:shadow-lg"
+            >
+              {editingUser ? 'Guardar Cambios' : 'Crear Usuario'}
+            </button>
           </div>
-        </div>
-      )}
+        </form>
+      </Modal>
     </div>
   );
 }
 
-// Stats Card Component
-function StatsCard({ 
-  title, 
-  value,  
-  color,
-  icon
-}: { 
-  title: string; 
-  value: string | number; 
-  color: string;
-  icon: string;
-}) {
-  return (
-    <div className={`bg-gradient-to-br ${color} rounded-xl shadow-lg p-6 text-white transform hover:scale-105 transition-transform duration-300`}>
-      <div className="flex items-start justify-end mb-3">
-        <div className="opacity-80">
-          <Icon name={icon as any} className="w-8 h-8" />
-        </div>
-      </div>
-      <p className="text-sm opacity-90 mb-1">{title}</p>
-      <p className="text-3xl font-bold">{value}</p>
-    </div>
-  );
-}

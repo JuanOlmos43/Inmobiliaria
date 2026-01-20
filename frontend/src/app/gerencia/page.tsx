@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Icon from '@/components/Icon';
+import DashboardHeader from '@/components/DashboardHeader';
 
 // Tipos
 interface OrganizationStats {
@@ -47,26 +48,12 @@ export default function DashboardOwnerPage() {
   return (
     <div className="min-h-screen bg-[#f8fafc]">
       {/* Header */}
-      <header className="bg-gradient-to-r from-[#0f172a] to-[#1e293b] shadow-lg sticky top-0 z-40">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-          <div className="flex justify-between items-center">
-            <div className="flex items-center gap-3">
-              <Icon name="star" className="w-8 h-8 text-[#14b8a6]" />
-              <div>
-                <h1 className="text-2xl font-bold text-[#14b8a6]">Dueño</h1>
-                <p className="text-sm text-gray-300">Bienvenido, {userEmail}</p>
-              </div>
-            </div>
-            <button
-              onClick={handleLogout}
-              className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors flex items-center gap-2 shadow-md hover:shadow-lg"
-            >
-              <Icon name="logout" className="w-5 h-5" />
-              Cerrar Sesión
-            </button>
-          </div>
-        </div>
-      </header>
+      <DashboardHeader
+        title="Gerencia"
+        userEmail={userEmail}
+        icon="star"
+        onLogout={handleLogout}
+      />
 
       {/* Main Content */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">

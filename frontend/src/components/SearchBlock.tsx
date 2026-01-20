@@ -2,6 +2,8 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import FormSelect from './FormSelect';
+import FormInput from './FormInput';
 
 export default function SearchBlock() {
   const router = useRouter();
@@ -82,108 +84,83 @@ export default function SearchBlock() {
           <div className="p-8 md:p-10">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
               {/* Tipo de Inmueble */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Tipo de inmueble
-                </label>
-                <select 
-                  value={propertyType}
-                  onChange={(e) => setPropertyType(e.target.value)}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-[#14b8a6] focus:border-transparent bg-white text-gray-900 [color-scheme:light]"
-                >
-                  <option value="">Todos</option>
-                  <option value="casa">Casa</option>
-                  <option value="departamento">Departamento</option>
-                  <option value="duplex">Duplex</option>
-                  <option value="monoambiente">Monoambiente</option>
-                </select>
-              </div>
+              <FormSelect
+                label="Tipo de inmueble"
+                value={propertyType}
+                onChange={(e) => setPropertyType(e.target.value)}
+              >
+                <option value="">Todos</option>
+                <option value="casa">Casa</option>
+                <option value="departamento">Departamento</option>
+                <option value="duplex">Duplex</option>
+                <option value="monoambiente">Monoambiente</option>
+              </FormSelect>
 
               {/* Localidad */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Localidad
-                </label>
-                <input
-                  type="text"
-                  placeholder="Ej: Buenos Aires"
-                  value={location}
-                  onChange={(e) => setLocation(e.target.value)}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-[#14b8a6] focus:border-transparent bg-white text-gray-900 placeholder-gray-500 [color-scheme:light]"
-                />
-              </div>
+              <FormInput
+                label="Localidad"
+                type="text"
+                placeholder="Ej: Buenos Aires"
+                value={location}
+                onChange={(e) => setLocation(e.target.value)}
+              />
 
               {/* Dormitorios */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Dormitorios
-                </label>
-                <select 
-                  value={bedrooms}
-                  onChange={(e) => setBedrooms(e.target.value)}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-[#14b8a6] focus:border-transparent bg-white text-gray-900 [color-scheme:light]"
-                >
-                  <option value="">Todos</option>
-                  <option value="1">1</option>
-                  <option value="2">2</option>
-                  <option value="3">3</option>
-                  <option value="4">4+</option>
-                </select>
-              </div>
+              <FormSelect
+                label="Dormitorios"
+                value={bedrooms}
+                onChange={(e) => setBedrooms(e.target.value)}
+              >
+                <option value="">Todos</option>
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4+</option>
+              </FormSelect>
 
               {/* Baños */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Baños
-                </label>
-                <select 
-                  value={bathrooms}
-                  onChange={(e) => setBathrooms(e.target.value)}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-[#14b8a6] focus:border-transparent bg-white text-gray-900 [color-scheme:light]"
-                >
-                  <option value="">Todos</option>
-                  <option value="1">1</option>
-                  <option value="2">2</option>
-                  <option value="3">3</option>
-                  <option value="4">4+</option>
-                </select>
-              </div>
+              <FormSelect
+                label="Baños"
+                value={bathrooms}
+                onChange={(e) => setBathrooms(e.target.value)}
+              >
+                <option value="">Todos</option>
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4+</option>
+              </FormSelect>
 
               {/* Barrio */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Barrio
-                </label>
-                <input
-                  type="text"
-                  placeholder="Ej: Palermo"
-                  value={neighborhood}
-                  onChange={(e) => setNeighborhood(e.target.value)}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-[#14b8a6] focus:border-transparent bg-white text-gray-900 placeholder-gray-500 [color-scheme:light]"
-                />
-              </div>
+              <FormInput
+                label="Barrio"
+                type="text"
+                placeholder="Ej: Palermo"
+                value={neighborhood}
+                onChange={(e) => setNeighborhood(e.target.value)}
+              />
 
               {/* Precio */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Precio
+                  Precio {activeTab === 'alquilar' ? '(ARS)' : '(USD)'}
                 </label>
                 <div className="flex gap-2">
-                  <input
+                  <FormInput
+                    label=""
                     type="number"
                     placeholder="Mín"
                     value={minPrice}
                     onChange={handleMinPriceChange}
                     min="0"
-                    className="w-1/2 px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-[#14b8a6] focus:border-transparent bg-white text-gray-900 placeholder-gray-500 [color-scheme:light]"
                   />
-                  <input
+                  <FormInput
+                    label=""
                     type="number"
                     placeholder="Máx"
                     value={maxPrice}
                     onChange={handleMaxPriceChange}
                     min="0"
-                    className="w-1/2 px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-[#14b8a6] focus:border-transparent bg-white text-gray-900 placeholder-gray-500 [color-scheme:light]"
                   />
                 </div>
                 {minPrice && maxPrice && parseFloat(minPrice) > parseFloat(maxPrice) && (

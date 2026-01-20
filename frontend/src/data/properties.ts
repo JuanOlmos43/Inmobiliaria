@@ -3,13 +3,16 @@ export interface Property {
   id: number;
   title: string;
   price: number;
+  currency: 'USD' | 'ARS'; // Moneda del precio
   location: string;
   bedrooms: number;
+  rooms: number; // Ambientes
   bathrooms: number;
   area: number;
   type: 'venta' | 'alquiler';
   propertyType: string;
   image: string;
+  images?: string[]; // Array de imágenes adicionales para el carrusel
   description?: string;
   features?: string[];
   yearBuilt?: number | null;
@@ -22,13 +25,16 @@ export const allProperties: Property[] = [
     id: 1,
     title: 'Casa + Local Comercial',
     price: 98000,
+    currency: 'USD',
     location: 'Blas Parera 272',
     bedrooms: 4,
+    rooms: 6,
     bathrooms: 3,
     area: 400,
     type: 'venta',
     propertyType: 'casa',
     image: '/property1.png',
+    images: ['/property1_img1.png', '/property1_img2.png', '/property1_img3.png'],
     description: 'Excelente propiedad con local comercial en planta baja y vivienda en planta alta. Ideal para inversión o uso mixto. Ubicada en zona céntrica con alto tránsito peatonal.',
     features: [
       'Cochera para 2 vehículos',
@@ -45,8 +51,10 @@ export const allProperties: Property[] = [
     id: 2,
     title: 'Casa premium a estrenar',
     price: 255000,
+    currency: 'USD',
     location: 'López Jordán y Carlos Darwin',
     bedrooms: 3,
+    rooms: 5,
     bathrooms: 3,
     area: 240,
     type: 'venta',
@@ -68,8 +76,10 @@ export const allProperties: Property[] = [
     id: 3,
     title: 'Terreno vista del Norte',
     price: 39000,
+    currency: 'USD',
     location: 'Paraná',
     bedrooms: 0,
+    rooms: 0,
     bathrooms: 0,
     area: 450,
     type: 'venta',
@@ -90,9 +100,11 @@ export const allProperties: Property[] = [
   {
     id: 4,
     title: 'Departamento 2 ambientes',
-    price: 850,
+    price: 850000,
+    currency: 'ARS',
     location: 'Centro, Buenos Aires',
     bedrooms: 1,
+    rooms: 2,
     bathrooms: 1,
     area: 45,
     type: 'alquiler',
@@ -112,9 +124,11 @@ export const allProperties: Property[] = [
   {
     id: 5,
     title: 'Duplex moderno amoblado',
-    price: 1200,
+    price: 1200000,
+    currency: 'ARS',
     location: 'Palermo, Buenos Aires',
     bedrooms: 2,
+    rooms: 4,
     bathrooms: 2,
     area: 85,
     type: 'alquiler',
@@ -136,8 +150,10 @@ export const allProperties: Property[] = [
     id: 6,
     title: 'Terreno',
     price: 51000,
+    currency: 'USD',
     location: 'Miguel Lanús y Cicles Tanah',
     bedrooms: 0,
+    rooms: 0,
     bathrooms: 0,
     area: 875,
     type: 'venta',
@@ -159,8 +175,10 @@ export const allProperties: Property[] = [
     id: 7,
     title: 'Departamento',
     price: 320000,
+    currency: 'USD',
     location: 'Guzmán 333',
     bedrooms: 2,
+    rooms: 3,
     bathrooms: 1,
     area: 83,
     type: 'venta',
@@ -181,8 +199,10 @@ export const allProperties: Property[] = [
     id: 8,
     title: 'Casa',
     price: 64000,
+    currency: 'USD',
     location: 'Montevideo 903',
     bedrooms: 2,
+    rooms: 4,
     bathrooms: 1,
     area: 161,
     type: 'venta',
@@ -203,8 +223,10 @@ export const allProperties: Property[] = [
     id: 9,
     title: 'Casa',
     price: 64000,
+    currency: 'USD',
     location: 'Montevideo 1111',
     bedrooms: 2,
+    rooms: 4,
     bathrooms: 1,
     area: 180,
     type: 'venta',
@@ -225,8 +247,10 @@ export const allProperties: Property[] = [
     id: 10,
     title: 'Monoambiente',
     price: 64000,
+    currency: 'USD',
     location: 'video 11121',
     bedrooms: 1,
+    rooms: 1,
     bathrooms: 1,
     area: 180,
     type: 'venta',
