@@ -5,6 +5,13 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import FormInput from '@/components/FormInput';
 
+interface User {
+  email: string;
+  password: string;
+  status: string;
+  role: 'tenant' | 'landlord' | 'agent' | 'owner';
+}
+
 export default function LoginPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -82,7 +89,7 @@ export default function LoginPage() {
     if (storedUsers) {
       try {
         const users = JSON.parse(storedUsers);
-        const user = users.find((u: any) => u.email === email && u.password === password);
+        const user = users.find((u: User) => u.email === email && u.password === password);
         
         if (user && user.status === 'active') {
           localStorage.setItem('isAuthenticated', 'true');

@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import Icon from '@/components/Icon';
 import DashboardHeader from '@/components/DashboardHeader';
 
 import UniversalPropertyCard from '@/components/UniversalPropertyCard';

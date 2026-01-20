@@ -1,11 +1,11 @@
 'use client';
 
-import Icon from './Icon';
+import Icon, { IconName } from './Icon';
 
 interface DashboardHeaderProps {
   title: string;
   userEmail: string;
-  icon: string;
+  icon: IconName;
   onLogout: () => void;
 }
 
@@ -21,7 +21,7 @@ export default function DashboardHeader({
         <div className="flex justify-between items-center">
           {/* Left side - Title and User */}
           <div className="flex items-center gap-3">
-            <Icon name={icon as any} className="w-8 h-8 text-[#14b8a6]" />
+            <Icon name={icon} className="w-8 h-8 text-[#14b8a6]" />
             <div>
               <h1 className="text-2xl font-bold text-[#14b8a6]">{title}</h1>
               <p className="text-sm text-gray-300">Bienvenido, {userEmail}</p>

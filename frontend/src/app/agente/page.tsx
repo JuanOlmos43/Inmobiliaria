@@ -906,7 +906,7 @@ function PropertyModal({
             )}
             
             {landlords.length === 0 && (
-              <p className="text-sm text-amber-600 mt-1">No hay propietarios disponibles. El administrador debe crear usuarios con rol "Propietario".</p>
+              <p className="text-sm text-amber-600 mt-1">No hay propietarios disponibles. El administrador debe crear usuarios con rol: Propietario.</p>
             )}
             
             {formData.landlordEmail && (
@@ -1392,7 +1392,7 @@ function RentalModal({
             )}
             
             {tenants.length === 0 && (
-              <p className="text-sm text-amber-600 mt-1">No hay inquilinos disponibles. El administrador debe crear usuarios con rol "Inquilino".</p>
+              <p className="text-sm text-amber-600 mt-1">No hay inquilinos disponibles. El administrador debe crear usuarios con rol: Inquilino.</p>
             )}
             
             {selectedTenant && (
