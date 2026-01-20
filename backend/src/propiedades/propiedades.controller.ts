@@ -18,7 +18,7 @@ import { QueryPropiedadesDto } from './dto/query-propiedades.dto';
 @Controller('propiedades')
 @UsePipes(new ValidationPipe({ transform: true, whitelist: true }))
 export class PropiedadesController {
-  constructor(private readonly propiedadesService: PropiedadesService) { }
+  constructor(private readonly propiedadesService: PropiedadesService) {}
 
   @Post()
   create(@Body() createPropiedadeDto: CreatePropiedadeDto) {

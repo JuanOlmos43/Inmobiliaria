@@ -22,7 +22,7 @@ import {
 @Controller('ubicaciones')
 @UsePipes(new ValidationPipe({ transform: true, whitelist: true }))
 export class UbicacionesController {
-  constructor(private readonly ubicacionesService: UbicacionesService) { }
+  constructor(private readonly ubicacionesService: UbicacionesService) {}
 
   // ==========================================
   // PROVINCIAS
@@ -110,10 +110,7 @@ export class UbicacionesController {
   }
 
   @Patch('calles/:id')
-  updateCalle(
-    @Param('id') id: string,
-    @Body() updateCalleDto: UpdateCalleDto,
-  ) {
+  updateCalle(@Param('id') id: string, @Body() updateCalleDto: UpdateCalleDto) {
     return this.ubicacionesService.updateCalle(id, updateCalleDto);
   }
 

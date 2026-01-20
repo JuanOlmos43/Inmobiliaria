@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import Icon from '@/components/Icon';
+import Icon, { IconName } from '@/components/Icon';
 import DashboardHeader from '@/components/DashboardHeader';
 import UniversalPropertyCard from '@/components/UniversalPropertyCard';
 import FormInput from '@/components/FormInput';
@@ -622,7 +622,7 @@ function StatsCard({
   color: string;
   trend?: string;
   trendUp?: boolean;
-  icon: string;
+  icon: IconName;
 }) {
   return (
     <div className={`bg-gradient-to-br ${color} rounded-xl shadow-lg p-6 text-white transform hover:scale-105 transition-transform duration-300`}>
@@ -633,7 +633,7 @@ function StatsCard({
           </div>
         )}
         <div className="opacity-80">
-          <Icon name={icon as any} className="w-8 h-8" />
+          <Icon name={icon} className="w-8 h-8" />
         </div>
       </div>
       <p className="text-sm opacity-90 mb-1">{title}</p>

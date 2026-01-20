@@ -19,15 +19,15 @@ export default function Pagination({
     const pages: (number | string)[] = [];
     
     if (totalPages <= maxVisiblePages) {
-      // Show all pages if total is less than max
+      // Mostrar todas las páginas si el total es menor que el máximo
       for (let i = 1; i <= totalPages; i++) {
         pages.push(i);
       }
     } else {
-      // Always show first page
+      // Siempre mostrar la primera página
       pages.push(1);
       
-      // Calculate range around current page
+      // Calcular rango alrededor de la página actual
       const leftSiblingIndex = Math.max(currentPage - 1, 2);
       const rightSiblingIndex = Math.min(currentPage + 1, totalPages - 1);
       
@@ -35,19 +35,19 @@ export default function Pagination({
       const shouldShowRightDots = rightSiblingIndex < totalPages - 1;
       
       if (!shouldShowLeftDots && shouldShowRightDots) {
-        // Show pages from start
+        // Mostrar páginas desde el inicio
         for (let i = 2; i < Math.min(maxVisiblePages - 1, totalPages); i++) {
           pages.push(i);
         }
         pages.push('...');
       } else if (shouldShowLeftDots && !shouldShowRightDots) {
-        // Show pages from end
+        // Mostrar páginas desde el final
         pages.push('...');
         for (let i = Math.max(totalPages - maxVisiblePages + 3, 2); i < totalPages; i++) {
           pages.push(i);
         }
       } else if (shouldShowLeftDots && shouldShowRightDots) {
-        // Show pages around current
+        // Mostrar páginas alrededor de la actual
         pages.push('...');
         for (let i = leftSiblingIndex; i <= rightSiblingIndex; i++) {
           pages.push(i);
@@ -55,7 +55,7 @@ export default function Pagination({
         pages.push('...');
       }
       
-      // Always show last page
+      // Siempre mostrar la última página
       pages.push(totalPages);
     }
     

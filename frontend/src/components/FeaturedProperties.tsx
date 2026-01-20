@@ -22,12 +22,12 @@ export default function FeaturedProperties() {
   useEffect(() => {
     if (!isPaused) {
       const interval = setInterval(() => {
-        handleNext();
+        setCurrentIndex((prev) => (prev >= maxIndex ? 0 : prev + 1));
       }, 5000); // Cambia cada 5 segundos
 
       return () => clearInterval(interval);
     }
-  }, [currentIndex, isPaused]);
+  }, [isPaused, maxIndex]);
 
   return (
     <section className="pb-12 bg-gradient-to-b from-[#0f172a] via-[#0f172a] to-[#1e293b]">

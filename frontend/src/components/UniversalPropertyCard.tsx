@@ -178,8 +178,8 @@ export default function UniversalPropertyCard({
           
           {/* Badges - Top Right */}
           <div className="absolute top-4 right-4 flex flex-col gap-2">
-            {/* Type Badge (Venta/Alquiler) - SIEMPRE visible si existe */}
-            {property.type && (
+            {/* Type Badge (Venta/Alquiler) */}
+            {showTypeBadge && property.type && (
               <span className="bg-gradient-to-r from-[#14b8a6] to-[#0d9488] text-white px-4 py-2 rounded-full text-sm font-bold shadow-lg backdrop-blur-sm">
                 {property.type}
               </span>

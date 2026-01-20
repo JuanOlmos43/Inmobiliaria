@@ -7,7 +7,7 @@ import { Prisma } from '@prisma/client';
 
 @Injectable()
 export class PropiedadesService {
-  constructor(private prisma: PrismaService) { }
+  constructor(private prisma: PrismaService) {}
 
   async create(createPropiedadeDto: CreatePropiedadeDto) {
     return this.prisma.property.create({
@@ -212,4 +212,3 @@ export class PropiedadesService {
     });
   }
 }
-

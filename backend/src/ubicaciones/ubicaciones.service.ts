@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException, ConflictException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  ConflictException,
+} from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateProvinciaDto } from './dto/create-provincia.dto';
 import { CreateLocalidadDto } from './dto/create-localidad.dto';
@@ -11,7 +15,7 @@ import {
 
 @Injectable()
 export class UbicacionesService {
-  constructor(private prisma: PrismaService) { }
+  constructor(private prisma: PrismaService) {}
 
   // ==========================================
   // PROVINCIAS

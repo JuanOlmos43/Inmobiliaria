@@ -43,7 +43,7 @@ export default function AdminDashboardPage() {
   const [searchTerm, setSearchTerm] = useState('');
   const [filterRole, setFilterRole] = useState<string>('all');
   
-  // Form states
+  // Estados del formulario
   const [formData, setFormData] = useState({
     email: '',
     password: '',
