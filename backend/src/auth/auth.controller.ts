@@ -24,7 +24,7 @@ import { UserRole } from '@prisma/client';
 
 @Controller('auth')
 export class AuthController {
-  constructor(private authService: AuthService) {}
+  constructor(private authService: AuthService) { }
 
   /**
    * POST /auth/login
@@ -44,6 +44,15 @@ export class AuthController {
       sameSite: 'strict',
       maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
       path: '/auth/refresh', // Only sent to refresh endpoint
+    });
+
+    // Set access token in httpOnly cookie
+    res.cookie('access_token', tokens.access_token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production', // HTTPS only in production
+      sameSite: 'strict',
+      maxAge: 15 * 60 * 1000, // 15 minutes
+      path: '/', // Sent to all endpoints
     });
 
     return {
