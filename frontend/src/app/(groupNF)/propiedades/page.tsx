@@ -4,8 +4,8 @@ import { useState, useEffect } from 'react';
 import { useSearchParams } from 'next/navigation';
 import UniversalPropertyCard from '@/components/UniversalPropertyCard';
 import PropertyFilters, { PropertyFiltersState } from '@/components/PropertyFilters';
-import EmptyState from '@/components/EmptyState';
-import Pagination from '@/components/Pagination';
+import EmptyState from '@/components/UI/EmptyState';
+import Pagination from '@/components/UI/Pagination';
 import HeroSection from '@/components/HeroSection';
 import { allProperties } from '@/data/properties';
 
@@ -48,6 +48,11 @@ export default function PropiedadesPage() {
   useEffect(() => {
     setCurrentPage(1);
   }, [appliedFilters]);
+
+  // Scroll hacia arriba cuando cambia la página
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }, [currentPage]);
 
   // Filtrar propiedades con los filtros aplicados
   const filteredProperties = allProperties.filter((property) => {

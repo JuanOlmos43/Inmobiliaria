@@ -19,7 +19,7 @@ export default function FormSelect({
   const baseClasses = "w-full px-4 py-2 border rounded-lg transition-all duration-300";
   
   const themeClasses = theme === 'light' 
-    ? "border-gray-300 bg-white text-gray-900 focus:ring-2 focus:ring-[#14b8a6] focus:border-transparent [color-scheme:light]"
+    ? "border-gray-300 bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#14b8a6] focus:border-transparent [color-scheme:light]"
     : "bg-white/10 border-white/30 text-white focus:outline-none focus:ring-2 focus:ring-[#14b8a6] focus:border-transparent";
 
   const labelClasses = theme === 'light'

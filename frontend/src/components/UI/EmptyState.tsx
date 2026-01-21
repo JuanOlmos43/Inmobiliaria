@@ -56,7 +56,7 @@ export default function EmptyState({
       {actionLabel && onAction && (
         <button
           onClick={onAction}
-          className="bg-gradient-to-r from-[#0f172a] to-[#334155] hover:from-[#334155] hover:to-[#0f172a] text-white font-bold py-3 px-8 rounded-full transition-all duration-300 shadow-xl hover:shadow-2xl transform hover:-translate-y-1 hover:scale-105 inline-flex items-center justify-center gap-2"
+          className="bg-[#0f172a] hover:bg-[#334155] text-white font-bold py-3 px-8 rounded-full transition-all duration-300 shadow-xl hover:shadow-2xl transform hover:-translate-y-1 hover:scale-105 inline-flex items-center justify-center gap-2"
         >
           {actionIcon && actionIcon}
           {actionLabel}

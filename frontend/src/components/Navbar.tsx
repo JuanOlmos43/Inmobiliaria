@@ -16,12 +16,12 @@ export default function Navbar() {
   };
 
   return (
-    <nav className="bg-gradient-to-r from-[#0f172a] via-[#0f172a] to-[#1e293b] shadow-xl sticky top-0 z-50 backdrop-blur-sm bg-opacity-95">
+    <nav className="bg-[#0f172a] shadow-xl sticky top-0 z-50 backdrop-blur-sm bg-opacity-95">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-20">
           {/* Logo */}
           <div className="flex-shrink-0">
-            <Link href="/" className="flex items-center gap-3 text-3xl font-bold bg-gradient-to-r from-[#14b8a6] to-[#2dd4bf] bg-clip-text text-transparent hover:from-[#2dd4bf] hover:to-[#14b8a6] transition-all duration-300 transform hover:scale-105">
+            <Link href="/" className="flex items-center gap-3 text-3xl font-bold text-[#14b8a6] hover:text-[#2dd4bf] transition-all duration-300 transform hover:scale-105">
               <Image 
                 src="/icon.png" 
                 alt="InmoHogar Logo" 
@@ -40,34 +40,34 @@ export default function Navbar() {
               className="relative px-4 py-2 text-white hover:text-[#14b8a6] transition-colors font-medium group"
             >
               Inicio
-              <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-[#14b8a6] to-[#0d9488] group-hover:w-full transition-all duration-300"></span>
+              <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-[#14b8a6] group-hover:w-full transition-all duration-300"></span>
             </Link>
             <Link 
               href="/propiedades" 
               className="relative px-4 py-2 text-white hover:text-[#14b8a6] transition-colors font-medium group"
             >
               Propiedades
-              <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-[#14b8a6] to-[#0d9488] group-hover:w-full transition-all duration-300"></span>
+              <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-[#14b8a6] group-hover:w-full transition-all duration-300"></span>
             </Link>
             <Link 
               href="/nosotros" 
               className="relative px-4 py-2 text-white hover:text-[#14b8a6] transition-colors font-medium group"
             >
               Nosotros
-              <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-[#14b8a6] to-[#0d9488] group-hover:w-full transition-all duration-300"></span>
+              <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-[#14b8a6] group-hover:w-full transition-all duration-300"></span>
             </Link>
             <Link 
               href="/contacto" 
               className="relative px-4 py-2 text-white hover:text-[#14b8a6] transition-colors font-medium group"
             >
               Contacto
-              <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-[#14b8a6] to-[#0d9488] group-hover:w-full transition-all duration-300"></span>
+              <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-[#14b8a6] group-hover:w-full transition-all duration-300"></span>
             </Link>
             
             {/* Login Button */}
             <Link 
               href="/login"
-              className="ml-6 px-8 py-3 bg-gradient-to-r from-[#14b8a6] to-[#0d9488] text-white font-bold rounded-full hover:from-[#0d9488] hover:to-[#0f766e] transition-all duration-300 shadow-lg hover:shadow-2xl transform hover:-translate-y-1 hover:scale-105"
+              className="ml-6 px-8 py-3 bg-[#14b8a6] text-white font-bold rounded-full hover:bg-[#0d9488] transition-all duration-300 shadow-lg hover:shadow-2xl transform hover:-translate-y-1 hover:scale-105"
             >
               Iniciar Sesión
             </Link>
@@ -100,7 +100,7 @@ export default function Navbar() {
           isMenuOpen ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'
         }`}
       >
-        <div className="px-4 pt-2 pb-6 space-y-2 bg-gradient-to-b from-[#1e293b] to-[#0f172a]">
+        <div className="px-4 pt-2 pb-6 space-y-2 bg-[#0f172a]">
           <Link 
             href="/" 
             onClick={closeMenu}
@@ -132,7 +132,7 @@ export default function Navbar() {
           <Link 
             href="/login"
             onClick={closeMenu}
-            className="block mt-4 px-6 py-3 bg-gradient-to-r from-[#14b8a6] to-[#0d9488] text-white font-bold rounded-full hover:from-[#0d9488] hover:to-[#0f766e] transition-all duration-300 shadow-lg text-center"
+            className="block mt-4 px-6 py-3 bg-[#14b8a6] text-white font-bold rounded-full hover:bg-[#0d9488] transition-all duration-300 shadow-lg text-center"
           >
             Iniciar Sesión
           </Link>

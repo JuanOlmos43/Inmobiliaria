@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import Icon from '@/components/Icon';
+import Icon from '@/components/UI/Icon';
 
 // Tipos
 export interface UniversalPropertyData {
@@ -149,7 +149,7 @@ export default function UniversalPropertyCard({
   // Contenido de la card
   const CardContent = (
     <>
-      <div className="bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-2xl transition-all duration-500 border border-gray-100 hover:border-[#14b8a6] transform hover:-translate-y-2 animate-scale-in">
+      <div className="bg-white rounded-2xl shadow-xl overflow-hidden hover:shadow-2xl transition-all duration-500 border border-gray-100 hover:border-[#14b8a6] transform hover:-translate-y-2 animate-scale-in">
         {/* Image */}
         <div className="relative h-56 bg-gradient-to-br from-gray-100 to-gray-200 overflow-hidden">
           {property.image ? (
@@ -180,7 +180,7 @@ export default function UniversalPropertyCard({
           <div className="absolute top-4 right-4 flex flex-col gap-2">
             {/* Type Badge (Venta/Alquiler) */}
             {showTypeBadge && property.type && (
-              <span className="bg-gradient-to-r from-[#14b8a6] to-[#0d9488] text-white px-4 py-2 rounded-full text-sm font-bold shadow-lg backdrop-blur-sm">
+              <span className="bg-[#14b8a6] text-white px-4 py-2 rounded-full text-sm font-bold shadow-lg backdrop-blur-sm">
                 {property.type}
               </span>
             )}
@@ -205,7 +205,7 @@ export default function UniversalPropertyCard({
           </h3>
 
           {/* Price */}
-          <p className="text-2xl font-bold bg-gradient-to-r from-[#0f172a] to-[#334155] bg-clip-text text-transparent mb-4">
+          <p className="text-2xl font-bold text-[#0f172a] mb-4">
             {property.currency || 'USD'} {property.price.toLocaleString('es-AR')}
             {property.type === 'Alquiler' && (
               <span className="text-sm text-gray-500 font-normal ml-1">/mes</span>
@@ -283,7 +283,7 @@ export default function UniversalPropertyCard({
           {viewerRole && actions.length === 0 && (
             <button
               onClick={handleCardClick}
-              className="w-full px-4 py-3 bg-gradient-to-r from-[#14b8a6] to-[#0d9488] text-white font-semibold rounded-lg hover:from-[#0d9488] hover:to-[#0f766e] transition-all duration-300 shadow-md hover:shadow-lg flex items-center justify-center gap-2 mt-4"
+              className="w-full px-4 py-3 bg-[#14b8a6] text-white font-semibold rounded-lg hover:bg-[#0d9488] transition-all duration-300 shadow-md hover:shadow-lg flex items-center justify-center gap-2 mt-4"
             >
               <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />

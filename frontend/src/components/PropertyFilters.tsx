@@ -1,8 +1,8 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import FormSelect from './FormSelect';
-import FormInput from './FormInput';
+import FormSelect from '@/components/UI/FormSelect';
+import FormInput from '@/components/UI/FormInput';
 
 export interface PropertyFiltersState {
   operationType: 'todos' | 'venta' | 'alquiler';
@@ -148,7 +148,7 @@ export default function PropertyFilters({
         {/* Botón Buscar */}
         <button
           onClick={handleSearch}
-          className="w-full bg-gradient-to-r from-[#0f172a] to-[#334155] hover:from-[#334155] hover:to-[#0f172a] text-white font-bold py-3 px-4 rounded-lg transition-all duration-300 mb-3 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 flex items-center justify-center gap-2"
+          className="w-full bg-[#0f172a] hover:bg-[#334155] text-white font-bold py-3 px-4 rounded-lg transition-all duration-300 mb-3 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 flex items-center justify-center gap-2"
         >
           <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
@@ -159,7 +159,7 @@ export default function PropertyFilters({
         {/* Botón Limpiar filtros */}
         <button
           onClick={handleReset}
-          className="w-full bg-gradient-to-r from-gray-100 to-gray-200 hover:from-gray-200 hover:to-gray-300 text-gray-700 font-bold py-3 px-4 rounded-lg transition-all duration-300 shadow-md hover:shadow-lg flex items-center justify-center gap-2"
+          className="w-full bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold py-3 px-4 rounded-lg transition-all duration-300 shadow-md hover:shadow-lg flex items-center justify-center gap-2"
         >
           <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />

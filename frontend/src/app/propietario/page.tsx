@@ -51,18 +51,23 @@ export default function LandlordDashboardPage() {
 
   // Verificar autenticación y rol
   useEffect(() => {
-    const isAuth = localStorage.getItem('isAuthenticated');
+    // const isAuth = localStorage.getItem('isAuthenticated');
     const email = localStorage.getItem('userEmail');
-    const role = localStorage.getItem('userRole');
+    // const role = localStorage.getItem('userRole');
     
-    if (!isAuth || isAuth !== 'true' || role !== 'landlord') {
-      router.push('/login');
-    } else {
-      setUserEmail(email || '');
-      loadRentals();
-      loadProperties();
-    }
+    // if (!isAuth || isAuth !== 'true' || role !== 'landlord') {
+    //   router.push('/login');
+    // } else {
+      setUserEmail(email || 'propietario@demo.com');
+    // }
   }, [router]);
+
+  // Cargar datos al montar el componente
+  useEffect(() => {
+    loadRentals();
+    loadProperties();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const loadRentals = () => {
     // Datos de ejemplo - rentas donde el propietario es inquilino

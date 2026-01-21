@@ -34,17 +34,22 @@ export default function TenantDashboardPage() {
 
   // Verificar autenticación y rol
   useEffect(() => {
-    const isAuth = localStorage.getItem('isAuthenticated');
+    // const isAuth = localStorage.getItem('isAuthenticated');
     const email = localStorage.getItem('userEmail');
-    const role = localStorage.getItem('userRole');
+    // const role = localStorage.getItem('userRole');
     
-    if (!isAuth || isAuth !== 'true' || role !== 'tenant') {
-      router.push('/login');
-    } else {
-      setUserEmail(email || '');
-      loadRentals();
-    }
+    // if (!isAuth || isAuth !== 'true' || role !== 'tenant') {
+    //   router.push('/login');
+    // } else {
+      setUserEmail(email || 'inquilino@demo.com');
+    // }
   }, [router]);
+
+  // Cargar datos al montar el componente
+  useEffect(() => {
+    loadRentals();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const loadRentals = () => {
     // Datos de ejemplo - en producción vendrían de una API

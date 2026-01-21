@@ -1,6 +1,6 @@
 'use client';
 
-import Icon, { IconName } from './Icon';
+import Icon, { IconName } from '@/components/UI/Icon';
 
 interface DashboardHeaderProps {
   title: string;
@@ -16,7 +16,7 @@ export default function DashboardHeader({
   onLogout
 }: DashboardHeaderProps) {
   return (
-    <header className="bg-gradient-to-r from-[#0f172a] to-[#1e293b] shadow-lg sticky top-0 z-40">
+    <header className="bg-[#0f172a] shadow-lg sticky top-0 z-40">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
         <div className="flex justify-between items-center">
           {/* Left side - Title and User */}

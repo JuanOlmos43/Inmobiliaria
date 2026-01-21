@@ -2,11 +2,11 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import Icon, { IconName } from '@/components/Icon';
+import Icon, { IconName } from '@/components/UI/Icon';
 import DashboardHeader from '@/components/DashboardHeader';
 import UniversalPropertyCard from '@/components/UniversalPropertyCard';
-import FormInput from '@/components/FormInput';
-import FormSelect from '@/components/FormSelect';
+import FormInput from '@/components/UI/FormInput';
+import FormSelect from '@/components/UI/FormSelect';
 
 // Tipos
 interface Property {
@@ -46,17 +46,21 @@ export default function DashboardPage() {
 
   // Verificar autenticación
   useEffect(() => {
-    const isAuth = localStorage.getItem('isAuthenticated');
+    // const isAuth = localStorage.getItem('isAuthenticated');
     const email = localStorage.getItem('userEmail');
     
-    if (!isAuth || isAuth !== 'true') {
-      router.push('/login');
-    } else {
-      setUserEmail(email || '');
-      // Cargar propiedades de ejemplo
-      loadSampleProperties();
-    }
+    // if (!isAuth || isAuth !== 'true') {
+    //   router.push('/login');
+    // } else {
+      setUserEmail(email || 'agente@demo.com');
+    // }
   }, [router]);
+
+  // Cargar propiedades de ejemplo al montar el componente
+  useEffect(() => {
+    loadSampleProperties();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const loadSampleProperties = () => {
     const sampleProperties: Property[] = [
@@ -287,7 +291,7 @@ export default function DashboardPage() {
                     
                     <button
                       onClick={handleAddProperty}
-                      className="px-6 py-3 bg-gradient-to-r from-[#14b8a6] to-[#0d9488] text-white font-semibold rounded-lg hover:from-[#0d9488] hover:to-[#0f766e] transition-all duration-300 shadow-lg hover:shadow-xl flex items-center gap-2 whitespace-nowrap"
+                      className="px-6 py-3 bg-[#14b8a6] text-white font-semibold rounded-lg hover:bg-[#0d9488] transition-all duration-300 shadow-lg hover:shadow-xl flex items-center gap-2 whitespace-nowrap"
                     >
                       <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
@@ -308,7 +312,7 @@ export default function DashboardPage() {
                   <p className="text-gray-500 mb-6">Comienza agregando tu primera propiedad</p>
                   <button
                     onClick={handleAddProperty}
-                    className="px-6 py-3 bg-gradient-to-r from-[#14b8a6] to-[#0d9488] text-white font-semibold rounded-lg hover:from-[#0d9488] hover:to-[#0f766e] transition-all duration-300 flex items-center gap-2 mx-auto"
+                    className="px-6 py-3 bg-[#14b8a6] text-white font-semibold rounded-lg hover:bg-[#0d9488] transition-all duration-300 flex items-center gap-2 mx-auto"
                   >
                     <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
@@ -1174,7 +1178,7 @@ function PropertyModal({
             </button>
             <button
               type="submit"
-              className="flex-1 px-6 py-3 bg-gradient-to-r from-[#14b8a6] to-[#0d9488] text-white font-semibold rounded-lg hover:from-[#0d9488] hover:to-[#0f766e] transition-all duration-300 shadow-lg hover:shadow-xl"
+              className="flex-1 px-6 py-3 bg-[#14b8a6] text-white font-semibold rounded-lg hover:bg-[#0d9488] transition-all duration-300 shadow-lg hover:shadow-xl"
             >
               {property ? 'Guardar Cambios' : 'Crear Propiedad'}
             </button>
@@ -1498,7 +1502,7 @@ function RentalModal({
             </button>
             <button
               type="submit"
-              className="flex-1 px-6 py-3 bg-gradient-to-r from-[#14b8a6] to-[#0d9488] text-white font-semibold rounded-lg hover:from-[#0d9488] hover:to-[#0f766e] transition-all duration-300 shadow-lg hover:shadow-xl"
+              className="flex-1 px-6 py-3 bg-[#14b8a6] text-white font-semibold rounded-lg hover:bg-[#0d9488] transition-all duration-300 shadow-lg hover:shadow-xl"
             >
               Crear Contrato
             </button>

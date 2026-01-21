@@ -2,8 +2,8 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import FormSelect from './FormSelect';
-import FormInput from './FormInput';
+import FormSelect from '@/components/UI/FormSelect';
+import FormInput from '@/components/UI/FormInput';
 
 export default function SearchBlock() {
   const router = useRouter();
@@ -62,7 +62,7 @@ export default function SearchBlock() {
               onClick={() => setActiveTab('alquilar')}
               className={`flex-1 py-5 px-6 text-center font-bold transition-all duration-300 ${
                 activeTab === 'alquilar'
-                  ? 'bg-gradient-to-r from-[#14b8a6] to-[#0d9488] text-white shadow-lg'
+                  ? 'bg-[#14b8a6] text-white shadow-lg'
                   : 'bg-gray-50 text-gray-700 hover:bg-gray-100'
               }`}
             >
@@ -72,7 +72,7 @@ export default function SearchBlock() {
               onClick={() => setActiveTab('venta')}
               className={`flex-1 py-5 px-6 text-center font-bold transition-all duration-300 ${
                 activeTab === 'venta'
-                  ? 'bg-gradient-to-r from-[#14b8a6] to-[#0d9488] text-white shadow-lg'
+                  ? 'bg-[#14b8a6] text-white shadow-lg'
                   : 'bg-gray-50 text-gray-700 hover:bg-gray-100'
               }`}
             >
@@ -173,7 +173,7 @@ export default function SearchBlock() {
             <div className="flex justify-center">
               <button 
                 onClick={handleSearch}
-                className="bg-gradient-to-r from-[#0f172a] to-[#334155] hover:from-[#334155] hover:to-[#0f172a] text-white font-bold px-16 py-4 rounded-full transition-all duration-300 shadow-xl hover:shadow-2xl transform hover:-translate-y-1 hover:scale-105 flex items-center justify-center gap-2"
+                className="bg-[#0f172a] hover:bg-[#334155] text-white font-bold px-16 py-4 rounded-full transition-all duration-300 shadow-xl hover:shadow-2xl transform hover:-translate-y-1 hover:scale-105 flex items-center justify-center gap-2"
               >
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />

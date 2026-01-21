@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import Icon from '@/components/Icon';
+import Icon from '@/components/UI/Icon';
 import DashboardHeader from '@/components/DashboardHeader';
 
 // Tipos
@@ -27,15 +27,15 @@ export default function DashboardOwnerPage() {
 
   // Verificar autenticación y rol
   useEffect(() => {
-    const isAuth = localStorage.getItem('isAuthenticated');
+    // const isAuth = localStorage.getItem('isAuthenticated');
     const email = localStorage.getItem('userEmail');
-    const role = localStorage.getItem('userRole');
+    // const role = localStorage.getItem('userRole');
     
-    if (!isAuth || isAuth !== 'true' || role !== 'owner') {
-      router.push('/login');
-    } else {
-      setUserEmail(email || '');
-    }
+    // if (!isAuth || isAuth !== 'true' || role !== 'owner') {
+    //   router.push('/login');
+    // } else {
+      setUserEmail(email || 'gerencia@demo.com');
+    // }
   }, [router]);
 
   const handleLogout = () => {

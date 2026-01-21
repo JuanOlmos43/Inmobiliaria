@@ -3,10 +3,10 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import DashboardHeader from '@/components/DashboardHeader';
-import StatsCard from '@/components/StatsCard';
-import Modal from '@/components/Modal';
-import FormInput from '@/components/FormInput';
-import FormSelect from '@/components/FormSelect';
+import StatsCard from '@/components/UI/StatsCard';
+import Modal from '@/components/UI/Modal';
+import FormInput from '@/components/UI/FormInput';
+import FormSelect from '@/components/UI/FormSelect';
 
 // Tipos
 interface User {
@@ -54,17 +54,22 @@ export default function AdminDashboardPage() {
 
   // Verificar autenticación y rol
   useEffect(() => {
-    const isAuth = localStorage.getItem('isAuthenticated');
+    // const isAuth = localStorage.getItem('isAuthenticated');
     const email = localStorage.getItem('userEmail');
-    const role = localStorage.getItem('userRole');
+    // const role = localStorage.getItem('userRole');
     
-    if (!isAuth || isAuth !== 'true' || role !== 'admin') {
-      router.push('/login');
-    } else {
-      setUserEmail(email || '');
-      loadUsers();
-    }
+    // if (!isAuth || isAuth !== 'true' || role !== 'admin') {
+    //   router.push('/login');
+    // } else {
+      setUserEmail(email || 'admin@demo.com');
+    // }
   }, [router]);
+
+  // Cargar datos al montar el componente
+  useEffect(() => {
+    loadUsers();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   // Cargar usuarios desde localStorage
   const loadUsers = () => {
@@ -244,7 +249,7 @@ export default function AdminDashboardPage() {
             <h2 className="text-2xl font-bold text-[#0f172a]">Gestión de Usuarios</h2>
             <button
               onClick={handleCreateUser}
-              className="px-6 py-3 bg-gradient-to-r from-[#14b8a6] to-[#0d9488] text-white rounded-lg hover:from-[#0d9488] hover:to-[#0f766e] transition-all shadow-md hover:shadow-lg flex items-center gap-2 transform hover:scale-105"
+              className="px-6 py-3 bg-[#14b8a6] text-white rounded-lg hover:bg-[#0d9488] transition-all shadow-md hover:shadow-lg flex items-center gap-2 transform hover:scale-105"
             >
               <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
@@ -418,7 +423,7 @@ export default function AdminDashboardPage() {
             </button>
             <button
               type="submit"
-              className="flex-1 px-4 py-2 bg-gradient-to-r from-[#14b8a6] to-[#0d9488] text-white rounded-lg hover:from-[#0d9488] hover:to-[#0f766e] transition-all shadow-md hover:shadow-lg"
+              className="flex-1 px-4 py-2 bg-[#14b8a6] text-white rounded-lg hover:bg-[#0d9488] transition-all shadow-md hover:shadow-lg"
             >
               {editingUser ? 'Guardar Cambios' : 'Crear Usuario'}
             </button>
