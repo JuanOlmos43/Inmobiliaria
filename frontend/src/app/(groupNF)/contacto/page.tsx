@@ -146,7 +146,7 @@ export default function ContactoPage() {
 
           {/* Formulario de Contacto */}
           <div>
-            <div className="bg-white p-6 rounded-2xl shadow-xl">
+            <div className="bg-white p-6 rounded-2xl shadow-xl border-l-4 border-teal-500">
               <h2 className="text-2xl font-bold text-[#0f172a] mb-4">
                 Envíanos un Mensaje
               </h2>

@@ -69,7 +69,7 @@ export default function PropertyFilters({
 
   return (
     <aside className="lg:w-64 flex-shrink-0">
-      <div className="bg-white rounded-lg shadow-lg p-6 sticky top-20">
+      <div className="bg-white rounded-2xl shadow-lg p-6 sticky top-20 border-l-4 border-teal-500">
         <h2 className="text-xl font-bold text-[#0f172a] mb-6">Filtros</h2>
 
         {/* Tipo de operación */}
