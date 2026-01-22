@@ -34,8 +34,13 @@ export default function PropiedadesPage() {
     const urlMinPrice = searchParams.get('minPrice');
     const urlMaxPrice = searchParams.get('maxPrice');
 
+    // Validar que el tipo de operación sea válido
+    const isValidOperationType = (value: string | null): value is 'todos' | 'venta' | 'alquiler' => {
+      return value === 'todos' || value === 'venta' || value === 'alquiler';
+    };
+
     setAppliedFilters({
-      operationType: (urlOperationType as any) || 'todos',
+      operationType: isValidOperationType(urlOperationType) ? urlOperationType : 'todos',
       propertyType: urlPropertyType || '',
       bedrooms: urlBedrooms || '',
       bathrooms: urlBathrooms || '',

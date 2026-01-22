@@ -76,7 +76,7 @@ export default function PropertyFilters({
         <FormSelect
           label="Tipo de operación"
           value={tempOperationType}
-          onChange={(e) => setTempOperationType(e.target.value as any)}
+          onChange={(e) => setTempOperationType(e.target.value as 'todos' | 'venta' | 'alquiler')}
         >
           <option value="todos">Todos</option>
           <option value="venta">Venta</option>

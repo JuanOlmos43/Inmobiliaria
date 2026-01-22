@@ -67,7 +67,6 @@ interface UniversalPropertyCardProps {
   
   // Configuración visual
   showPropertyDetails?: boolean;  // Mostrar hab, baños, área
-  variant?: 'default' | 'compact';  // Variantes de diseño
   
   // Modal de rentas
   viewerRole?: 'tenant' | 'landlord' | 'agent';  // Para modal de detalles de renta
@@ -82,7 +81,6 @@ export default function UniversalPropertyCard({
   warningBadge,
   actions = [],
   showPropertyDetails = true,
-  variant = 'default',
   viewerRole
 }: UniversalPropertyCardProps) {
   const [showModal, setShowModal] = useState(false);
@@ -338,7 +336,7 @@ export default function UniversalPropertyCard({
                           const start = new Date(property.startDate!);
                           const end = new Date(property.endDate!);
                           const adjustmentMonths = [];
-                          let current = new Date(start);
+                          const current = new Date(start);
                           current.setFullYear(current.getFullYear() + 1);
                           
                           while (current <= end) {

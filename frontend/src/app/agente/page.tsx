@@ -32,6 +32,15 @@ interface Property {
   landlordEmail?: string;
 }
 
+interface SystemUser {
+  id: string;
+  email: string;
+  name?: string;
+  phone?: string;
+  role: 'admin' | 'agent' | 'landlord' | 'tenant';
+  status: 'active' | 'inactive';
+}
+
 export default function DashboardPage() {
   const router = useRouter();
   const [properties, setProperties] = useState<Property[]>([]);
@@ -281,7 +290,7 @@ export default function DashboardPage() {
                   <div className="flex gap-3 w-full md:w-auto">
                     <select
                       value={filterStatus}
-                      onChange={(e) => setFilterStatus(e.target.value as any)}
+                      onChange={(e) => setFilterStatus(e.target.value as 'all' | 'Activa' | 'Pausada')}
                       className="px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#14b8a6] focus:border-transparent"
                     >
                       <option value="all">Todos los estados</option>
@@ -380,9 +389,34 @@ export default function DashboardPage() {
 }
 
 // Upcoming Expirations Component
+interface RentalContract {
+  id: string;
+  propertyId?: string;
+  propertyName: string;
+  address: string;
+  monthlyRent: number;
+  bedrooms: number;
+  bathrooms: number;
+  area: number;
+  startDate: string;
+  endDate: string;
+  nextAdjustmentDate: string;
+  adjustmentPercentage: number;
+  landlordName: string;
+  landlordPhone: string;
+  landlordEmail: string;
+  tenantName: string;
+  tenantPhone: string;
+  tenantEmail: string;
+  agentName: string;
+  agentPhone: string;
+  agentEmail: string;
+  status: 'active' | 'inactive';
+}
+
 function UpcomingExpirations() {
-  const [expiringContracts, setExpiringContracts] = useState<any[]>([]);
-  const [adjustmentContracts, setAdjustmentContracts] = useState<any[]>([]);
+  const [expiringContracts, setExpiringContracts] = useState<RentalContract[]>([]);
+  const [adjustmentContracts, setAdjustmentContracts] = useState<RentalContract[]>([]);
 
   useEffect(() => {
     // Cargar contratos de alquiler del localStorage o usar datos de ejemplo
@@ -473,13 +507,13 @@ function UpcomingExpirations() {
     thirtyDaysFromNow.setDate(today.getDate() + 30);
 
     // Filtrar contratos que vencen en los próximos 30 días
-    const expiring = contracts.filter((contract: any) => {
+    const expiring = contracts.filter((contract: RentalContract) => {
       const endDate = new Date(contract.endDate);
       return endDate >= today && endDate <= thirtyDaysFromNow && contract.status === 'active';
     });
 
     // Filtrar contratos que requieren ajuste de precio en los próximos 30 días
-    const adjustments = contracts.filter((contract: any) => {
+    const adjustments = contracts.filter((contract: RentalContract) => {
       if (!contract.nextAdjustmentDate || contract.status !== 'active') return false;
       const adjustmentDate = new Date(contract.nextAdjustmentDate);
       return adjustmentDate >= today && adjustmentDate <= thirtyDaysFromNow;
@@ -740,7 +774,7 @@ function PropertyModal({
     landlordEmail: property?.landlordEmail || ''
   });
 
-  const [landlords, setLandlords] = useState<any[]>([]);
+  const [landlords, setLandlords] = useState<SystemUser[]>([]);
   const [landlordSearch, setLandlordSearch] = useState('');
   const [showLandlordDropdown, setShowLandlordDropdown] = useState(false);
   const [featureInput, setFeatureInput] = useState('');
@@ -750,7 +784,7 @@ function PropertyModal({
     const storedUsers = localStorage.getItem('systemUsers');
     if (storedUsers) {
       const users = JSON.parse(storedUsers);
-      const landlordUsers = users.filter((u: any) => u.role === 'landlord' && u.status === 'active');
+      const landlordUsers = users.filter((u: SystemUser) => u.role === 'landlord' && u.status === 'active');
       setLandlords(landlordUsers);
     }
   }, []);
@@ -762,7 +796,7 @@ function PropertyModal({
     }
   }, [property]);
 
-  const handleLandlordSelect = (landlord: any) => {
+  const handleLandlordSelect = (landlord: SystemUser) => {
     setFormData({
       ...formData,
       landlordEmail: landlord.email,
@@ -1217,22 +1251,22 @@ function RentalModal({
     status: 'active'
   });
 
-  const [tenants, setTenants] = useState<any[]>([]);
+  const [tenants, setTenants] = useState<SystemUser[]>([]);
   const [tenantSearch, setTenantSearch] = useState('');
   const [showTenantDropdown, setShowTenantDropdown] = useState(false);
-  const [selectedTenant, setSelectedTenant] = useState<any>(null);
+  const [selectedTenant, setSelectedTenant] = useState<SystemUser | null>(null);
 
   useEffect(() => {
     // Cargar inquilinos del localStorage (creados por el admin)
     const storedUsers = localStorage.getItem('systemUsers');
     if (storedUsers) {
       const users = JSON.parse(storedUsers);
-      const tenantUsers = users.filter((u: any) => u.role === 'tenant' && u.status === 'active');
+      const tenantUsers = users.filter((u: SystemUser) => u.role === 'tenant' && u.status === 'active');
       setTenants(tenantUsers);
     }
   }, []);
 
-  const handleTenantSelect = (tenant: any) => {
+  const handleTenantSelect = (tenant: SystemUser) => {
     setSelectedTenant(tenant);
     setFormData({ ...formData, tenantEmail: tenant.email });
     setTenantSearch(tenant.name || tenant.email);
@@ -1263,7 +1297,7 @@ function RentalModal({
     const start = new Date(formData.startDate);
     const end = new Date(formData.endDate);
     const adjustmentMonths = [];
-    let current = new Date(start);
+    const current = new Date(start);
     
     // Determinar el incremento según el periodo
     const incrementMonths = formData.adjustmentPeriod === 'trimestral' ? 3 
