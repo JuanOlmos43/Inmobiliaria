@@ -4,7 +4,7 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import FormInput from '@/components/UI/FormInput';
-import { loginAction } from '@/app/actions/auth';
+import { authService } from '@/lib/api/services/auth';
 
 export default function LoginPage() {
     const [email, setEmail] = useState('');
@@ -20,20 +20,15 @@ export default function LoginPage() {
         setIsLoading(true);
 
         try {
-            // Llamar a la Server Action
-            const result = await loginAction(email, password);
+            // Llamar directamente al servicio de autenticación desde el navegador
+            // Esto permite que las cookies se guarden en el navegador
+            await authService.login(email, password);
 
-            if (result.success) {
-                // Login exitoso - redirigir a la página principal
-                router.push('/');
-            } else {
-                // Mostrar error
-                setError(result.error || 'Error al iniciar sesión');
-                setIsLoading(false);
-            }
+            // Login exitoso - redirigir al dashboard
+            router.push('/dashboard');
         } catch (err) {
             console.error('Error en login:', err);
-            setError('Error inesperado. Por favor, intenta nuevamente.');
+            setError(err instanceof Error ? err.message : 'Error al iniciar sesión');
             setIsLoading(false);
         }
     };

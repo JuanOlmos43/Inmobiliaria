@@ -91,12 +91,32 @@ async function main() {
     password: 'admin123 (change this after first login!)',
   });
 
+  // Create manager user
+  const manager = await prisma.user.upsert({
+    where: { email: 'manager@inmobiliaria.com' },
+    update: {},
+    create: {
+      email: 'manager@inmobiliaria.com',
+      password: hashedPassword,
+      name: 'Gerente General',
+      role: UserRole.manager,
+      status: UserStatus.active,
+    },
+  });
+
+  console.log('✅ Manager user created:', {
+    email: manager.email,
+    role: manager.role,
+    password: 'admin123 (change this after first login!)',
+  });
+
   console.log('\n🎉 Seeding completed!');
   console.log('\n📋 Summary:');
   console.log('  - Admin:    admin@inmobiliaria.com');
   console.log('  - Agent:    agent@inmobiliaria.com');
   console.log('  - Landlord: landlord@inmobiliaria.com');
   console.log('  - Tenant:   tenant@inmobiliaria.com');
+  console.log('  - Manager:  manager@inmobiliaria.com');
   console.log('  - Password: admin123 (for all users)');
 }
 

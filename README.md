@@ -197,6 +197,67 @@ Personaliza este modelo según las necesidades de tu aplicación inmobiliaria (p
 - ✅ **Tailwind CSS** para estilos en el frontend
 - ✅ **ESLint** para calidad de código
 - ✅ **Hot-reload** en desarrollo para ambos proyectos
+- ✅ **Autenticación JWT** con Passport.js y cookies httpOnly
+- ✅ **Protección CSRF** mediante cookies sameSite
+
+## 🔒 Seguridad y Despliegue a Producción
+
+### Configuración de Cookies (Importante)
+
+El proyecto usa **cookies httpOnly** para almacenar tokens de autenticación. La configuración actual está optimizada para **desarrollo local** (frontend y backend en diferentes puertos).
+
+**Para producción**, asegúrate de configurar las siguientes variables de entorno:
+
+#### Backend (`backend/.env`)
+
+```env
+NODE_ENV=production
+FRONTEND_URL=https://tu-dominio.com
+```
+
+#### Comportamiento automático según entorno:
+
+| Configuración | Desarrollo | Producción |
+|---------------|------------|------------|
+| `sameSite` | `lax` (permite cross-origin) | `strict` (máxima seguridad) |
+| `secure` | `false` (HTTP permitido) | `true` (solo HTTPS) |
+
+> **⚠️ CRÍTICO**: En producción, el código automáticamente cambia a `sameSite: 'strict'` y `secure: true`. 
+> Esto requiere que:
+> 1. El frontend y backend estén en el **mismo dominio** (ej: `app.tudominio.com` y `api.tudominio.com`)
+> 2. O uses un **proxy reverso** (ej: Nginx) para servir ambos desde el mismo origen
+> 3. Ambos usen **HTTPS**
+
+### Opciones de Despliegue Recomendadas
+
+#### Opción 1: Mismo Dominio con Subdominios
+```
+Frontend: https://app.inmobiliaria.com
+Backend:  https://api.inmobiliaria.com
+```
+Configurar CORS para permitir `https://app.inmobiliaria.com`
+
+#### Opción 2: Proxy Reverso (Nginx/Vercel)
+```
+https://inmobiliaria.com/          → Frontend
+https://inmobiliaria.com/api/      → Backend (proxy)
+```
+Las cookies funcionarán sin problemas porque ambos están en el mismo origen.
+
+#### Opción 3: Plataformas Serverless
+- **Frontend**: Vercel / Netlify
+- **Backend**: Railway / Render / Fly.io
+- Usar proxy reverso o configurar dominio compartido
+
+### Checklist Pre-Producción
+
+- [ ] Configurar `NODE_ENV=production` en el backend
+- [ ] Configurar certificados SSL (HTTPS)
+- [ ] Verificar que `FRONTEND_URL` apunta al dominio correcto
+- [ ] Configurar CORS con el dominio de producción
+- [ ] Cambiar secretos JWT (`JWT_SECRET`, `JWT_REFRESH_SECRET`)
+- [ ] Configurar variables de entorno en la plataforma de hosting
+- [ ] Probar login y cookies en el entorno de producción
 
 ## 📁 Problemas comunes
 

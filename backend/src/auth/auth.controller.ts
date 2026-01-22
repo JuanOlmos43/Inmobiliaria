@@ -41,16 +41,16 @@ export class AuthController {
     res.cookie('refresh_token', tokens.refresh_token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production', // HTTPS only in production
-      sameSite: 'strict',
+      sameSite: process.env.NODE_ENV === 'production' ? 'strict' : 'lax', // lax for dev (cross-origin)
       maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
-      path: '/auth/refresh', // Only sent to refresh endpoint
+      path: '/', // Enviado a todos los endpoints (igual que access_token) - luego pasar a path: '/auth/refresh' es lo correcto que no se envie en esa ruta
     });
 
     // Set access token in httpOnly cookie
     res.cookie('access_token', tokens.access_token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production', // HTTPS only in production
-      sameSite: 'strict',
+      sameSite: process.env.NODE_ENV === 'production' ? 'strict' : 'lax', // lax for dev (cross-origin)
       maxAge: 15 * 60 * 1000, // 15 minutes
       path: '/', // Sent to all endpoints
     });
@@ -117,7 +117,7 @@ export class AuthController {
 
     // Clear refresh token cookie
     res.clearCookie('refresh_token', {
-      path: '/auth/refresh',
+      path: '/',
     });
 
     return { message: 'Logout exitoso' };

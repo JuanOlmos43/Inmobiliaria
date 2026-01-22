@@ -11,10 +11,13 @@ interface ApiClientConfig {
 /**
  * Cliente HTTP para comunicación con la API
  * Centraliza la lógica de fetch, headers y manejo de errores
+ * Incluye interceptor automático para refresh de tokens
  */
 export class ApiClient {
     private baseUrl: string
     private token?: string
+    private isRefreshing = false
+    private refreshPromise: Promise<boolean> | null = null
 
     constructor(config: ApiClientConfig) {
         this.baseUrl = config.baseUrl
@@ -44,12 +47,65 @@ export class ApiClient {
     }
 
     /**
-     * Maneja respuestas de error de la API
+     * Intenta refrescar el access token usando el refresh token
      */
-    private async handleResponse<T>(response: Response): Promise<T> {
+    private async refreshAccessToken(): Promise<boolean> {
+        // Si ya hay un refresh en progreso, esperar a que termine
+        if (this.isRefreshing && this.refreshPromise) {
+            return this.refreshPromise
+        }
+
+        this.isRefreshing = true
+        this.refreshPromise = (async () => {
+            try {
+                const response = await fetch(`${this.baseUrl}/auth/refresh`, {
+                    method: 'POST',
+                    credentials: 'include', // Envía refresh_token cookie
+                })
+
+                if (response.ok) {
+                    // Refresh exitoso, el nuevo access_token está en las cookies
+                    return true
+                }
+
+                // Refresh falló, redirigir a login
+                if (typeof window !== 'undefined') {
+                    window.location.href = '/login'
+                }
+                return false
+            } catch (error) {
+                console.error('[ApiClient] Error refreshing token:', error)
+                if (typeof window !== 'undefined') {
+                    window.location.href = '/login'
+                }
+                return false
+            } finally {
+                this.isRefreshing = false
+                this.refreshPromise = null
+            }
+        })()
+
+        return this.refreshPromise
+    }
+
+    /**
+     * Maneja respuestas de error de la API con interceptor de refresh
+     */
+    private async handleResponse<T>(response: Response, retryRequest?: () => Promise<Response>): Promise<T> {
         // Si la respuesta es exitosa (2xx)
         if (response.ok) {
             return response.json()
+        }
+
+        // Si es 401 (Unauthorized), intentar refresh
+        if (response.status === 401 && retryRequest) {
+            const refreshed = await this.refreshAccessToken()
+
+            if (refreshed) {
+                // Refresh exitoso, reintentar la petición original
+                const retryResponse = await retryRequest()
+                return this.handleResponse<T>(retryResponse) // Sin retry para evitar loop infinito
+            }
         }
 
         // Intentar parsear el error como JSON
@@ -71,69 +127,73 @@ export class ApiClient {
      */
     async get<T>(endpoint: string): Promise<T> {
         const url = `${this.baseUrl}${endpoint}`
-
-        const response = await fetch(url, {
+        const makeRequest = () => fetch(url, {
             method: 'GET',
             headers: this.getHeaders(),
-            credentials: 'include', // Importante para enviar/recibir cookies
+            credentials: 'include',
         })
 
-        return this.handleResponse<T>(response)
+        const response = await makeRequest()
+        return this.handleResponse<T>(response, makeRequest)
     }
 
     /**
      * POST request
      */
     async post<T, D = unknown>(endpoint: string, data?: D): Promise<T> {
-        const response = await fetch(`${this.baseUrl}${endpoint}`, {
+        const makeRequest = () => fetch(`${this.baseUrl}${endpoint}`, {
             method: 'POST',
             headers: this.getHeaders(),
             body: data ? JSON.stringify(data) : undefined,
-            credentials: 'include', // Importante para enviar/recibir cookies
+            credentials: 'include',
         })
 
-        return this.handleResponse<T>(response)
+        const response = await makeRequest()
+        return this.handleResponse<T>(response, makeRequest)
     }
 
     /**
      * PUT request
      */
     async put<T, D = unknown>(endpoint: string, data?: D): Promise<T> {
-        const response = await fetch(`${this.baseUrl}${endpoint}`, {
+        const makeRequest = () => fetch(`${this.baseUrl}${endpoint}`, {
             method: 'PUT',
             headers: this.getHeaders(),
             body: data ? JSON.stringify(data) : undefined,
             credentials: 'include',
         })
 
-        return this.handleResponse<T>(response)
+        const response = await makeRequest()
+        return this.handleResponse<T>(response, makeRequest)
     }
 
     /**
      * PATCH request
      */
     async patch<T, D = unknown>(endpoint: string, data?: D): Promise<T> {
-        const response = await fetch(`${this.baseUrl}${endpoint}`, {
+        const makeRequest = () => fetch(`${this.baseUrl}${endpoint}`, {
             method: 'PATCH',
             headers: this.getHeaders(),
             body: data ? JSON.stringify(data) : undefined,
             credentials: 'include',
         })
 
-        return this.handleResponse<T>(response)
+        const response = await makeRequest()
+        return this.handleResponse<T>(response, makeRequest)
     }
 
     /**
      * DELETE request
      */
     async delete<T>(endpoint: string): Promise<T> {
-        const response = await fetch(`${this.baseUrl}${endpoint}`, {
+        const makeRequest = () => fetch(`${this.baseUrl}${endpoint}`, {
             method: 'DELETE',
             headers: this.getHeaders(),
             credentials: 'include',
         })
 
-        return this.handleResponse<T>(response)
+        const response = await makeRequest()
+        return this.handleResponse<T>(response, makeRequest)
     }
 }
 

@@ -39,7 +39,7 @@ export enum UserRole {
     AGENT = 'agent',
     LANDLORD = 'landlord',
     TENANT = 'tenant',
-    OWNER = 'owner',
+    MANAGER = 'manager',
 }
 
 export enum UserStatus {

@@ -1,98 +1,271 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# Backend - Inmobiliaria API
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+API REST construida con NestJS, Prisma y PostgreSQL para el sistema de gestión inmobiliaria.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+## Tecnologías
 
-## Description
+- **Framework**: NestJS
+- **Base de datos**: PostgreSQL (Supabase)
+- **ORM**: Prisma 7 con driver adapter
+- **Autenticación**: Passport.js + JWT
+- **Validación**: class-validator
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+## Configuración Inicial
 
-## Project setup
+### 1. Instalar dependencias
 
 ```bash
-$ npm install
+npm install
 ```
 
-## Compile and run the project
+### 2. Configurar variables de entorno
+
+Crear archivo `.env` en la raíz del backend:
+
+```env
+# Database URLs
+DATABASE_URL="postgresql://user:password@host:6543/postgres?pgbouncer=true"
+DIRECT_URL="postgresql://user:password@host:5432/postgres"
+
+# JWT Secrets
+JWT_SECRET="your-secret-key"
+JWT_REFRESH_SECRET="your-refresh-secret-key"
+JWT_EXPIRATION="15m"
+JWT_REFRESH_EXPIRATION="7d"
+```
+
+> **Importante**: 
+> - `DATABASE_URL` usa el puerto 6543 (pooler de Supabase) para queries
+> - `DIRECT_URL` usa el puerto 5432 (conexión directa) para migraciones
+
+### 3. Configurar Prisma
+
+El archivo `prisma.config.ts` debe exportar la configuración:
+
+```typescript
+export default {
+  datasources: {
+    db: {
+      url: process.env.DATABASE_URL,
+      directUrl: process.env.DIRECT_URL,
+    },
+  },
+}
+```
+
+## Ejecutar el Proyecto
 
 ```bash
-# development
-$ npm run start
+# Modo desarrollo (watch mode)
+npm run start:dev
 
-# watch mode
-$ npm run start:dev
-
-# production mode
-$ npm run start:prod
+# Modo producción
+npm run start:prod
 ```
 
-## Run tests
+El servidor estará disponible en `http://localhost:4000`
+
+---
+
+## 📋 Guía de Migraciones con Prisma
+
+### Flujo Completo para Cambios en el Schema
+
+Cuando necesites hacer cambios en la base de datos (agregar tablas, columnas, relaciones, etc.):
+
+#### 1️⃣ Verificar Configuración
+
+**Antes de cualquier migración**, asegúrate de que `prisma.config.ts` tenga la `DIRECT_URL`:
+
+```typescript
+export default {
+  datasources: {
+    db: {
+      url: process.env.DATABASE_URL,
+      directUrl: process.env.DIRECT_URL, // ← CRÍTICO para migraciones
+    },
+  },
+}
+```
+
+#### 2️⃣ Modificar el Schema
+
+Edita `prisma/schema.prisma` con los cambios necesarios:
+
+```prisma
+// Ejemplo: Agregar un nuevo enum
+enum UserRole {
+  admin
+  agent
+  landlord
+  tenant
+  manager // ← Nuevo rol agregado
+}
+```
+
+#### 3️⃣ Crear y Aplicar la Migración
 
 ```bash
-# unit tests
-$ npm run test
-
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
+npx prisma migrate dev --name nombre_descriptivo_del_cambio
 ```
 
-## Deployment
+Esto hará automáticamente:
+- ✅ Crear el archivo de migración SQL
+- ✅ Aplicar la migración a la base de datos
+- ✅ Regenerar el Prisma Client
 
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
+**Ejemplo de nombres descriptivos:**
+- `add_manager_role`
+- `add_property_images_table`
+- `add_user_phone_field`
 
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
+#### 4️⃣ Verificar la Migración
+
+Revisa que la migración se aplicó correctamente:
 
 ```bash
-$ npm install -g @nestjs/mau
-$ mau deploy
+# Ver el estado de las migraciones
+npx prisma migrate status
+
+# Abrir Prisma Studio para ver los datos
+npx prisma studio
 ```
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+#### 5️⃣ Actualizar Seed (si es necesario)
 
-## Resources
+Si agregaste nuevos modelos o enums, actualiza `prisma/seed.ts`:
 
-Check out a few resources that may come in handy when working with NestJS:
+```typescript
+// Ejemplo: Agregar usuario con nuevo rol
+const manager = await prisma.user.create({
+  data: {
+    email: 'manager@inmobiliaria.com',
+    role: UserRole.manager, // ← Usar el nuevo enum
+    // ...
+  },
+});
+```
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
+#### 6️⃣ Ejecutar el Seed
 
-## Support
+```bash
+npx tsx prisma/seed.ts
+```
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+### Comandos Útiles de Prisma
 
-## Stay in touch
+```bash
+# Regenerar el Prisma Client (después de cambios en schema.prisma)
+npx prisma generate
 
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+# Resetear la base de datos (CUIDADO: borra todos los datos)
+npx prisma migrate reset --force
 
-## License
+# Ver el estado de las migraciones
+npx prisma migrate status
 
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+# Abrir interfaz visual de la base de datos
+npx prisma studio
+
+# Formatear el archivo schema.prisma
+npx prisma format
+```
+
+### ⚠️ Solución de Problemas Comunes
+
+#### Error: "Drift detected"
+
+**Problema**: El schema de Prisma no coincide con la base de datos.
+
+**Solución**:
+```bash
+# Opción 1: Resetear la base de datos (desarrollo)
+npx prisma migrate reset --force
+
+# Opción 2: Crear una migración para resolver el drift
+npx prisma migrate dev --name fix_drift
+```
+
+#### Error: "Missing DIRECT_URL"
+
+**Problema**: Falta la configuración de `DIRECT_URL` en `prisma.config.ts`.
+
+**Solución**:
+1. Agregar `directUrl: process.env.DIRECT_URL` en `prisma.config.ts`
+2. Verificar que `.env` tenga `DIRECT_URL` configurado
+3. Reintentar la migración
+
+#### Error: "Prisma Client not generated"
+
+**Problema**: El cliente de Prisma no está actualizado después de cambios en el schema.
+
+**Solución**:
+```bash
+npx prisma generate
+```
+
+#### Error en Seed: "Property 'X' does not exist on type 'Y'"
+
+**Problema**: El Prisma Client no se regeneró después de agregar nuevos campos/enums.
+
+**Solución**:
+```bash
+# 1. Regenerar el cliente
+npx prisma generate
+
+# 2. Ejecutar el seed nuevamente
+npx tsx prisma/seed.ts
+```
+
+### 🔄 Flujo Recomendado (Checklist)
+
+Usa este checklist cada vez que hagas cambios en la base de datos:
+
+- [ ] Verificar que `prisma.config.ts` tiene `directUrl` configurado
+- [ ] Modificar `prisma/schema.prisma` con los cambios necesarios
+- [ ] Ejecutar `npx prisma migrate dev --name descripcion_del_cambio`
+- [ ] Verificar que la migración se aplicó: `npx prisma migrate status`
+- [ ] Si agregaste enums/modelos, actualizar `prisma/seed.ts`
+- [ ] Ejecutar seed: `npx tsx prisma/seed.ts`
+- [ ] Verificar datos en Prisma Studio: `npx prisma studio`
+
+---
+
+## Usuarios de Prueba
+
+Después de ejecutar el seed, estarán disponibles estos usuarios:
+
+| Email | Rol | Contraseña |
+|-------|-----|------------|
+| admin@inmobiliaria.com | admin | admin123 |
+| agent@inmobiliaria.com | agent | admin123 |
+| landlord@inmobiliaria.com | landlord | admin123 |
+| tenant@inmobiliaria.com | tenant | admin123 |
+| manager@inmobiliaria.com | manager | admin123 |
+
+## Estructura del Proyecto
+
+```
+backend/
+├── src/
+│   ├── auth/           # Autenticación y autorización
+│   ├── users/          # Gestión de usuarios
+│   ├── propiedades/    # Gestión de propiedades
+│   ├── ubicaciones/    # Gestión de ubicaciones (provincias, localidades, calles)
+│   └── prisma/         # Servicio de Prisma
+├── prisma/
+│   ├── schema.prisma   # Schema de la base de datos
+│   ├── seed.ts         # Datos de prueba
+│   └── migrations/     # Historial de migraciones
+└── prisma.config.ts    # Configuración de Prisma
+```
+
+## Documentación
+
+- [NestJS Documentation](https://docs.nestjs.com)
+- [Prisma Documentation](https://www.prisma.io/docs)
+- [Passport.js](http://www.passportjs.org/)
+
+## Licencia
+
+MIT
