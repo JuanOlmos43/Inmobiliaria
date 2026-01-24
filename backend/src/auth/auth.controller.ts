@@ -59,7 +59,7 @@ export class AuthController {
       secure: process.env.NODE_ENV === 'production', // HTTPS only in production
       sameSite: process.env.NODE_ENV === 'production' ? 'strict' : 'lax', // lax for dev (cross-origin)
       maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
-      path: '/auth/refresh', // Enviado a todos los endpoints (igual que access_token) - luego pasar a path: '/auth/refresh' es lo correcto que no se envie en esa ruta
+      path: '/', // Enviado a todos los endpoints (igual que access_token) - luego pasar a path: '/auth/refresh' es lo correcto que no se envie en esa ruta
     });
 
 
@@ -157,6 +157,10 @@ export class AuthController {
 
     // Clear refresh token cookie
     res.clearCookie('refresh_token', {
+      path: '/',
+    });
+
+    res.clearCookie('access_token', {
       path: '/',
     });
 
