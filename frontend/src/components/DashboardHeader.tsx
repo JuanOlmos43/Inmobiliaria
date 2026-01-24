@@ -6,6 +6,7 @@ import Icon, { IconName } from '@/components/UI/Icon';
 interface DashboardHeaderProps {
   title: 'Administrador' | 'Gerencia' | 'Agente' | 'Propietario' | 'Inquilino';
   onLogout: () => void;
+  userEmail?: string;
 }
 
 // Mapeo de títulos de roles a sus iconos correspondientes
@@ -19,15 +20,9 @@ const roleIconMap: Record<string, IconName> = {
 
 export default function DashboardHeader({
   title,
-  onLogout
+  onLogout,
+  userEmail
 }: DashboardHeaderProps) {
-  const [userEmail] = useState(() => {
-    if (typeof window !== 'undefined') {
-      return localStorage.getItem('userEmail') || '';
-    }
-    return '';
-  });
-
   // Obtener el icono basado en el título, con fallback a 'user'
   const icon = roleIconMap[title] || 'user';
 
@@ -40,7 +35,7 @@ export default function DashboardHeader({
             <Icon name={icon} className="w-8 h-8 text-[#14b8a6]" />
             <div>
               <h1 className="text-2xl font-bold text-[#14b8a6]">{title}</h1>
-              <p className="text-sm text-gray-300 font-mono">Bienvenido, {userEmail}</p>
+              <p className="text-sm text-gray-300 font-mono">Bienvenido, {userEmail || ''}</p>
             </div>
           </div>
 

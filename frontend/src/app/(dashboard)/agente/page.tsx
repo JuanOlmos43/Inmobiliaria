@@ -7,6 +7,7 @@ import DashboardHeader from '@/components/DashboardHeader';
 import UniversalPropertyCard from '@/components/UniversalPropertyCard';
 import FormInput from '@/components/UI/FormInput';
 import FormSelect from '@/components/UI/FormSelect';
+import { useAuth } from '@/hooks/useAuth';
 
 // Tipos
 interface Property {
@@ -43,6 +44,7 @@ interface SystemUser {
 
 export default function DashboardPage() {
   const router = useRouter();
+  const { user, logout } = useAuth(); // Usar hook de auth
   const [properties, setProperties] = useState<Property[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isRentalModalOpen, setIsRentalModalOpen] = useState(false);
@@ -52,12 +54,122 @@ export default function DashboardPage() {
   const [filterStatus, setFilterStatus] = useState<'all' | 'Activa' | 'Pausada'>('all');
   const [activeTab, setActiveTab] = useState<'vencimientos' | 'propiedades'>('vencimientos');
 
+  // Cargar propiedades de ejemplo al montar el componente
+  useEffect(() => {
+    // Aquí iría la lógica para cargar propiedades reales de una API
+    // Por ahora, usamos datos de ejemplo
+    const exampleProperties: Property[] = [
+      {
+        id: '1',
+        title: 'Amplio Departamento en Palermo',
+        type: 'Alquiler',
+        price: 800,
+        currency: 'ARS',
+        location: 'Palermo, CABA',
+        bedrooms: 2,
+        rooms: 3,
+        bathrooms: 1,
+        area: 75,
+        image: 'https://via.placeholder.com/400x250/0d9488/ffffff?text=Depto+Palermo',
+        status: 'Activa',
+        description: 'Hermoso departamento con excelente ubicación, cerca de parques y transporte público.',
+        propertyType: 'departamento',
+        yearBuilt: 1990,
+        features: ['Balcón', 'Luminoso', 'Aire Acondicionado'],
+        landlordName: 'Juan Pérez',
+        landlordPhone: '1123456789',
+        landlordEmail: 'juan.perez@example.com',
+      },
+      {
+        id: '2',
+        title: 'Casa Moderna con Jardín en Nordelta',
+        type: 'Venta',
+        price: 350000,
+        currency: 'USD',
+        location: 'Nordelta, Tigre',
+        bedrooms: 3,
+        rooms: 5,
+        bathrooms: 2,
+        area: 180,
+        image: 'https://via.placeholder.com/400x250/14b8a6/ffffff?text=Casa+Nordelta',
+        status: 'Activa',
+        description: 'Espectacular casa con diseño moderno, amplio jardín y piscina. Ideal para familias.',
+        propertyType: 'casa',
+        yearBuilt: 2015,
+        features: ['Piscina', 'Jardín', 'Garaje', 'Seguridad 24hs'],
+        landlordName: 'María Rodríguez',
+        landlordPhone: '1198765432',
+        landlordEmail: 'maria.rodriguez@example.com',
+      },
+      {
+        id: '3',
+        title: 'Oficina Céntrica en Microcentro',
+        type: 'Alquiler',
+        price: 500,
+        currency: 'ARS',
+        location: 'Microcentro, CABA',
+        bedrooms: 0,
+        rooms: 2,
+        bathrooms: 1,
+        area: 40,
+        image: 'https://via.placeholder.com/400x250/0f172a/ffffff?text=Oficina+Microcentro',
+        status: 'Pausada',
+        description: 'Oficina ideal para emprendedores, con excelente conectividad y servicios cercanos.',
+        propertyType: 'oficina',
+        yearBuilt: 1985,
+        features: ['Recepción', 'Baño privado'],
+        landlordName: 'Carlos Gómez',
+        landlordPhone: '1155554444',
+        landlordEmail: 'carlos.gomez@example.com',
+      },
+      {
+        id: '4',
+        title: 'Terreno en Barrio Cerrado Pilar',
+        type: 'Venta',
+        price: 90000,
+        currency: 'USD',
+        location: 'Pilar, GBA',
+        bedrooms: 0,
+        rooms: 0,
+        bathrooms: 0,
+        area: 500,
+        image: 'https://via.placeholder.com/400x250/334155/ffffff?text=Terreno+Pilar',
+        status: 'Activa',
+        description: 'Excelente oportunidad de inversión. Terreno en barrio cerrado con todos los servicios.',
+        propertyType: 'terreno',
+        yearBuilt: null,
+        features: ['Seguridad 24hs', 'Servicios subterráneos'],
+        landlordName: 'Ana Fernández',
+        landlordPhone: '1177778888',
+        landlordEmail: 'ana.fernandez@example.com',
+      },
+      {
+        id: '5',
+        title: 'Monoambiente Luminoso en Belgrano',
+        type: 'Alquiler',
+        price: 450,
+        currency: 'ARS',
+        location: 'Belgrano, CABA',
+        bedrooms: 0,
+        rooms: 1,
+        bathrooms: 1,
+        area: 30,
+        image: 'https://via.placeholder.com/400x250/475569/ffffff?text=Monoambiente+Belgrano',
+        status: 'Activa',
+        description: 'Moderno monoambiente, ideal para estudiantes o profesionales jóvenes. Cerca de subte.',
+        propertyType: 'monoambiente',
+        yearBuilt: 2005,
+        features: ['Balcón', 'Cocina integrada'],
+        landlordName: 'Pedro López',
+        landlordPhone: '1111112222',
+        landlordEmail: 'pedro.lopez@example.com',
+      },
+    ];
+    setProperties(exampleProperties);
+  }, []);
 
-
-  const handleLogout = () => {
-    localStorage.removeItem('isAuthenticated');
-    localStorage.removeItem('userEmail');
-    router.push('/login');
+  const handleLogout = async () => {
+    await logout();
   };
 
   const handleAddProperty = () => {
@@ -77,9 +189,9 @@ export default function DashboardPage() {
   };
 
   const handleToggleStatus = (id: string) => {
-    setProperties(properties.map(p => 
-      p.id === id 
-        ? { ...p, status: p.status === 'Activa' ? 'Pausada' : 'Activa' } 
+    setProperties(properties.map(p =>
+      p.id === id
+        ? { ...p, status: p.status === 'Activa' ? 'Pausada' : 'Activa' }
         : p
     ));
   };
@@ -99,7 +211,7 @@ export default function DashboardPage() {
 
     if (editingProperty) {
       // Editar propiedad existente
-      setProperties(properties.map(p => 
+      setProperties(properties.map(p =>
         p.id === editingProperty.id ? propertyWithCurrency : p
       ));
     } else {
@@ -112,7 +224,7 @@ export default function DashboardPage() {
   // Filtrar propiedades
   const filteredProperties = properties.filter(property => {
     const matchesSearch = property.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                          property.location.toLowerCase().includes(searchTerm.toLowerCase());
+      property.location.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesStatus = filterStatus === 'all' || property.status === filterStatus;
     return matchesSearch && matchesStatus;
   });
@@ -122,6 +234,7 @@ export default function DashboardPage() {
       {/* Header */}
       <DashboardHeader
         title="Agente"
+        userEmail={user?.email || 'Agente'}
         onLogout={handleLogout}
       />
 
@@ -171,11 +284,10 @@ export default function DashboardPage() {
             <div className="flex gap-8">
               <button
                 onClick={() => setActiveTab('vencimientos')}
-                className={`pb-4 px-2 font-semibold transition-colors relative ${
-                  activeTab === 'vencimientos'
-                    ? 'text-[#14b8a6]'
-                    : 'text-gray-500 hover:text-gray-700'
-                }`}
+                className={`pb-4 px-2 font-semibold transition-colors relative ${activeTab === 'vencimientos'
+                  ? 'text-[#14b8a6]'
+                  : 'text-gray-500 hover:text-gray-700'
+                  }`}
               >
                 Próximos Vencimientos
                 {activeTab === 'vencimientos' && (
@@ -184,11 +296,10 @@ export default function DashboardPage() {
               </button>
               <button
                 onClick={() => setActiveTab('propiedades')}
-                className={`pb-4 px-2 font-semibold transition-colors relative ${
-                  activeTab === 'propiedades'
-                    ? 'text-[#14b8a6]'
-                    : 'text-gray-500 hover:text-gray-700'
-                }`}
+                className={`pb-4 px-2 font-semibold transition-colors relative ${activeTab === 'propiedades'
+                  ? 'text-[#14b8a6]'
+                  : 'text-gray-500 hover:text-gray-700'
+                  }`}
               >
                 Gestión de Propiedades
                 {activeTab === 'propiedades' && (
@@ -220,7 +331,7 @@ export default function DashboardPage() {
                       </svg>
                     </div>
                   </div>
-                  
+
                   <div className="flex gap-3 w-full md:w-auto">
                     <select
                       value={filterStatus}
@@ -231,7 +342,7 @@ export default function DashboardPage() {
                       <option value="Activa">Activas</option>
                       <option value="Pausada">Pausadas</option>
                     </select>
-                    
+
                     <button
                       onClick={handleAddProperty}
                       className="px-6 py-3 bg-[#14b8a6] text-white font-semibold rounded-lg hover:bg-[#0d9488] transition-all duration-300 shadow-lg hover:shadow-xl flex items-center gap-2 whitespace-nowrap"
@@ -301,7 +412,6 @@ export default function DashboardPage() {
             handleToggleStatus(rentingProperty.id);
             // Guardar el contrato en localStorage
             const existingRentals = JSON.parse(localStorage.getItem('rentalContracts') || '[]');
-            const agentEmail = localStorage.getItem('userEmail') || '';
             const newRental = {
               id: Date.now().toString(),
               propertyId: rentingProperty.id,
@@ -309,9 +419,9 @@ export default function DashboardPage() {
               address: rentingProperty.location,
               monthlyRent: rentingProperty.price,
               ...rentalData,
-              agentName: agentEmail,
-              agentPhone: '',
-              agentEmail: agentEmail
+              agentName: user?.name || user?.email || 'Agente',
+              agentPhone: user?.phone || '+54 11 2345-6789',
+              agentEmail: user?.email || 'agente@inmobiliaria.com'
             };
             localStorage.setItem('rentalContracts', JSON.stringify([...existingRentals, newRental]));
             setIsRentalModalOpen(false);
@@ -503,16 +613,16 @@ function UpcomingExpirations() {
 }
 
 // Stats Card Component
-function StatsCard({ 
-  title, 
-  value,  
-  color, 
-  trend, 
+function StatsCard({
+  title,
+  value,
+  color,
+  trend,
   trendUp,
   icon
-}: { 
-  title: string; 
-  value: string | number; 
+}: {
+  title: string;
+  value: string | number;
   color: string;
   trend?: string;
   trendUp?: boolean;
@@ -537,14 +647,14 @@ function StatsCard({
 }
 
 // Property Card Component - Using shared component
-function PropertyCard({ 
-  property, 
-  onEdit, 
-  onDelete, 
+function PropertyCard({
+  property,
+  onEdit,
+  onDelete,
   onToggleStatus,
   onRent
-}: { 
-  property: Property; 
+}: {
+  property: Property;
   onEdit: (property: Property) => void;
   onDelete: (id: string) => void;
   onToggleStatus: (id: string) => void;
@@ -599,11 +709,11 @@ function PropertyCard({
 }
 
 // Property Modal Component
-function PropertyModal({ 
-  property, 
-  onSave, 
-  onClose 
-}: { 
+function PropertyModal({
+  property,
+  onSave,
+  onClose
+}: {
   property: Property | null;
   onSave: (property: Omit<Property, 'id'>) => void;
   onClose: () => void;
@@ -772,7 +882,7 @@ function PropertyModal({
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
               </svg>
             </div>
-            
+
             {/* Dropdown de resultados */}
             {showLandlordDropdown && landlordSearch && (
               <div className="absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-lg shadow-lg max-h-60 overflow-y-auto">
@@ -798,11 +908,11 @@ function PropertyModal({
                 )}
               </div>
             )}
-            
+
             {landlords.length === 0 && (
               <p className="text-sm text-amber-600 mt-1">No hay propietarios disponibles. El administrador debe crear usuarios con rol: Propietario.</p>
             )}
-            
+
             {formData.landlordEmail && (
               <div className="mt-2 p-3 bg-green-50 border border-green-200 rounded-lg">
                 <div className="flex items-start gap-2">
@@ -976,7 +1086,7 @@ function PropertyModal({
               Imágenes de la Propiedad
               <span className="text-gray-500 text-xs ml-2">(Puedes subir múltiples imágenes)</span>
             </label>
-            
+
             {/* Input de archivo */}
             <div className="space-y-3">
               <div className="flex items-center gap-3">
@@ -1051,7 +1161,7 @@ function PropertyModal({
 
               {/* Mensaje informativo */}
               <p className="text-xs text-gray-500">
-                {formData.images && formData.images.length > 0 
+                {formData.images && formData.images.length > 0
                   ? `${formData.images.length} imagen${formData.images.length > 1 ? 'es' : ''} seleccionada${formData.images.length > 1 ? 's' : ''}`
                   : 'No hay imágenes seleccionadas. Las imágenes se mostrarán en un carrusel en la página de detalle.'}
               </p>
@@ -1149,25 +1259,25 @@ function RentalModal({
   // Calcular meses de ajuste automáticamente según el periodo
   const calculateAdjustmentMonths = () => {
     if (!formData.startDate || !formData.endDate) return [];
-    
+
     const start = new Date(formData.startDate);
     const end = new Date(formData.endDate);
     const adjustmentMonths = [];
     const current = new Date(start);
-    
+
     // Determinar el incremento según el periodo
-    const incrementMonths = formData.adjustmentPeriod === 'trimestral' ? 3 
-                          : formData.adjustmentPeriod === 'semestral' ? 6 
-                          : 12; // anual
-    
+    const incrementMonths = formData.adjustmentPeriod === 'trimestral' ? 3
+      : formData.adjustmentPeriod === 'semestral' ? 6
+        : 12; // anual
+
     // Primer ajuste
     current.setMonth(current.getMonth() + incrementMonths);
-    
+
     while (current <= end) {
       adjustmentMonths.push(new Date(current));
       current.setMonth(current.getMonth() + incrementMonths);
     }
-    
+
     return adjustmentMonths;
   };
 
@@ -1175,14 +1285,14 @@ function RentalModal({
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     // Calcular la fecha del próximo ajuste según el periodo
     const nextAdjustmentDate = new Date(formData.startDate);
-    const incrementMonths = formData.adjustmentPeriod === 'trimestral' ? 3 
-                          : formData.adjustmentPeriod === 'semestral' ? 6 
-                          : 12;
+    const incrementMonths = formData.adjustmentPeriod === 'trimestral' ? 3
+      : formData.adjustmentPeriod === 'semestral' ? 6
+        : 12;
     nextAdjustmentDate.setMonth(nextAdjustmentDate.getMonth() + incrementMonths);
-    
+
     // Información del propietario (de la propiedad)
     const landlordInfo = {
       landlordName: property.landlordName || 'Propietario de ' + property.title,
@@ -1190,7 +1300,7 @@ function RentalModal({
       landlordEmail: property.landlordEmail || 'propietario@email.com',
       nextAdjustmentDate: nextAdjustmentDate.toISOString().split('T')[0]
     };
-    
+
     onSave({ ...formData, ...landlordInfo });
   };
 
@@ -1227,7 +1337,7 @@ function RentalModal({
               <p className="text-gray-700"><span className="font-medium">Ubicación:</span> {property.location}</p>
               <p className="text-gray-700"><span className="font-medium">Renta Mensual:</span> ${property.price.toLocaleString()}</p>
             </div>
-            
+
             {/* Información del Propietario */}
             {property.landlordName && (
               <div className="mt-4 pt-4 border-t border-gray-300">
@@ -1258,7 +1368,7 @@ function RentalModal({
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
               </svg>
             </div>
-            
+
             {/* Dropdown de resultados */}
             {showTenantDropdown && tenantSearch && (
               <div className="absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-lg shadow-lg max-h-60 overflow-y-auto">
@@ -1284,11 +1394,11 @@ function RentalModal({
                 )}
               </div>
             )}
-            
+
             {tenants.length === 0 && (
               <p className="text-sm text-amber-600 mt-1">No hay inquilinos disponibles. El administrador debe crear usuarios con rol: Inquilino.</p>
             )}
-            
+
             {selectedTenant && (
               <div className="mt-2 p-3 bg-blue-50 border border-blue-200 rounded-lg">
                 <div className="flex items-start gap-2">
@@ -1344,7 +1454,7 @@ function RentalModal({
           {/* Meses de Ajuste de Precio */}
           <div>
             <h3 className="text-lg font-semibold text-[#0f172a] mb-3">Meses de Ajuste</h3>
-            <div className="mb-4">              
+            <div className="mb-4">
               <select
                 required
                 value={formData.adjustmentPeriod}
@@ -1356,7 +1466,7 @@ function RentalModal({
                 <option value="anual">Anual (cada año)</option>
               </select>
             </div>
-            
+
             {/* Mostrar meses de ajuste calculados */}
             {adjustmentMonths.length > 0 && (
               <div className="bg-gray-50 rounded-lg p-4">
@@ -1373,7 +1483,7 @@ function RentalModal({
                 </p>
               </div>
             )}
-            
+
             {adjustmentMonths.length === 0 && formData.startDate && formData.endDate && (
               <p className="text-sm text-gray-500">
                 No hay ajustes programados para el periodo seleccionado.

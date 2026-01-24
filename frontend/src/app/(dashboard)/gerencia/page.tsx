@@ -1,9 +1,10 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Icon from '@/components/UI/Icon';
 import DashboardHeader from '@/components/DashboardHeader';
+import { useAuth } from '@/hooks/useAuth';
 
 // Tipos
 interface OrganizationStats {
@@ -16,6 +17,7 @@ interface OrganizationStats {
 
 export default function DashboardOwnerPage() {
   const router = useRouter();
+  const { user, logout } = useAuth(); // Usar hook de auth
   const [stats, setStats] = useState<OrganizationStats>({
     totalProperties: 127,
     occupancyRate: 78.5,
@@ -24,13 +26,8 @@ export default function DashboardOwnerPage() {
     completedContracts: 234
   });
 
-
-
-  const handleLogout = () => {
-    localStorage.removeItem('isAuthenticated');
-    localStorage.removeItem('userEmail');
-    localStorage.removeItem('userRole');
-    router.push('/login');
+  const handleLogout = async () => {
+    await logout();
   };
 
   return (
@@ -38,6 +35,7 @@ export default function DashboardOwnerPage() {
       {/* Header */}
       <DashboardHeader
         title="Gerencia"
+        userEmail={user?.email || 'Gerencia'}
         onLogout={handleLogout}
       />
 
@@ -95,16 +93,16 @@ export default function DashboardOwnerPage() {
 }
 
 // Stats Card Component
-function StatsCard({ 
-  title, 
-  value,  
-  color, 
-  trend, 
+function StatsCard({
+  title,
+  value,
+  color,
+  trend,
   trendUp,
   icon
-}: { 
-  title: string; 
-  value: string | number; 
+}: {
+  title: string;
+  value: string | number;
   color: string;
   trend: string;
   trendUp: boolean;

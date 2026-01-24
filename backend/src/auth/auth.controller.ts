@@ -36,7 +36,7 @@ interface RequestWithCookies extends Omit<Request, 'cookies'> {
 
 @Controller('auth')
 export class AuthController {
-  constructor(private authService: AuthService) {}
+  constructor(private authService: AuthService) { }
 
   /**
    * POST /auth/login
@@ -97,7 +97,7 @@ export class AuthController {
   @UseGuards(JwtAuthGuard)
   getProfile(@CurrentUser() user: User) {
     // Remove password from response
-    const { ...userWithoutPassword } = user;
+    const { password, ...userWithoutPassword } = user;
     return userWithoutPassword;
   }
 

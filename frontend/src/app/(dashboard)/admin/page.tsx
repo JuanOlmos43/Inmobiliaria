@@ -9,6 +9,7 @@ import FormInput from '@/components/UI/FormInput';
 import FormSelect from '@/components/UI/FormSelect';
 import { authService } from '@/lib/api/services/auth';
 import { UserRole } from '@/types/api';
+import { useAuth } from '@/hooks/useAuth';
 
 // Tipos
 interface User {
@@ -46,12 +47,13 @@ const roleMapping: Record<string, UserRole> = {
 
 export default function AdminDashboardPage() {
   const router = useRouter();
+  const { user, logout } = useAuth(); // Usar hook de auth
   const [users, setUsers] = useState<User[]>([]);
   const [showModal, setShowModal] = useState(false);
   const [editingUser, setEditingUser] = useState<User | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [filterRole, setFilterRole] = useState<string>('all');
-  
+
   // Estados del formulario
   const [formData, setFormData] = useState({
     email: '',
@@ -63,7 +65,7 @@ export default function AdminDashboardPage() {
 
 
 
-  // Cargar usuarios desde localStorage
+  // Cargar usuarios desde localStorage (Simulado hasta que exista endpoint de lista de usuarios)
   const loadUsers = () => {
     const storedUsers = localStorage.getItem('systemUsers');
     if (storedUsers) {
@@ -80,11 +82,8 @@ export default function AdminDashboardPage() {
     loadUsers();
   }, []);
 
-  const handleLogout = () => {
-    localStorage.removeItem('isAuthenticated');
-    localStorage.removeItem('userEmail');
-    localStorage.removeItem('userRole');
-    router.push('/login');
+  const handleLogout = async () => {
+    await logout();
   };
 
   const handleCreateUser = () => {
@@ -108,8 +107,8 @@ export default function AdminDashboardPage() {
   };
 
   const handleToggleStatus = (userId: string) => {
-    const updatedUsers = users.map(u => 
-      u.id === userId 
+    const updatedUsers = users.map(u =>
+      u.id === userId
         ? { ...u, status: u.status === 'active' ? 'inactive' as const : 'active' as const }
         : u
     );
@@ -119,11 +118,11 @@ export default function AdminDashboardPage() {
 
   const handleSubmitForm = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (editingUser) {
       // Editar usuario existente (aún en localStorage)
-      const updatedUsers = users.map(u => 
-        u.id === editingUser.id 
+      const updatedUsers = users.map(u =>
+        u.id === editingUser.id
           ? { ...u, email: formData.email, password: formData.password, name: formData.name, phone: formData.phone, role: formData.role }
           : u
       );
@@ -135,7 +134,7 @@ export default function AdminDashboardPage() {
       // Crear nuevo usuario usando el servicio del backend
       try {
         const backendRole = roleMapping[formData.role];
-        
+
         const newUser = await authService.register({
           email: formData.email,
           password: formData.password,
@@ -155,14 +154,14 @@ export default function AdminDashboardPage() {
           createdAt: newUser.createdAt,
           status: 'active'
         };
-        
+
         const updatedUsers = [...users, userForList];
         setUsers(updatedUsers);
         localStorage.setItem('systemUsers', JSON.stringify(updatedUsers));
-        
+
         setShowModal(false);
         setFormData({ email: '', password: '', name: '', phone: '', role: 'tenant' });
-        
+
         alert('Usuario creado exitosamente');
       } catch (error) {
         console.error('Error al crear usuario:', error);
@@ -193,6 +192,7 @@ export default function AdminDashboardPage() {
       {/* Header */}
       <DashboardHeader
         title="Administrador"
+        userEmail={user?.email || 'Admin'}
         onLogout={handleLogout}
       />
 
@@ -312,11 +312,10 @@ export default function AdminDashboardPage() {
                     <td className="px-6 py-4">
                       <button
                         onClick={() => handleToggleStatus(user.id)}
-                        className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium ${
-                          user.status === 'active' 
-                            ? 'bg-green-100 text-green-800' 
-                            : 'bg-red-100 text-red-800'
-                        }`}
+                        className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium ${user.status === 'active'
+                          ? 'bg-green-100 text-green-800'
+                          : 'bg-red-100 text-red-800'
+                          }`}
                       >
                         {user.status === 'active' ? 'Activo' : 'Inactivo'}
                       </button>
@@ -360,7 +359,7 @@ export default function AdminDashboardPage() {
       </main>
 
       {/* Modal */}
-      <Modal 
+      <Modal
         isOpen={showModal}
         onClose={() => setShowModal(false)}
         title={editingUser ? 'Editar Usuario' : 'Crear Nuevo Usuario'}
