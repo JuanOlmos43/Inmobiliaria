@@ -118,53 +118,78 @@ export class AuthService {
    */
   async refreshTokens(refreshToken: string) {
     try {
-      // Verify refresh token
+      // 1) Verificar firma/exp del refresh JWT
       const payload = this.jwtService.verify(refreshToken, {
         secret: process.env.JWT_REFRESH_SECRET,
       });
 
-      // Find all refresh tokens for this user
+      // 2) Buscar refresh tokens vigentes del user
       const storedTokens = await this.prisma.refreshToken.findMany({
         where: {
           userId: payload.sub,
-          expiresAt: { gte: new Date() }, // Not expired
+          expiresAt: { gte: new Date() },
         },
       });
 
-      // Verify that the refresh token exists in database
-      let tokenFound = false;
+      // 3) Encontrar cuál token de DB corresponde al refresh presentado
+      let matchedTokenRecord: { id: string; token: string } | null = null;
+
       for (const storedToken of storedTokens) {
         const isValid = await bcrypt.compare(refreshToken, storedToken.token);
         if (isValid) {
-          tokenFound = true;
+          matchedTokenRecord = { id: storedToken.id, token: storedToken.token };
           break;
         }
       }
 
-      if (!tokenFound) {
+      if (!matchedTokenRecord) {
         throw new UnauthorizedException('Refresh token inválido');
       }
 
-      // Get user
+      // 4) Traer user y validar estado
       const user = await this.usersService.findById(payload.sub);
-      if (!user) {
-        throw new UnauthorizedException('Usuario no encontrado');
-      }
+      if (!user) throw new UnauthorizedException('Usuario no encontrado');
 
-      // Validate user status
       this.validateUserStatus(user);
 
-      // Generate new access token
+      // 5) Emitir nuevo access token
       const newPayload = { email: user.email, sub: user.id, role: user.role };
-      const accessToken = this.jwtService.sign(newPayload);
+      const newAccessToken = this.jwtService.sign(newPayload);
 
+      // 6) Emitir nuevo refresh token (ROTACIÓN)
+      const newRefreshToken = await this.jwtService.signAsync(newPayload, {
+        secret: process.env.JWT_REFRESH_SECRET || 'fallback-refresh-secret',
+        expiresIn: process.env.JWT_REFRESH_EXPIRATION || '7d',
+      } as any);
+
+      const hashedNewRefreshToken = await bcrypt.hash(newRefreshToken, 10);
+      const newExpiresAt = new Date();
+      newExpiresAt.setDate(newExpiresAt.getDate() + 7);
+
+      // 7) Guardar el nuevo refresh y borrar el viejo
+      await this.prisma.$transaction([
+        this.prisma.refreshToken.create({
+          data: {
+            token: hashedNewRefreshToken,
+            userId: user.id,
+            expiresAt: newExpiresAt,
+          },
+        }),
+        this.prisma.refreshToken.delete({
+          where: { id: matchedTokenRecord.id },
+        }),
+      ]);
+
+      // ✅ devolvemos ambos para que el controller actualice la cookie
       return {
-        access_token: accessToken,
+        access_token: newAccessToken,
+        refresh_token: newRefreshToken,
       };
     } catch (error) {
       throw new UnauthorizedException('Refresh token inválido o expirado');
     }
   }
+
 
   /**
    * Logs out user by invalidating refresh token

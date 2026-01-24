@@ -9,6 +9,7 @@ import {
   HttpCode,
   HttpStatus,
   ValidationPipe,
+  UnauthorizedException,
 } from '@nestjs/common';
 import type { Request, Response } from 'express';
 import { AuthService } from './auth.service';
@@ -61,15 +62,6 @@ export class AuthController {
       path: '/', // Enviado a todos los endpoints (igual que access_token) - luego pasar a path: '/auth/refresh' es lo correcto que no se envie en esa ruta
     });
 
-    // Set access token in httpOnly cookie
-    res.cookie('access_token', tokens.access_token, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === 'production', // HTTPS only in production
-      sameSite: process.env.NODE_ENV === 'production' ? 'strict' : 'lax', // lax for dev (cross-origin)
-      maxAge: 15 * 60 * 1000, // 15 minutes
-      path: '/', // Sent to all endpoints
-    });
-
     return {
       access_token: tokens.access_token,
     };
@@ -104,14 +96,28 @@ export class AuthController {
    */
   @Post('refresh')
   @HttpCode(HttpStatus.OK)
-  async refresh(@Req() req: RequestWithCookies) {
-    const refreshToken: string | undefined = req.cookies?.refresh_token;
+  async refresh(
+    @Req() req: RequestWithCookies,
+    @Res({ passthrough: true }) res: Response,
+  ) {
+    const refreshToken = req.cookies?.refresh_token;
     if (!refreshToken) {
-      throw new Error('Refresh token no encontrado');
+      throw new UnauthorizedException('Refresh token no encontrado');
     }
 
-    return this.authService.refreshTokens(refreshToken);
+    const tokens = await this.authService.refreshTokens(refreshToken);
+
+    res.cookie('refresh_token', tokens.refresh_token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: process.env.NODE_ENV === 'production' ? 'strict' : 'lax',
+      maxAge: 7 * 24 * 60 * 60 * 1000,
+      path: '/', // ideal: '/auth/refresh'
+    });
+    
+    return { access_token: tokens.access_token };
   }
+
 
   /**
    * POST /auth/logout

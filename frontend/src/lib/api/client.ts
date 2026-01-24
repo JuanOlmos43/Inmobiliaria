@@ -50,43 +50,40 @@ export class ApiClient {
      * Intenta refrescar el access token usando el refresh token
      */
     private async refreshAccessToken(): Promise<boolean> {
-        // Si ya hay un refresh en progreso, esperar a que termine
-        if (this.isRefreshing && this.refreshPromise) {
-            return this.refreshPromise
-        }
+        if (this.isRefreshing && this.refreshPromise) return this.refreshPromise;
 
-        this.isRefreshing = true
+        this.isRefreshing = true;
         this.refreshPromise = (async () => {
             try {
-                const response = await fetch(`${this.baseUrl}/auth/refresh`, {
-                    method: 'POST',
-                    credentials: 'include', // Envía refresh_token cookie
-                })
+            const response = await fetch(`${this.baseUrl}/auth/refresh`, {
+                method: 'POST',
+                credentials: 'include',
+            });
 
-                if (response.ok) {
-                    // Refresh exitoso, el nuevo access_token está en las cookies
-                    return true
+            if (response.ok) {
+                const data = await response.json();
+                if (data?.access_token) {
+                this.setToken(data.access_token); // ✅ ESTO ES LO QUE TE FALTABA
+                return true;
                 }
-
-                // Refresh falló, redirigir a login
-                if (typeof window !== 'undefined') {
-                    window.location.href = '/login'
-                }
-                return false
-            } catch (error) {
-                console.error('[ApiClient] Error refreshing token:', error)
-                if (typeof window !== 'undefined') {
-                    window.location.href = '/login'
-                }
-                return false
-            } finally {
-                this.isRefreshing = false
-                this.refreshPromise = null
+                return false;
             }
-        })()
 
-        return this.refreshPromise
-    }
+            if (typeof window !== 'undefined') window.location.href = '/login';
+            return false;
+            } catch (error) {
+            console.error('[ApiClient] Error refreshing token:', error);
+            if (typeof window !== 'undefined') window.location.href = '/login';
+            return false;
+            } finally {
+            this.isRefreshing = false;
+            this.refreshPromise = null;
+            }
+        })();
+
+        return this.refreshPromise;
+        }
+
 
     /**
      * Maneja respuestas de error de la API con interceptor de refresh
