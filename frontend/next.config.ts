@@ -4,11 +4,10 @@ const nextConfig: NextConfig = {
   images: {
     // Configuración para imágenes locales y remotas
     remotePatterns: [
-      // Agregar aquí dominios externos cuando sea necesario
-      // {
-      //   protocol: 'https',
-      //   hostname: 'ejemplo.com',
-      // },
+      {
+        protocol: 'https',
+        hostname: 'via.placeholder.com',
+      },
     ],
   },
 };
