@@ -8,6 +8,7 @@ import {
   Delete,
   ValidationPipe,
   UsePipes,
+  UseGuards,
 } from '@nestjs/common';
 import { UbicacionesService } from './ubicaciones.service';
 import { CreateProvinciaDto } from './dto/create-provincia.dto';
@@ -18,17 +19,23 @@ import {
   UpdateLocalidadDto,
   UpdateCalleDto,
 } from './dto/update-ubicacion.dto';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { RolesGuard } from '../auth/guards/roles.guard';
+import { Roles } from '../auth/decorators/roles.decorator';
+import { UserRole } from '@prisma/client';
 
 @Controller('ubicaciones')
+@UseGuards(JwtAuthGuard, RolesGuard)
 @UsePipes(new ValidationPipe({ transform: true, whitelist: true }))
 export class UbicacionesController {
-  constructor(private readonly ubicacionesService: UbicacionesService) {}
+  constructor(private readonly ubicacionesService: UbicacionesService) { }
 
   // ==========================================
   // PROVINCIAS
   // ==========================================
 
   @Post('provincias')
+  @Roles(UserRole.admin, UserRole.agent)
   createProvincia(@Body() createProvinciaDto: CreateProvinciaDto) {
     return this.ubicacionesService.createProvincia(createProvinciaDto);
   }
@@ -44,6 +51,7 @@ export class UbicacionesController {
   }
 
   @Patch('provincias/:id')
+  @Roles(UserRole.admin, UserRole.agent)
   updateProvincia(
     @Param('id') id: string,
     @Body() updateProvinciaDto: UpdateProvinciaDto,
@@ -52,6 +60,7 @@ export class UbicacionesController {
   }
 
   @Delete('provincias/:id')
+  @Roles(UserRole.admin, UserRole.agent)
   deleteProvincia(@Param('id') id: string) {
     return this.ubicacionesService.deleteProvincia(id);
   }
@@ -67,6 +76,7 @@ export class UbicacionesController {
   // ==========================================
 
   @Post('localidades')
+  @Roles(UserRole.admin, UserRole.agent)
   createLocalidad(@Body() createLocalidadDto: CreateLocalidadDto) {
     return this.ubicacionesService.createLocalidad(createLocalidadDto);
   }
@@ -77,6 +87,7 @@ export class UbicacionesController {
   }
 
   @Patch('localidades/:id')
+  @Roles(UserRole.admin, UserRole.agent)
   updateLocalidad(
     @Param('id') id: string,
     @Body() updateLocalidadDto: UpdateLocalidadDto,
@@ -85,6 +96,7 @@ export class UbicacionesController {
   }
 
   @Delete('localidades/:id')
+  @Roles(UserRole.admin, UserRole.agent)
   deleteLocalidad(@Param('id') id: string) {
     return this.ubicacionesService.deleteLocalidad(id);
   }
@@ -100,6 +112,7 @@ export class UbicacionesController {
   // ==========================================
 
   @Post('calles')
+  @Roles(UserRole.admin, UserRole.agent)
   createCalle(@Body() createCalleDto: CreateCalleDto) {
     return this.ubicacionesService.createCalle(createCalleDto);
   }
@@ -110,11 +123,13 @@ export class UbicacionesController {
   }
 
   @Patch('calles/:id')
+  @Roles(UserRole.admin, UserRole.agent)
   updateCalle(@Param('id') id: string, @Body() updateCalleDto: UpdateCalleDto) {
     return this.ubicacionesService.updateCalle(id, updateCalleDto);
   }
 
   @Delete('calles/:id')
+  @Roles(UserRole.admin, UserRole.agent)
   deleteCalle(@Param('id') id: string) {
     return this.ubicacionesService.deleteCalle(id);
   }
