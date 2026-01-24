@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Icon from '@/components/UI/Icon';
-import DashboardHeader from '@/components/DashboardHeader';
+
 import { useAuth } from '@/hooks/useAuth';
 
 // Tipos
@@ -17,7 +17,7 @@ interface OrganizationStats {
 
 export default function DashboardOwnerPage() {
   const router = useRouter();
-  const { user, logout } = useAuth(); // Usar hook de auth
+  const { user } = useAuth(); // Usar hook de auth
   const [stats, setStats] = useState<OrganizationStats>({
     totalProperties: 127,
     occupancyRate: 78.5,
@@ -26,18 +26,12 @@ export default function DashboardOwnerPage() {
     completedContracts: 234
   });
 
-  const handleLogout = async () => {
-    await logout();
-  };
+
 
   return (
     <div className="min-h-screen bg-[#f8fafc]">
       {/* Header */}
-      <DashboardHeader
-        title="Gerencia"
-        userEmail={user?.email || 'Gerencia'}
-        onLogout={handleLogout}
-      />
+
 
       {/* Main Content */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">

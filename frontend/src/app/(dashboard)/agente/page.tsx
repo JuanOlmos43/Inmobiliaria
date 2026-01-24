@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Icon, { IconName } from '@/components/UI/Icon';
-import DashboardHeader from '@/components/DashboardHeader';
+
 import UniversalPropertyCard from '@/components/UniversalPropertyCard';
 import FormInput from '@/components/UI/FormInput';
 import FormSelect from '@/components/UI/FormSelect';
@@ -44,7 +44,7 @@ interface SystemUser {
 
 export default function DashboardPage() {
   const router = useRouter();
-  const { user, logout } = useAuth(); // Usar hook de auth
+  const { user } = useAuth(); // Usar hook de auth
   const [properties, setProperties] = useState<Property[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isRentalModalOpen, setIsRentalModalOpen] = useState(false);
@@ -168,9 +168,7 @@ export default function DashboardPage() {
     setProperties(exampleProperties);
   }, []);
 
-  const handleLogout = async () => {
-    await logout();
-  };
+
 
   const handleAddProperty = () => {
     setEditingProperty(null);
@@ -232,11 +230,7 @@ export default function DashboardPage() {
   return (
     <div className="min-h-screen bg-[#f8fafc]">
       {/* Header */}
-      <DashboardHeader
-        title="Agente"
-        userEmail={user?.email || 'Agente'}
-        onLogout={handleLogout}
-      />
+
 
       {/* Main Content */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">

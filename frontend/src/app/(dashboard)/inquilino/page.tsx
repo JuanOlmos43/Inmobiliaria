@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import DashboardHeader from '@/components/DashboardHeader';
+
 import UniversalPropertyCard from '@/components/UniversalPropertyCard';
 import { useAuth } from '@/hooks/useAuth';
 
@@ -30,7 +30,7 @@ interface Rental {
 
 export default function TenantDashboardPage() {
   const router = useRouter();
-  const { user, logout } = useAuth(); // Usar hook de auth
+  const { user } = useAuth(); // Usar hook de auth
   const [rentals, setRentals] = useState<Rental[]>([]);
 
   // Cargar datos al montar el componente
@@ -86,9 +86,7 @@ export default function TenantDashboardPage() {
     setRentals(sampleRentals);
   };
 
-  const handleLogout = async () => {
-    await logout();
-  };
+
 
 
 
@@ -119,11 +117,7 @@ export default function TenantDashboardPage() {
   return (
     <div className="min-h-screen bg-[#f8fafc]">
       {/* Header */}
-      <DashboardHeader
-        title="Inquilino"
-        userEmail={user?.email || 'Inquilino'}
-        onLogout={handleLogout}
-      />
+
 
       {/* Main Content */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">

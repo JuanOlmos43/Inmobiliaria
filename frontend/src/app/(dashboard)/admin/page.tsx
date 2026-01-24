@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import DashboardHeader from '@/components/DashboardHeader';
+
 import StatsCard from '@/components/UI/StatsCard';
 import Modal from '@/components/UI/Modal';
 import FormInput from '@/components/UI/FormInput';
@@ -47,7 +47,7 @@ const roleMapping: Record<string, UserRole> = {
 
 export default function AdminDashboardPage() {
   const router = useRouter();
-  const { user, logout } = useAuth(); // Usar hook de auth
+  const { user } = useAuth(); // Usar hook de auth
   const [users, setUsers] = useState<User[]>([]);
   const [showModal, setShowModal] = useState(false);
   const [editingUser, setEditingUser] = useState<User | null>(null);
@@ -82,9 +82,7 @@ export default function AdminDashboardPage() {
     loadUsers();
   }, []);
 
-  const handleLogout = async () => {
-    await logout();
-  };
+
 
   const handleCreateUser = () => {
     setEditingUser(null);
@@ -190,11 +188,7 @@ export default function AdminDashboardPage() {
   return (
     <div className="min-h-screen bg-[#f8fafc]">
       {/* Header */}
-      <DashboardHeader
-        title="Administrador"
-        userEmail={user?.email || 'Admin'}
-        onLogout={handleLogout}
-      />
+
 
       {/* Main Content */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">

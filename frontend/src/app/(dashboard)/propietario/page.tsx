@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import DashboardHeader from '@/components/DashboardHeader';
+
 
 import UniversalPropertyCard from '@/components/UniversalPropertyCard';
 
@@ -50,12 +50,7 @@ export default function LandlordDashboardPage() {
 
 
 
-  const handleLogout = () => {
-    localStorage.removeItem('isAuthenticated');
-    localStorage.removeItem('userEmail');
-    localStorage.removeItem('userRole');
-    router.push('/login');
-  };
+
 
 
 
@@ -78,10 +73,7 @@ export default function LandlordDashboardPage() {
   return (
     <div className="min-h-screen bg-[#f8fafc]">
       {/* Header */}
-      <DashboardHeader
-        title="Propietario"
-        onLogout={handleLogout}
-      />
+
 
       {/* Main Content */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -91,21 +83,19 @@ export default function LandlordDashboardPage() {
             <nav className="-mb-px flex space-x-8">
               <button
                 onClick={() => setActiveTab('rentals')}
-                className={`${
-                  activeTab === 'rentals'
+                className={`${activeTab === 'rentals'
                     ? 'border-[#14b8a6] text-[#14b8a6]'
                     : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-                } whitespace-nowrap py-5 px-2 border-b-2 font-semibold text-xl transition-colors`}
+                  } whitespace-nowrap py-5 px-2 border-b-2 font-semibold text-xl transition-colors`}
               >
                 Mis Rentas
               </button>
               <button
                 onClick={() => setActiveTab('properties')}
-                className={`${
-                  activeTab === 'properties'
+                className={`${activeTab === 'properties'
                     ? 'border-[#14b8a6] text-[#14b8a6]'
                     : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-                } whitespace-nowrap py-5 px-2 border-b-2 font-semibold text-xl transition-colors`}
+                  } whitespace-nowrap py-5 px-2 border-b-2 font-semibold text-xl transition-colors`}
               >
                 Mis Propiedades Publicadas
               </button>
@@ -168,12 +158,12 @@ export default function LandlordDashboardPage() {
 }
 
 // Rental Card Component - Using UniversalPropertyCard with integrated modal
-function RentalCardWrapper({ 
-  rental, 
+function RentalCardWrapper({
+  rental,
   daysUntilExpiration,
   daysUntilAdjustment
-}: { 
-  rental: Rental; 
+}: {
+  rental: Rental;
   daysUntilExpiration: number;
   daysUntilAdjustment: number;
 }) {
