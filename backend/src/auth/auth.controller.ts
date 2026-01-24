@@ -22,9 +22,20 @@ import { CurrentUser } from './decorators/current-user.decorator';
 import type { User } from '@prisma/client';
 import { UserRole } from '@prisma/client';
 
+// Interface para las cookies de autenticación
+interface AuthCookies {
+  refresh_token?: string;
+  access_token?: string;
+}
+
+// Extender el tipo Request para incluir cookies tipadas
+interface RequestWithCookies extends Omit<Request, 'cookies'> {
+  cookies?: AuthCookies;
+}
+
 @Controller('auth')
 export class AuthController {
-  constructor(private authService: AuthService) { }
+  constructor(private authService: AuthService) {}
 
   /**
    * POST /auth/login
@@ -33,7 +44,11 @@ export class AuthController {
   @Post('login')
   @UseGuards(LocalAuthGuard)
   @HttpCode(HttpStatus.OK)
-  async login(@Req() req: Request, @Res({ passthrough: true }) res: Response) {
+  async login(
+    @Body(ValidationPipe) loginDto: LoginDto,
+    @Req() req: RequestWithCookies,
+    @Res({ passthrough: true }) res: Response,
+  ) {
     const user = req.user as User;
     const tokens = await this.authService.login(user);
 
@@ -79,7 +94,7 @@ export class AuthController {
   @UseGuards(JwtAuthGuard)
   getProfile(@CurrentUser() user: User) {
     // Remove password from response
-    const { password, ...userWithoutPassword } = user;
+    const { ...userWithoutPassword } = user;
     return userWithoutPassword;
   }
 
@@ -89,8 +104,8 @@ export class AuthController {
    */
   @Post('refresh')
   @HttpCode(HttpStatus.OK)
-  async refresh(@Req() req: Request) {
-    const refreshToken = req.cookies?.refresh_token;
+  async refresh(@Req() req: RequestWithCookies) {
+    const refreshToken: string | undefined = req.cookies?.refresh_token;
     if (!refreshToken) {
       throw new Error('Refresh token no encontrado');
     }
@@ -107,10 +122,10 @@ export class AuthController {
   @HttpCode(HttpStatus.OK)
   async logout(
     @CurrentUser() user: User,
-    @Req() req: Request,
+    @Req() req: RequestWithCookies,
     @Res({ passthrough: true }) res: Response,
   ) {
-    const refreshToken = req.cookies?.refresh_token;
+    const refreshToken: string | undefined = req.cookies?.refresh_token;
     if (refreshToken) {
       await this.authService.logout(user.id, refreshToken);
     }

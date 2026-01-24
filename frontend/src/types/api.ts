@@ -11,6 +11,14 @@ export interface LoginRequest {
     password: string
 }
 
+export interface RegisterRequest {
+    email: string
+    password: string
+    name?: string
+    phone?: string
+    role: UserRole
+}
+
 // ============================================
 // Response Types
 // ============================================

@@ -7,6 +7,8 @@ import StatsCard from '@/components/UI/StatsCard';
 import Modal from '@/components/UI/Modal';
 import FormInput from '@/components/UI/FormInput';
 import FormSelect from '@/components/UI/FormSelect';
+import { authService } from '@/lib/api/services/auth';
+import { UserRole } from '@/types/api';
 
 // Tipos
 interface User {
@@ -32,6 +34,14 @@ const roleColors = {
   landlord: 'from-green-500 to-green-600',
   agent: 'from-purple-500 to-purple-600',
   owner: 'from-amber-500 to-amber-600'
+};
+
+// Mapeo de roles del frontend al backend
+const roleMapping: Record<string, UserRole> = {
+  tenant: UserRole.TENANT,
+  landlord: UserRole.LANDLORD,
+  agent: UserRole.AGENT,
+  owner: UserRole.MANAGER
 };
 
 export default function AdminDashboardPage() {
@@ -65,41 +75,22 @@ export default function AdminDashboardPage() {
     // }
   }, [router]);
 
-  // Cargar datos al montar el componente
-  useEffect(() => {
-    loadUsers();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
   // Cargar usuarios desde localStorage
   const loadUsers = () => {
     const storedUsers = localStorage.getItem('systemUsers');
     if (storedUsers) {
       setUsers(JSON.parse(storedUsers));
     } else {
-      // Usuarios por defecto
-      const defaultUsers: User[] = [
-        {
-          id: '1',
-          email: 'Agente01@email.com',
-          password: 'Agente01',
-          role: 'agent',
-          createdAt: new Date().toISOString(),
-          status: 'active'
-        },
-        {
-          id: '2',
-          email: 'Duenio01@email.com',
-          password: 'Duenio01',
-          role: 'owner',
-          createdAt: new Date().toISOString(),
-          status: 'active'
-        }
-      ];
-      setUsers(defaultUsers);
-      localStorage.setItem('systemUsers', JSON.stringify(defaultUsers));
+      // Iniciar con lista vacía
+      setUsers([]);
+      localStorage.setItem('systemUsers', JSON.stringify([]));
     }
   };
+
+  // Cargar datos al montar el componente
+  useEffect(() => {
+    loadUsers();
+  }, []);
 
   const handleLogout = () => {
     localStorage.removeItem('isAuthenticated');
@@ -138,11 +129,11 @@ export default function AdminDashboardPage() {
     localStorage.setItem('systemUsers', JSON.stringify(updatedUsers));
   };
 
-  const handleSubmitForm = (e: React.FormEvent) => {
+  const handleSubmitForm = async (e: React.FormEvent) => {
     e.preventDefault();
     
     if (editingUser) {
-      // Editar usuario existente
+      // Editar usuario existente (aún en localStorage)
       const updatedUsers = users.map(u => 
         u.id === editingUser.id 
           ? { ...u, email: formData.email, password: formData.password, name: formData.name, phone: formData.phone, role: formData.role }
@@ -150,25 +141,46 @@ export default function AdminDashboardPage() {
       );
       setUsers(updatedUsers);
       localStorage.setItem('systemUsers', JSON.stringify(updatedUsers));
+      setShowModal(false);
+      setFormData({ email: '', password: '', name: '', phone: '', role: 'tenant' });
     } else {
-      // Crear nuevo usuario
-      const newUser: User = {
-        id: Date.now().toString(),
-        email: formData.email,
-        password: formData.password,
-        name: formData.name,
-        phone: formData.phone,
-        role: formData.role,
-        createdAt: new Date().toISOString(),
-        status: 'active'
-      };
-      const updatedUsers = [...users, newUser];
-      setUsers(updatedUsers);
-      localStorage.setItem('systemUsers', JSON.stringify(updatedUsers));
+      // Crear nuevo usuario usando el servicio del backend
+      try {
+        const backendRole = roleMapping[formData.role];
+        
+        const newUser = await authService.register({
+          email: formData.email,
+          password: formData.password,
+          name: formData.name || undefined,
+          phone: formData.phone || undefined,
+          role: backendRole
+        });
+
+        // Agregar el usuario creado a la lista local
+        const userForList: User = {
+          id: newUser.id,
+          email: newUser.email,
+          password: formData.password, // El backend no devuelve la contraseña
+          name: newUser.name,
+          phone: newUser.phone || undefined,
+          role: formData.role,
+          createdAt: newUser.createdAt,
+          status: 'active'
+        };
+        
+        const updatedUsers = [...users, userForList];
+        setUsers(updatedUsers);
+        localStorage.setItem('systemUsers', JSON.stringify(updatedUsers));
+        
+        setShowModal(false);
+        setFormData({ email: '', password: '', name: '', phone: '', role: 'tenant' });
+        
+        alert('Usuario creado exitosamente');
+      } catch (error) {
+        console.error('Error al crear usuario:', error);
+        alert(`Error al crear usuario: ${error instanceof Error ? error.message : 'Error desconocido'}`);
+      }
     }
-    
-    setShowModal(false);
-    setFormData({ email: '', password: '', name: '', phone: '', role: 'tenant' });
   };
 
   // Filtrar usuarios
