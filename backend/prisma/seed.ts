@@ -110,6 +110,44 @@ async function main() {
     password: 'admin123 (change this after first login!)',
   });
 
+  // Seed Provinces
+  const provincias = [
+    'Ciudad Autónoma de Buenos Aires',
+    'Neuquén',
+    'San Luis',
+    'Santa Fe',
+    'La Rioja',
+    'Catamarca',
+    'Tucumán',
+    'Chaco',
+    'Formosa',
+    'Santa Cruz',
+    'Chubut',
+    'Mendoza',
+    'Entre Ríos',
+    'San Juan',
+    'Jujuy',
+    'Santiago del Estero',
+    'Río Negro',
+    'Corrientes',
+    'Misiones',
+    'Salta',
+    'Córdoba',
+    'Buenos Aires',
+    'La Pampa',
+    'Tierra del Fuego, Antártida e Islas del Atlántico Sur',
+  ];
+
+  console.log('\n📍 Seeding provinces...');
+  for (const nombre of provincias) {
+    await prisma.provincia.upsert({
+      where: { nombre },
+      update: {},
+      create: { nombre },
+    });
+  }
+  console.log(`✅ ${provincias.length} provinces processed.`);
+
   console.log('\n🎉 Seeding completed!');
   console.log('\n📋 Summary:');
   console.log('  - Admin:    admin@inmobiliaria.com');
