@@ -5,7 +5,6 @@ import { ApiRequestError } from '@/types/api'
  */
 interface ApiClientConfig {
     baseUrl: string
-    token?: string
 }
 
 /**
@@ -15,20 +14,11 @@ interface ApiClientConfig {
  */
 export class ApiClient {
     private baseUrl: string
-    private token?: string
     private isRefreshing = false
     private refreshPromise: Promise<boolean> | null = null
 
     constructor(config: ApiClientConfig) {
         this.baseUrl = config.baseUrl
-        this.token = config.token
-    }
-
-    /**
-     * Actualiza el token de autenticación
-     */
-    setToken(token: string | undefined) {
-        this.token = token
     }
 
     /**
@@ -39,10 +29,6 @@ export class ApiClient {
             'Content-Type': 'application/json',
         }
 
-        if (this.token) {
-            headers['Authorization'] = `Bearer ${this.token}`
-        }
-
         return headers
     }
 
@@ -50,48 +36,61 @@ export class ApiClient {
      * Intenta refrescar el access token usando el refresh token
      */
     private async refreshAccessToken(): Promise<boolean> {
-        if (this.isRefreshing && this.refreshPromise) return this.refreshPromise;
+        // Si ya hay un refresh en progreso, esperar a que termine
+        if (this.isRefreshing && this.refreshPromise) {
+            return this.refreshPromise
+        }
 
-        this.isRefreshing = true;
+        this.isRefreshing = true
         this.refreshPromise = (async () => {
             try {
-            const response = await fetch(`${this.baseUrl}/auth/refresh`, {
-                method: 'POST',
-                credentials: 'include',
-            });
+                const response = await fetch(`${this.baseUrl}/auth/refresh`, {
+                    method: 'POST',
+                    credentials: 'include', // Envía refresh_token cookie
+                })
 
-            if (response.ok) {
-                const data = await response.json();
-                if (data?.access_token) {
-                this.setToken(data.access_token); // ✅ ESTO ES LO QUE TE FALTABA
-                return true;
+                if (response.ok) {
+                    // Refresh exitoso, el nuevo access_token está en las cookies
+                    return true
                 }
-                return false;
-            }
 
-            if (typeof window !== 'undefined') window.location.href = '/login';
-            return false;
+                // Refresh falló, redirigir a login
+                if (typeof window !== 'undefined') {
+                    window.location.href = '/login'
+                }
+                return false
             } catch (error) {
-            console.error('[ApiClient] Error refreshing token:', error);
-            if (typeof window !== 'undefined') window.location.href = '/login';
-            return false;
+                console.error('[ApiClient] Error refreshing token:', error)
+                if (typeof window !== 'undefined') {
+                    window.location.href = '/login'
+                }
+                return false
             } finally {
-            this.isRefreshing = false;
-            this.refreshPromise = null;
+                this.isRefreshing = false
+                this.refreshPromise = null
             }
-        })();
+        })()
 
-        return this.refreshPromise;
-        }
+        return this.refreshPromise
+    }
 
 
     /**
      * Maneja respuestas de error de la API con interceptor de refresh
      */
-    private async handleResponse<T>(response: Response, retryRequest?: () => Promise<Response>): Promise<T> {
-        // Si la respuesta es exitosa (2xx)
-        if (response.ok) {
-            return response.json()
+    private async handleResponse<T>(
+        response: Response,
+        retryRequest?: () => Promise<Response>,
+        skipRefresh?: boolean,
+    ): Promise<T> {
+        if (response.ok) return response.json()
+
+        if (!skipRefresh && response.status === 401 && retryRequest) {
+            const refreshed = await this.refreshAccessToken()
+            if (refreshed) {
+                const retryResponse = await retryRequest()
+                return this.handleResponse<T>(retryResponse, undefined, true)
+            }
         }
 
         // Si es 401 (Unauthorized), intentar refresh

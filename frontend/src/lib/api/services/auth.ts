@@ -61,11 +61,7 @@ export const authService = {
     /**
      * Obtiene el perfil del usuario autenticado
      */
-    async getMe(token?: string): Promise<UserProfile> {
-        if (token) {
-            apiClient.setToken(token)
-        }
-
+    async getMe(): Promise<UserProfile> {
         return apiClient.get<UserProfile>(API_ENDPOINTS.ME)
     },
 
@@ -73,11 +69,7 @@ export const authService = {
      * Cierra sesión del usuario
      * Invalida el refresh token en el backend
      */
-    async logout(token?: string): Promise<{ message: string }> {
-        if (token) {
-            apiClient.setToken(token)
-        }
-
+    async logout(): Promise<{ message: string }> {
         return apiClient.post<{ message: string }>(API_ENDPOINTS.LOGOUT)
     },
 }

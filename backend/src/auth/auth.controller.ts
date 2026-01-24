@@ -59,11 +59,22 @@ export class AuthController {
       secure: process.env.NODE_ENV === 'production', // HTTPS only in production
       sameSite: process.env.NODE_ENV === 'production' ? 'strict' : 'lax', // lax for dev (cross-origin)
       maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
-      path: '/', // Enviado a todos los endpoints (igual que access_token) - luego pasar a path: '/auth/refresh' es lo correcto que no se envie en esa ruta
+      path: '/auth/refresh', // Enviado a todos los endpoints (igual que access_token) - luego pasar a path: '/auth/refresh' es lo correcto que no se envie en esa ruta
     });
 
+
+    // Set access token in httpOnly cookie
+    res.cookie('access_token', tokens.access_token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production', // HTTPS only in production
+      sameSite: process.env.NODE_ENV === 'production' ? 'strict' : 'lax', // lax for dev (cross-origin)
+      maxAge: 15 * 60 * 1000, // 15 minutes
+      path: '/', // Sent to all endpoints
+    });
+
+
     return {
-      access_token: tokens.access_token,
+      "ok": true
     };
   }
 
@@ -114,8 +125,16 @@ export class AuthController {
       maxAge: 7 * 24 * 60 * 60 * 1000,
       path: '/', // ideal: '/auth/refresh'
     });
-    
-    return { access_token: tokens.access_token };
+
+    res.cookie('access_token', tokens.access_token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production', // HTTPS only in production
+      sameSite: process.env.NODE_ENV === 'production' ? 'strict' : 'lax', // lax for dev (cross-origin)
+      maxAge: 15 * 60 * 1000, // 15 minutes
+      path: '/', // Sent to all endpoints
+    });
+
+    return { "ok": true };
   }
 
 
