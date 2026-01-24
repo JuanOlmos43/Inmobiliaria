@@ -1,20 +1,36 @@
 'use client';
 
+import { useState } from 'react';
 import Icon, { IconName } from '@/components/UI/Icon';
 
 interface DashboardHeaderProps {
-  title: string;
-  userEmail: string;
-  icon: IconName;
+  title: 'Administrador' | 'Gerencia' | 'Agente' | 'Propietario' | 'Inquilino';
   onLogout: () => void;
 }
 
+// Mapeo de títulos de roles a sus iconos correspondientes
+const roleIconMap: Record<string, IconName> = {
+  'Administrador': 'settings',
+  'Gerencia': 'star',
+  'Agente': 'briefcase',
+  'Propietario': 'home',
+  'Inquilino': 'key'
+};
+
 export default function DashboardHeader({
   title,
-  userEmail,
-  icon,
   onLogout
 }: DashboardHeaderProps) {
+  const [userEmail] = useState(() => {
+    if (typeof window !== 'undefined') {
+      return localStorage.getItem('userEmail') || '';
+    }
+    return '';
+  });
+
+  // Obtener el icono basado en el título, con fallback a 'user'
+  const icon = roleIconMap[title] || 'user';
+
   return (
     <header className="bg-[#0f172a] shadow-lg sticky top-0 z-40">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
@@ -24,7 +40,7 @@ export default function DashboardHeader({
             <Icon name={icon} className="w-8 h-8 text-[#14b8a6]" />
             <div>
               <h1 className="text-2xl font-bold text-[#14b8a6]">{title}</h1>
-              <p className="text-sm text-gray-300">Bienvenido, {userEmail}</p>
+              <p className="text-sm text-gray-300 font-mono">Bienvenido, {userEmail}</p>
             </div>
           </div>
 

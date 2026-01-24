@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import DashboardHeader from '@/components/DashboardHeader';
 import UniversalPropertyCard from '@/components/UniversalPropertyCard';
@@ -29,74 +29,9 @@ interface Rental {
 
 export default function TenantDashboardPage() {
   const router = useRouter();
-  const [userEmail, setUserEmail] = useState('');
   const [rentals, setRentals] = useState<Rental[]>([]);
 
-  // Verificar autenticación y rol
-  useEffect(() => {
-    // const isAuth = localStorage.getItem('isAuthenticated');
-    const email = localStorage.getItem('userEmail');
-    // const role = localStorage.getItem('userRole');
-    
-    // if (!isAuth || isAuth !== 'true' || role !== 'tenant') {
-    //   router.push('/login');
-    // } else {
-      setUserEmail(email || 'inquilino@demo.com');
-    // }
-  }, [router]);
 
-  // Cargar datos al montar el componente
-  useEffect(() => {
-    loadRentals();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  const loadRentals = () => {
-    // Datos de ejemplo - en producción vendrían de una API
-    const sampleRentals: Rental[] = [
-      {
-        id: '1',
-        propertyName: 'Departamento Céntrico',
-        address: 'Av. Principal 1234, Piso 5, Depto A',
-        monthlyRent: 85000,
-        bedrooms: 2,
-        bathrooms: 1,
-        area: 65,
-        startDate: '2024-01-15',
-        endDate: '2026-01-15',
-        nextAdjustmentDate: '2026-01-15',
-        adjustmentPercentage: 15,
-        landlordName: 'María González',
-        landlordPhone: '+54 11 4567-8901',
-        landlordEmail: 'maria.gonzalez@email.com',
-        agentName: 'Carlos Rodríguez',
-        agentPhone: '+54 11 2345-6789',
-        agentEmail: 'carlos.rodriguez@inmobiliaria.com',
-        status: 'active'
-      },
-      {
-        id: '2',
-        propertyName: 'Casa en Barrio Residencial',
-        address: 'Calle Los Aromos 567',
-        monthlyRent: 120000,
-        bedrooms: 3,
-        bathrooms: 2,
-        area: 180,
-        startDate: '2023-06-01',
-        endDate: '2025-12-31',
-        nextAdjustmentDate: '2025-06-01',
-        adjustmentPercentage: 12,
-        landlordName: 'Juan Pérez',
-        landlordPhone: '+54 11 5678-9012',
-        landlordEmail: 'juan.perez@email.com',
-        agentName: 'Ana Martínez',
-        agentPhone: '+54 11 3456-7890',
-        agentEmail: 'ana.martinez@inmobiliaria.com',
-        status: 'expiring'
-      }
-    ];
-    setRentals(sampleRentals);
-  };
 
   const handleLogout = () => {
     localStorage.removeItem('isAuthenticated');
@@ -136,8 +71,6 @@ export default function TenantDashboardPage() {
       {/* Header */}
       <DashboardHeader
         title="Inquilino"
-        userEmail={userEmail}
-        icon="key"
         onLogout={handleLogout}
       />
 

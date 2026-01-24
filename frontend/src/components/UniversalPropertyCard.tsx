@@ -366,8 +366,8 @@ export default function UniversalPropertyCard({
                       <h3 className="text-lg font-semibold text-[#0f172a] mb-3">Contacto del Propietario</h3>
                       <div className="bg-gray-50 rounded-lg p-4 space-y-2">
                         <p className="text-gray-700"><span className="font-medium">Nombre:</span> {property.landlordName}</p>
-                        <p className="text-gray-700"><span className="font-medium">Teléfono:</span> {property.landlordPhone}</p>
-                        <p className="text-gray-700"><span className="font-medium">Email:</span> {property.landlordEmail}</p>
+                        <p className="text-gray-700"><span className="font-medium">Teléfono:</span> <span className="font-mono">{property.landlordPhone}</span></p>
+                        <p className="text-gray-700"><span className="font-medium">Email:</span> <span className="font-mono">{property.landlordEmail}</span></p>
                       </div>
                     </div>
                   )}
@@ -378,8 +378,8 @@ export default function UniversalPropertyCard({
                       <h3 className="text-lg font-semibold text-[#0f172a] mb-3">Contacto del Inquilino</h3>
                       <div className="bg-gray-50 rounded-lg p-4 space-y-2">
                         <p className="text-gray-700"><span className="font-medium">Nombre:</span> {property.tenantName}</p>
-                        <p className="text-gray-700"><span className="font-medium">Teléfono:</span> {property.tenantPhone}</p>
-                        <p className="text-gray-700"><span className="font-medium">Email:</span> {property.tenantEmail}</p>
+                        <p className="text-gray-700"><span className="font-medium">Teléfono:</span> <span className="font-mono">{property.tenantPhone}</span></p>
+                        <p className="text-gray-700"><span className="font-medium">Email:</span> <span className="font-mono">{property.tenantEmail}</span></p>
                       </div>
                     </div>
                   )}
@@ -395,10 +395,10 @@ export default function UniversalPropertyCard({
                       <span className="font-medium">Nombre:</span> {viewerRole === 'tenant' ? property.landlordName : property.tenantName || property.landlordName}
                     </p>
                     <p className="text-gray-700">
-                      <span className="font-medium">Teléfono:</span> {viewerRole === 'tenant' ? property.landlordPhone : property.tenantPhone || property.landlordPhone}
+                      <span className="font-medium">Teléfono:</span> <span className="font-mono">{viewerRole === 'tenant' ? property.landlordPhone : property.tenantPhone || property.landlordPhone}</span>
                     </p>
                     <p className="text-gray-700">
-                      <span className="font-medium">Email:</span> {viewerRole === 'tenant' ? property.landlordEmail : property.tenantEmail || property.landlordEmail}
+                      <span className="font-medium">Email:</span> <span className="font-mono">{viewerRole === 'tenant' ? property.landlordEmail : property.tenantEmail || property.landlordEmail}</span>
                     </p>
                   </div>
                 </div>
@@ -410,8 +410,8 @@ export default function UniversalPropertyCard({
                   <h3 className="text-lg font-semibold text-[#0f172a] mb-3">Contacto del Agente</h3>
                   <div className="bg-gray-50 rounded-lg p-4 space-y-2">
                     <p className="text-gray-700"><span className="font-medium">Nombre:</span> {property.agentName}</p>
-                    <p className="text-gray-700"><span className="font-medium">Teléfono:</span> {property.agentPhone}</p>
-                    <p className="text-gray-700"><span className="font-medium">Email:</span> {property.agentEmail}</p>
+                    <p className="text-gray-700"><span className="font-medium">Teléfono:</span> <span className="font-mono">{property.agentPhone}</span></p>
+                    <p className="text-gray-700"><span className="font-medium">Email:</span> <span className="font-mono">{property.agentEmail}</span></p>
                   </div>
                 </div>
               )}

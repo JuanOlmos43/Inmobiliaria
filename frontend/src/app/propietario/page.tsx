@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import DashboardHeader from '@/components/DashboardHeader';
 
@@ -44,101 +44,11 @@ interface Property {
 
 export default function LandlordDashboardPage() {
   const router = useRouter();
-  const [userEmail, setUserEmail] = useState('');
   const [rentals, setRentals] = useState<Rental[]>([]);
   const [properties, setProperties] = useState<Property[]>([]);
   const [activeTab, setActiveTab] = useState<'rentals' | 'properties'>('rentals');
 
-  // Verificar autenticación y rol
-  useEffect(() => {
-    // const isAuth = localStorage.getItem('isAuthenticated');
-    const email = localStorage.getItem('userEmail');
-    // const role = localStorage.getItem('userRole');
-    
-    // if (!isAuth || isAuth !== 'true' || role !== 'landlord') {
-    //   router.push('/login');
-    // } else {
-      setUserEmail(email || 'propietario@demo.com');
-    // }
-  }, [router]);
 
-  // Cargar datos al montar el componente
-  useEffect(() => {
-    loadRentals();
-    loadProperties();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  const loadRentals = () => {
-    // Datos de ejemplo - rentas donde el propietario es inquilino
-    const sampleRentals: Rental[] = [
-      {
-        id: '1',
-        propertyName: 'Oficina Comercial Centro',
-        address: 'Av. Comercio 890, Piso 3',
-        monthlyRent: 150000,
-        bedrooms: 0,
-        bathrooms: 2,
-        area: 120,
-        startDate: '2024-03-01',
-        endDate: '2026-03-01',
-        nextAdjustmentDate: '2025-03-01',
-        adjustmentPercentage: 18,
-        landlordName: 'Roberto Sánchez',
-        landlordPhone: '+54 11 6789-0123',
-        landlordEmail: 'roberto.sanchez@email.com',
-        agentName: 'Laura Fernández',
-        agentPhone: '+54 11 4567-8901',
-        agentEmail: 'laura.fernandez@inmobiliaria.com',
-        status: 'active'
-      }
-    ];
-    setRentals(sampleRentals);
-  };
-
-  const loadProperties = () => {
-    // Datos de ejemplo - propiedades que el propietario tiene publicadas
-    const sampleProperties: Property[] = [
-      {
-        id: '1',
-        title: 'Casa Familiar en Suburbios',
-        type: 'Venta',
-        price: 320000,
-        location: 'Barrio Residencial, Zona Oeste',
-        bedrooms: 4,
-        bathrooms: 3,
-        area: 220,
-
-        status: 'Activa',
-        description: 'Hermosa casa familiar con jardín amplio'
-      },
-      {
-        id: '2',
-        title: 'Departamento 2 Ambientes',
-        type: 'Alquiler',
-        price: 95000,
-        location: 'Centro, Ciudad',
-        bedrooms: 1,
-        bathrooms: 1,
-        area: 55,
-        status: 'Activa',
-        description: 'Departamento moderno ideal para pareja'
-      },
-      {
-        id: '3',
-        title: 'Local Comercial Esquina',
-        type: 'Alquiler',
-        price: 180000,
-        location: 'Zona Comercial Norte',
-        bedrooms: 0,
-        bathrooms: 2,
-        area: 120,
-        status: 'Activa',
-        description: 'Local comercial en ubicación estratégica'
-      }
-    ];
-    setProperties(sampleProperties);
-  };
 
   const handleLogout = () => {
     localStorage.removeItem('isAuthenticated');
@@ -170,8 +80,6 @@ export default function LandlordDashboardPage() {
       {/* Header */}
       <DashboardHeader
         title="Propietario"
-        userEmail={userEmail}
-        icon="home"
         onLogout={handleLogout}
       />
 

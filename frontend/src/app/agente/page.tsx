@@ -50,73 +50,9 @@ export default function DashboardPage() {
   const [rentingProperty, setRentingProperty] = useState<Property | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [filterStatus, setFilterStatus] = useState<'all' | 'Activa' | 'Pausada'>('all');
-  const [userEmail, setUserEmail] = useState('');
   const [activeTab, setActiveTab] = useState<'vencimientos' | 'propiedades'>('vencimientos');
 
-  // Verificar autenticación
-  useEffect(() => {
-    // const isAuth = localStorage.getItem('isAuthenticated');
-    const email = localStorage.getItem('userEmail');
-    
-    // if (!isAuth || isAuth !== 'true') {
-    //   router.push('/login');
-    // } else {
-      setUserEmail(email || 'agente@demo.com');
-    // }
-  }, [router]);
 
-  // Cargar propiedades de ejemplo al montar el componente
-  useEffect(() => {
-    loadSampleProperties();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  const loadSampleProperties = () => {
-    const sampleProperties: Property[] = [
-      {
-        id: '1',
-        title: 'Casa Moderna en Zona Norte',
-        type: 'Venta',
-        price: 250000,
-        currency: 'USD',
-        location: 'Zona Norte, Ciudad',
-        bedrooms: 3,
-        rooms: 5,
-        bathrooms: 2,
-        area: 180,
-
-        status: 'Activa',
-        description: 'Hermosa casa moderna con acabados de lujo',
-        propertyType: 'casa',
-        yearBuilt: 2020,
-        features: ['Cochera', 'Patio', 'Cocina integrada', 'Calefacción central'],
-        landlordName: 'Carlos Rodríguez',
-        landlordPhone: '+54 11 2345-6789',
-        landlordEmail: 'carlos.rodriguez@email.com'
-      },
-      {
-        id: '2',
-        title: 'Departamento Céntrico',
-        type: 'Alquiler',
-        price: 800000,
-        currency: 'ARS',
-        location: 'Centro, Ciudad',
-        bedrooms: 2,
-        rooms: 3,
-        bathrooms: 1,
-        area: 85,
-        status: 'Activa',
-        description: 'Departamento amoblado en zona céntrica',
-        propertyType: 'departamento',
-        yearBuilt: 2015,
-        features: ['Balcón', 'Cocina equipada', 'Calefacción', 'Portero eléctrico'],
-        landlordName: 'María González',
-        landlordPhone: '+54 11 3456-7890',
-        landlordEmail: 'maria.gonzalez@email.com'
-      }
-    ];
-    setProperties(sampleProperties);
-  };
 
   const handleLogout = () => {
     localStorage.removeItem('isAuthenticated');
@@ -186,8 +122,6 @@ export default function DashboardPage() {
       {/* Header */}
       <DashboardHeader
         title="Agente"
-        userEmail={userEmail}
-        icon="briefcase"
         onLogout={handleLogout}
       />
 
@@ -367,6 +301,7 @@ export default function DashboardPage() {
             handleToggleStatus(rentingProperty.id);
             // Guardar el contrato en localStorage
             const existingRentals = JSON.parse(localStorage.getItem('rentalContracts') || '[]');
+            const agentEmail = localStorage.getItem('userEmail') || '';
             const newRental = {
               id: Date.now().toString(),
               propertyId: rentingProperty.id,
@@ -374,9 +309,9 @@ export default function DashboardPage() {
               address: rentingProperty.location,
               monthlyRent: rentingProperty.price,
               ...rentalData,
-              agentName: userEmail,
-              agentPhone: '+54 11 2345-6789',
-              agentEmail: userEmail
+              agentName: agentEmail,
+              agentPhone: '',
+              agentEmail: agentEmail
             };
             localStorage.setItem('rentalContracts', JSON.stringify([...existingRentals, newRental]));
             setIsRentalModalOpen(false);
@@ -419,88 +354,9 @@ function UpcomingExpirations() {
   const [adjustmentContracts, setAdjustmentContracts] = useState<RentalContract[]>([]);
 
   useEffect(() => {
-    // Cargar contratos de alquiler del localStorage o usar datos de ejemplo
+    // Cargar contratos de alquiler del localStorage
     const storedContracts = localStorage.getItem('rentalContracts');
-    let contracts = [];
-    
-    if (storedContracts) {
-      contracts = JSON.parse(storedContracts);
-    } else {
-      // Datos de ejemplo si no hay contratos en localStorage
-      const today = new Date();
-      const sampleContracts = [
-        {
-          id: '1',
-          propertyName: 'Departamento Céntrico',
-          address: 'Av. Principal 1234, Piso 5, Depto A',
-          monthlyRent: 85000,
-          bedrooms: 2,
-          bathrooms: 1,
-          area: 65,
-          startDate: '2024-01-15',
-          endDate: new Date(today.getTime() + 25 * 24 * 60 * 60 * 1000).toISOString().split('T')[0], // Vence en 25 días
-          nextAdjustmentDate: new Date(today.getTime() + 60 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
-          adjustmentPercentage: 15,
-          landlordName: 'María González',
-          landlordPhone: '+54 11 4567-8901',
-          landlordEmail: 'maria.gonzalez@email.com',
-          tenantName: 'Juan Pérez',
-          tenantPhone: '+54 11 9876-5432',
-          tenantEmail: 'juan.perez@email.com',
-          agentName: 'Carlos Rodríguez',
-          agentPhone: '+54 11 2345-6789',
-          agentEmail: 'carlos.rodriguez@inmobiliaria.com',
-          status: 'active'
-        },
-        {
-          id: '2',
-          propertyName: 'Casa en Barrio Residencial',
-          address: 'Calle Los Aromos 567',
-          monthlyRent: 120000,
-          bedrooms: 3,
-          bathrooms: 2,
-          area: 180,
-          startDate: '2023-06-01',
-          endDate: new Date(today.getTime() + 45 * 24 * 60 * 60 * 1000).toISOString().split('T')[0], // Vence en 45 días
-          nextAdjustmentDate: new Date(today.getTime() + 15 * 24 * 60 * 60 * 1000).toISOString().split('T')[0], // Ajuste en 15 días
-          adjustmentPercentage: 12,
-          landlordName: 'Roberto Sánchez',
-          landlordPhone: '+54 11 5678-9012',
-          landlordEmail: 'roberto.sanchez@email.com',
-          tenantName: 'Ana Martínez',
-          tenantPhone: '+54 11 3456-7890',
-          tenantEmail: 'ana.martinez@email.com',
-          agentName: 'Carlos Rodríguez',
-          agentPhone: '+54 11 2345-6789',
-          agentEmail: 'carlos.rodriguez@inmobiliaria.com',
-          status: 'active'
-        },
-        {
-          id: '3',
-          propertyName: 'Oficina Comercial Centro',
-          address: 'Av. Comercio 890, Piso 3',
-          monthlyRent: 150000,
-          bedrooms: 0,
-          bathrooms: 2,
-          area: 120,
-          startDate: '2024-03-01',
-          endDate: new Date(today.getTime() + 90 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
-          nextAdjustmentDate: new Date(today.getTime() + 20 * 24 * 60 * 60 * 1000).toISOString().split('T')[0], // Ajuste en 20 días
-          adjustmentPercentage: 18,
-          landlordName: 'Laura Fernández',
-          landlordPhone: '+54 11 6789-0123',
-          landlordEmail: 'laura.fernandez@email.com',
-          tenantName: 'Empresa Tech SRL',
-          tenantPhone: '+54 11 4567-8901',
-          tenantEmail: 'contacto@empresatech.com',
-          agentName: 'Carlos Rodríguez',
-          agentPhone: '+54 11 2345-6789',
-          agentEmail: 'carlos.rodriguez@inmobiliaria.com',
-          status: 'active'
-        }
-      ];
-      contracts = sampleContracts;
-    }
+    const contracts = storedContracts ? JSON.parse(storedContracts) : [];
 
     const today = new Date();
     const thirtyDaysFromNow = new Date(today);
@@ -959,10 +815,10 @@ function PropertyModal({
                       <span className="font-medium">Nombre:</span> {formData.landlordName}
                     </p>
                     <p className="text-xs text-green-700">
-                      <span className="font-medium">Email:</span> {formData.landlordEmail}
+                      <span className="font-medium">Email:</span> <span className="font-mono">{formData.landlordEmail}</span>
                     </p>
                     <p className="text-xs text-green-700">
-                      <span className="font-medium">Teléfono:</span> {formData.landlordPhone}
+                      <span className="font-medium">Teléfono:</span> <span className="font-mono">{formData.landlordPhone}</span>
                     </p>
                   </div>
                 </div>
@@ -1378,8 +1234,8 @@ function RentalModal({
                 <h4 className="text-md font-semibold text-[#0f172a] mb-2">Propietario</h4>
                 <div className="space-y-1">
                   <p className="text-gray-700"><span className="font-medium">Nombre:</span> {property.landlordName}</p>
-                  <p className="text-gray-700"><span className="font-medium">Teléfono:</span> {property.landlordPhone}</p>
-                  <p className="text-gray-700"><span className="font-medium">Email:</span> {property.landlordEmail}</p>
+                  <p className="text-gray-700"><span className="font-medium">Teléfono:</span> <span className="font-mono">{property.landlordPhone}</span></p>
+                  <p className="text-gray-700"><span className="font-medium">Email:</span> <span className="font-mono">{property.landlordEmail}</span></p>
                 </div>
               </div>
             )}

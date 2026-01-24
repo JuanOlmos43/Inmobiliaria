@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Icon from '@/components/UI/Icon';
 import DashboardHeader from '@/components/DashboardHeader';
@@ -16,7 +16,6 @@ interface OrganizationStats {
 
 export default function DashboardOwnerPage() {
   const router = useRouter();
-  const [userEmail, setUserEmail] = useState('');
   const [stats, setStats] = useState<OrganizationStats>({
     totalProperties: 127,
     occupancyRate: 78.5,
@@ -25,18 +24,7 @@ export default function DashboardOwnerPage() {
     completedContracts: 234
   });
 
-  // Verificar autenticación y rol
-  useEffect(() => {
-    // const isAuth = localStorage.getItem('isAuthenticated');
-    const email = localStorage.getItem('userEmail');
-    // const role = localStorage.getItem('userRole');
-    
-    // if (!isAuth || isAuth !== 'true' || role !== 'owner') {
-    //   router.push('/login');
-    // } else {
-      setUserEmail(email || 'gerencia@demo.com');
-    // }
-  }, [router]);
+
 
   const handleLogout = () => {
     localStorage.removeItem('isAuthenticated');
@@ -50,8 +38,6 @@ export default function DashboardOwnerPage() {
       {/* Header */}
       <DashboardHeader
         title="Gerencia"
-        userEmail={userEmail}
-        icon="star"
         onLogout={handleLogout}
       />
 

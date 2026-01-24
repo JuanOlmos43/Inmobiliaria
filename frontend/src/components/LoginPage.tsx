@@ -24,6 +24,9 @@ export default function LoginPage() {
             // Esto permite que las cookies se guarden en el navegador
             await authService.login(email, password);
 
+            // Guardar el email en localStorage para mostrarlo en el dashboard
+            localStorage.setItem('userEmail', email);
+
             // Login exitoso - redirigir al dashboard
             router.push('/dashboard');
         } catch (err) {

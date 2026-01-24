@@ -46,7 +46,6 @@ const roleMapping: Record<string, UserRole> = {
 
 export default function AdminDashboardPage() {
   const router = useRouter();
-  const [userEmail, setUserEmail] = useState('');
   const [users, setUsers] = useState<User[]>([]);
   const [showModal, setShowModal] = useState(false);
   const [editingUser, setEditingUser] = useState<User | null>(null);
@@ -62,18 +61,7 @@ export default function AdminDashboardPage() {
     role: 'tenant' as 'tenant' | 'landlord' | 'agent' | 'owner'
   });
 
-  // Verificar autenticación y rol
-  useEffect(() => {
-    // const isAuth = localStorage.getItem('isAuthenticated');
-    const email = localStorage.getItem('userEmail');
-    // const role = localStorage.getItem('userRole');
-    
-    // if (!isAuth || isAuth !== 'true' || role !== 'admin') {
-    //   router.push('/login');
-    // } else {
-      setUserEmail(email || 'admin@demo.com');
-    // }
-  }, [router]);
+
 
   // Cargar usuarios desde localStorage
   const loadUsers = () => {
@@ -205,8 +193,6 @@ export default function AdminDashboardPage() {
       {/* Header */}
       <DashboardHeader
         title="Administrador"
-        userEmail={userEmail}
-        icon="settings"
         onLogout={handleLogout}
       />
 
@@ -314,7 +300,7 @@ export default function AdminDashboardPage() {
               <tbody className="divide-y divide-gray-200">
                 {filteredUsers.map((user) => (
                   <tr key={user.id} className="hover:bg-gray-50 transition-colors">
-                    <td className="px-6 py-4 text-sm text-gray-900">{user.email}</td>
+                    <td className="px-6 py-4 text-sm text-gray-900 font-mono">{user.email}</td>
                     <td className="px-6 py-4 text-sm text-gray-600 font-mono">
                       <span className="bg-gray-100 px-2 py-1 rounded">{user.password}</span>
                     </td>
