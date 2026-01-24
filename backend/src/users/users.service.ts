@@ -13,7 +13,7 @@ export interface CreateUserDto {
 
 @Injectable()
 export class UsersService {
-  constructor(private prisma: PrismaService) {}
+  constructor(private prisma: PrismaService) { }
 
   async findByEmail(email: string): Promise<User | null> {
     return this.prisma.user.findUnique({
@@ -37,6 +37,12 @@ export class UsersService {
         role: data.role,
         status: data.status || UserStatus.active,
       },
+    });
+  }
+
+  async findAll(role?: UserRole): Promise<User[]> {
+    return this.prisma.user.findMany({
+      where: role ? { role } : undefined,
     });
   }
 }
