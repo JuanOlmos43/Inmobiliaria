@@ -103,6 +103,13 @@ export class PropiedadesService {
       where.area = { gte: minArea };
     }
 
+    if (query.search) {
+      where.locationText = {
+        contains: query.search,
+        mode: 'insensitive',
+      };
+    }
+
     // Calcular paginación
     const skip = (page - 1) * limit;
 

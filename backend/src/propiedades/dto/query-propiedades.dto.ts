@@ -5,6 +5,7 @@ import {
   IsNumber,
   Min,
   IsInt,
+  IsString,
 } from 'class-validator';
 import { Type } from 'class-transformer';
 import {
@@ -30,6 +31,10 @@ export class QueryPropiedadesDto {
   @IsOptional()
   @IsUUID()
   localidadId?: string;
+
+  @IsOptional()
+  @IsString()
+  search?: string;
 
   @IsOptional()
   @Type(() => Number)
