@@ -6,14 +6,14 @@
 
 :root {
   /* Colores del fondo y texto base */
-  --background: #f8fafc;      /* Slate 50 - Fondo claro de la app */
-  --foreground: #0f172a;      /* Slate 900 - Texto principal oscuro */
-  
+  --background: #f8fafc; /* Slate 50 - Fondo claro de la app */
+  --foreground: #0f172a; /* Slate 900 - Texto principal oscuro */
+
   /* Colores principales del proyecto */
-  --primary: #0f172a;         /* Graphite oscuro - Color principal */
-  --primary-light: #334155;   /* Graphite claro - Variante más clara */
-  --accent: #14b8a6;          /* Teal - Color de acento */
-  --accent-hover: #0d9488;    /* Teal oscuro - Estado hover */
+  --primary: #0f172a; /* Graphite oscuro - Color principal */
+  --primary-light: #334155; /* Graphite claro - Variante más clara */
+  --accent: #14b8a6; /* Teal - Color de acento */
+  --accent-hover: #0d9488; /* Teal oscuro - Estado hover */
 }
 
 /* ============================================
@@ -23,7 +23,12 @@
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: var(--font-geist-sans), -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-family:
+    var(--font-geist-sans),
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    sans-serif;
 }
 
 html {
@@ -43,7 +48,11 @@ html {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: linear-gradient(135deg, var(--accent) 0%, var(--accent-hover) 100%);
+  background: linear-gradient(
+    135deg,
+    var(--accent) 0%,
+    var(--accent-hover) 100%
+  );
   border-radius: 6px;
 }
 

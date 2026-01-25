@@ -15,7 +15,8 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "InmoHogar - Tu hogar ideal te espera",
-  description: "Encuentra las mejores propiedades en venta y alquiler. Tu socio de confianza en bienes raíces con más de 15 años de experiencia.",
+  description:
+    "Encuentra las mejores propiedades en venta y alquiler. Tu socio de confianza en bienes raíces con más de 15 años de experiencia.",
 };
 
 export default function RootLayout({
@@ -25,10 +26,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="es">
-      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-        <QueryProvider>
-          {children}
-        </QueryProvider>
+      <body
+        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+      >
+        <QueryProvider>{children}</QueryProvider>
       </body>
     </html>
   );

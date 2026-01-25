@@ -1,8 +1,8 @@
-'use client';
+"use client";
 
-import Link from 'next/link';
-import Image from 'next/image';
-import { useState } from 'react';
+import Link from "next/link";
+import Image from "next/image";
+import { useState } from "react";
 
 export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -21,11 +21,14 @@ export default function Navbar() {
         <div className="flex justify-between items-center h-20">
           {/* Logo */}
           <div className="flex-shrink-0">
-            <Link href="/" className="flex items-center gap-3 text-3xl font-bold text-[#14b8a6] hover:text-[#2dd4bf] transition-all duration-300 transform hover:scale-105">
-              <Image 
-                src="/icon.png" 
-                alt="InmoHogar Logo" 
-                width={60} 
+            <Link
+              href="/"
+              className="flex items-center gap-3 text-3xl font-bold text-[#14b8a6] hover:text-[#2dd4bf] transition-all duration-300 transform hover:scale-105"
+            >
+              <Image
+                src="/icon.png"
+                alt="InmoHogar Logo"
+                width={60}
                 height={60}
                 className="transition-transform duration-300"
               />
@@ -35,37 +38,37 @@ export default function Navbar() {
 
           {/* Navigation Links */}
           <div className="hidden md:flex space-x-1 items-center">
-            <Link 
-              href="/" 
+            <Link
+              href="/"
               className="relative px-4 py-2 text-white hover:text-[#14b8a6] transition-colors font-medium group"
             >
               Inicio
               <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-[#14b8a6] group-hover:w-full transition-all duration-300"></span>
             </Link>
-            <Link 
-              href="/propiedades" 
+            <Link
+              href="/propiedades"
               className="relative px-4 py-2 text-white hover:text-[#14b8a6] transition-colors font-medium group"
             >
               Propiedades
               <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-[#14b8a6] group-hover:w-full transition-all duration-300"></span>
             </Link>
-            <Link 
-              href="/nosotros" 
+            <Link
+              href="/nosotros"
               className="relative px-4 py-2 text-white hover:text-[#14b8a6] transition-colors font-medium group"
             >
               Nosotros
               <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-[#14b8a6] group-hover:w-full transition-all duration-300"></span>
             </Link>
-            <Link 
-              href="/contacto" 
+            <Link
+              href="/contacto"
               className="relative px-4 py-2 text-white hover:text-[#14b8a6] transition-colors font-medium group"
             >
               Contacto
               <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-[#14b8a6] group-hover:w-full transition-all duration-300"></span>
             </Link>
-            
+
             {/* Login Button */}
-            <Link 
+            <Link
               href="/login"
               className="ml-6 px-8 py-3 bg-[#14b8a6] text-white font-bold rounded-full hover:bg-[#0d9488] transition-all duration-300 shadow-lg hover:shadow-2xl transform hover:-translate-y-1 hover:scale-105"
             >
@@ -75,18 +78,38 @@ export default function Navbar() {
 
           {/* Mobile menu button */}
           <div className="md:hidden">
-            <button 
+            <button
               onClick={toggleMenu}
               className="text-white hover:text-[#14b8a6] focus:outline-none transition-colors"
               aria-label="Toggle menu"
             >
               {isMenuOpen ? (
-                <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                <svg
+                  className="h-6 w-6"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M6 18L18 6M6 6l12 12"
+                  />
                 </svg>
               ) : (
-                <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+                <svg
+                  className="h-6 w-6"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M4 6h16M4 12h16M4 18h16"
+                  />
                 </svg>
               )}
             </button>
@@ -95,41 +118,41 @@ export default function Navbar() {
       </div>
 
       {/* Mobile menu panel */}
-      <div 
+      <div
         className={`md:hidden overflow-hidden transition-all duration-300 ease-in-out ${
-          isMenuOpen ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'
+          isMenuOpen ? "max-h-96 opacity-100" : "max-h-0 opacity-0"
         }`}
       >
         <div className="px-4 pt-2 pb-6 space-y-2 bg-[#0f172a]">
-          <Link 
-            href="/" 
+          <Link
+            href="/"
             onClick={closeMenu}
             className="block px-4 py-3 text-white hover:text-[#14b8a6] hover:bg-[#1e293b] rounded-lg transition-all duration-200 font-medium"
           >
             Inicio
           </Link>
-          <Link 
-            href="/propiedades" 
+          <Link
+            href="/propiedades"
             onClick={closeMenu}
             className="block px-4 py-3 text-white hover:text-[#14b8a6] hover:bg-[#1e293b] rounded-lg transition-all duration-200 font-medium"
           >
             Propiedades
           </Link>
-          <Link 
-            href="/nosotros" 
+          <Link
+            href="/nosotros"
             onClick={closeMenu}
             className="block px-4 py-3 text-white hover:text-[#14b8a6] hover:bg-[#1e293b] rounded-lg transition-all duration-200 font-medium"
           >
             Nosotros
           </Link>
-          <Link 
-            href="/contacto" 
+          <Link
+            href="/contacto"
             onClick={closeMenu}
             className="block px-4 py-3 text-white hover:text-[#14b8a6] hover:bg-[#1e293b] rounded-lg transition-all duration-200 font-medium"
           >
             Contacto
           </Link>
-          <Link 
+          <Link
             href="/login"
             onClick={closeMenu}
             className="block mt-4 px-6 py-3 bg-[#14b8a6] text-white font-bold rounded-full hover:bg-[#0d9488] transition-all duration-300 shadow-lg text-center"

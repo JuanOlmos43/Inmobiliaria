@@ -1,12 +1,12 @@
-'use client';
+"use client";
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect } from "react";
 
-import StatsCard from '@/components/UI/StatsCard';
-import UserFormModal from '@/components/UserFormModal';
-import UsersTable from '@/components/UsersTable';
-import { usersService } from '@/lib/api/services/users';
-import { UserProfile, UserRole } from '@/types/api';
+import StatsCard from "@/components/UI/StatsCard";
+import UserFormModal from "@/components/UserFormModal";
+import UsersTable from "@/components/UsersTable";
+import { usersService } from "@/lib/api/services/users";
+import { UserProfile, UserRole } from "@/types/api";
 
 // ============================================
 // TIPOS DE DATOS
@@ -17,14 +17,14 @@ import { UserProfile, UserRole } from '@/types/api';
  * Representa tanto usuarios del frontend como del backend
  */
 interface User {
-  id: string;                                    // ID único del usuario
-  email: string;                                 // Email para login
-  password: string;                              // Contraseña (solo para mostrar en admin)
-  name?: string;                                 // Nombre completo (opcional)
-  phone?: string;                                // Teléfono de contacto (opcional)
+  id: string; // ID único del usuario
+  email: string; // Email para login
+  password: string; // Contraseña (solo para mostrar en admin)
+  name?: string; // Nombre completo (opcional)
+  phone?: string; // Teléfono de contacto (opcional)
   role: UserRole; // Rol del usuario en el sistema
-  createdAt: string;                             // Fecha de creación (ISO string)
-  status: 'active' | 'inactive';                 // Estado del usuario
+  createdAt: string; // Fecha de creación (ISO string)
+  status: "active" | "inactive"; // Estado del usuario
 }
 
 // ============================================
@@ -33,13 +33,12 @@ interface User {
 
 /**
  * AdminDashboardPage
- * 
+ *
  * Página principal del dashboard de administrador.
  * Permite gestionar usuarios del sistema: crear, editar, eliminar y cambiar estado.
  * Muestra estadísticas en tiempo real sobre los usuarios.
  */
 export default function AdminDashboardPage() {
-
   // ============================================
   // ESTADOS DEL COMPONENTE
   // ============================================
@@ -99,18 +98,18 @@ export default function AdminDashboardPage() {
       const mappedUsers: User[] = usersData.map((user: UserProfile) => ({
         id: user.id,
         email: user.email,
-        password: '********', // No mostramos la contraseña real
+        password: "********", // No mostramos la contraseña real
         name: user.name,
         phone: user.phone || undefined, // Convierte null a undefined
         role: user.role, // Los roles ya vienen en español del backend
         createdAt: user.createdAt,
-        status: user.status === 'active' ? 'active' : 'inactive' // Mapea status del backend
+        status: user.status === "active" ? "active" : "inactive", // Mapea status del backend
       }));
 
       setUsers(mappedUsers);
     } catch (err) {
-      console.error('Error al cargar usuarios:', err);
-      setError('Error al cargar usuarios. Por favor, intenta de nuevo.');
+      console.error("Error al cargar usuarios:", err);
+      setError("Error al cargar usuarios. Por favor, intenta de nuevo.");
     } finally {
       setIsLoading(false);
     }
@@ -141,23 +140,23 @@ export default function AdminDashboardPage() {
   /**
    * Elimina un usuario del sistema
    * Muestra confirmación antes de eliminar
-   * 
+   *
    * @param userId - ID del usuario a eliminar
    * TODO: Implementar endpoint DELETE /users/:id en el backend
    */
   const handleDeleteUser = async (userId: string) => {
-    if (confirm('¿Estás seguro de que deseas eliminar este usuario?')) {
+    if (confirm("¿Estás seguro de que deseas eliminar este usuario?")) {
       try {
         // TODO: Llamar a usersService.deleteUser(userId) cuando exista el endpoint
         // Por ahora solo actualizamos el estado local
-        const updatedUsers = users.filter(u => u.id !== userId);
+        const updatedUsers = users.filter((u) => u.id !== userId);
         setUsers(updatedUsers);
 
         // Opcional: Refrescar desde el backend
         // await loadUsers();
       } catch (err) {
-        console.error('Error al eliminar usuario:', err);
-        alert('Error al eliminar usuario. Por favor, intenta de nuevo.');
+        console.error("Error al eliminar usuario:", err);
+        alert("Error al eliminar usuario. Por favor, intenta de nuevo.");
       }
     }
   };
@@ -165,7 +164,7 @@ export default function AdminDashboardPage() {
   /**
    * Alterna el estado de un usuario entre 'active' e 'inactive'
    * Útil para desactivar usuarios sin eliminarlos
-   * 
+   *
    * @param userId - ID del usuario a cambiar estado
    * TODO: Implementar endpoint PATCH /users/:id/status en el backend
    */
@@ -173,15 +172,21 @@ export default function AdminDashboardPage() {
     try {
       // TODO: Llamar a usersService.updateStatus(userId, newStatus) cuando exista el endpoint
       // Por ahora solo actualizamos el estado local
-      const updatedUsers = users.map(u =>
+      const updatedUsers = users.map((u) =>
         u.id === userId
-          ? { ...u, status: u.status === 'active' ? 'inactive' as const : 'active' as const }
-          : u
+          ? {
+              ...u,
+              status:
+                u.status === "active"
+                  ? ("inactive" as const)
+                  : ("active" as const),
+            }
+          : u,
       );
       setUsers(updatedUsers);
     } catch (err) {
-      console.error('Error al cambiar estado:', err);
-      alert('Error al cambiar estado del usuario.');
+      console.error("Error al cambiar estado:", err);
+      alert("Error al cambiar estado del usuario.");
     }
   };
 
@@ -196,14 +201,14 @@ export default function AdminDashboardPage() {
 
   /**
    * Callback ejecutado cuando se actualiza un usuario existente
-   * 
+   *
    * @param updatedUser - Usuario con los datos actualizados
    * TODO: Implementar endpoint PATCH /users/:id en el backend
    */
   const handleUserUpdated = async (updatedUser: User) => {
     // Por ahora actualizamos localmente
-    const updatedUsers = users.map(u =>
-      u.id === updatedUser.id ? updatedUser : u
+    const updatedUsers = users.map((u) =>
+      u.id === updatedUser.id ? updatedUser : u,
     );
     setUsers(updatedUsers);
 
@@ -220,12 +225,12 @@ export default function AdminDashboardPage() {
    * Se recalcula automáticamente cuando cambia el array 'users'
    */
   const stats = {
-    total: users.length,                                      // Total de usuarios
-    active: users.filter(u => u.status === 'active').length,  // Usuarios activos
-    tenants: users.filter(u => u.role === UserRole.Inquilino).length,   // Inquilinos
-    landlords: users.filter(u => u.role === UserRole.Propietario).length, // Propietarios
-    agents: users.filter(u => u.role === UserRole.Agente).length,     // Agentes
-    owners: users.filter(u => u.role === UserRole.Gerencia).length      // Gerencia
+    total: users.length, // Total de usuarios
+    active: users.filter((u) => u.status === "active").length, // Usuarios activos
+    tenants: users.filter((u) => u.role === UserRole.Inquilino).length, // Inquilinos
+    landlords: users.filter((u) => u.role === UserRole.Propietario).length, // Propietarios
+    agents: users.filter((u) => u.role === UserRole.Agente).length, // Agentes
+    owners: users.filter((u) => u.role === UserRole.Gerencia).length, // Gerencia
   };
 
   // ============================================
@@ -234,15 +239,15 @@ export default function AdminDashboardPage() {
 
   return (
     <div className="min-h-screen bg-[#f8fafc]">
-
       {/* Contenedor principal con padding y ancho máximo */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-
         {/* ========================================
             SECCIÓN: ESTADÍSTICAS DEL SISTEMA
             ======================================== */}
         <div className="mb-8">
-          <h2 className="text-2xl font-bold text-[#0f172a] mb-6">Estadísticas del Sistema</h2>
+          <h2 className="text-2xl font-bold text-[#0f172a] mb-6">
+            Estadísticas del Sistema
+          </h2>
 
           {/* Grid responsive de tarjetas de estadísticas */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-6">
@@ -300,10 +305,11 @@ export default function AdminDashboardPage() {
             SECCIÓN: GESTIÓN DE USUARIOS
             ======================================== */}
         <div className="bg-white rounded-xl shadow-lg p-6">
-
           {/* Header con título y botón crear */}
           <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
-            <h2 className="text-2xl font-bold text-[#0f172a]">Gestión de Usuarios</h2>
+            <h2 className="text-2xl font-bold text-[#0f172a]">
+              Gestión de Usuarios
+            </h2>
 
             {/* Botón para crear nuevo usuario */}
             <button
@@ -311,8 +317,18 @@ export default function AdminDashboardPage() {
               className="px-6 py-3 bg-[#14b8a6] text-white rounded-lg hover:bg-[#0d9488] transition-all shadow-md hover:shadow-lg flex items-center gap-2 transform hover:scale-105"
             >
               {/* Icono de "+" */}
-              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+              <svg
+                className="w-5 h-5"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M12 4v16m8-8H4"
+                />
               </svg>
               Crear Usuario
             </button>

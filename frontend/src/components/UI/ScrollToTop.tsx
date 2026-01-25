@@ -1,7 +1,7 @@
-'use client';
+"use client";
 
-import { useEffect } from 'react';
-import { usePathname } from 'next/navigation';
+import { useEffect } from "react";
+import { usePathname } from "next/navigation";
 
 export default function ScrollToTop() {
   const pathname = usePathname();
@@ -9,10 +9,10 @@ export default function ScrollToTop() {
   useEffect(() => {
     // Scroll al tope cuando cambia la ruta
     window.scrollTo(0, 0);
-    
+
     // También asegurar que el body no tenga overflow hidden
-    document.body.style.overflow = '';
-    document.body.style.paddingRight = '';
+    document.body.style.overflow = "";
+    document.body.style.paddingRight = "";
   }, [pathname]);
 
   return null;

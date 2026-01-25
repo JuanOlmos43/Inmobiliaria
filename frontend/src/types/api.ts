@@ -7,16 +7,16 @@
 // ============================================
 
 export interface LoginRequest {
-    email: string
-    password: string
+  email: string;
+  password: string;
 }
 
 export interface RegisterRequest {
-    email: string
-    password: string
-    name?: string
-    phone?: string
-    role: UserRole
+  email: string;
+  password: string;
+  name?: string;
+  phone?: string;
+  role: UserRole;
 }
 
 // ============================================
@@ -24,18 +24,18 @@ export interface RegisterRequest {
 // ============================================
 
 export interface LoginResponse {
-    access_token: string
+  access_token: string;
 }
 
 export interface UserProfile {
-    id: string
-    email: string
-    name: string
-    phone: string | null
-    role: UserRole
-    status: UserStatus
-    createdAt: string
-    updatedAt: string
+  id: string;
+  email: string;
+  name: string;
+  phone: string | null;
+  role: UserRole;
+  status: UserStatus;
+  createdAt: string;
+  updatedAt: string;
 }
 
 // ============================================
@@ -43,17 +43,17 @@ export interface UserProfile {
 // ============================================
 
 export enum UserRole {
-    Administrador = 'Administrador',
-    Agente = 'Agente',
-    Propietario = 'Propietario',
-    Inquilino = 'Inquilino',
-    Gerencia = 'Gerencia',
+  Administrador = "Administrador",
+  Agente = "Agente",
+  Propietario = "Propietario",
+  Inquilino = "Inquilino",
+  Gerencia = "Gerencia",
 }
 
 export enum UserStatus {
-    ACTIVE = 'active',
-    INACTIVE = 'inactive',
-    SUSPENDED = 'suspended',
+  ACTIVE = "active",
+  INACTIVE = "inactive",
+  SUSPENDED = "suspended",
 }
 
 // ============================================
@@ -61,12 +61,12 @@ export enum UserStatus {
 // ============================================
 
 export class ApiRequestError extends Error {
-    constructor(
-        message: string,
-        public statusCode: number,
-        public errorDetail: string
-    ) {
-        super(message)
-        this.name = 'ApiRequestError'
-    }
+  constructor(
+    message: string,
+    public statusCode: number,
+    public errorDetail: string,
+  ) {
+    super(message);
+    this.name = "ApiRequestError";
+  }
 }

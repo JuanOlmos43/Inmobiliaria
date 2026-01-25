@@ -1,7 +1,7 @@
-'use client';
+"use client";
 
-import Icon, { IconName } from '@/components/UI/Icon';
-import { UserRole } from '@/types/api';
+import Icon, { IconName } from "@/components/UI/Icon";
+import { UserRole } from "@/types/api";
 
 interface DashboardHeaderProps {
   role: UserRole;
@@ -12,20 +12,20 @@ interface DashboardHeaderProps {
 // Mapeo de roles a sus iconos correspondientes
 // La base de datos ya devuelve los nombres en español (Administrador, Gerencia, etc.)
 const roleIconMap: Record<UserRole, IconName> = {
-  [UserRole.Administrador]: 'settings',
-  [UserRole.Gerencia]: 'star',
-  [UserRole.Agente]: 'briefcase',
-  [UserRole.Propietario]: 'home',
-  [UserRole.Inquilino]: 'key'
+  [UserRole.Administrador]: "settings",
+  [UserRole.Gerencia]: "star",
+  [UserRole.Agente]: "briefcase",
+  [UserRole.Propietario]: "home",
+  [UserRole.Inquilino]: "key",
 };
 
 export default function DashboardHeader({
   role,
   onLogout,
-  userEmail
+  userEmail,
 }: DashboardHeaderProps) {
   // Obtener icono basado en el rol, con fallback seguro
-  const icon = roleIconMap[role] || ('user' as IconName);
+  const icon = roleIconMap[role] || ("user" as IconName);
 
   return (
     <header className="bg-[#0f172a] shadow-lg sticky top-0 z-40">
@@ -36,7 +36,9 @@ export default function DashboardHeader({
             <Icon name={icon} className="w-8 h-8 text-[#14b8a6]" />
             <div>
               <h1 className="text-2xl font-bold text-[#14b8a6]">{role}</h1>
-              <p className="text-sm text-gray-300 font-mono">Bienvenido, {userEmail || ''}</p>
+              <p className="text-sm text-gray-300 font-mono">
+                Bienvenido, {userEmail || ""}
+              </p>
             </div>
           </div>
 

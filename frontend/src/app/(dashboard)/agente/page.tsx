@@ -1,27 +1,30 @@
-'use client';
+"use client";
 
-import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 
-import { useAuth } from '@/hooks/useAuth';
-import { useDebounce } from '@/hooks/useDebounce';
-import { useQuery } from '@tanstack/react-query';
+import { useAuth } from "@/hooks/useAuth";
+import { useDebounce } from "@/hooks/useDebounce";
+import { useQuery } from "@tanstack/react-query";
 
 // Components
-import StatsCard from '@/components/UI/StatsCard';
-import AgentPropertyCard from '@/components/dashboard/agent/AgentPropertyCard';
-import PropertyModal from '@/components/dashboard/agent/PropertyModal';
-import RentalModal from '@/components/dashboard/agent/RentalModal';
-import UpcomingExpirations from '@/components/dashboard/agent/UpcomingExpirations';
-import { propertiesService, CreatePropertyDto } from '@/lib/api/services/properties';
+import StatsCard from "@/components/UI/StatsCard";
+import AgentPropertyCard from "@/components/dashboard/agent/AgentPropertyCard";
+import PropertyModal from "@/components/dashboard/agent/PropertyModal";
+import RentalModal from "@/components/dashboard/agent/RentalModal";
+import UpcomingExpirations from "@/components/dashboard/agent/UpcomingExpirations";
+import {
+  propertiesService,
+  CreatePropertyDto,
+} from "@/lib/api/services/properties";
 
 // Tipos
 interface Property {
   id: string;
   title: string;
-  type: 'Venta' | 'Alquiler';
+  type: "Venta" | "Alquiler";
   price: number;
-  currency: 'USD' | 'ARS';
+  currency: "USD" | "ARS";
   location: string;
   bedrooms: number;
   rooms: number; // Ambientes
@@ -29,7 +32,7 @@ interface Property {
   area: number;
   image?: string;
   images?: string[]; // Array de imágenes de la propiedad
-  status: 'activa' | 'pausada';
+  status: "activa" | "pausada";
   description: string;
   propertyType: string;
   yearBuilt?: number | null;
@@ -50,18 +53,22 @@ export default function DashboardPage() {
   const [isRentalModalOpen, setIsRentalModalOpen] = useState(false);
   const [editingProperty, setEditingProperty] = useState<Property | null>(null);
   const [rentingProperty, setRentingProperty] = useState<Property | null>(null);
-  const [searchTerm, setSearchTerm] = useState('');
-  const [filterStatus, setFilterStatus] = useState<'all' | 'activa' | 'pausada'>('all');
-  const [activeTab, setActiveTab] = useState<'vencimientos' | 'propiedades'>('vencimientos');
+  const [searchTerm, setSearchTerm] = useState("");
+  const [filterStatus, setFilterStatus] = useState<
+    "all" | "activa" | "pausada"
+  >("all");
+  const [activeTab, setActiveTab] = useState<"vencimientos" | "propiedades">(
+    "vencimientos",
+  );
 
   const debouncedSearch = useDebounce(searchTerm, 500);
 
   const { data, isLoading, refetch } = useQuery({
-    queryKey: ['properties', debouncedSearch, filterStatus],
+    queryKey: ["properties", debouncedSearch, filterStatus],
     queryFn: async () => {
       const response = await propertiesService.findAll({
         search: debouncedSearch,
-        status: filterStatus === 'all' ? undefined : filterStatus
+        status: filterStatus === "all" ? undefined : filterStatus,
       });
 
       // Map backend data to frontend Property interface
@@ -69,7 +76,7 @@ export default function DashboardPage() {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         response.data = response.data.map((p: any) => ({
           ...p,
-          type: p.listingType === 'venta' ? 'Venta' : 'Alquiler',
+          type: p.listingType === "venta" ? "Venta" : "Alquiler",
           // Ensure status matches the type (it should be lowercase from backend)
         }));
       }
@@ -90,24 +97,24 @@ export default function DashboardPage() {
   };
 
   const handleDeleteProperty = async (id: string) => {
-    if (confirm('¿Estás seguro de que deseas eliminar esta propiedad?')) {
+    if (confirm("¿Estás seguro de que deseas eliminar esta propiedad?")) {
       try {
         await propertiesService.remove(id);
         refetch();
       } catch (error: any) {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        console.error('Error deleting property:', error);
-        alert('Error al eliminar la propiedad');
+        console.error("Error deleting property:", error);
+        alert("Error al eliminar la propiedad");
       }
     }
   };
 
   const handleToggleStatus = async (id: string) => {
     try {
-      const property = properties.find(p => p.id === id);
+      const property = properties.find((p) => p.id === id);
       if (!property) return;
 
-      const newStatus = property.status === 'activa' ? 'pausada' : 'activa';
+      const newStatus = property.status === "activa" ? "pausada" : "activa";
       // Mapear al enum del backend si es necesario, asumimos que 'Activa'/'Pausada' son válidos O usar el DTO
       // El backend espera PropertyStatus (ACTIVA, PAUSADA, INACTIVA, VENDIDA, ALQUILADA)
       // Ajustar según backend: ACTIVA, PAUSADA
@@ -118,7 +125,7 @@ export default function DashboardPage() {
       refetch();
     } catch (error: any) {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      console.error('Error updating status:', error);
+      console.error("Error updating status:", error);
     }
   };
 
@@ -127,7 +134,10 @@ export default function DashboardPage() {
     setIsRentalModalOpen(true);
   };
 
-  const handleSaveProperty = async (propertyData: Omit<Property, 'id'>, files: File[]) => {
+  const handleSaveProperty = async (
+    propertyData: Omit<Property, "id">,
+    files: File[],
+  ) => {
     try {
       // Mapear datos del formulario al DTO del backend
       const apiData: CreatePropertyDto = {
@@ -137,8 +147,10 @@ export default function DashboardPage() {
         rooms: Number(propertyData.rooms),
         bathrooms: Number(propertyData.bathrooms),
         area: Number(propertyData.area),
-        yearBuilt: propertyData.yearBuilt ? Number(propertyData.yearBuilt) : undefined,
-        listingType: propertyData.type === 'Venta' ? 'venta' : 'alquiler',
+        yearBuilt: propertyData.yearBuilt
+          ? Number(propertyData.yearBuilt)
+          : undefined,
+        listingType: propertyData.type === "Venta" ? "venta" : "alquiler",
         propertyType: propertyData.propertyType,
         provinciaId: propertyData.provinciaId || undefined,
         ownerId: propertyData.ownerId || undefined,
@@ -161,7 +173,11 @@ export default function DashboardPage() {
       if (files && files.length > 0) {
         for (const file of files) {
           try {
-            const { uploadUrl, path } = await propertiesService.generateUploadUrl(savedPropertyId, file.name);
+            const { uploadUrl, path } =
+              await propertiesService.generateUploadUrl(
+                savedPropertyId,
+                file.name,
+              );
             await propertiesService.uploadFileToSupabase(uploadUrl, file);
             await propertiesService.confirmImageUpload(savedPropertyId, path);
           } catch (uploadError) {
@@ -173,11 +189,12 @@ export default function DashboardPage() {
 
       setIsModalOpen(false);
       refetch();
-
     } catch (error: any) {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      console.error('Error saving property:', error);
-      alert('Hubo un error al guardar la propiedad. Por favor intente nuevamente.');
+      console.error("Error saving property:", error);
+      alert(
+        "Hubo un error al guardar la propiedad. Por favor intente nuevamente.",
+      );
     }
   };
 
@@ -190,7 +207,9 @@ export default function DashboardPage() {
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Stats Cards */}
         <div className="mb-8">
-          <h2 className="text-2xl font-bold text-[#0f172a] mb-6">Resumen de Propiedades</h2>
+          <h2 className="text-2xl font-bold text-[#0f172a] mb-6">
+            Resumen de Propiedades
+          </h2>
           <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-6">
             <StatsCard
               title="Total Propiedades"
@@ -207,26 +226,38 @@ export default function DashboardPage() {
                 The user asked for filtering in the list. */}
             <StatsCard
               title="En Venta"
-              value={data?.data?.filter((p: Property) => p.type === 'Venta').length || 0}
+              value={
+                data?.data?.filter((p: Property) => p.type === "Venta")
+                  .length || 0
+              }
               color="from-[#334155] to-[#0f172a]"
               icon="tag"
             />
             {/* ... keeping other stats similar but aware they depend on current data ... */}
             <StatsCard
               title="En Alquiler"
-              value={data?.data?.filter((p: Property) => p.type === 'Alquiler').length || 0}
+              value={
+                data?.data?.filter((p: Property) => p.type === "Alquiler")
+                  .length || 0
+              }
               color="from-[#475569] to-[#334155]"
               icon="key"
             />
             <StatsCard
               title="Activas"
-              value={data?.data?.filter((p: Property) => p.status === 'activa').length || 0}
+              value={
+                data?.data?.filter((p: Property) => p.status === "activa")
+                  .length || 0
+              }
               color="from-[#14b8a6] to-[#0d9488]"
               icon="check"
             />
             <StatsCard
               title="Pausadas"
-              value={data?.data?.filter((p: Property) => p.status === 'pausada').length || 0}
+              value={
+                data?.data?.filter((p: Property) => p.status === "pausada")
+                  .length || 0
+              }
               color="from-amber-500 to-amber-600"
               icon="pause"
             />
@@ -239,26 +270,28 @@ export default function DashboardPage() {
           <div className="border-b border-gray-200 mb-6">
             <div className="flex gap-8">
               <button
-                onClick={() => setActiveTab('vencimientos')}
-                className={`pb-4 px-2 font-semibold transition-colors relative ${activeTab === 'vencimientos'
-                  ? 'text-[#14b8a6]'
-                  : 'text-gray-500 hover:text-gray-700'
-                  }`}
+                onClick={() => setActiveTab("vencimientos")}
+                className={`pb-4 px-2 font-semibold transition-colors relative ${
+                  activeTab === "vencimientos"
+                    ? "text-[#14b8a6]"
+                    : "text-gray-500 hover:text-gray-700"
+                }`}
               >
                 Próximos Vencimientos
-                {activeTab === 'vencimientos' && (
+                {activeTab === "vencimientos" && (
                   <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#14b8a6]"></div>
                 )}
               </button>
               <button
-                onClick={() => setActiveTab('propiedades')}
-                className={`pb-4 px-2 font-semibold transition-colors relative ${activeTab === 'propiedades'
-                  ? 'text-[#14b8a6]'
-                  : 'text-gray-500 hover:text-gray-700'
-                  }`}
+                onClick={() => setActiveTab("propiedades")}
+                className={`pb-4 px-2 font-semibold transition-colors relative ${
+                  activeTab === "propiedades"
+                    ? "text-[#14b8a6]"
+                    : "text-gray-500 hover:text-gray-700"
+                }`}
               >
                 Gestión de Propiedades
-                {activeTab === 'propiedades' && (
+                {activeTab === "propiedades" && (
                   <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#14b8a6]"></div>
                 )}
               </button>
@@ -266,7 +299,7 @@ export default function DashboardPage() {
           </div>
 
           {/* Tab Content */}
-          {activeTab === 'vencimientos' ? (
+          {activeTab === "vencimientos" ? (
             <UpcomingExpirations />
           ) : (
             <>
@@ -282,8 +315,18 @@ export default function DashboardPage() {
                         onChange={(e) => setSearchTerm(e.target.value)}
                         className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#14b8a6] focus:border-transparent"
                       />
-                      <svg className="w-5 h-5 text-gray-400 absolute left-3 top-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                      <svg
+                        className="w-5 h-5 text-gray-400 absolute left-3 top-3.5"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                        />
                       </svg>
                     </div>
                   </div>
@@ -291,7 +334,11 @@ export default function DashboardPage() {
                   <div className="flex gap-3 w-full md:w-auto">
                     <select
                       value={filterStatus}
-                      onChange={(e) => setFilterStatus(e.target.value as 'all' | 'activa' | 'pausada')}
+                      onChange={(e) =>
+                        setFilterStatus(
+                          e.target.value as "all" | "activa" | "pausada",
+                        )
+                      }
                       className="px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#14b8a6] focus:border-transparent"
                     >
                       <option value="all">Todos los estados</option>
@@ -303,8 +350,18 @@ export default function DashboardPage() {
                       onClick={handleAddProperty}
                       className="px-6 py-3 bg-[#14b8a6] text-white font-semibold rounded-lg hover:bg-[#0d9488] transition-all duration-300 shadow-lg hover:shadow-xl flex items-center gap-2 whitespace-nowrap"
                     >
-                      <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                      <svg
+                        className="w-5 h-5"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M12 4v16m8-8H4"
+                        />
                       </svg>
                       Nueva Propiedad
                     </button>
@@ -319,24 +376,50 @@ export default function DashboardPage() {
                 </div>
               ) : filteredProperties.length === 0 ? (
                 <div className="bg-white rounded-xl shadow-md p-12 text-center">
-                  <svg className="w-24 h-24 mx-auto mb-4 text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                  <svg
+                    className="w-24 h-24 mx-auto mb-4 text-gray-300"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"
+                    />
                   </svg>
-                  <h3 className="text-xl font-semibold text-gray-700 mb-2">No se encontraron propiedades</h3>
-                  <p className="text-gray-500 mb-6">{searchTerm ? 'Intenta con otra búsqueda' : 'Comienza agregando tu primera propiedad'}</p>
+                  <h3 className="text-xl font-semibold text-gray-700 mb-2">
+                    No se encontraron propiedades
+                  </h3>
+                  <p className="text-gray-500 mb-6">
+                    {searchTerm
+                      ? "Intenta con otra búsqueda"
+                      : "Comienza agregando tu primera propiedad"}
+                  </p>
                   <button
                     onClick={handleAddProperty}
                     className="px-6 py-3 bg-[#14b8a6] text-white font-semibold rounded-lg hover:bg-[#0d9488] transition-all duration-300 flex items-center gap-2 mx-auto"
                   >
-                    <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                    <svg
+                      className="w-5 h-5"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M12 4v16m8-8H4"
+                      />
                     </svg>
                     Agregar Propiedad
                   </button>
                 </div>
               ) : (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                  {filteredProperties.map(property => (
+                  {filteredProperties.map((property) => (
                     <AgentPropertyCard
                       key={property.id}
                       property={property}
@@ -371,7 +454,9 @@ export default function DashboardPage() {
             // Pausar la propiedad
             handleToggleStatus(rentingProperty.id);
             // Mock Save to localStorage (to be replaced by API)
-            const existingRentals = JSON.parse(localStorage.getItem('rentalContracts') || '[]');
+            const existingRentals = JSON.parse(
+              localStorage.getItem("rentalContracts") || "[]",
+            );
             const newRental = {
               id: Date.now().toString(),
               propertyId: rentingProperty.id,
@@ -379,13 +464,16 @@ export default function DashboardPage() {
               address: rentingProperty.location,
               monthlyRent: rentingProperty.price,
               ...rentalData,
-              agentName: user?.name || user?.email || 'Agente',
-              agentPhone: user?.phone || '+54 11 2345-6789',
-              agentEmail: user?.email || 'agente@inmobiliaria.com'
+              agentName: user?.name || user?.email || "Agente",
+              agentPhone: user?.phone || "+54 11 2345-6789",
+              agentEmail: user?.email || "agente@inmobiliaria.com",
             };
-            localStorage.setItem('rentalContracts', JSON.stringify([...existingRentals, newRental]));
+            localStorage.setItem(
+              "rentalContracts",
+              JSON.stringify([...existingRentals, newRental]),
+            );
             setIsRentalModalOpen(false);
-            alert('Contrato de alquiler creado exitosamente');
+            alert("Contrato de alquiler creado exitosamente");
           }}
         />
       )}

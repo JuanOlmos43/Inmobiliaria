@@ -1,6 +1,6 @@
-'use client';
+"use client";
 
-import { ReactNode } from 'react';
+import { ReactNode } from "react";
 
 interface EmptyStateProps {
   icon?: ReactNode;
@@ -17,15 +17,13 @@ export default function EmptyState({
   description,
   actionLabel,
   onAction,
-  actionIcon
+  actionIcon,
 }: EmptyStateProps) {
   return (
     <div className="bg-white rounded-xl shadow-lg p-12 text-center">
       {/* Icon */}
       {icon ? (
-        <div className="w-16 h-16 mx-auto text-gray-400 mb-4">
-          {icon}
-        </div>
+        <div className="w-16 h-16 mx-auto text-gray-400 mb-4">{icon}</div>
       ) : (
         <svg
           className="w-16 h-16 mx-auto text-gray-400 mb-4"
@@ -43,14 +41,10 @@ export default function EmptyState({
       )}
 
       {/* Title */}
-      <h3 className="text-xl font-semibold text-gray-700 mb-2">
-        {title}
-      </h3>
+      <h3 className="text-xl font-semibold text-gray-700 mb-2">{title}</h3>
 
       {/* Description */}
-      <p className="text-gray-500 mb-6">
-        {description}
-      </p>
+      <p className="text-gray-500 mb-6">{description}</p>
 
       {/* Action Button */}
       {actionLabel && onAction && (

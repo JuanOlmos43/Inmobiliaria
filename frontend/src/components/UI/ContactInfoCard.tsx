@@ -1,4 +1,4 @@
-import { ReactNode } from 'react';
+import { ReactNode } from "react";
 
 interface ContactInfoCardProps {
   icon: ReactNode;
@@ -6,7 +6,11 @@ interface ContactInfoCardProps {
   content: ReactNode; // Puede ser string o JSX (para links, saltos de línea, etc.)
 }
 
-export default function ContactInfoCard({ icon, title, content }: ContactInfoCardProps) {
+export default function ContactInfoCard({
+  icon,
+  title,
+  content,
+}: ContactInfoCardProps) {
   return (
     <div className="bg-white p-6 rounded-2xl shadow-lg hover:shadow-xl transition-shadow duration-300 border-l-4 border-[#14b8a6]">
       <div className="flex items-start space-x-4">
@@ -15,9 +19,7 @@ export default function ContactInfoCard({ icon, title, content }: ContactInfoCar
         </div>
         <div>
           <h3 className="text-xl font-bold text-[#0f172a] mb-2">{title}</h3>
-          <div className="text-gray-600">
-            {content}
-          </div>
+          <div className="text-gray-600">{content}</div>
         </div>
       </div>
     </div>

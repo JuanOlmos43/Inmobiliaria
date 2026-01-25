@@ -1,4 +1,4 @@
-import Icon, { IconName } from './Icon';
+import Icon, { IconName } from "./Icon";
 
 interface StatsCardProps {
   title: string;
@@ -7,9 +7,16 @@ interface StatsCardProps {
   icon: IconName; // Nombre del icono del componente Icon
 }
 
-export default function StatsCard({ title, value, color, icon }: StatsCardProps) {
+export default function StatsCard({
+  title,
+  value,
+  color,
+  icon,
+}: StatsCardProps) {
   return (
-    <div className={`bg-gradient-to-br ${color} rounded-xl shadow-lg p-6 text-white transform hover:scale-105 transition-transform duration-300`}>
+    <div
+      className={`bg-gradient-to-br ${color} rounded-xl shadow-lg p-6 text-white transform hover:scale-105 transition-transform duration-300`}
+    >
       <div className="flex items-start justify-end mb-3">
         <div className="opacity-80">
           <Icon name={icon} className="w-8 h-8" />

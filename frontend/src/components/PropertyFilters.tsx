@@ -1,11 +1,11 @@
-'use client';
+"use client";
 
-import { useState, useEffect } from 'react';
-import FormSelect from '@/components/UI/FormSelect';
-import FormInput from '@/components/UI/FormInput';
+import { useState, useEffect } from "react";
+import FormSelect from "@/components/UI/FormSelect";
+import FormInput from "@/components/UI/FormInput";
 
 export interface PropertyFiltersState {
-  operationType: 'todos' | 'venta' | 'alquiler';
+  operationType: "todos" | "venta" | "alquiler";
   propertyType: string;
   bedrooms: string;
   bathrooms: string;
@@ -17,33 +17,49 @@ interface PropertyFiltersProps {
   initialFilters?: Partial<PropertyFiltersState>;
   onSearch: (filters: PropertyFiltersState) => void;
   onReset: () => void;
-  appliedOperationType?: 'todos' | 'venta' | 'alquiler';
+  appliedOperationType?: "todos" | "venta" | "alquiler";
 }
 
-export default function PropertyFilters({ 
+export default function PropertyFilters({
   initialFilters = {},
   onSearch,
   onReset,
-  appliedOperationType = 'todos'
+  appliedOperationType = "todos",
 }: PropertyFiltersProps) {
   // Estados temporales para los inputs (los que el usuario está editando)
-  const [tempOperationType, setTempOperationType] = useState<'todos' | 'venta' | 'alquiler'>(
-    initialFilters.operationType || 'todos'
+  const [tempOperationType, setTempOperationType] = useState<
+    "todos" | "venta" | "alquiler"
+  >(initialFilters.operationType || "todos");
+  const [tempPropertyType, setTempPropertyType] = useState(
+    initialFilters.propertyType || "",
   );
-  const [tempPropertyType, setTempPropertyType] = useState(initialFilters.propertyType || '');
-  const [tempBedrooms, setTempBedrooms] = useState(initialFilters.bedrooms || '');
-  const [tempBathrooms, setTempBathrooms] = useState(initialFilters.bathrooms || '');
-  const [tempMinPrice, setTempMinPrice] = useState(initialFilters.minPrice || '');
-  const [tempMaxPrice, setTempMaxPrice] = useState(initialFilters.maxPrice || '');
+  const [tempBedrooms, setTempBedrooms] = useState(
+    initialFilters.bedrooms || "",
+  );
+  const [tempBathrooms, setTempBathrooms] = useState(
+    initialFilters.bathrooms || "",
+  );
+  const [tempMinPrice, setTempMinPrice] = useState(
+    initialFilters.minPrice || "",
+  );
+  const [tempMaxPrice, setTempMaxPrice] = useState(
+    initialFilters.maxPrice || "",
+  );
 
   // Actualizar estados cuando cambien los filtros iniciales
   useEffect(() => {
-    if (initialFilters.operationType !== undefined) setTempOperationType(initialFilters.operationType);
-    if (initialFilters.propertyType !== undefined) setTempPropertyType(initialFilters.propertyType);
-    if (initialFilters.bedrooms !== undefined) setTempBedrooms(initialFilters.bedrooms);
-    if (initialFilters.bathrooms !== undefined) setTempBathrooms(initialFilters.bathrooms);
-    if (initialFilters.minPrice !== undefined) setTempMinPrice(initialFilters.minPrice);
-    if (initialFilters.maxPrice !== undefined) setTempMaxPrice(initialFilters.maxPrice);
+    if (initialFilters.operationType !== undefined)
+      setTempOperationType(initialFilters.operationType);
+    if (initialFilters.propertyType !== undefined)
+      setTempPropertyType(initialFilters.propertyType);
+    if (initialFilters.bedrooms !== undefined)
+      setTempBedrooms(initialFilters.bedrooms);
+    if (initialFilters.bathrooms !== undefined)
+      setTempBathrooms(initialFilters.bathrooms);
+    if (initialFilters.minPrice !== undefined)
+      setTempMinPrice(initialFilters.minPrice);
+    if (initialFilters.maxPrice !== undefined)
+      setTempMaxPrice(initialFilters.maxPrice);
   }, [initialFilters]);
 
   const handleSearch = () => {
@@ -58,12 +74,12 @@ export default function PropertyFilters({
   };
 
   const handleReset = () => {
-    setTempOperationType('todos');
-    setTempPropertyType('');
-    setTempBedrooms('');
-    setTempBathrooms('');
-    setTempMinPrice('');
-    setTempMaxPrice('');
+    setTempOperationType("todos");
+    setTempPropertyType("");
+    setTempBedrooms("");
+    setTempBathrooms("");
+    setTempMinPrice("");
+    setTempMaxPrice("");
     onReset();
   };
 
@@ -76,7 +92,11 @@ export default function PropertyFilters({
         <FormSelect
           label="Tipo de operación"
           value={tempOperationType}
-          onChange={(e) => setTempOperationType(e.target.value as 'todos' | 'venta' | 'alquiler')}
+          onChange={(e) =>
+            setTempOperationType(
+              e.target.value as "todos" | "venta" | "alquiler",
+            )
+          }
         >
           <option value="todos">Todos</option>
           <option value="venta">Venta</option>
@@ -125,7 +145,12 @@ export default function PropertyFilters({
         {/* Precio */}
         <div className="mb-6">
           <label className="block text-sm font-medium text-gray-700 mb-2">
-            Precio {appliedOperationType === 'alquiler' ? '(ARS)' : appliedOperationType === 'venta' ? '(USD)' : ''}
+            Precio{" "}
+            {appliedOperationType === "alquiler"
+              ? "(ARS)"
+              : appliedOperationType === "venta"
+                ? "(USD)"
+                : ""}
           </label>
           <div className="space-y-2">
             <FormInput
@@ -150,8 +175,18 @@ export default function PropertyFilters({
           onClick={handleSearch}
           className="w-full bg-[#0f172a] hover:bg-[#334155] text-white font-bold py-3 px-4 rounded-lg transition-all duration-300 mb-3 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 flex items-center justify-center gap-2"
         >
-          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+          <svg
+            className="w-5 h-5"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+            />
           </svg>
           Buscar
         </button>
@@ -161,8 +196,18 @@ export default function PropertyFilters({
           onClick={handleReset}
           className="w-full bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold py-3 px-4 rounded-lg transition-all duration-300 shadow-md hover:shadow-lg flex items-center justify-center gap-2"
         >
-          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+          <svg
+            className="w-5 h-5"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M6 18L18 6M6 6l12 12"
+            />
           </svg>
           Limpiar filtros
         </button>

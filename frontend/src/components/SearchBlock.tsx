@@ -1,31 +1,31 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
-import FormSelect from '@/components/UI/FormSelect';
-import FormInput from '@/components/UI/FormInput';
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import FormSelect from "@/components/UI/FormSelect";
+import FormInput from "@/components/UI/FormInput";
 
 export default function SearchBlock() {
   const router = useRouter();
-  const [activeTab, setActiveTab] = useState<'alquilar' | 'venta'>('alquilar');
-  const [propertyType, setPropertyType] = useState<string>('');
-  const [location, setLocation] = useState<string>('');
-  const [bedrooms, setBedrooms] = useState<string>('');
-  const [bathrooms, setBathrooms] = useState<string>('');
-  const [neighborhood, setNeighborhood] = useState<string>('');
-  const [minPrice, setMinPrice] = useState<string>('');
-  const [maxPrice, setMaxPrice] = useState<string>('');
+  const [activeTab, setActiveTab] = useState<"alquilar" | "venta">("alquilar");
+  const [propertyType, setPropertyType] = useState<string>("");
+  const [location, setLocation] = useState<string>("");
+  const [bedrooms, setBedrooms] = useState<string>("");
+  const [bathrooms, setBathrooms] = useState<string>("");
+  const [neighborhood, setNeighborhood] = useState<string>("");
+  const [minPrice, setMinPrice] = useState<string>("");
+  const [maxPrice, setMaxPrice] = useState<string>("");
 
   const handleMinPriceChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
-    if (value === '' || parseFloat(value) >= 0) {
+    if (value === "" || parseFloat(value) >= 0) {
       setMinPrice(value);
     }
   };
 
   const handleMaxPriceChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
-    if (value === '' || parseFloat(value) >= 0) {
+    if (value === "" || parseFloat(value) >= 0) {
       setMaxPrice(value);
     }
   };
@@ -33,15 +33,19 @@ export default function SearchBlock() {
   const handleSearch = () => {
     // Construir query params con los filtros seleccionados
     const params = new URLSearchParams();
-    
-    if (activeTab) params.append('operationType', activeTab === 'alquilar' ? 'alquiler' : 'venta');
-    if (propertyType) params.append('propertyType', propertyType);
-    if (location) params.append('location', location);
-    if (bedrooms) params.append('bedrooms', bedrooms);
-    if (bathrooms) params.append('bathrooms', bathrooms);
-    if (neighborhood) params.append('neighborhood', neighborhood);
-    if (minPrice) params.append('minPrice', minPrice);
-    if (maxPrice) params.append('maxPrice', maxPrice);
+
+    if (activeTab)
+      params.append(
+        "operationType",
+        activeTab === "alquilar" ? "alquiler" : "venta",
+      );
+    if (propertyType) params.append("propertyType", propertyType);
+    if (location) params.append("location", location);
+    if (bedrooms) params.append("bedrooms", bedrooms);
+    if (bathrooms) params.append("bathrooms", bathrooms);
+    if (neighborhood) params.append("neighborhood", neighborhood);
+    if (minPrice) params.append("minPrice", minPrice);
+    if (maxPrice) params.append("maxPrice", maxPrice);
 
     router.push(`/propiedades?${params.toString()}`);
   };
@@ -59,21 +63,21 @@ export default function SearchBlock() {
           {/* Tabs */}
           <div className="flex border-b border-gray-200">
             <button
-              onClick={() => setActiveTab('alquilar')}
+              onClick={() => setActiveTab("alquilar")}
               className={`flex-1 py-5 px-6 text-center font-bold transition-all duration-300 ${
-                activeTab === 'alquilar'
-                  ? 'bg-[#14b8a6] text-white shadow-lg'
-                  : 'bg-gray-50 text-gray-700 hover:bg-gray-100'
+                activeTab === "alquilar"
+                  ? "bg-[#14b8a6] text-white shadow-lg"
+                  : "bg-gray-50 text-gray-700 hover:bg-gray-100"
               }`}
             >
               Alquilar
             </button>
             <button
-              onClick={() => setActiveTab('venta')}
+              onClick={() => setActiveTab("venta")}
               className={`flex-1 py-5 px-6 text-center font-bold transition-all duration-300 ${
-                activeTab === 'venta'
-                  ? 'bg-[#14b8a6] text-white shadow-lg'
-                  : 'bg-gray-50 text-gray-700 hover:bg-gray-100'
+                activeTab === "venta"
+                  ? "bg-[#14b8a6] text-white shadow-lg"
+                  : "bg-gray-50 text-gray-700 hover:bg-gray-100"
               }`}
             >
               Venta
@@ -143,7 +147,7 @@ export default function SearchBlock() {
               {/* Precio */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Precio {activeTab === 'alquilar' ? '(ARS)' : '(USD)'}
+                  Precio {activeTab === "alquilar" ? "(ARS)" : "(USD)"}
                 </label>
                 <div className="flex gap-2">
                   <FormInput
@@ -163,20 +167,34 @@ export default function SearchBlock() {
                     min="0"
                   />
                 </div>
-                {minPrice && maxPrice && parseFloat(minPrice) > parseFloat(maxPrice) && (
-                  <p className="text-red-600 text-sm mt-1">El precio mínimo no puede ser mayor al máximo</p>
-                )}
+                {minPrice &&
+                  maxPrice &&
+                  parseFloat(minPrice) > parseFloat(maxPrice) && (
+                    <p className="text-red-600 text-sm mt-1">
+                      El precio mínimo no puede ser mayor al máximo
+                    </p>
+                  )}
               </div>
             </div>
 
             {/* Search Button */}
             <div className="flex justify-center">
-              <button 
+              <button
                 onClick={handleSearch}
                 className="bg-[#0f172a] hover:bg-[#334155] text-white font-bold px-16 py-4 rounded-full transition-all duration-300 shadow-xl hover:shadow-2xl transform hover:-translate-y-1 hover:scale-105 flex items-center justify-center gap-2"
               >
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                <svg
+                  className="w-5 h-5"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                  />
                 </svg>
                 Realizar búsqueda
               </button>

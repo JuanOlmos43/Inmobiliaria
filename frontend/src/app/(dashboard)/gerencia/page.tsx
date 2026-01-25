@@ -1,10 +1,10 @@
-'use client';
+"use client";
 
-import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
-import Icon from '@/components/UI/Icon';
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
+import Icon from "@/components/UI/Icon";
 
-import { useAuth } from '@/hooks/useAuth';
+import { useAuth } from "@/hooks/useAuth";
 
 // Tipos
 interface OrganizationStats {
@@ -23,21 +23,20 @@ export default function DashboardOwnerPage() {
     occupancyRate: 78.5,
     avgMarketTime: 45,
     activeContracts: 89,
-    completedContracts: 234
+    completedContracts: 234,
   });
-
-
 
   return (
     <div className="min-h-screen bg-[#f8fafc]">
       {/* Header */}
 
-
       {/* Main Content */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Overview Stats */}
         <div className="mb-8">
-          <h2 className="text-2xl font-bold text-[#0f172a] mb-6">Estadísticas de la Organización</h2>
+          <h2 className="text-2xl font-bold text-[#0f172a] mb-6">
+            Estadísticas de la Organización
+          </h2>
           <div className="flex flex-col gap-6 max-w-2xl mx-auto">
             <StatsCard
               title="Total Propiedades"
@@ -93,7 +92,7 @@ function StatsCard({
   color,
   trend,
   trendUp,
-  icon
+  icon,
 }: {
   title: string;
   value: string | number;
@@ -103,9 +102,13 @@ function StatsCard({
   icon: string;
 }) {
   return (
-    <div className={`bg-gradient-to-br ${color} rounded-xl shadow-lg p-6 text-white transform hover:scale-105 transition-transform duration-300`}>
+    <div
+      className={`bg-gradient-to-br ${color} rounded-xl shadow-lg p-6 text-white transform hover:scale-105 transition-transform duration-300`}
+    >
       <div className="flex items-start justify-between mb-3">
-        <div className={`text-xs px-2 py-1 rounded-full ${trendUp ? 'bg-green-500/30' : 'bg-red-500/30'}`}>
+        <div
+          className={`text-xs px-2 py-1 rounded-full ${trendUp ? "bg-green-500/30" : "bg-red-500/30"}`}
+        >
           {trend}
         </div>
         <div className="opacity-80">

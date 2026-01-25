@@ -1,6 +1,6 @@
-import Navbar from '@/components/Navbar';
-import Footer from '@/components/Footer';
-import ScrollToTop from '@/components/UI/ScrollToTop';
+import Navbar from "@/components/Navbar";
+import Footer from "@/components/Footer";
+import ScrollToTop from "@/components/UI/ScrollToTop";
 
 export default function GroupNFLayout({
   children,
@@ -11,9 +11,9 @@ export default function GroupNFLayout({
     <div className="flex flex-col min-h-screen">
       <ScrollToTop />
       <Navbar />
-      
+
       {children}
-      
+
       <Footer />
     </div>
   );

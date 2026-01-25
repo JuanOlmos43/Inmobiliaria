@@ -1,12 +1,12 @@
-'use client';
+"use client";
 
-import { useState, useEffect } from 'react';
-import Modal from '@/components/UI/Modal';
-import FormInput from '@/components/UI/FormInput';
-import FormSelect from '@/components/UI/FormSelect';
-import Toast from '@/components/UI/Toast';
-import { authService } from '@/lib/api/services/auth';
-import { UserRole } from '@/types/api';
+import { useState, useEffect } from "react";
+import Modal from "@/components/UI/Modal";
+import FormInput from "@/components/UI/FormInput";
+import FormSelect from "@/components/UI/FormSelect";
+import Toast from "@/components/UI/Toast";
+import { authService } from "@/lib/api/services/auth";
+import { UserRole } from "@/types/api";
 
 // Tipos
 interface User {
@@ -17,7 +17,7 @@ interface User {
   phone?: string;
   role: UserRole;
   createdAt: string;
-  status: 'active' | 'inactive';
+  status: "active" | "inactive";
 }
 
 interface UserFormModalProps {
@@ -36,18 +36,22 @@ export default function UserFormModal({
   onClose,
   editingUser,
   onUserCreated,
-  onUserUpdated
+  onUserUpdated,
 }: UserFormModalProps) {
   const [formData, setFormData] = useState({
-    email: '',
-    password: '',
-    name: '',
-    phone: '',
-    role: UserRole.Inquilino as UserRole
+    email: "",
+    password: "",
+    name: "",
+    phone: "",
+    role: UserRole.Inquilino as UserRole,
   });
 
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [toast, setToast] = useState({ show: false, message: '', type: 'success' as 'success' | 'error' });
+  const [toast, setToast] = useState({
+    show: false,
+    message: "",
+    type: "success" as "success" | "error",
+  });
 
   // Actualizar formulario cuando cambia editingUser
   useEffect(() => {
@@ -55,22 +59,25 @@ export default function UserFormModal({
       setFormData({
         email: editingUser.email,
         password: editingUser.password,
-        name: editingUser.name || '',
-        phone: editingUser.phone || '',
-        role: editingUser.role
+        name: editingUser.name || "",
+        phone: editingUser.phone || "",
+        role: editingUser.role,
       });
     } else {
       setFormData({
-        email: '',
-        password: '',
-        name: '',
-        phone: '',
-        role: UserRole.Inquilino
+        email: "",
+        password: "",
+        name: "",
+        phone: "",
+        role: UserRole.Inquilino,
       });
     }
   }, [editingUser, isOpen]);
 
-  const showToast = (message: string, type: 'success' | 'error' = 'success') => {
+  const showToast = (
+    message: string,
+    type: "success" | "error" = "success",
+  ) => {
     setToast({ show: true, message, type });
   };
 
@@ -87,10 +94,10 @@ export default function UserFormModal({
           password: formData.password,
           name: formData.name,
           phone: formData.phone,
-          role: formData.role
+          role: formData.role,
         };
         onUserUpdated(updatedUser);
-        showToast('Usuario actualizado exitosamente');
+        showToast("Usuario actualizado exitosamente");
       } else {
         // Crear nuevo usuario
         const newUser = await authService.register({
@@ -98,7 +105,7 @@ export default function UserFormModal({
           password: formData.password,
           name: formData.name || undefined,
           phone: formData.phone || undefined,
-          role: formData.role
+          role: formData.role,
         });
 
         // Crear objeto de usuario para la lista
@@ -110,19 +117,19 @@ export default function UserFormModal({
           phone: newUser.phone || undefined,
           role: formData.role,
           createdAt: newUser.createdAt,
-          status: 'active'
+          status: "active",
         };
 
         onUserCreated(userForList);
-        showToast('Usuario creado exitosamente');
+        showToast("Usuario creado exitosamente");
       }
 
       onClose();
     } catch (error) {
-      console.error('Error al guardar usuario:', error);
+      console.error("Error al guardar usuario:", error);
       showToast(
-        `Error al guardar usuario: ${error instanceof Error ? error.message : 'Error desconocido'}`,
-        'error'
+        `Error al guardar usuario: ${error instanceof Error ? error.message : "Error desconocido"}`,
+        "error",
       );
     } finally {
       setIsSubmitting(false);
@@ -140,7 +147,7 @@ export default function UserFormModal({
       <Modal
         isOpen={isOpen}
         onClose={onClose}
-        title={editingUser ? 'Editar Usuario' : 'Crear Nuevo Usuario'}
+        title={editingUser ? "Editar Usuario" : "Crear Nuevo Usuario"}
         maxWidth="lg"
       >
         <form onSubmit={handleSubmit} className="space-y-4">
@@ -148,7 +155,9 @@ export default function UserFormModal({
             label="Correo Electrónico"
             type="email"
             value={formData.email}
-            onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+            onChange={(e) =>
+              setFormData({ ...formData, email: e.target.value })
+            }
             required
             placeholder="usuario@email.com"
             disabled={isSubmitting}
@@ -158,7 +167,9 @@ export default function UserFormModal({
             label="Contraseña"
             type="text"
             value={formData.password}
-            onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+            onChange={(e) =>
+              setFormData({ ...formData, password: e.target.value })
+            }
             required
             placeholder="Contraseña"
             disabled={isSubmitting}
@@ -177,7 +188,9 @@ export default function UserFormModal({
             label="Teléfono"
             type="tel"
             value={formData.phone}
-            onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+            onChange={(e) =>
+              setFormData({ ...formData, phone: e.target.value })
+            }
             placeholder="+54 11 1234-5678"
             disabled={isSubmitting}
           />
@@ -185,7 +198,9 @@ export default function UserFormModal({
           <FormSelect
             label="Rol"
             value={formData.role}
-            onChange={(e) => setFormData({ ...formData, role: e.target.value as UserRole })}
+            onChange={(e) =>
+              setFormData({ ...formData, role: e.target.value as UserRole })
+            }
             disabled={isSubmitting}
           >
             <option value={UserRole.Inquilino}>Inquilino</option>
@@ -208,7 +223,11 @@ export default function UserFormModal({
               disabled={isSubmitting}
               className="flex-1 px-4 py-2 bg-[#14b8a6] text-white rounded-lg hover:bg-[#0d9488] transition-all shadow-md hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              {isSubmitting ? 'Guardando...' : editingUser ? 'Guardar Cambios' : 'Crear Usuario'}
+              {isSubmitting
+                ? "Guardando..."
+                : editingUser
+                  ? "Guardar Cambios"
+                  : "Crear Usuario"}
             </button>
           </div>
         </form>

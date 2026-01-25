@@ -1,10 +1,10 @@
-import { ApiRequestError } from '@/types/api'
+import { ApiRequestError } from "@/types/api";
 
 /**
  * Configuración del cliente API
  */
 interface ApiClientConfig {
-    baseUrl: string
+  baseUrl: string;
 }
 
 /**
@@ -13,184 +13,190 @@ interface ApiClientConfig {
  * Incluye interceptor automático para refresh de tokens
  */
 export class ApiClient {
-    private baseUrl: string
-    private isRefreshing = false
-    private refreshPromise: Promise<boolean> | null = null
+  private baseUrl: string;
+  private isRefreshing = false;
+  private refreshPromise: Promise<boolean> | null = null;
 
-    constructor(config: ApiClientConfig) {
-        this.baseUrl = config.baseUrl
+  constructor(config: ApiClientConfig) {
+    this.baseUrl = config.baseUrl;
+  }
+
+  /**
+   * Construye los headers por defecto
+   */
+  private getHeaders(): HeadersInit {
+    const headers: HeadersInit = {
+      "Content-Type": "application/json",
+    };
+
+    return headers;
+  }
+
+  /**
+   * Intenta refrescar el access token usando el refresh token
+   */
+  private async refreshAccessToken(): Promise<boolean> {
+    // Si ya hay un refresh en progreso, esperar a que termine
+    if (this.isRefreshing && this.refreshPromise) {
+      return this.refreshPromise;
     }
 
-    /**
-     * Construye los headers por defecto
-     */
-    private getHeaders(): HeadersInit {
-        const headers: HeadersInit = {
-            'Content-Type': 'application/json',
+    this.isRefreshing = true;
+    this.refreshPromise = (async () => {
+      try {
+        const response = await fetch(`${this.baseUrl}/auth/refresh`, {
+          method: "POST",
+          credentials: "include", // Envía refresh_token cookie
+        });
+
+        if (response.ok) {
+          // Refresh exitoso, el nuevo access_token está en las cookies
+          return true;
         }
 
-        return headers
-    }
-
-    /**
-     * Intenta refrescar el access token usando el refresh token
-     */
-    private async refreshAccessToken(): Promise<boolean> {
-        // Si ya hay un refresh en progreso, esperar a que termine
-        if (this.isRefreshing && this.refreshPromise) {
-            return this.refreshPromise
+        // Refresh falló, redirigir a login
+        if (typeof window !== "undefined") {
+          window.location.href = "/login";
         }
-
-        this.isRefreshing = true
-        this.refreshPromise = (async () => {
-            try {
-                const response = await fetch(`${this.baseUrl}/auth/refresh`, {
-                    method: 'POST',
-                    credentials: 'include', // Envía refresh_token cookie
-                })
-
-                if (response.ok) {
-                    // Refresh exitoso, el nuevo access_token está en las cookies
-                    return true
-                }
-
-                // Refresh falló, redirigir a login
-                if (typeof window !== 'undefined') {
-                    window.location.href = '/login'
-                }
-                return false
-            } catch (error) {
-                console.error('[ApiClient] Error refreshing token:', error)
-                if (typeof window !== 'undefined') {
-                    window.location.href = '/login'
-                }
-                return false
-            } finally {
-                this.isRefreshing = false
-                this.refreshPromise = null
-            }
-        })()
-
-        return this.refreshPromise
-    }
-
-
-    /**
-     * Maneja respuestas de error de la API con interceptor de refresh
-     */
-    private async handleResponse<T>(
-        response: Response,
-        retryRequest?: () => Promise<Response>,
-        skipRefresh?: boolean,
-    ): Promise<T> {
-        if (response.ok) return response.json()
-
-        if (!skipRefresh && response.status === 401 && retryRequest) {
-            const refreshed = await this.refreshAccessToken()
-            if (refreshed) {
-                const retryResponse = await retryRequest()
-                return this.handleResponse<T>(retryResponse, undefined, true)
-            }
+        return false;
+      } catch (error) {
+        console.error("[ApiClient] Error refreshing token:", error);
+        if (typeof window !== "undefined") {
+          window.location.href = "/login";
         }
+        return false;
+      } finally {
+        this.isRefreshing = false;
+        this.refreshPromise = null;
+      }
+    })();
 
-        // Si es 401 (Unauthorized), intentar refresh
-        if (response.status === 401 && retryRequest) {
-            const refreshed = await this.refreshAccessToken()
+    return this.refreshPromise;
+  }
 
-            if (refreshed) {
-                // Refresh exitoso, reintentar la petición original
-                const retryResponse = await retryRequest()
-                return this.handleResponse<T>(retryResponse) // Sin retry para evitar loop infinito
-            }
-        }
+  /**
+   * Maneja respuestas de error de la API con interceptor de refresh
+   */
+  private async handleResponse<T>(
+    response: Response,
+    retryRequest?: () => Promise<Response>,
+    skipRefresh?: boolean,
+  ): Promise<T> {
+    if (response.ok) return response.json();
 
-        // Intentar parsear el error como JSON
-        let errorData: { message?: string; error?: string } = {}
-        try {
-            errorData = await response.json()
-        } catch {
-            // Si no es JSON, usar mensaje por defecto
-        }
-
-        const errorMessage =
-            errorData.message || errorData.error || `HTTP ${response.status}: ${response.statusText}`
-
-        throw new ApiRequestError(errorMessage, response.status, errorMessage)
+    if (!skipRefresh && response.status === 401 && retryRequest) {
+      const refreshed = await this.refreshAccessToken();
+      if (refreshed) {
+        const retryResponse = await retryRequest();
+        return this.handleResponse<T>(retryResponse, undefined, true);
+      }
     }
 
-    /**
-     * GET request
-     */
-    async get<T>(endpoint: string): Promise<T> {
-        const url = `${this.baseUrl}${endpoint}`
-        const makeRequest = () => fetch(url, {
-            method: 'GET',
-            headers: this.getHeaders(),
-            credentials: 'include',
-        })
+    // Si es 401 (Unauthorized), intentar refresh
+    if (response.status === 401 && retryRequest) {
+      const refreshed = await this.refreshAccessToken();
 
-        const response = await makeRequest()
-        return this.handleResponse<T>(response, makeRequest)
+      if (refreshed) {
+        // Refresh exitoso, reintentar la petición original
+        const retryResponse = await retryRequest();
+        return this.handleResponse<T>(retryResponse); // Sin retry para evitar loop infinito
+      }
     }
 
-    /**
-     * POST request
-     */
-    async post<T, D = unknown>(endpoint: string, data?: D): Promise<T> {
-        const makeRequest = () => fetch(`${this.baseUrl}${endpoint}`, {
-            method: 'POST',
-            headers: this.getHeaders(),
-            body: data ? JSON.stringify(data) : undefined,
-            credentials: 'include',
-        })
-
-        const response = await makeRequest()
-        return this.handleResponse<T>(response, makeRequest)
+    // Intentar parsear el error como JSON
+    let errorData: { message?: string; error?: string } = {};
+    try {
+      errorData = await response.json();
+    } catch {
+      // Si no es JSON, usar mensaje por defecto
     }
 
-    /**
-     * PUT request
-     */
-    async put<T, D = unknown>(endpoint: string, data?: D): Promise<T> {
-        const makeRequest = () => fetch(`${this.baseUrl}${endpoint}`, {
-            method: 'PUT',
-            headers: this.getHeaders(),
-            body: data ? JSON.stringify(data) : undefined,
-            credentials: 'include',
-        })
+    const errorMessage =
+      errorData.message ||
+      errorData.error ||
+      `HTTP ${response.status}: ${response.statusText}`;
 
-        const response = await makeRequest()
-        return this.handleResponse<T>(response, makeRequest)
-    }
+    throw new ApiRequestError(errorMessage, response.status, errorMessage);
+  }
 
-    /**
-     * PATCH request
-     */
-    async patch<T, D = unknown>(endpoint: string, data?: D): Promise<T> {
-        const makeRequest = () => fetch(`${this.baseUrl}${endpoint}`, {
-            method: 'PATCH',
-            headers: this.getHeaders(),
-            body: data ? JSON.stringify(data) : undefined,
-            credentials: 'include',
-        })
+  /**
+   * GET request
+   */
+  async get<T>(endpoint: string): Promise<T> {
+    const url = `${this.baseUrl}${endpoint}`;
+    const makeRequest = () =>
+      fetch(url, {
+        method: "GET",
+        headers: this.getHeaders(),
+        credentials: "include",
+      });
 
-        const response = await makeRequest()
-        return this.handleResponse<T>(response, makeRequest)
-    }
+    const response = await makeRequest();
+    return this.handleResponse<T>(response, makeRequest);
+  }
 
-    /**
-     * DELETE request
-     */
-    async delete<T>(endpoint: string): Promise<T> {
-        const makeRequest = () => fetch(`${this.baseUrl}${endpoint}`, {
-            method: 'DELETE',
-            headers: this.getHeaders(),
-            credentials: 'include',
-        })
+  /**
+   * POST request
+   */
+  async post<T, D = unknown>(endpoint: string, data?: D): Promise<T> {
+    const makeRequest = () =>
+      fetch(`${this.baseUrl}${endpoint}`, {
+        method: "POST",
+        headers: this.getHeaders(),
+        body: data ? JSON.stringify(data) : undefined,
+        credentials: "include",
+      });
 
-        const response = await makeRequest()
-        return this.handleResponse<T>(response, makeRequest)
-    }
+    const response = await makeRequest();
+    return this.handleResponse<T>(response, makeRequest);
+  }
+
+  /**
+   * PUT request
+   */
+  async put<T, D = unknown>(endpoint: string, data?: D): Promise<T> {
+    const makeRequest = () =>
+      fetch(`${this.baseUrl}${endpoint}`, {
+        method: "PUT",
+        headers: this.getHeaders(),
+        body: data ? JSON.stringify(data) : undefined,
+        credentials: "include",
+      });
+
+    const response = await makeRequest();
+    return this.handleResponse<T>(response, makeRequest);
+  }
+
+  /**
+   * PATCH request
+   */
+  async patch<T, D = unknown>(endpoint: string, data?: D): Promise<T> {
+    const makeRequest = () =>
+      fetch(`${this.baseUrl}${endpoint}`, {
+        method: "PATCH",
+        headers: this.getHeaders(),
+        body: data ? JSON.stringify(data) : undefined,
+        credentials: "include",
+      });
+
+    const response = await makeRequest();
+    return this.handleResponse<T>(response, makeRequest);
+  }
+
+  /**
+   * DELETE request
+   */
+  async delete<T>(endpoint: string): Promise<T> {
+    const makeRequest = () =>
+      fetch(`${this.baseUrl}${endpoint}`, {
+        method: "DELETE",
+        headers: this.getHeaders(),
+        credentials: "include",
+      });
+
+    const response = await makeRequest();
+    return this.handleResponse<T>(response, makeRequest);
+  }
 }
 
 /**
@@ -198,5 +204,5 @@ export class ApiClient {
  * Se inicializa con la URL base desde las variables de entorno
  */
 export const apiClient = new ApiClient({
-    baseUrl: process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001',
-})
+  baseUrl: process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001",
+});

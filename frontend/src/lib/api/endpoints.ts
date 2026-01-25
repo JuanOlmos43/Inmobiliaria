@@ -4,16 +4,16 @@
  */
 
 export const API_ENDPOINTS = {
-    // Auth endpoints
-    LOGIN: '/auth/login',
-    ME: '/auth/me',
-    REFRESH: '/auth/refresh',
-    LOGOUT: '/auth/logout',
-    REGISTER: '/auth/register',
+  // Auth endpoints
+  LOGIN: "/auth/login",
+  ME: "/auth/me",
+  REFRESH: "/auth/refresh",
+  LOGOUT: "/auth/logout",
+  REGISTER: "/auth/register",
 
-    // Users endpoints
-    USERS: '/users',
+  // Users endpoints
+  USERS: "/users",
 
-    // Locations endpoints
-    PROVINCIAS: '/ubicaciones/provincias',
-} as const
+  // Locations endpoints
+  PROVINCIAS: "/ubicaciones/provincias",
+} as const;
