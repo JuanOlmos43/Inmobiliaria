@@ -84,7 +84,7 @@ export class AuthController {
    */
   @Post('register')
   @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles(UserRole.admin, UserRole.agent)
+  @Roles(UserRole.Administrador, UserRole.Agente)
   async register(@Body(ValidationPipe) dto: RegisterDto) {
     return this.authService.register(dto);
   }

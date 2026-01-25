@@ -29,7 +29,7 @@ export class PropiedadesController {
   constructor(private readonly propiedadesService: PropiedadesService) { }
 
   @Post()
-  @Roles(UserRole.agent)
+  @Roles(UserRole.Agente)
   create(@Body() createPropiedadeDto: CreatePropiedadeDto) {
     return this.propiedadesService.create(createPropiedadeDto);
   }
@@ -45,7 +45,7 @@ export class PropiedadesController {
   }
 
   @Patch(':id')
-  @Roles(UserRole.agent)
+  @Roles(UserRole.Agente)
   update(
     @Param('id') id: string,
     @Body() updatePropiedadeDto: UpdatePropiedadeDto,
@@ -54,13 +54,13 @@ export class PropiedadesController {
   }
 
   @Delete(':id')
-  @Roles(UserRole.agent)
+  @Roles(UserRole.Agente)
   remove(@Param('id') id: string) {
     return this.propiedadesService.remove(id);
   }
 
   @Post(':id/upload-url')
-  @Roles(UserRole.agent)
+  @Roles(UserRole.Agente)
   generateUploadUrl(
     @Param('id') id: string,
     @Body() generateUploadUrlDto: GenerateUploadUrlDto,
@@ -72,7 +72,7 @@ export class PropiedadesController {
   }
 
   @Post(':id/images')
-  @Roles(UserRole.agent)
+  @Roles(UserRole.Agente)
   confirmImageUpload(
     @Param('id') id: string,
     @Body() confirmImageUploadDto: ConfirmImageUploadDto,

@@ -23,7 +23,7 @@ async function main() {
       email: 'admin@inmobiliaria.com',
       password: hashedPassword,
       name: 'Administrador',
-      role: UserRole.admin,
+      role: UserRole.Administrador,
       status: UserStatus.active,
     },
   });
@@ -42,7 +42,7 @@ async function main() {
       email: 'agent@inmobiliaria.com',
       password: hashedPassword,
       name: 'Agente Inmobiliario',
-      role: UserRole.agent,
+      role: UserRole.Agente,
       status: UserStatus.active,
     },
   });
@@ -61,7 +61,7 @@ async function main() {
       email: 'landlord@inmobiliaria.com',
       password: hashedPassword,
       name: 'Propietario de Inmueble',
-      role: UserRole.landlord,
+      role: UserRole.Propietario,
       status: UserStatus.active,
     },
   });
@@ -80,7 +80,7 @@ async function main() {
       email: 'tenant@inmobiliaria.com',
       password: hashedPassword,
       name: 'Inquilino',
-      role: UserRole.tenant,
+      role: UserRole.Inquilino,
       status: UserStatus.active,
     },
   });
@@ -99,7 +99,7 @@ async function main() {
       email: 'manager@inmobiliaria.com',
       password: hashedPassword,
       name: 'Gerente General',
-      role: UserRole.manager,
+      role: UserRole.Gerencia,
       status: UserStatus.active,
     },
   });

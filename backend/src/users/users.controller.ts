@@ -11,7 +11,7 @@ export class UsersController {
     constructor(private readonly usersService: UsersService) { }
 
     @Get()
-    @Roles(UserRole.admin, UserRole.agent)
+    @Roles(UserRole.Administrador, UserRole.Agente)
     async findAll(@Query('role') role?: UserRole) {
         return this.usersService.findAll(role);
     }

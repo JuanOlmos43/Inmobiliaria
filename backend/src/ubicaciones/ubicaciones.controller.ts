@@ -35,7 +35,7 @@ export class UbicacionesController {
   // ==========================================
 
   @Post('provincias')
-  @Roles(UserRole.admin, UserRole.agent)
+  @Roles(UserRole.Administrador, UserRole.Agente)
   createProvincia(@Body() createProvinciaDto: CreateProvinciaDto) {
     return this.ubicacionesService.createProvincia(createProvinciaDto);
   }
@@ -51,7 +51,7 @@ export class UbicacionesController {
   }
 
   @Patch('provincias/:id')
-  @Roles(UserRole.admin, UserRole.agent)
+  @Roles(UserRole.Administrador, UserRole.Agente)
   updateProvincia(
     @Param('id') id: string,
     @Body() updateProvinciaDto: UpdateProvinciaDto,
@@ -60,7 +60,7 @@ export class UbicacionesController {
   }
 
   @Delete('provincias/:id')
-  @Roles(UserRole.admin, UserRole.agent)
+  @Roles(UserRole.Administrador, UserRole.Agente)
   deleteProvincia(@Param('id') id: string) {
     return this.ubicacionesService.deleteProvincia(id);
   }
@@ -76,7 +76,7 @@ export class UbicacionesController {
   // ==========================================
 
   @Post('localidades')
-  @Roles(UserRole.admin, UserRole.agent)
+  @Roles(UserRole.Administrador, UserRole.Agente)
   createLocalidad(@Body() createLocalidadDto: CreateLocalidadDto) {
     return this.ubicacionesService.createLocalidad(createLocalidadDto);
   }
@@ -87,7 +87,7 @@ export class UbicacionesController {
   }
 
   @Patch('localidades/:id')
-  @Roles(UserRole.admin, UserRole.agent)
+  @Roles(UserRole.Administrador, UserRole.Agente)
   updateLocalidad(
     @Param('id') id: string,
     @Body() updateLocalidadDto: UpdateLocalidadDto,
@@ -96,7 +96,7 @@ export class UbicacionesController {
   }
 
   @Delete('localidades/:id')
-  @Roles(UserRole.admin, UserRole.agent)
+  @Roles(UserRole.Administrador, UserRole.Agente)
   deleteLocalidad(@Param('id') id: string) {
     return this.ubicacionesService.deleteLocalidad(id);
   }
@@ -112,7 +112,7 @@ export class UbicacionesController {
   // ==========================================
 
   @Post('calles')
-  @Roles(UserRole.admin, UserRole.agent)
+  @Roles(UserRole.Administrador, UserRole.Agente)
   createCalle(@Body() createCalleDto: CreateCalleDto) {
     return this.ubicacionesService.createCalle(createCalleDto);
   }
@@ -123,13 +123,13 @@ export class UbicacionesController {
   }
 
   @Patch('calles/:id')
-  @Roles(UserRole.admin, UserRole.agent)
+  @Roles(UserRole.Administrador, UserRole.Agente)
   updateCalle(@Param('id') id: string, @Body() updateCalleDto: UpdateCalleDto) {
     return this.ubicacionesService.updateCalle(id, updateCalleDto);
   }
 
   @Delete('calles/:id')
-  @Roles(UserRole.admin, UserRole.agent)
+  @Roles(UserRole.Administrador, UserRole.Agente)
   deleteCalle(@Param('id') id: string) {
     return this.ubicacionesService.deleteCalle(id);
   }

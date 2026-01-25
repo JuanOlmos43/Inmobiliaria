@@ -14,11 +14,11 @@ datasource db {
 // ============================================
 
 enum UserRole {
-  admin
-  agent
-  landlord // Propietario
-  tenant // Inquilino
-  manager // Gerencia/Dueño de la inmobiliaria
+  Administrador
+  Agente
+  Propietario
+  Inquilino
+  Gerencia
 }
 
 enum UserStatus {
