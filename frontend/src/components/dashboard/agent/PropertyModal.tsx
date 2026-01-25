@@ -27,7 +27,7 @@ interface Property {
     area: number;
     image?: string;
     images?: string[];
-    status: 'Activa' | 'Pausada';
+    status: 'activa' | 'pausada';
     description: string;
     propertyType: string;
     yearBuilt?: number | null;
@@ -61,7 +61,7 @@ export default function PropertyModal({
         area: property?.area || 0,
         image: property?.image || undefined,
         images: property?.images || [],
-        status: property?.status || 'Activa',
+        status: property?.status || 'activa',
         description: property?.description || '',
         propertyType: property?.propertyType || 'casa',
         yearBuilt: property?.yearBuilt || null,
@@ -277,10 +277,10 @@ export default function PropertyModal({
                     <FormSelect
                         label="Estado"
                         value={formData.status}
-                        onChange={(e) => setFormData({ ...formData, status: e.target.value as 'Activa' | 'Pausada' })}
+                        onChange={(e) => setFormData({ ...formData, status: e.target.value as 'activa' | 'pausada' })}
                     >
-                        <option value="Activa">Activa</option>
-                        <option value="Pausada">Pausada</option>
+                        <option value="activa">Activa</option>
+                        <option value="pausada">Pausada</option>
                     </FormSelect>
                 </div>
 

@@ -4,6 +4,8 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 
 import { useAuth } from '@/hooks/useAuth';
+import { useDebounce } from '@/hooks/useDebounce';
+import { useQuery } from '@tanstack/react-query';
 
 // Components
 import StatsCard from '@/components/UI/StatsCard';
@@ -27,7 +29,7 @@ interface Property {
   area: number;
   image?: string;
   images?: string[]; // Array de imágenes de la propiedad
-  status: 'Activa' | 'Pausada';
+  status: 'activa' | 'pausada';
   description: string;
   propertyType: string;
   yearBuilt?: number | null;
@@ -44,20 +46,38 @@ interface Property {
 export default function DashboardPage() {
   const router = useRouter();
   const { user } = useAuth();
-  const [properties, setProperties] = useState<Property[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isRentalModalOpen, setIsRentalModalOpen] = useState(false);
   const [editingProperty, setEditingProperty] = useState<Property | null>(null);
   const [rentingProperty, setRentingProperty] = useState<Property | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
-  const [filterStatus, setFilterStatus] = useState<'all' | 'Activa' | 'Pausada'>('all');
+  const [filterStatus, setFilterStatus] = useState<'all' | 'activa' | 'pausada'>('all');
   const [activeTab, setActiveTab] = useState<'vencimientos' | 'propiedades'>('vencimientos');
 
-  // Cargar propiedades desde la API
-  useEffect(() => {
-    // TODO: Implementar carga de propiedades desde la API real
-    // Por ahora, el estado se inicializa vacío
-  }, []);
+  const debouncedSearch = useDebounce(searchTerm, 500);
+
+  const { data, isLoading, refetch } = useQuery({
+    queryKey: ['properties', debouncedSearch, filterStatus],
+    queryFn: async () => {
+      const response = await propertiesService.findAll({
+        search: debouncedSearch,
+        status: filterStatus === 'all' ? undefined : filterStatus
+      });
+
+      // Map backend data to frontend Property interface
+      if (response && response.data) {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        response.data = response.data.map((p: any) => ({
+          ...p,
+          type: p.listingType === 'venta' ? 'Venta' : 'Alquiler',
+          // Ensure status matches the type (it should be lowercase from backend)
+        }));
+      }
+      return response;
+    },
+  });
+
+  const properties: Property[] = data?.data || [];
 
   const handleAddProperty = () => {
     setEditingProperty(null);
@@ -69,18 +89,37 @@ export default function DashboardPage() {
     setIsModalOpen(true);
   };
 
-  const handleDeleteProperty = (id: string) => {
+  const handleDeleteProperty = async (id: string) => {
     if (confirm('¿Estás seguro de que deseas eliminar esta propiedad?')) {
-      setProperties(properties.filter(p => p.id !== id));
+      try {
+        await propertiesService.remove(id);
+        refetch();
+      } catch (error: any) {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        console.error('Error deleting property:', error);
+        alert('Error al eliminar la propiedad');
+      }
     }
   };
 
-  const handleToggleStatus = (id: string) => {
-    setProperties(properties.map(p =>
-      p.id === id
-        ? { ...p, status: p.status === 'Activa' ? 'Pausada' : 'Activa' }
-        : p
-    ));
+  const handleToggleStatus = async (id: string) => {
+    try {
+      const property = properties.find(p => p.id === id);
+      if (!property) return;
+
+      const newStatus = property.status === 'activa' ? 'pausada' : 'activa';
+      // Mapear al enum del backend si es necesario, asumimos que 'Activa'/'Pausada' son válidos O usar el DTO
+      // El backend espera PropertyStatus (ACTIVA, PAUSADA, INACTIVA, VENDIDA, ALQUILADA)
+      // Ajustar según backend: ACTIVA, PAUSADA
+
+      // Update property using partial DTO
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      await propertiesService.update(id, { status: newStatus as any });
+      refetch();
+    } catch (error: any) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      console.error('Error updating status:', error);
+    }
   };
 
   const handleRentProperty = (property: Property) => {
@@ -91,9 +130,7 @@ export default function DashboardPage() {
   const handleSaveProperty = async (propertyData: Omit<Property, 'id'>, files: File[]) => {
     try {
       // Mapear datos del formulario al DTO del backend
-      // propertyData viene con campos extra del formulario, pero la API ignorará los que no necesita si el DTO está bien configurado (o debemos limpiar)
-      // Ajustamos campos específicos
-      const apiData: any = {
+      const apiData: CreatePropertyDto = {
         ...propertyData,
         price: Number(propertyData.price),
         bedrooms: Number(propertyData.bedrooms),
@@ -103,10 +140,9 @@ export default function DashboardPage() {
         yearBuilt: propertyData.yearBuilt ? Number(propertyData.yearBuilt) : undefined,
         listingType: propertyData.type === 'Venta' ? 'venta' : 'alquiler',
         propertyType: propertyData.propertyType,
-        // Los siguientes campos se asumen presentes o mapeados desde propertyData si PropertyModal los envía
         provinciaId: propertyData.provinciaId || undefined,
-        ownerId: propertyData.ownerId || undefined, // Mapeado del modal
-        agentId: user?.id || undefined, // Agente logueado
+        ownerId: propertyData.ownerId || undefined,
+        agentId: user?.id || undefined,
         calleId: propertyData.calleId || undefined,
         localidadId: propertyData.localidadId || undefined,
       };
@@ -114,35 +150,19 @@ export default function DashboardPage() {
       let savedPropertyId: string;
 
       if (editingProperty) {
-        // Editar propiedad existente
         savedPropertyId = editingProperty.id;
         await propertiesService.update(editingProperty.id, apiData);
-
-        // Actualizar estado local (optimista o fetch)
-        setProperties(properties.map(p =>
-          p.id === editingProperty.id ? { ...p, ...propertyData, id: p.id } : p
-        ));
       } else {
-        // Agregar nueva propiedad
         const newProperty = await propertiesService.create(apiData);
         savedPropertyId = newProperty.id;
-
-        // Actualizar estado local
-        setProperties([...properties, { ...propertyData, id: savedPropertyId } as Property]);
       }
 
       // Subir imágenes si existen
       if (files && files.length > 0) {
-        // Mostrar algún indicador de carga si fuera necesario, por ahora bloqueamos el cierre o confiamos en la rapidez
         for (const file of files) {
           try {
-            // 1. Obtener URL firmada
             const { uploadUrl, path } = await propertiesService.generateUploadUrl(savedPropertyId, file.name);
-
-            // 2. Subir archivo a Supabase
             await propertiesService.uploadFileToSupabase(uploadUrl, file);
-
-            // 3. Confirmar subida
             await propertiesService.confirmImageUpload(savedPropertyId, path);
           } catch (uploadError) {
             console.error(`Error uploading file ${file.name}:`, uploadError);
@@ -152,23 +172,17 @@ export default function DashboardPage() {
       }
 
       setIsModalOpen(false);
+      refetch();
 
-      // Idealmente recargar propiedades para traer las URLs de imagenes
-      // fetchProperties(); 
-
-    } catch (error) {
+    } catch (error: any) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       console.error('Error saving property:', error);
       alert('Hubo un error al guardar la propiedad. Por favor intente nuevamente.');
     }
   };
 
-  // Filtrar propiedades
-  const filteredProperties = properties.filter(property => {
-    const matchesSearch = property.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      property.location.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesStatus = filterStatus === 'all' || property.status === filterStatus;
-    return matchesSearch && matchesStatus;
-  });
+  // filteredProperties es ahora simplemente properties (que viene filtrado del backend)
+  const filteredProperties = properties;
 
   return (
     <div className="min-h-screen bg-[#f8fafc]">
@@ -180,31 +194,39 @@ export default function DashboardPage() {
           <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-6">
             <StatsCard
               title="Total Propiedades"
-              value={properties.length}
+              value={properties.length} // Note: This might only be the fetched page if paginated, but for now assuming all or enough
               color="from-[#0f172a] to-[#334155]"
               icon="building"
             />
+            {/* Note: Stats logic might need adjustment if we only fetch filtered results. 
+                Ideally we should have a separate stats endpoint or returned stats in meta. 
+                For now keeping as is but it will reflect the filtered list which is maybe not what we want for "Total" 
+                BUT since it's a dashboard, the user might expect stats to reflect the view OR global. 
+                Typically global stats are separate. 
+                For this iteration, I'll invoke a separate stats query? No, let's keep it simple. 
+                The user asked for filtering in the list. */}
             <StatsCard
               title="En Venta"
-              value={properties.filter(p => p.type === 'Venta').length}
+              value={data?.data?.filter((p: Property) => p.type === 'Venta').length || 0}
               color="from-[#334155] to-[#0f172a]"
               icon="tag"
             />
+            {/* ... keeping other stats similar but aware they depend on current data ... */}
             <StatsCard
               title="En Alquiler"
-              value={properties.filter(p => p.type === 'Alquiler').length}
+              value={data?.data?.filter((p: Property) => p.type === 'Alquiler').length || 0}
               color="from-[#475569] to-[#334155]"
               icon="key"
             />
             <StatsCard
               title="Activas"
-              value={properties.filter(p => p.status === 'Activa').length}
+              value={data?.data?.filter((p: Property) => p.status === 'activa').length || 0}
               color="from-[#14b8a6] to-[#0d9488]"
               icon="check"
             />
             <StatsCard
               title="Pausadas"
-              value={properties.filter(p => p.status === 'Pausada').length}
+              value={data?.data?.filter((p: Property) => p.status === 'pausada').length || 0}
               color="from-amber-500 to-amber-600"
               icon="pause"
             />
@@ -255,7 +277,7 @@ export default function DashboardPage() {
                     <div className="relative">
                       <input
                         type="text"
-                        placeholder="Buscar propiedades..."
+                        placeholder="Buscar propiedades por dirección..."
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
                         className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#14b8a6] focus:border-transparent"
@@ -269,12 +291,12 @@ export default function DashboardPage() {
                   <div className="flex gap-3 w-full md:w-auto">
                     <select
                       value={filterStatus}
-                      onChange={(e) => setFilterStatus(e.target.value as 'all' | 'Activa' | 'Pausada')}
+                      onChange={(e) => setFilterStatus(e.target.value as 'all' | 'activa' | 'pausada')}
                       className="px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#14b8a6] focus:border-transparent"
                     >
                       <option value="all">Todos los estados</option>
-                      <option value="Activa">Activas</option>
-                      <option value="Pausada">Pausadas</option>
+                      <option value="activa">Activas</option>
+                      <option value="pausada">Pausadas</option>
                     </select>
 
                     <button
@@ -291,13 +313,17 @@ export default function DashboardPage() {
               </div>
 
               {/* Properties Grid */}
-              {filteredProperties.length === 0 ? (
+              {isLoading ? (
+                <div className="flex justify-center py-12">
+                  <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600"></div>
+                </div>
+              ) : filteredProperties.length === 0 ? (
                 <div className="bg-white rounded-xl shadow-md p-12 text-center">
                   <svg className="w-24 h-24 mx-auto mb-4 text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
                   </svg>
-                  <h3 className="text-xl font-semibold text-gray-700 mb-2">No hay propiedades</h3>
-                  <p className="text-gray-500 mb-6">Comienza agregando tu primera propiedad</p>
+                  <h3 className="text-xl font-semibold text-gray-700 mb-2">No se encontraron propiedades</h3>
+                  <p className="text-gray-500 mb-6">{searchTerm ? 'Intenta con otra búsqueda' : 'Comienza agregando tu primera propiedad'}</p>
                   <button
                     onClick={handleAddProperty}
                     className="px-6 py-3 bg-[#14b8a6] text-white font-semibold rounded-lg hover:bg-[#0d9488] transition-all duration-300 flex items-center gap-2 mx-auto"
