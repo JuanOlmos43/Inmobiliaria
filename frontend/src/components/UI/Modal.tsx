@@ -6,6 +6,7 @@ interface ModalProps {
   title: string;
   children: ReactNode;
   maxWidth?: 'sm' | 'md' | 'lg' | 'xl'; // Tamaño del modal
+  staticBackdrop?: boolean; // Si es true, no cierra al hacer click fuera ni escape
 }
 
 export default function Modal({
@@ -13,12 +14,13 @@ export default function Modal({
   onClose,
   title,
   children,
-  maxWidth = 'md'
+  maxWidth = 'md',
+  staticBackdrop = false
 }: ModalProps) {
   // Cerrar con tecla ESC y manejar scroll del body
   useEffect(() => {
     const handleEscape = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') onClose();
+      if (e.key === 'Escape' && !staticBackdrop) onClose();
     };
 
     if (isOpen) {
@@ -39,7 +41,7 @@ export default function Modal({
       document.body.style.overflow = '';
       document.body.style.paddingRight = '';
     };
-  }, [isOpen, onClose]);
+  }, [isOpen, onClose, staticBackdrop]);
 
   if (!isOpen) return null;
 
@@ -53,7 +55,7 @@ export default function Modal({
   return (
     <div
       className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4"
-      onClick={onClose} // Cerrar al hacer clic en el fondo
+      onClick={!staticBackdrop ? onClose : undefined} // Cerrar al hacer clic en el fondo solo si no es estático
     >
       <div
         className={`bg-white rounded-2xl shadow-2xl ${maxWidthClasses[maxWidth]} w-full max-h-[90vh] flex flex-col animate-scale-in`}

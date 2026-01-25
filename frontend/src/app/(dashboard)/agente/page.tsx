@@ -11,6 +11,7 @@ import AgentPropertyCard from '@/components/dashboard/agent/AgentPropertyCard';
 import PropertyModal from '@/components/dashboard/agent/PropertyModal';
 import RentalModal from '@/components/dashboard/agent/RentalModal';
 import UpcomingExpirations from '@/components/dashboard/agent/UpcomingExpirations';
+import { propertiesService, CreatePropertyDto } from '@/lib/api/services/properties';
 
 // Tipos
 interface Property {
@@ -34,6 +35,10 @@ interface Property {
   landlordName?: string;
   landlordPhone?: string;
   landlordEmail?: string;
+  provinciaId?: string;
+  localidadId?: string;
+  calleId?: string;
+  ownerId?: string;
 }
 
 export default function DashboardPage() {
@@ -83,24 +88,78 @@ export default function DashboardPage() {
     setIsRentalModalOpen(true);
   };
 
-  const handleSaveProperty = (property: Omit<Property, 'id'>) => {
-    // Asignar moneda automáticamente según el tipo
-    const propertyWithCurrency: Property = {
-      ...property,
-      id: editingProperty?.id || Date.now().toString(),
-      currency: property.type === 'Alquiler' ? 'ARS' : 'USD'
-    };
+  const handleSaveProperty = async (propertyData: Omit<Property, 'id'>, files: File[]) => {
+    try {
+      // Mapear datos del formulario al DTO del backend
+      // propertyData viene con campos extra del formulario, pero la API ignorará los que no necesita si el DTO está bien configurado (o debemos limpiar)
+      // Ajustamos campos específicos
+      const apiData: any = {
+        ...propertyData,
+        price: Number(propertyData.price),
+        bedrooms: Number(propertyData.bedrooms),
+        rooms: Number(propertyData.rooms),
+        bathrooms: Number(propertyData.bathrooms),
+        area: Number(propertyData.area),
+        yearBuilt: propertyData.yearBuilt ? Number(propertyData.yearBuilt) : undefined,
+        listingType: propertyData.type === 'Venta' ? 'venta' : 'alquiler',
+        propertyType: propertyData.propertyType,
+        // Los siguientes campos se asumen presentes o mapeados desde propertyData si PropertyModal los envía
+        provinciaId: propertyData.provinciaId || undefined,
+        ownerId: propertyData.ownerId || undefined, // Mapeado del modal
+        agentId: user?.id || undefined, // Agente logueado
+        calleId: propertyData.calleId || undefined,
+        localidadId: propertyData.localidadId || undefined,
+      };
 
-    if (editingProperty) {
-      // Editar propiedad existente
-      setProperties(properties.map(p =>
-        p.id === editingProperty.id ? propertyWithCurrency : p
-      ));
-    } else {
-      // Agregar nueva propiedad
-      setProperties([...properties, propertyWithCurrency]);
+      let savedPropertyId: string;
+
+      if (editingProperty) {
+        // Editar propiedad existente
+        savedPropertyId = editingProperty.id;
+        await propertiesService.update(editingProperty.id, apiData);
+
+        // Actualizar estado local (optimista o fetch)
+        setProperties(properties.map(p =>
+          p.id === editingProperty.id ? { ...p, ...propertyData, id: p.id } : p
+        ));
+      } else {
+        // Agregar nueva propiedad
+        const newProperty = await propertiesService.create(apiData);
+        savedPropertyId = newProperty.id;
+
+        // Actualizar estado local
+        setProperties([...properties, { ...propertyData, id: savedPropertyId } as Property]);
+      }
+
+      // Subir imágenes si existen
+      if (files && files.length > 0) {
+        // Mostrar algún indicador de carga si fuera necesario, por ahora bloqueamos el cierre o confiamos en la rapidez
+        for (const file of files) {
+          try {
+            // 1. Obtener URL firmada
+            const { uploadUrl, path } = await propertiesService.generateUploadUrl(savedPropertyId, file.name);
+
+            // 2. Subir archivo a Supabase
+            await propertiesService.uploadFileToSupabase(uploadUrl, file);
+
+            // 3. Confirmar subida
+            await propertiesService.confirmImageUpload(savedPropertyId, path);
+          } catch (uploadError) {
+            console.error(`Error uploading file ${file.name}:`, uploadError);
+            alert(`Error al subir la imagen ${file.name}`);
+          }
+        }
+      }
+
+      setIsModalOpen(false);
+
+      // Idealmente recargar propiedades para traer las URLs de imagenes
+      // fetchProperties(); 
+
+    } catch (error) {
+      console.error('Error saving property:', error);
+      alert('Hubo un error al guardar la propiedad. Por favor intente nuevamente.');
     }
-    setIsModalOpen(false);
   };
 
   // Filtrar propiedades

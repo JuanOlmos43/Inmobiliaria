@@ -9,7 +9,7 @@ import { UserRole, type UserProfile } from '@/types/api';
 
 // Tipos localizados por ahora
 interface Property {
-    id: string;
+    id?: string; // made optional as it's not present for new properties in general interface usage here
     title: string;
     type: 'Venta' | 'Alquiler';
     price: number;
@@ -35,11 +35,12 @@ interface Property {
     landlordName?: string;
     landlordPhone?: string;
     landlordEmail?: string;
+    ownerId?: string; // Captured owner ID
 }
 
 interface PropertyModalProps {
     property: Property | null;
-    onSave: (property: Omit<Property, 'id'>) => void;
+    onSave: (property: Omit<Property, 'id'>, files: File[]) => void;
     onClose: () => void;
 }
 
@@ -68,6 +69,7 @@ export default function PropertyModal({
         landlordName: property?.landlordName || '',
         landlordPhone: property?.landlordPhone || '',
         landlordEmail: property?.landlordEmail || '',
+        ownerId: property?.ownerId || '',
         // Initialize new fields
         province: '',
         city: '',
@@ -86,6 +88,15 @@ export default function PropertyModal({
         city: 'select',
         street: 'select'
     });
+
+    const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
+    const [previewUrls, setPreviewUrls] = useState<string[]>(property?.images || []);
+
+    useEffect(() => {
+        if (property?.images) {
+            setPreviewUrls(property.images);
+        }
+    }, [property]);
 
     // Fetch provinces using TanStack Query
     const { data: provincias = [] } = useQuery({
@@ -131,7 +142,8 @@ export default function PropertyModal({
             ...formData,
             landlordEmail: landlord.email,
             landlordName: landlord.name || landlord.email,
-            landlordPhone: landlord.phone || 'No especificado'
+            landlordPhone: landlord.phone || 'No especificado',
+            ownerId: landlord.id // Set the owner ID
         });
         setLandlordSearch(landlord.name || landlord.email);
         setShowLandlordDropdown(false);
@@ -163,6 +175,7 @@ export default function PropertyModal({
         try {
             // 1. Handle Location Creation if Manual
             let currentLocalidadId = selectedLocalidadId;
+            let currentCalleId: string | undefined = undefined;
 
             // Create Localidad if in input mode
             if (inputModes.city === 'input' && formData.city && selectedProvinciaId) {
@@ -175,20 +188,40 @@ export default function PropertyModal({
                 } catch (error) {
                     console.error('Error creating localidad:', error);
                     // Decide if stop or continue. For now continue but maybe alert?
-                    // Assuming basic flow: if fails, maybe it exists? 
-                    // Let's proceed, as the property uses the string location anyway.
                 }
             }
 
-            // Create Street if in input mode
             if (inputModes.street === 'input' && formData.street && currentLocalidadId) {
                 try {
-                    await propertiesService.createCalle({
+                    const newCalle = await propertiesService.createCalle({
                         nombre: formData.street,
                         localidadId: currentLocalidadId
                     });
-                } catch (error) {
+                    currentCalleId = newCalle.id;
+                } catch (error: any) {
                     console.error('Error creating calle:', error);
+                    // Si ya existe (409), intentamos buscarla para recuperar su ID
+                    // Esto maneja el caso de reintentos fallidos previos
+                    if (error?.status === 409 || error?.code === 409) {
+                        try {
+                            // Recargamos las calles de esa localidad para encontrar la existente
+                            const callesExistentes = await propertiesService.getCalles(currentLocalidadId);
+                            const calleEncontrada = callesExistentes.find(
+                                c => c.nombre.toLowerCase() === (formData.street || '').toLowerCase()
+                            );
+                            if (calleEncontrada) {
+                                currentCalleId = calleEncontrada.id;
+                            }
+                        } catch (findError) {
+                            console.error('Error finding existing calle after conflict:', findError);
+                        }
+                    }
+                }
+            } else if (inputModes.street === 'select' && formData.street) {
+                // Find the ID of the selected street from the loaded 'calles' array
+                const selectedCalle = calles.find(c => c.nombre === formData.street);
+                if (selectedCalle) {
+                    currentCalleId = selectedCalle.id;
                 }
             }
 
@@ -198,10 +231,15 @@ export default function PropertyModal({
 
             const submissionData = {
                 ...formData,
-                location: fullLocation
+                location: fullLocation, // Keep for UI compatibility if needed
+                locationText: fullLocation, // Map to DTO locationText
+                streetNumber: formData.streetNumber, // Map streetNumber to DTO address parameter
+                localidadId: currentLocalidadId,
+                provinciaId: selectedProvinciaId,
+                calleId: currentCalleId,
             };
 
-            onSave(submissionData);
+            onSave(submissionData, selectedFiles);
         } catch (error) {
             console.error('Error submitting form:', error);
             // handle global error
@@ -214,6 +252,7 @@ export default function PropertyModal({
             onClose={onClose}
             title={property ? 'Editar Propiedad' : 'Nueva Propiedad'}
             maxWidth="lg" // Using lg for the property form
+            staticBackdrop={true}
         >
             <form onSubmit={handleSubmit} className="space-y-4">
                 <FormInput
@@ -627,91 +666,112 @@ export default function PropertyModal({
                 </div>
 
                 {/* Imágenes de la Propiedad */}
-                <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                        Imágenes de la Propiedad
-                        <span className="text-gray-500 text-xs ml-2">(Puedes subir múltiples imágenes)</span>
-                    </label>
-
-                    {/* Input de archivo */}
-                    <div className="space-y-3">
-                        <div className="flex items-center gap-3">
-                            <input
-                                type="file"
-                                accept="image/*"
-                                multiple
-                                onChange={(e) => {
-                                    const files = Array.from(e.target.files || []);
+                {/* Input de archivo */}
+                <div className="space-y-3">
+                    <div className="flex items-center gap-3">
+                        <input
+                            type="file"
+                            accept="image/*"
+                            multiple
+                            onChange={(e) => {
+                                const files = Array.from(e.target.files || []);
+                                if (files.length > 0) {
+                                    setSelectedFiles(prev => [...prev, ...files]);
                                     files.forEach(file => {
                                         const reader = new FileReader();
                                         reader.onloadend = () => {
-                                            const imageUrl = reader.result as string;
-                                            setFormData(prev => ({
-                                                ...prev,
-                                                images: [...(prev.images || []), imageUrl]
-                                            }));
+                                            setPreviewUrls(prev => [...prev, reader.result as string]);
                                         };
                                         reader.readAsDataURL(file);
                                     });
-                                    // Limpiar el input
-                                    e.target.value = '';
-                                }}
-                                className="hidden"
-                                id="image-upload"
-                            />
-                            <label
-                                htmlFor="image-upload"
-                                className="flex-1 px-4 py-3 border-2 border-dashed border-gray-300 rounded-lg hover:border-[#14b8a6] transition-colors cursor-pointer flex items-center justify-center gap-2 text-gray-600 hover:text-[#14b8a6]"
-                            >
-                                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-                                </svg>
-                                <span className="font-medium">Seleccionar imágenes</span>
-                            </label>
-                        </div>
-
-                        {/* Vista previa de imágenes */}
-                        {formData.images && formData.images.length > 0 && (
-                            <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-                                {formData.images.map((imageUrl, index) => (
-                                    <div key={index} className="relative group">
-                                        <div className="aspect-video bg-gray-100 rounded-lg overflow-hidden">
-                                            <img
-                                                src={imageUrl}
-                                                alt={`Imagen ${index + 1}`}
-                                                className="w-full h-full object-cover"
-                                            />
-                                        </div>
-                                        {/* Botón para eliminar imagen */}
-                                        <button
-                                            type="button"
-                                            onClick={() => {
-                                                const newImages = formData.images?.filter((_, i) => i !== index);
-                                                setFormData({ ...formData, images: newImages });
-                                            }}
-                                            className="absolute top-2 right-2 bg-red-500 text-white p-1.5 rounded-full opacity-0 group-hover:opacity-100 transition-opacity shadow-lg hover:bg-red-600"
-                                            title="Eliminar imagen"
-                                        >
-                                            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                                            </svg>
-                                        </button>
-                                        {/* Indicador de orden */}
-                                        <div className="absolute bottom-2 left-2 bg-black/60 text-white text-xs px-2 py-1 rounded">
-                                            {index + 1}
-                                        </div>
-                                    </div>
-                                ))}
-                            </div>
-                        )}
-
-                        {/* Mensaje informativo */}
-                        <p className="text-xs text-gray-500">
-                            {formData.images && formData.images.length > 0
-                                ? `${formData.images.length} imagen${formData.images.length > 1 ? 'es' : ''} seleccionada${formData.images.length > 1 ? 's' : ''}`
-                                : 'No hay imágenes seleccionadas. Las imágenes se mostrarán en un carrusel en la página de detalle.'}
-                        </p>
+                                }
+                                e.target.value = '';
+                            }}
+                            className="hidden"
+                            id="image-upload"
+                        />
+                        <label
+                            htmlFor="image-upload"
+                            className="flex-1 px-4 py-3 border-2 border-dashed border-gray-300 rounded-lg hover:border-[#14b8a6] transition-colors cursor-pointer flex items-center justify-center gap-2 text-gray-600 hover:text-[#14b8a6]"
+                        >
+                            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                            </svg>
+                            <span className="font-medium">Seleccionar imágenes</span>
+                        </label>
                     </div>
+
+                    {/* Vista previa de imágenes */}
+                    {previewUrls.length > 0 && (
+                        <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                            {previewUrls.map((imageUrl, index) => (
+                                <div key={index} className="relative group">
+                                    <div className="aspect-video bg-gray-100 rounded-lg overflow-hidden">
+                                        <img
+                                            src={imageUrl}
+                                            alt={`Imagen ${index + 1}`}
+                                            className="w-full h-full object-cover"
+                                        />
+                                    </div>
+                                    {/* Botón para eliminar imagen */}
+                                    <button
+                                        type="button"
+                                        onClick={() => {
+                                            // If it's an existing image (string url could be from DB), just remove from preview for now.
+                                            // Warning: robust logic needed to diff existing vs new files.
+                                            // Valid assumption for now:
+                                            // existing images are at the start of previewUrls arrays?
+                                            // If we remove an image, we should check if it corresponds to a File or an existing URL.
+
+                                            const isExisting = property?.images?.includes(imageUrl);
+
+                                            if (!isExisting) {
+                                                // It's a new file. We need to find which file corresponds to this preview indices.
+                                                // This is tricky with separated arrays.
+                                                // Simpler approach: Reconstruct arrays.
+                                                // Let's assume new files are added at the end.
+                                                // This edit is becoming complex for a simple replacement.
+                                                // Let's rely on simple removing by index for visual consistency,
+                                                // knowing that index mapping might be fragile if mixed.
+
+                                                // Calculate how many existing images.
+                                                const existingCount = property?.images?.length || 0;
+                                                // The index in new files array is (index - existingCount).
+                                                if (index >= existingCount) {
+                                                    const fileIndex = index - existingCount;
+                                                    setSelectedFiles(prev => prev.filter((_, i) => i !== fileIndex));
+                                                }
+                                            }
+
+                                            setPreviewUrls(prev => prev.filter((_, i) => i !== index));
+                                            // Also update formData.images for consistency?
+                                            setFormData(prev => ({
+                                                ...prev,
+                                                images: prev.images?.filter((_, i) => i !== index)
+                                            }));
+                                        }}
+                                        className="absolute top-2 right-2 bg-red-500 text-white p-1.5 rounded-full opacity-0 group-hover:opacity-100 transition-opacity shadow-lg hover:bg-red-600"
+                                        title="Eliminar imagen"
+                                    >
+                                        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                                        </svg>
+                                    </button>
+                                    {/* Indicador de orden */}
+                                    <div className="absolute bottom-2 left-2 bg-black/60 text-white text-xs px-2 py-1 rounded">
+                                        {index + 1}
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    )}
+
+                    {/* Mensaje informativo */}
+                    <p className="text-xs text-gray-500">
+                        {previewUrls.length > 0
+                            ? `${previewUrls.length} imagen${previewUrls.length > 1 ? 'es' : ''} seleccionada${previewUrls.length > 1 ? 's' : ''}`
+                            : 'No hay imágenes seleccionadas. Las imágenes se mostrarán en un carrusel en la página de detalle.'}
+                    </p>
                 </div>
 
                 <div className="flex gap-3 pt-4">

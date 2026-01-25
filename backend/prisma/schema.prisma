@@ -73,6 +73,7 @@ model Provincia {
   localidades Localidad[]
   createdAt   DateTime    @default(now())
   updatedAt   DateTime    @updatedAt
+  properties  Property[]
 }
 
 model Localidad {
@@ -144,11 +145,13 @@ model Property {
   yearBuilt Int?
 
   // Ubicación
-  address      String? // Dirección específica (ej: "272" de "Blas Parera 272")
+  streetNumber String? // Número de calle o altura (ej: "272")
   calle        Calle?     @relation(fields: [calleId], references: [id])
   calleId      String?
   localidad    Localidad? @relation(fields: [localidadId], references: [id])
   localidadId  String?
+  provincia    Provincia? @relation(fields: [provinciaId], references: [id])
+  provinciaId  String?
   locationText String? // Texto libre para ubicaciones (ej: "López Jordán y Carlos Darwin")
 
   // Multimedia

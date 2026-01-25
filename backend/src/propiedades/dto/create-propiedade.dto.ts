@@ -19,6 +19,10 @@ export class CreatePropiedadeDto {
   @IsString()
   description?: string;
 
+  @IsOptional()
+  @IsString({ each: true })
+  features?: string[];
+
   @IsEnum(PropertyType)
   propertyType: PropertyType;
 
@@ -54,7 +58,7 @@ export class CreatePropiedadeDto {
   // Ubicación
   @IsOptional()
   @IsString()
-  address?: string;
+  streetNumber?: string;
 
   @IsOptional()
   @IsUUID()
@@ -63,6 +67,10 @@ export class CreatePropiedadeDto {
   @IsOptional()
   @IsUUID()
   localidadId?: string;
+
+  @IsOptional()
+  @IsUUID()
+  provinciaId?: string;
 
   @IsOptional()
   @IsString()

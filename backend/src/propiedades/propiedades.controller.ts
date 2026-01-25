@@ -30,8 +30,14 @@ export class PropiedadesController {
 
   @Post()
   @Roles(UserRole.Agente)
-  create(@Body() createPropiedadeDto: CreatePropiedadeDto) {
-    return this.propiedadesService.create(createPropiedadeDto);
+  async create(@Body() createPropiedadeDto: CreatePropiedadeDto) {
+    console.log('Receiving Create Property DTO:', JSON.stringify(createPropiedadeDto, null, 2));
+    try {
+      return await this.propiedadesService.create(createPropiedadeDto);
+    } catch (error) {
+      console.error('Error creating property in controller:', error);
+      throw error;
+    }
   }
 
   @Get()

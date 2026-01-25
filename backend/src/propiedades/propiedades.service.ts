@@ -16,11 +16,32 @@ export class PropiedadesService {
   ) { }
 
   async create(createPropiedadeDto: CreatePropiedadeDto) {
+    const {
+      features,
+      calleId,
+      localidadId,
+      provinciaId,
+      ownerId,
+      agentId,
+      ...propertyData
+    } = createPropiedadeDto;
+
     return this.prisma.property.create({
-      data: createPropiedadeDto,
+      data: {
+        ...propertyData,
+        calle: calleId ? { connect: { id: calleId } } : undefined,
+        localidad: localidadId ? { connect: { id: localidadId } } : undefined,
+        provincia: provinciaId ? { connect: { id: provinciaId } } : undefined,
+        owner: ownerId ? { connect: { id: ownerId } } : undefined,
+        agent: agentId ? { connect: { id: agentId } } : undefined,
+        features: (features && features.length > 0) ? {
+          create: features.map(name => ({ name }))
+        } : undefined,
+      },
       include: {
         localidad: true,
         calle: true,
+        features: true, // Incluir features en la respuesta
         owner: {
           select: {
             id: true,
@@ -179,12 +200,28 @@ export class PropiedadesService {
     // Verificar que la propiedad existe
     await this.findOne(id);
 
+    const { features, ...propertyData } = updatePropiedadeDto;
+
+    // Si vienen features, usamos una transacción para limpiar las viejas e insertar las nuevas
+    // O simplemente usamos la capacidad de nested writes de prisma en el update si queremos reemplazar todo
+
+    // Para simplificar y asegurar consistencia: si se envían features, reemplazamos todas.
+    const updateData: any = { ...propertyData };
+
+    if (features !== undefined) {
+      updateData.features = {
+        deleteMany: {}, // Borra todas las features existentes de esta propiedad
+        create: features.map(name => ({ name })), // Crea las nuevas
+      };
+    }
+
     return this.prisma.property.update({
       where: { id },
-      data: updatePropiedadeDto,
+      data: updateData,
       include: {
         localidad: true,
         calle: true,
+        features: true,
         owner: {
           select: {
             id: true,
@@ -209,12 +246,19 @@ export class PropiedadesService {
     // Verificar que la propiedad existe
     await this.findOne(id);
 
-    // Soft delete: cambiar status a archivada
-    return this.prisma.property.update({
+    // 1. Eliminar imágenes del bucket
+    // Asumimos que la carpeta tiene el mismo nombre que el ID de la propiedad
+    try {
+      await this.storageService.deleteFolder(id);
+    } catch (error) {
+      console.error(`Warning: Failed to cleanup storage for property ${id}`, error);
+      // We continue to delete the record even if storage fails, or we could throw.
+      // Usually better to ensure DB consistency.
+    }
+
+    // 2. Eliminar registro de la DB (Cascade borrará images y features)
+    return this.prisma.property.delete({
       where: { id },
-      data: {
-        status: 'archivada',
-      },
     });
   }
 
@@ -262,12 +306,22 @@ export class PropiedadesService {
     }
 
     // 4. Crear el registro en la base de datos
-    return this.prisma.propertyImage.create({
+    const newImage = await this.prisma.propertyImage.create({
       data: {
         url: publicUrl,
         order: order,
         propertyId: id,
       },
     });
+
+    // 5. Si es la primera imagen (order 1), actualizar property.mainImage
+    if (order === 1) {
+      await this.prisma.property.update({
+        where: { id },
+        data: { mainImage: publicUrl },
+      });
+    }
+
+    return newImage;
   }
 }
