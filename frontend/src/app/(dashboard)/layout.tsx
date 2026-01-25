@@ -5,7 +5,6 @@ import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 
 import DashboardHeader from '@/components/DashboardHeader';
-import { UserRole } from '@/types/api';
 
 // Wrapper interno para manejar la lógica de redirección y loading UI
 // Necesitamos esto porque useAuth debe usarse DENTRO de AuthProvider
@@ -37,24 +36,10 @@ function DashboardContent({ children }: { children: React.ReactNode }) {
         return null; // El useEffect redirigirá
     }
 
-    // Determinar título basado en el rol
-    const getTitleByRole = (role: UserRole): 'Administrador' | 'Gerencia' | 'Agente' | 'Propietario' | 'Inquilino' => {
-        switch (role) {
-            case UserRole.ADMIN: return 'Administrador';
-            case UserRole.MANAGER: return 'Gerencia';
-            case UserRole.AGENT: return 'Agente';
-            case UserRole.LANDLORD: return 'Propietario';
-            case UserRole.TENANT: return 'Inquilino';
-            default: return 'Inquilino'; // Fallback seguro
-        }
-    };
-
-    const dashboardTitle = getTitleByRole(user.role);
-
     return (
         <div className="min-h-screen bg-[#f8fafc]">
             <DashboardHeader
-                title={dashboardTitle}
+                role={user.role}
                 userEmail={user.email}
                 onLogout={logout}
             />

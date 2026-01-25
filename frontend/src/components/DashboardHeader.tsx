@@ -1,30 +1,30 @@
 'use client';
 
-import { useState } from 'react';
 import Icon, { IconName } from '@/components/UI/Icon';
+import { UserRole } from '@/types/api';
 
 interface DashboardHeaderProps {
-  title: 'Administrador' | 'Gerencia' | 'Agente' | 'Propietario' | 'Inquilino';
+  role: UserRole;
   onLogout: () => void;
   userEmail?: string;
 }
 
-// Mapeo de títulos de roles a sus iconos correspondientes
-const roleIconMap: Record<string, IconName> = {
-  'Administrador': 'settings',
-  'Gerencia': 'star',
-  'Agente': 'briefcase',
-  'Propietario': 'home',
-  'Inquilino': 'key'
+// Configuración unificada de roles: mapeo de rol de BD a título e icono
+const roleConfig: Record<UserRole, { title: string; icon: IconName }> = {
+  [UserRole.ADMIN]: { title: 'Administrador', icon: 'settings' },
+  [UserRole.MANAGER]: { title: 'Gerencia', icon: 'star' },
+  [UserRole.AGENT]: { title: 'Agente', icon: 'briefcase' },
+  [UserRole.LANDLORD]: { title: 'Propietario', icon: 'home' },
+  [UserRole.TENANT]: { title: 'Inquilino', icon: 'key' }
 };
 
 export default function DashboardHeader({
-  title,
+  role,
   onLogout,
   userEmail
 }: DashboardHeaderProps) {
-  // Obtener el icono basado en el título, con fallback a 'user'
-  const icon = roleIconMap[title] || 'user';
+  // Obtener título e icono basado en el rol, con fallback seguro
+  const { title, icon } = roleConfig[role] || { title: 'Usuario', icon: 'user' as IconName };
 
   return (
     <header className="bg-[#0f172a] shadow-lg sticky top-0 z-40">
