@@ -6,6 +6,7 @@ import { PrismaService } from '../prisma/prisma.service';
 import { Prisma } from '@prisma/client';
 
 import { StorageService } from '../storage/storage.service';
+import { ConfirmImageUploadDto } from './dto/property-images.dto';
 
 @Injectable()
 export class PropiedadesService {
@@ -241,5 +242,32 @@ export class PropiedadesService {
       order: nextOrder,
       filename: `${nextOrder}.${ext}`,
     };
+  }
+
+  async confirmImageUpload(id: string, confirmDto: ConfirmImageUploadDto) {
+    // 1. Verificar que la propiedad existe
+    await this.findOne(id);
+
+    // 2. Obtener la URL pública desde el StorageService
+    // Asumimos que el path enviado es relativo al bucket (ej: "uuid/1.jpg")
+    const publicUrl = this.storageService.getPublicUrl(confirmDto.path);
+
+    // 3. Determinar el orden si no se envió
+    let order = confirmDto.order;
+    if (order === undefined) {
+      const count = await this.prisma.propertyImage.count({
+        where: { propertyId: id },
+      });
+      order = count + 1;
+    }
+
+    // 4. Crear el registro en la base de datos
+    return this.prisma.propertyImage.create({
+      data: {
+        url: publicUrl,
+        order: order,
+        propertyId: id,
+      },
+    });
   }
 }

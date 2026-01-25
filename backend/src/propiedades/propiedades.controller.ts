@@ -10,19 +10,26 @@ import {
   Query,
   ValidationPipe,
   UsePipes,
+  UseGuards,
 } from '@nestjs/common';
 import { PropiedadesService } from './propiedades.service';
 import { CreatePropiedadeDto } from './dto/create-propiedade.dto';
 import { UpdatePropiedadeDto } from './dto/update-propiedade.dto';
 import { QueryPropiedadesDto } from './dto/query-propiedades.dto';
-import { GenerateUploadUrlDto } from './dto/generate-upload-url.dto';
+import { GenerateUploadUrlDto, ConfirmImageUploadDto } from './dto/property-images.dto';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { RolesGuard } from '../auth/guards/roles.guard';
+import { Roles } from '../auth/decorators/roles.decorator';
+import { UserRole } from '@prisma/client';
 
 @Controller('propiedades')
+@UseGuards(JwtAuthGuard, RolesGuard)
 @UsePipes(new ValidationPipe({ transform: true, whitelist: true }))
 export class PropiedadesController {
   constructor(private readonly propiedadesService: PropiedadesService) { }
 
   @Post()
+  @Roles(UserRole.agent)
   create(@Body() createPropiedadeDto: CreatePropiedadeDto) {
     return this.propiedadesService.create(createPropiedadeDto);
   }
@@ -38,6 +45,7 @@ export class PropiedadesController {
   }
 
   @Patch(':id')
+  @Roles(UserRole.agent)
   update(
     @Param('id') id: string,
     @Body() updatePropiedadeDto: UpdatePropiedadeDto,
@@ -46,11 +54,13 @@ export class PropiedadesController {
   }
 
   @Delete(':id')
+  @Roles(UserRole.agent)
   remove(@Param('id') id: string) {
     return this.propiedadesService.remove(id);
   }
 
   @Post(':id/upload-url')
+  @Roles(UserRole.agent)
   generateUploadUrl(
     @Param('id') id: string,
     @Body() generateUploadUrlDto: GenerateUploadUrlDto,
@@ -59,5 +69,14 @@ export class PropiedadesController {
       id,
       generateUploadUrlDto.filename,
     );
+  }
+
+  @Post(':id/images')
+  @Roles(UserRole.agent)
+  confirmImageUpload(
+    @Param('id') id: string,
+    @Body() confirmImageUploadDto: ConfirmImageUploadDto,
+  ) {
+    return this.propiedadesService.confirmImageUpload(id, confirmImageUploadDto);
   }
 }
