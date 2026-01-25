@@ -5,9 +5,14 @@ import { QueryPropiedadesDto } from './dto/query-propiedades.dto';
 import { PrismaService } from '../prisma/prisma.service';
 import { Prisma } from '@prisma/client';
 
+import { StorageService } from '../storage/storage.service';
+
 @Injectable()
 export class PropiedadesService {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+    private storageService: StorageService,
+  ) { }
 
   async create(createPropiedadeDto: CreatePropiedadeDto) {
     return this.prisma.property.create({
@@ -210,5 +215,31 @@ export class PropiedadesService {
         status: 'archivada',
       },
     });
+  }
+
+  async generateUploadUrl(id: string, filename: string) {
+    // Verificar que la propiedad existe
+    await this.findOne(id);
+
+    // Calcular el orden para la imagen (count + 1)
+    const count = await this.prisma.propertyImage.count({
+      where: { propertyId: id },
+    });
+    const nextOrder = count + 1;
+
+    // Obtener extensión del archivo
+    const ext = filename.split('.').pop();
+    // Definir path: {propiedad_id}/{orden}.{ext}
+    const path = `${id}/${nextOrder}.${ext}`;
+
+    const { signedUrl, token } = await this.storageService.getSignedUploadUrl(path);
+
+    return {
+      uploadUrl: signedUrl,
+      path,
+      token,
+      order: nextOrder,
+      filename: `${nextOrder}.${ext}`,
+    };
   }
 }

@@ -1,3 +1,4 @@
+
 import {
   Controller,
   Get,
@@ -14,11 +15,12 @@ import { PropiedadesService } from './propiedades.service';
 import { CreatePropiedadeDto } from './dto/create-propiedade.dto';
 import { UpdatePropiedadeDto } from './dto/update-propiedade.dto';
 import { QueryPropiedadesDto } from './dto/query-propiedades.dto';
+import { GenerateUploadUrlDto } from './dto/generate-upload-url.dto';
 
 @Controller('propiedades')
 @UsePipes(new ValidationPipe({ transform: true, whitelist: true }))
 export class PropiedadesController {
-  constructor(private readonly propiedadesService: PropiedadesService) {}
+  constructor(private readonly propiedadesService: PropiedadesService) { }
 
   @Post()
   create(@Body() createPropiedadeDto: CreatePropiedadeDto) {
@@ -46,5 +48,16 @@ export class PropiedadesController {
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.propiedadesService.remove(id);
+  }
+
+  @Post(':id/upload-url')
+  generateUploadUrl(
+    @Param('id') id: string,
+    @Body() generateUploadUrlDto: GenerateUploadUrlDto,
+  ) {
+    return this.propiedadesService.generateUploadUrl(
+      id,
+      generateUploadUrlDto.filename,
+    );
   }
 }
