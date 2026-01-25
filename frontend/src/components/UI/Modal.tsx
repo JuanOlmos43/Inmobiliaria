@@ -8,12 +8,12 @@ interface ModalProps {
   maxWidth?: 'sm' | 'md' | 'lg' | 'xl'; // Tamaño del modal
 }
 
-export default function Modal({ 
-  isOpen, 
-  onClose, 
-  title, 
+export default function Modal({
+  isOpen,
+  onClose,
+  title,
   children,
-  maxWidth = 'md' 
+  maxWidth = 'md'
 }: ModalProps) {
   // Cerrar con tecla ESC y manejar scroll del body
   useEffect(() => {
@@ -51,15 +51,15 @@ export default function Modal({
   };
 
   return (
-    <div 
+    <div
       className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4"
       onClick={onClose} // Cerrar al hacer clic en el fondo
     >
-      <div 
-        className={`bg-white rounded-2xl shadow-2xl ${maxWidthClasses[maxWidth]} w-full p-8 animate-scale-in`}
+      <div
+        className={`bg-white rounded-2xl shadow-2xl ${maxWidthClasses[maxWidth]} w-full max-h-[90vh] flex flex-col animate-scale-in`}
         onClick={(e) => e.stopPropagation()} // Prevenir cierre al hacer clic dentro del modal
       >
-        <div className="flex justify-between items-start mb-6">
+        <div className="flex justify-between items-start p-6 border-b border-gray-100 flex-shrink-0">
           <h3 className="text-2xl font-bold text-[#0f172a]">
             {title}
           </h3>
@@ -73,8 +73,10 @@ export default function Modal({
             </svg>
           </button>
         </div>
-        
-        {children}
+
+        <div className="p-6 overflow-y-auto">
+          {children}
+        </div>
       </div>
     </div>
   );
