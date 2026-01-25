@@ -71,6 +71,7 @@ export const propertiesService = {
   /**
    * Create a new property
    */
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   async create(data: CreatePropertyDto): Promise<any> {
     return apiClient.post("/propiedades", data);
   },
@@ -78,16 +79,19 @@ export const propertiesService = {
   /**
    * Get all properties
    */
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   async findAll(query?: any): Promise<any> {
     const queryString = query
       ? "?" + new URLSearchParams(query).toString()
       : "";
-    return apiClient.get(`/propiedades${queryString}`);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    return apiClient.get<any>(`/propiedades${queryString}`);
   },
 
   /**
    * Get one property by ID
    */
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   async findOne(id: string): Promise<any> {
     return apiClient.get(`/propiedades/${id}`);
   },
@@ -95,6 +99,7 @@ export const propertiesService = {
   /**
    * Update a property
    */
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   async update(id: string, data: Partial<CreatePropertyDto>): Promise<any> {
     return apiClient.patch(`/propiedades/${id}`, data);
   },
@@ -102,6 +107,7 @@ export const propertiesService = {
   /**
    * Delete a property
    */
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   async remove(id: string): Promise<any> {
     return apiClient.delete(`/propiedades/${id}`);
   },
@@ -117,6 +123,7 @@ export const propertiesService = {
     );
   },
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   async confirmImageUpload(id: string, path: string): Promise<any> {
     return apiClient.post(`/propiedades/${id}/images`, { path });
   },

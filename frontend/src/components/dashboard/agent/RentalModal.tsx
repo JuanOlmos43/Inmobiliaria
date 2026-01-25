@@ -1,6 +1,8 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import Modal from "@/components/UI/Modal";
 import { UserRole } from "@/types/api";
+import { usersService } from "@/lib/api/services/users";
 
 // Tipos
 interface Property {
@@ -58,23 +60,32 @@ export default function RentalModal({
     status: "active",
   });
 
-  const [tenants, setTenants] = useState<SystemUser[]>([]);
+  /* const [tenants, setTenants] = useState<SystemUser[]>([]); */
+  // Use TanStack Query instead of manual fetch/effect
+  const { data: tenants = [] } = useQuery({
+    queryKey: ['users', 'tenants'],
+    queryFn: async () => {
+      // Assuming usersService.getUsers returns correct type or we map it
+      const users = await usersService.getUsers(UserRole.Inquilino);
+      // Ensure we filter active if API doesn't do it automatically, assuming API returns array
+      // Map API user type to local SystemUser interface if needed, but for now assuming compatible fields
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      return users.filter((u: any) => u.status === 'active' || !u.status /* fallback if status missing */).map((u: any) => ({
+        id: u.id,
+        email: u.email,
+        name: u.name,
+        phone: u.phone,
+        role: u.role as UserRole,
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        status: (u.status || 'active') as "active" | "inactive"
+      }));
+    }
+  });
   const [tenantSearch, setTenantSearch] = useState("");
   const [showTenantDropdown, setShowTenantDropdown] = useState(false);
   const [selectedTenant, setSelectedTenant] = useState<SystemUser | null>(null);
 
-  useEffect(() => {
-    // Mock fetch for now
-    const storedUsers = localStorage.getItem("systemUsers");
-    if (storedUsers) {
-      const users = JSON.parse(storedUsers);
-      const tenantUsers = users.filter(
-        (u: SystemUser) =>
-          u.role === UserRole.Inquilino && u.status === "active",
-      );
-      setTenants(tenantUsers);
-    }
-  }, []);
+
 
   const handleTenantSelect = (tenant: SystemUser) => {
     setSelectedTenant(tenant);

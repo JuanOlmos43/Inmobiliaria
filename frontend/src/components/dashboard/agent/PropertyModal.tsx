@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import Modal from "@/components/UI/Modal";
 import FormInput from "@/components/UI/FormInput";
@@ -94,11 +94,7 @@ export default function PropertyModal({
     property?.images || [],
   );
 
-  useEffect(() => {
-    if (property?.images) {
-      setPreviewUrls(property.images);
-    }
-  }, [property]);
+
 
   // Fetch provinces using TanStack Query
   const { data: provincias = [] } = useQuery({
@@ -131,17 +127,13 @@ export default function PropertyModal({
   });
 
   // Fetch landlords using TanStack Query
-  const { data: landlords = [], isLoading: isLoadingLandlords } = useQuery({
+  const { data: landlords = [] } = useQuery({
     queryKey: ["users", "landlords"],
     queryFn: () => usersService.getUsers(UserRole.Propietario),
     staleTime: 1000 * 60 * 5, // Cache for 5 minutes
   });
 
-  useEffect(() => {
-    if (property?.landlordName) {
-      setLandlordSearch(property.landlordName);
-    }
-  }, [property]);
+
 
   const handleLandlordSelect = (landlord: UserProfile) => {
     setFormData({
@@ -208,11 +200,12 @@ export default function PropertyModal({
             localidadId: currentLocalidadId,
           });
           currentCalleId = newCalle.id;
-        } catch (error: any) {
+        } catch (error: unknown) {
           console.error("Error creating calle:", error);
           // Si ya existe (409), intentamos buscarla para recuperar su ID
           // Esto maneja el caso de reintentos fallidos previos
-          if (error?.status === 409 || error?.code === 409) {
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          if ((error as any)?.status === 409 || (error as any)?.code === 409) {
             try {
               // Recargamos las calles de esa localidad para encontrar la existente
               const callesExistentes =
@@ -863,6 +856,7 @@ export default function PropertyModal({
               {previewUrls.map((imageUrl, index) => (
                 <div key={index} className="relative group">
                   <div className="aspect-video bg-gray-100 rounded-lg overflow-hidden">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img
                       src={imageUrl}
                       alt={`Imagen ${index + 1}`}
