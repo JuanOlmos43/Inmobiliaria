@@ -102,7 +102,7 @@ export default function UsersTable({
                   <span className="bg-gray-100 px-2 py-1 rounded">{user.password}</span>
                 </td>
                 <td className="px-6 py-4">
-                  <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium text-white bg-gradient-to-r ${roleColors[user.role]}`}>
+                  <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium text-white bg-linear-to-r ${roleColors[user.role]}`}>
                     {roleLabels[user.role]}
                   </span>
                 </td>
