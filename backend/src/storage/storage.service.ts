@@ -2,6 +2,8 @@
 import { Injectable, OnModuleInit, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
+import { PrismaService } from '../prisma/prisma.service';
+
 
 @Injectable()
 export class StorageService implements OnModuleInit {
@@ -9,7 +11,10 @@ export class StorageService implements OnModuleInit {
     private readonly logger = new Logger(StorageService.name);
     private readonly bucketName = 'propiedades';
 
-    constructor(private configService: ConfigService) {
+    constructor(
+        private configService: ConfigService,
+        private prisma: PrismaService,
+    ) {
         const supabaseUrl = this.configService.get<string>('SUPABASE_URL');
         const supabaseKey = this.configService.get<string>('SUPABASE_SERVICE_ROLE_KEY');
 
@@ -30,23 +35,92 @@ export class StorageService implements OnModuleInit {
 
             if (error && error.message.includes('not found')) {
                 this.logger.log(`Bucket '${this.bucketName}' not found. Creating it...`);
+                // Crear bucket público
                 const { error: createError } = await this.supabase.storage.createBucket(this.bucketName, {
                     public: true,
-                    fileSizeLimit: 5242880, // 5MB limit example
+                    fileSizeLimit: 5242880, // 5MB limit
                 });
 
                 if (createError) {
                     this.logger.error(`Failed to create bucket: ${createError.message}`);
                 } else {
                     this.logger.log(`Bucket '${this.bucketName}' created successfully.`);
+                    // Aplicar políticas al crear
+                    await this.ensurePolicies();
                 }
             } else if (error) {
                 this.logger.error(`Error checking bucket: ${error.message}`);
             } else {
                 this.logger.log(`Bucket '${this.bucketName}' exists.`);
+                // Asegurar políticas incluso si ya existe
+                await this.ensurePolicies();
             }
         } catch (err) {
             this.logger.error('Unexpected error initializing Storage:', err);
+        }
+    }
+
+    /**
+     * Aplica las políticas de seguridad RLS (Row Level Security) al bucket.
+     * Esto asegura que sea público para lectura y restringido para escritura.
+     */
+    private async ensurePolicies() {
+        this.logger.log(`Configuring storage policies for '${this.bucketName}'...`);
+        try {
+            // Habilitar RLS en storage.objects si no está habilitado (por defecto suele estarlo)
+            // Nota: storage.objects es una tabla de sistema de Supabase/Postgres.
+
+            // 1. Política de Lectura Pública (SELECT)
+            // Verificamos si existe la política antes de crearla para evitar errores
+            await this.prisma.$executeRawUnsafe(`
+                DO $$
+                BEGIN
+                    IF NOT EXISTS (
+                        SELECT 1 FROM pg_policies 
+                        WHERE schemaname = 'storage' 
+                        AND tablename = 'objects' 
+                        AND policyname = 'Public Access ${this.bucketName}'
+                    ) THEN
+                        CREATE POLICY "Public Access ${this.bucketName}"
+                        ON storage.objects FOR SELECT
+                        USING ( bucket_id = '${this.bucketName}' );
+                    END IF;
+                END
+                $$;
+            `);
+
+            // 2. Política de Escritura Autenticada (INSERT)
+            // Permite subir solo a usuarios autenticados
+            await this.prisma.$executeRawUnsafe(`
+                DO $$
+                BEGIN
+                    IF NOT EXISTS (
+                        SELECT 1 FROM pg_policies 
+                        WHERE schemaname = 'storage' 
+                        AND tablename = 'objects' 
+                        AND policyname = 'Authenticated Upload ${this.bucketName}'
+                    ) THEN
+                        CREATE POLICY "Authenticated Upload ${this.bucketName}"
+                        ON storage.objects FOR INSERT
+                        TO authenticated
+                        WITH CHECK ( bucket_id = '${this.bucketName}' );
+                    END IF;
+                END
+                $$;
+            `);
+
+            // 3. ACTUALIZAR bucket a public = true (por si acaso se creó manual como privado)
+            await this.prisma.$executeRawUnsafe(`
+                UPDATE storage.buckets
+                SET "public" = true
+                WHERE id = '${this.bucketName}';
+            `);
+
+            this.logger.log(`Storage policies configured successfully for '${this.bucketName}'.`);
+
+        } catch (error) {
+            this.logger.error(`Error configuring storage policies: ${error.message}`, error);
+            // No lanzamos error para no detener la app, pero logueamos
         }
     }
 
