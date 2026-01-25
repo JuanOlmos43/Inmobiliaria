@@ -43,11 +43,11 @@ export interface UserProfile {
 // ============================================
 
 export enum UserRole {
-    ADMIN = 'admin',
-    AGENT = 'agent',
-    LANDLORD = 'landlord',
-    TENANT = 'tenant',
-    MANAGER = 'manager',
+    Administrador = 'Administrador',
+    Agente = 'Agente',
+    Propietario = 'Propietario',
+    Inquilino = 'Inquilino',
+    Gerencia = 'Gerencia',
 }
 
 export enum UserStatus {

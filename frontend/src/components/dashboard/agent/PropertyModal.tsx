@@ -116,7 +116,7 @@ export default function PropertyModal({
     // Fetch landlords using TanStack Query
     const { data: landlords = [], isLoading: isLoadingLandlords } = useQuery({
         queryKey: ['users', 'landlords'],
-        queryFn: () => usersService.getUsers(UserRole.LANDLORD),
+        queryFn: () => usersService.getUsers(UserRole.Propietario),
         staleTime: 1000 * 60 * 5, // Cache for 5 minutes
     });
 

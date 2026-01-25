@@ -4,11 +4,11 @@ import { UserRole } from '@/types/api'
  * Mapeo de roles a sus rutas por defecto
  */
 export const ROLE_DEFAULT_ROUTES: Record<string, string> = {
-    [UserRole.ADMIN]: '/admin',
-    [UserRole.AGENT]: '/agente',
-    [UserRole.LANDLORD]: '/propietario',
-    [UserRole.TENANT]: '/inquilino',
-    [UserRole.MANAGER]: '/gerencia',
+    [UserRole.Administrador]: '/admin',
+    [UserRole.Agente]: '/agente',
+    [UserRole.Propietario]: '/propietario',
+    [UserRole.Inquilino]: '/inquilino',
+    [UserRole.Gerencia]: '/gerencia',
 }
 
 /**

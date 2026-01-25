@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import Modal from '@/components/UI/Modal';
+import { UserRole } from '@/types/api';
 
 // Tipos
 interface Property {
@@ -26,7 +27,7 @@ interface SystemUser {
     email: string;
     name?: string;
     phone?: string;
-    role: 'admin' | 'agent' | 'landlord' | 'tenant';
+    role: UserRole;
     status: 'active' | 'inactive';
 }
 
@@ -60,7 +61,7 @@ export default function RentalModal({
         const storedUsers = localStorage.getItem('systemUsers');
         if (storedUsers) {
             const users = JSON.parse(storedUsers);
-            const tenantUsers = users.filter((u: SystemUser) => u.role === 'tenant' && u.status === 'active');
+            const tenantUsers = users.filter((u: SystemUser) => u.role === UserRole.Inquilino && u.status === 'active');
             setTenants(tenantUsers);
         }
     }, []);

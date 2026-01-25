@@ -15,7 +15,7 @@ interface User {
   password: string;
   name?: string;
   phone?: string;
-  role: 'tenant' | 'landlord' | 'agent' | 'owner';
+  role: UserRole;
   createdAt: string;
   status: 'active' | 'inactive';
 }
@@ -28,13 +28,8 @@ interface UserFormModalProps {
   onUserUpdated: (user: User) => void;
 }
 
-// Mapeo de roles del frontend al backend
-const roleMapping: Record<string, UserRole> = {
-  tenant: UserRole.TENANT,
-  landlord: UserRole.LANDLORD,
-  agent: UserRole.AGENT,
-  owner: UserRole.MANAGER
-};
+// Mapeo de roles del frontend al backend - YA NO ES NECESARIO SI USAMOS ENUMS DIRECTAMENTE
+// const roleMapping: Record<string, UserRole> = { ... };
 
 export default function UserFormModal({
   isOpen,
@@ -48,7 +43,7 @@ export default function UserFormModal({
     password: '',
     name: '',
     phone: '',
-    role: 'tenant' as 'tenant' | 'landlord' | 'agent' | 'owner'
+    role: UserRole.Inquilino as UserRole
   });
 
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -70,7 +65,7 @@ export default function UserFormModal({
         password: '',
         name: '',
         phone: '',
-        role: 'tenant'
+        role: UserRole.Inquilino
       });
     }
   }, [editingUser, isOpen]);
@@ -98,14 +93,12 @@ export default function UserFormModal({
         showToast('Usuario actualizado exitosamente');
       } else {
         // Crear nuevo usuario
-        const backendRole = roleMapping[formData.role];
-
         const newUser = await authService.register({
           email: formData.email,
           password: formData.password,
           name: formData.name || undefined,
           phone: formData.phone || undefined,
-          role: backendRole
+          role: formData.role
         });
 
         // Crear objeto de usuario para la lista
@@ -144,82 +137,82 @@ export default function UserFormModal({
         isVisible={toast.show}
         onClose={() => setToast({ ...toast, show: false })}
       />
-    <Modal
-      isOpen={isOpen}
-      onClose={onClose}
-      title={editingUser ? 'Editar Usuario' : 'Crear Nuevo Usuario'}
-      maxWidth="lg"
-    >
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <FormInput
-          label="Correo Electrónico"
-          type="email"
-          value={formData.email}
-          onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-          required
-          placeholder="usuario@email.com"
-          disabled={isSubmitting}
-        />
-
-        <FormInput
-          label="Contraseña"
-          type="text"
-          value={formData.password}
-          onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-          required
-          placeholder="Contraseña"
-          disabled={isSubmitting}
-        />
-
-        <FormInput
-          label="Nombre Completo"
-          type="text"
-          value={formData.name}
-          onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-          placeholder="Nombre completo del usuario"
-          disabled={isSubmitting}
-        />
-
-        <FormInput
-          label="Teléfono"
-          type="tel"
-          value={formData.phone}
-          onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-          placeholder="+54 11 1234-5678"
-          disabled={isSubmitting}
-        />
-
-        <FormSelect
-          label="Rol"
-          value={formData.role}
-          onChange={(e) => setFormData({ ...formData, role: e.target.value as 'tenant' | 'landlord' | 'agent' | 'owner' })}
-          disabled={isSubmitting}
-        >
-          <option value="tenant">Inquilino</option>
-          <option value="landlord">Propietario</option>
-          <option value="agent">Agente Inmobiliario</option>
-          <option value="owner">Gerencia</option>
-        </FormSelect>
-
-        <div className="flex gap-3 pt-4">
-          <button
-            type="button"
-            onClick={onClose}
+      <Modal
+        isOpen={isOpen}
+        onClose={onClose}
+        title={editingUser ? 'Editar Usuario' : 'Crear Nuevo Usuario'}
+        maxWidth="lg"
+      >
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <FormInput
+            label="Correo Electrónico"
+            type="email"
+            value={formData.email}
+            onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+            required
+            placeholder="usuario@email.com"
             disabled={isSubmitting}
-            className="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            Cancelar
-          </button>
-          <button
-            type="submit"
+          />
+
+          <FormInput
+            label="Contraseña"
+            type="text"
+            value={formData.password}
+            onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+            required
+            placeholder="Contraseña"
             disabled={isSubmitting}
-            className="flex-1 px-4 py-2 bg-[#14b8a6] text-white rounded-lg hover:bg-[#0d9488] transition-all shadow-md hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
+          />
+
+          <FormInput
+            label="Nombre Completo"
+            type="text"
+            value={formData.name}
+            onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+            placeholder="Nombre completo del usuario"
+            disabled={isSubmitting}
+          />
+
+          <FormInput
+            label="Teléfono"
+            type="tel"
+            value={formData.phone}
+            onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+            placeholder="+54 11 1234-5678"
+            disabled={isSubmitting}
+          />
+
+          <FormSelect
+            label="Rol"
+            value={formData.role}
+            onChange={(e) => setFormData({ ...formData, role: e.target.value as UserRole })}
+            disabled={isSubmitting}
           >
-            {isSubmitting ? 'Guardando...' : editingUser ? 'Guardar Cambios' : 'Crear Usuario'}
-          </button>
-        </div>
-      </form>
-    </Modal>
+            <option value={UserRole.Inquilino}>Inquilino</option>
+            <option value={UserRole.Propietario}>Propietario</option>
+            <option value={UserRole.Agente}>Agente Inmobiliario</option>
+            <option value={UserRole.Gerencia}>Gerencia</option>
+          </FormSelect>
+
+          <div className="flex gap-3 pt-4">
+            <button
+              type="button"
+              onClick={onClose}
+              disabled={isSubmitting}
+              className="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              Cancelar
+            </button>
+            <button
+              type="submit"
+              disabled={isSubmitting}
+              className="flex-1 px-4 py-2 bg-[#14b8a6] text-white rounded-lg hover:bg-[#0d9488] transition-all shadow-md hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {isSubmitting ? 'Guardando...' : editingUser ? 'Guardar Cambios' : 'Crear Usuario'}
+            </button>
+          </div>
+        </form>
+      </Modal>
     </>
   );
 }

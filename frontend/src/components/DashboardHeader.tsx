@@ -11,11 +11,11 @@ interface DashboardHeaderProps {
 
 // Configuración unificada de roles: mapeo de rol de BD a título e icono
 const roleConfig: Record<UserRole, { title: string; icon: IconName }> = {
-  [UserRole.ADMIN]: { title: 'Administrador', icon: 'settings' },
-  [UserRole.MANAGER]: { title: 'Gerencia', icon: 'star' },
-  [UserRole.AGENT]: { title: 'Agente', icon: 'briefcase' },
-  [UserRole.LANDLORD]: { title: 'Propietario', icon: 'home' },
-  [UserRole.TENANT]: { title: 'Inquilino', icon: 'key' }
+  [UserRole.Administrador]: { title: 'Administrador', icon: 'settings' },
+  [UserRole.Gerencia]: { title: 'Gerencia', icon: 'star' },
+  [UserRole.Agente]: { title: 'Agente', icon: 'briefcase' },
+  [UserRole.Propietario]: { title: 'Propietario', icon: 'home' },
+  [UserRole.Inquilino]: { title: 'Inquilino', icon: 'key' }
 };
 
 export default function DashboardHeader({

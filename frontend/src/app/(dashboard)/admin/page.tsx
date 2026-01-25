@@ -5,6 +5,7 @@ import { useState } from 'react';
 import StatsCard from '@/components/UI/StatsCard';
 import UserFormModal from '@/components/UserFormModal';
 import UsersTable from '@/components/UsersTable';
+import { UserRole } from '@/types/api';
 
 // ============================================
 // TIPOS DE DATOS
@@ -20,7 +21,7 @@ interface User {
   password: string;                              // Contraseña (solo para mostrar en admin)
   name?: string;                                 // Nombre completo (opcional)
   phone?: string;                                // Teléfono de contacto (opcional)
-  role: 'tenant' | 'landlord' | 'agent' | 'owner'; // Rol del usuario en el sistema
+  role: UserRole; // Rol del usuario en el sistema
   createdAt: string;                             // Fecha de creación (ISO string)
   status: 'active' | 'inactive';                 // Estado del usuario
 }
@@ -37,23 +38,23 @@ interface User {
  * Muestra estadísticas en tiempo real sobre los usuarios.
  */
 export default function AdminDashboardPage() {
-  
+
   // ============================================
   // ESTADOS DEL COMPONENTE
   // ============================================
-  
+
   /**
    * Lista de todos los usuarios del sistema
    * Se almacena en localStorage como persistencia temporal
    * TODO: Reemplazar con llamada a API cuando exista endpoint GET /users
    */
   const [users, setUsers] = useState<User[]>([]);
-  
+
   /**
    * Controla la visibilidad del modal de crear/editar usuario
    */
   const [showModal, setShowModal] = useState(false);
-  
+
   /**
    * Usuario que se está editando actualmente
    * - null: Modo crear (nuevo usuario)
@@ -94,10 +95,10 @@ export default function AdminDashboardPage() {
     if (confirm('¿Estás seguro de que deseas eliminar este usuario?')) {
       // Filtra el usuario a eliminar
       const updatedUsers = users.filter(u => u.id !== userId);
-      
+
       // Actualiza el estado
       setUsers(updatedUsers);
-      
+
       // Persiste en localStorage
       localStorage.setItem('systemUsers', JSON.stringify(updatedUsers));
     }
@@ -156,10 +157,10 @@ export default function AdminDashboardPage() {
   const stats = {
     total: users.length,                                      // Total de usuarios
     active: users.filter(u => u.status === 'active').length,  // Usuarios activos
-    tenants: users.filter(u => u.role === 'tenant').length,   // Inquilinos
-    landlords: users.filter(u => u.role === 'landlord').length, // Propietarios
-    agents: users.filter(u => u.role === 'agent').length,     // Agentes
-    owners: users.filter(u => u.role === 'owner').length      // Gerencia
+    tenants: users.filter(u => u.role === UserRole.Inquilino).length,   // Inquilinos
+    landlords: users.filter(u => u.role === UserRole.Propietario).length, // Propietarios
+    agents: users.filter(u => u.role === UserRole.Agente).length,     // Agentes
+    owners: users.filter(u => u.role === UserRole.Gerencia).length      // Gerencia
   };
 
   // ============================================
@@ -168,16 +169,16 @@ export default function AdminDashboardPage() {
 
   return (
     <div className="min-h-screen bg-[#f8fafc]">
-      
+
       {/* Contenedor principal con padding y ancho máximo */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        
+
         {/* ========================================
             SECCIÓN: ESTADÍSTICAS DEL SISTEMA
             ======================================== */}
         <div className="mb-8">
           <h2 className="text-2xl font-bold text-[#0f172a] mb-6">Estadísticas del Sistema</h2>
-          
+
           {/* Grid responsive de tarjetas de estadísticas */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-6">
             {/* Total de usuarios */}
@@ -187,7 +188,7 @@ export default function AdminDashboardPage() {
               color="from-[#0f172a] to-[#334155]"
               icon="users"
             />
-            
+
             {/* Usuarios activos */}
             <StatsCard
               title="Usuarios Activos"
@@ -195,7 +196,7 @@ export default function AdminDashboardPage() {
               color="from-[#14b8a6] to-[#0d9488]"
               icon="check"
             />
-            
+
             {/* Inquilinos */}
             <StatsCard
               title="Inquilinos"
@@ -203,7 +204,7 @@ export default function AdminDashboardPage() {
               color="from-blue-500 to-blue-600"
               icon="key"
             />
-            
+
             {/* Propietarios */}
             <StatsCard
               title="Propietarios"
@@ -211,7 +212,7 @@ export default function AdminDashboardPage() {
               color="from-green-500 to-green-600"
               icon="home"
             />
-            
+
             {/* Agentes inmobiliarios */}
             <StatsCard
               title="Agentes"
@@ -219,7 +220,7 @@ export default function AdminDashboardPage() {
               color="from-purple-500 to-purple-600"
               icon="briefcase"
             />
-            
+
             {/* Gerencia */}
             <StatsCard
               title="Gerencia"
@@ -234,11 +235,11 @@ export default function AdminDashboardPage() {
             SECCIÓN: GESTIÓN DE USUARIOS
             ======================================== */}
         <div className="bg-white rounded-xl shadow-lg p-6">
-          
+
           {/* Header con título y botón crear */}
           <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
             <h2 className="text-2xl font-bold text-[#0f172a]">Gestión de Usuarios</h2>
-            
+
             {/* Botón para crear nuevo usuario */}
             <button
               onClick={handleCreateUser}

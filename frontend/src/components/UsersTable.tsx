@@ -3,13 +3,16 @@
 import { useState } from 'react';
 
 // Tipos
+import { UserRole } from '@/types/api';
+
+// Tipos
 interface User {
   id: string;
   email: string;
   password: string;
   name?: string;
   phone?: string;
-  role: 'tenant' | 'landlord' | 'agent' | 'owner';
+  role: UserRole;
   createdAt: string;
   status: 'active' | 'inactive';
 }
@@ -21,18 +24,20 @@ interface UsersTableProps {
   onToggleStatus: (userId: string) => void;
 }
 
-const roleLabels = {
-  tenant: 'Inquilino',
-  landlord: 'Propietario',
-  agent: 'Agente Inmobiliario',
-  owner: 'Gerencia'
+const roleLabels: Record<string, string> = {
+  [UserRole.Inquilino]: 'Inquilino',
+  [UserRole.Propietario]: 'Propietario',
+  [UserRole.Agente]: 'Agente Inmobiliario',
+  [UserRole.Gerencia]: 'Gerencia',
+  [UserRole.Administrador]: 'Administrador'
 };
 
-const roleColors = {
-  tenant: 'from-blue-500 to-blue-600',
-  landlord: 'from-green-500 to-green-600',
-  agent: 'from-purple-500 to-purple-600',
-  owner: 'from-amber-500 to-amber-600'
+const roleColors: Record<string, string> = {
+  [UserRole.Inquilino]: 'from-blue-500 to-blue-600',
+  [UserRole.Propietario]: 'from-green-500 to-green-600',
+  [UserRole.Agente]: 'from-purple-500 to-purple-600',
+  [UserRole.Gerencia]: 'from-amber-500 to-amber-600',
+  [UserRole.Administrador]: 'from-gray-700 to-gray-900'
 };
 
 export default function UsersTable({
@@ -73,10 +78,10 @@ export default function UsersTable({
             className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#14b8a6] focus:border-transparent"
           >
             <option value="all">Todos los roles</option>
-            <option value="tenant">Inquilino</option>
-            <option value="landlord">Propietario</option>
-            <option value="agent">Agente Inmobiliario</option>
-            <option value="owner">Gerencia</option>
+            <option value={UserRole.Inquilino}>Inquilino</option>
+            <option value={UserRole.Propietario}>Propietario</option>
+            <option value={UserRole.Agente}>Agente Inmobiliario</option>
+            <option value={UserRole.Gerencia}>Gerencia</option>
           </select>
         </div>
       </div>
@@ -109,11 +114,10 @@ export default function UsersTable({
                 <td className="px-6 py-4">
                   <button
                     onClick={() => onToggleStatus(user.id)}
-                    className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium ${
-                      user.status === 'active'
-                        ? 'bg-green-100 text-green-800'
-                        : 'bg-red-100 text-red-800'
-                    }`}
+                    className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium ${user.status === 'active'
+                      ? 'bg-green-100 text-green-800'
+                      : 'bg-red-100 text-red-800'
+                      }`}
                   >
                     {user.status === 'active' ? 'Activo' : 'Inactivo'}
                   </button>
