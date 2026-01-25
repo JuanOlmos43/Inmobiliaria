@@ -9,13 +9,14 @@ interface DashboardHeaderProps {
   userEmail?: string;
 }
 
-// Configuración unificada de roles: mapeo de rol de BD a título e icono
-const roleConfig: Record<UserRole, { title: string; icon: IconName }> = {
-  [UserRole.Administrador]: { title: 'Administrador', icon: 'settings' },
-  [UserRole.Gerencia]: { title: 'Gerencia', icon: 'star' },
-  [UserRole.Agente]: { title: 'Agente', icon: 'briefcase' },
-  [UserRole.Propietario]: { title: 'Propietario', icon: 'home' },
-  [UserRole.Inquilino]: { title: 'Inquilino', icon: 'key' }
+// Mapeo de roles a sus iconos correspondientes
+// La base de datos ya devuelve los nombres en español (Administrador, Gerencia, etc.)
+const roleIconMap: Record<UserRole, IconName> = {
+  [UserRole.Administrador]: 'settings',
+  [UserRole.Gerencia]: 'star',
+  [UserRole.Agente]: 'briefcase',
+  [UserRole.Propietario]: 'home',
+  [UserRole.Inquilino]: 'key'
 };
 
 export default function DashboardHeader({
@@ -23,8 +24,8 @@ export default function DashboardHeader({
   onLogout,
   userEmail
 }: DashboardHeaderProps) {
-  // Obtener título e icono basado en el rol, con fallback seguro
-  const { title, icon } = roleConfig[role] || { title: 'Usuario', icon: 'user' as IconName };
+  // Obtener icono basado en el rol, con fallback seguro
+  const icon = roleIconMap[role] || ('user' as IconName);
 
   return (
     <header className="bg-[#0f172a] shadow-lg sticky top-0 z-40">
@@ -34,7 +35,7 @@ export default function DashboardHeader({
           <div className="flex items-center gap-3">
             <Icon name={icon} className="w-8 h-8 text-[#14b8a6]" />
             <div>
-              <h1 className="text-2xl font-bold text-[#14b8a6]">{title}</h1>
+              <h1 className="text-2xl font-bold text-[#14b8a6]">{role}</h1>
               <p className="text-sm text-gray-300 font-mono">Bienvenido, {userEmail || ''}</p>
             </div>
           </div>

@@ -1,11 +1,12 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 import StatsCard from '@/components/UI/StatsCard';
 import UserFormModal from '@/components/UserFormModal';
 import UsersTable from '@/components/UsersTable';
-import { UserRole } from '@/types/api';
+import { usersService } from '@/lib/api/services/users';
+import { UserProfile, UserRole } from '@/types/api';
 
 // ============================================
 // TIPOS DE DATOS
@@ -45,10 +46,19 @@ export default function AdminDashboardPage() {
 
   /**
    * Lista de todos los usuarios del sistema
-   * Se almacena en localStorage como persistencia temporal
-   * TODO: Reemplazar con llamada a API cuando exista endpoint GET /users
+   * Se carga desde el backend mediante usersService.getUsers()
    */
   const [users, setUsers] = useState<User[]>([]);
+
+  /**
+   * Indica si se están cargando los usuarios desde el backend
+   */
+  const [isLoading, setIsLoading] = useState(true);
+
+  /**
+   * Almacena errores de carga de usuarios
+   */
+  const [error, setError] = useState<string | null>(null);
 
   /**
    * Controla la visibilidad del modal de crear/editar usuario
@@ -61,6 +71,50 @@ export default function AdminDashboardPage() {
    * - User: Modo editar (usuario existente)
    */
   const [editingUser, setEditingUser] = useState<User | null>(null);
+
+  // ============================================
+  // EFECTOS - CARGA DE DATOS
+  // ============================================
+
+  /**
+   * Carga la lista de usuarios desde el backend al montar el componente
+   */
+  useEffect(() => {
+    loadUsers();
+  }, []);
+
+  /**
+   * Función para cargar usuarios desde el backend
+   * Puede ser llamada para refrescar la lista
+   */
+  const loadUsers = async () => {
+    try {
+      setIsLoading(true);
+      setError(null);
+
+      // Obtiene todos los usuarios (sin filtro de rol)
+      const usersData = await usersService.getUsers();
+
+      // Mapea UserProfile del backend a User del frontend
+      const mappedUsers: User[] = usersData.map((user: UserProfile) => ({
+        id: user.id,
+        email: user.email,
+        password: '********', // No mostramos la contraseña real
+        name: user.name,
+        phone: user.phone || undefined, // Convierte null a undefined
+        role: user.role, // Los roles ya vienen en español del backend
+        createdAt: user.createdAt,
+        status: user.status === 'active' ? 'active' : 'inactive' // Mapea status del backend
+      }));
+
+      setUsers(mappedUsers);
+    } catch (err) {
+      console.error('Error al cargar usuarios:', err);
+      setError('Error al cargar usuarios. Por favor, intenta de nuevo.');
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   // ============================================
   // HANDLERS - GESTIÓN DE USUARIOS
@@ -87,20 +141,24 @@ export default function AdminDashboardPage() {
   /**
    * Elimina un usuario del sistema
    * Muestra confirmación antes de eliminar
-   * Actualiza tanto el estado como localStorage
    * 
    * @param userId - ID del usuario a eliminar
+   * TODO: Implementar endpoint DELETE /users/:id en el backend
    */
-  const handleDeleteUser = (userId: string) => {
+  const handleDeleteUser = async (userId: string) => {
     if (confirm('¿Estás seguro de que deseas eliminar este usuario?')) {
-      // Filtra el usuario a eliminar
-      const updatedUsers = users.filter(u => u.id !== userId);
+      try {
+        // TODO: Llamar a usersService.deleteUser(userId) cuando exista el endpoint
+        // Por ahora solo actualizamos el estado local
+        const updatedUsers = users.filter(u => u.id !== userId);
+        setUsers(updatedUsers);
 
-      // Actualiza el estado
-      setUsers(updatedUsers);
-
-      // Persiste en localStorage
-      localStorage.setItem('systemUsers', JSON.stringify(updatedUsers));
+        // Opcional: Refrescar desde el backend
+        // await loadUsers();
+      } catch (err) {
+        console.error('Error al eliminar usuario:', err);
+        alert('Error al eliminar usuario. Por favor, intenta de nuevo.');
+      }
     }
   };
 
@@ -109,41 +167,48 @@ export default function AdminDashboardPage() {
    * Útil para desactivar usuarios sin eliminarlos
    * 
    * @param userId - ID del usuario a cambiar estado
+   * TODO: Implementar endpoint PATCH /users/:id/status en el backend
    */
-  const handleToggleStatus = (userId: string) => {
-    const updatedUsers = users.map(u =>
-      u.id === userId
-        ? { ...u, status: u.status === 'active' ? 'inactive' as const : 'active' as const }
-        : u
-    );
-    setUsers(updatedUsers);
-    localStorage.setItem('systemUsers', JSON.stringify(updatedUsers));
+  const handleToggleStatus = async (userId: string) => {
+    try {
+      // TODO: Llamar a usersService.updateStatus(userId, newStatus) cuando exista el endpoint
+      // Por ahora solo actualizamos el estado local
+      const updatedUsers = users.map(u =>
+        u.id === userId
+          ? { ...u, status: u.status === 'active' ? 'inactive' as const : 'active' as const }
+          : u
+      );
+      setUsers(updatedUsers);
+    } catch (err) {
+      console.error('Error al cambiar estado:', err);
+      alert('Error al cambiar estado del usuario.');
+    }
   };
 
   /**
    * Callback ejecutado cuando se crea un nuevo usuario exitosamente
-   * Agrega el nuevo usuario a la lista y persiste en localStorage
-   * 
-   * @param newUser - Usuario recién creado desde el backend
+   * Refresca la lista completa desde el backend
    */
-  const handleUserCreated = (newUser: User) => {
-    const updatedUsers = [...users, newUser];
-    setUsers(updatedUsers);
-    localStorage.setItem('systemUsers', JSON.stringify(updatedUsers));
+  const handleUserCreated = async () => {
+    // Refrescar la lista completa desde el backend
+    await loadUsers();
   };
 
   /**
    * Callback ejecutado cuando se actualiza un usuario existente
-   * Reemplaza el usuario antiguo con los nuevos datos
    * 
    * @param updatedUser - Usuario con los datos actualizados
+   * TODO: Implementar endpoint PATCH /users/:id en el backend
    */
-  const handleUserUpdated = (updatedUser: User) => {
+  const handleUserUpdated = async (updatedUser: User) => {
+    // Por ahora actualizamos localmente
     const updatedUsers = users.map(u =>
       u.id === updatedUser.id ? updatedUser : u
     );
     setUsers(updatedUsers);
-    localStorage.setItem('systemUsers', JSON.stringify(updatedUsers));
+
+    // Opcional: Refrescar desde el backend
+    // await loadUsers();
   };
 
   // ============================================
@@ -253,13 +318,36 @@ export default function AdminDashboardPage() {
             </button>
           </div>
 
-          {/* Tabla de usuarios con filtros */}
-          <UsersTable
-            users={users}
-            onEditUser={handleEditUser}
-            onDeleteUser={handleDeleteUser}
-            onToggleStatus={handleToggleStatus}
-          />
+          {/* Estado de carga */}
+          {isLoading && (
+            <div className="flex justify-center items-center py-12">
+              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#14b8a6]"></div>
+              <p className="ml-4 text-gray-600">Cargando usuarios...</p>
+            </div>
+          )}
+
+          {/* Estado de error */}
+          {error && !isLoading && (
+            <div className="bg-red-50 border border-red-200 rounded-lg p-6 text-center">
+              <p className="text-red-600 mb-4">{error}</p>
+              <button
+                onClick={loadUsers}
+                className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
+              >
+                Reintentar
+              </button>
+            </div>
+          )}
+
+          {/* Tabla de usuarios (solo si no hay error ni está cargando) */}
+          {!isLoading && !error && (
+            <UsersTable
+              users={users}
+              onEditUser={handleEditUser}
+              onDeleteUser={handleDeleteUser}
+              onToggleStatus={handleToggleStatus}
+            />
+          )}
         </div>
       </main>
 

@@ -190,7 +190,7 @@ export default function UserFormModal({
           >
             <option value={UserRole.Inquilino}>Inquilino</option>
             <option value={UserRole.Propietario}>Propietario</option>
-            <option value={UserRole.Agente}>Agente Inmobiliario</option>
+            <option value={UserRole.Agente}>Agente</option>
             <option value={UserRole.Gerencia}>Gerencia</option>
           </FormSelect>
 

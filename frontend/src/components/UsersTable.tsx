@@ -27,7 +27,7 @@ interface UsersTableProps {
 const roleLabels: Record<string, string> = {
   [UserRole.Inquilino]: 'Inquilino',
   [UserRole.Propietario]: 'Propietario',
-  [UserRole.Agente]: 'Agente Inmobiliario',
+  [UserRole.Agente]: 'Agente',
   [UserRole.Gerencia]: 'Gerencia',
   [UserRole.Administrador]: 'Administrador'
 };
@@ -80,7 +80,7 @@ export default function UsersTable({
             <option value="all">Todos los roles</option>
             <option value={UserRole.Inquilino}>Inquilino</option>
             <option value={UserRole.Propietario}>Propietario</option>
-            <option value={UserRole.Agente}>Agente Inmobiliario</option>
+            <option value={UserRole.Agente}>Agente</option>
             <option value={UserRole.Gerencia}>Gerencia</option>
           </select>
         </div>
@@ -92,6 +92,8 @@ export default function UsersTable({
           <thead className="bg-[#0f172a] text-white">
             <tr>
               <th className="px-6 py-3 text-left text-sm font-semibold">Email</th>
+              <th className="px-6 py-3 text-left text-sm font-semibold">Nombre</th>
+              <th className="px-6 py-3 text-left text-sm font-semibold">Teléfono</th>
               <th className="px-6 py-3 text-left text-sm font-semibold">Contraseña</th>
               <th className="px-6 py-3 text-left text-sm font-semibold">Rol</th>
               <th className="px-6 py-3 text-left text-sm font-semibold">Estado</th>
@@ -103,6 +105,12 @@ export default function UsersTable({
             {filteredUsers.map((user) => (
               <tr key={user.id} className="hover:bg-gray-50 transition-colors">
                 <td className="px-6 py-4 text-sm text-gray-900 font-mono">{user.email}</td>
+                <td className="px-6 py-4 text-sm text-gray-900">
+                  {user.name || <span className="text-gray-400 italic">Sin nombre</span>}
+                </td>
+                <td className="px-6 py-4 text-sm text-gray-600">
+                  {user.phone || <span className="text-gray-400 italic">Sin teléfono</span>}
+                </td>
                 <td className="px-6 py-4 text-sm text-gray-600 font-mono">
                   <span className="bg-gray-100 px-2 py-1 rounded">{user.password}</span>
                 </td>
