@@ -10,4 +10,10 @@ export const API_ENDPOINTS = {
     REFRESH: '/auth/refresh',
     LOGOUT: '/auth/logout',
     REGISTER: '/auth/register',
+
+    // Users endpoints
+    USERS: '/users',
+
+    // Locations endpoints
+    PROVINCIAS: '/ubicaciones/provincias',
 } as const
