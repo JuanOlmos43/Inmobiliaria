@@ -1,3 +1,4 @@
+// src/middleware.ts
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import {
@@ -6,120 +7,153 @@ import {
   getDefaultRouteForRole,
 } from "@/lib/route-config";
 
+/**
+ * ✅ Helper: aplica cookies del backend (Set-Cookie) a la respuesta de Next
+ * - Soporta múltiples Set-Cookie (cuando el runtime expone getSetCookie())
+ * - Fallback: usa el string único si solo viene uno
+ */
+function applySetCookies(from: Response, to: NextResponse) {
+  // En algunos runtimes (Node/Undici), existe getSetCookie()
+  // En Edge puede no estar disponible.
+  const anyHeaders = from.headers as any;
+
+  if (typeof anyHeaders.getSetCookie === "function") {
+    const cookies: string[] = anyHeaders.getSetCookie();
+    for (const c of cookies) {
+      to.headers.append("set-cookie", c);
+    }
+    return;
+  }
+
+  const setCookie = from.headers.get("set-cookie");
+  if (setCookie) {
+    // Si viene un solo header (una cookie o string combinado), lo mandamos tal cual.
+    // IMPORTANTE: no hacemos split(",") porque puede romper Expires=Wed, ...
+    to.headers.append("set-cookie", setCookie);
+  }
+}
+
+/**
+ * ✅ Middleware principal
+ * Arquitectura: session-proxy
+ * - Usa /auth/me para validar
+ * - Si /auth/me da 401 => intenta /auth/refresh
+ * - Propaga Set-Cookie del refresh al navegador
+ *
+ * 📌 Cambio clave vs tu versión:
+ * - NO intenta reconstruir "Cookie" desde "Set-Cookie" (evitamos split(','))
+ * - Después de refresh, NO reintenta /auth/me (mucho más robusto)
+ *   => Si necesitás user luego del refresh, lo ideal es que /auth/refresh devuelva { user }
+ */
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
-  // Helper para mandar requests al backend con cookies
   const backendUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
   const cookieHeader = request.headers.get("cookie") ?? "";
 
   const fetchWithCookies = (url: string, init?: RequestInit) =>
     fetch(url, {
       ...init,
+      cache: "no-store",
       headers: {
         ...(init?.headers || {}),
         cookie: cookieHeader,
       },
     });
 
-  // Función para validar sesión (usada tanto en rutas protegidas como en login)
-  const validateSession = async () => {
+  /**
+   * ✅ validateSession:
+   * Retorna:
+   * - null: no hay sesión válida
+   * - { user, refreshResponse? }: sesión válida, y si refrescó, devuelve response para aplicar cookies
+   */
+  const validateSession = async (): Promise<
+    | null
+    | {
+        user: any;
+        refreshResponse?: Response;
+      }
+  > => {
     try {
-      // 3) Intentar obtener el usuario con /auth/me usando cookies originales
-      let meResponse = await fetchWithCookies(`${backendUrl}/auth/me`, {
+      // 1) Intentar sesión actual
+      const meResponse = await fetchWithCookies(`${backendUrl}/auth/me`, {
         method: "GET",
       });
 
-      let newCookies: string | null = null;
-      let refreshResponse: Response | null = null;
-
-      // 4) Si el access token expiró (401), intentar refresh
-      if (meResponse.status === 401) {
-        refreshResponse = await fetchWithCookies(`${backendUrl}/auth/refresh`, {
-          method: "POST",
-        });
-
-        if (!refreshResponse.ok) {
-          return null; // Refresh falló, sesión inválida
-        }
-
-        // Extraer las nuevas cookies del response del refresh
-        // Nota: En Edge/Node headers.get('set-cookie') puede combinar múltiples cookies con comas,
-        // o usar getSetCookie() si está disponible.
-        // Para simplificar y asegurar que funcione, asumiremos que recibimos access_token y refresh_token.
-        // Fetch API en Next Middleware maneja cookies un poco manual.
-        const setCookieHeader = refreshResponse.headers.get("set-cookie");
-
-        if (setCookieHeader) {
-          newCookies = setCookieHeader;
-
-          // Reintentar /auth/me CON LAS NUEVAS COOKIES
-          // Necesitamos pasar el header 'cookie' actualizado manualmente.
-          // set-cookie viene como: "access_token=...; Path=/, refresh_token=...; Path=/"
-          // Request cookie espera: "access_token=...; refresh_token=..."
-          // Hacemos una conversión simple (aunque imperfecta, suele funcionar para este caso)
-          const cookieForRequest = setCookieHeader
-            .split(",")
-            .map((c) => c.split(";")[0])
-            .join("; ");
-
-          meResponse = await fetch(`${backendUrl}/auth/me`, {
-            method: "GET",
-            headers: {
-              cookie: cookieForRequest,
-            },
-          });
-        }
+      if (meResponse.ok) {
+        const user = await meResponse.json();
+        return { user };
       }
 
-      if (!meResponse.ok) {
+      // 2) Si el access token expiró, intentar refresh
+      if (meResponse.status !== 401) {
         return null;
       }
 
-      const user = await meResponse.json();
+      const refreshResponse = await fetchWithCookies(`${backendUrl}/auth/refresh`, {
+        method: "POST",
+      });
 
-      // Devolvemos el usuario y, si hubo refresh, las cookies nuevas para setear en el navegador
-      return { user, newCookiesResponse: refreshResponse };
+      if (!refreshResponse.ok) {
+        return null;
+      }
+
+      /**
+       * ✅ CAMBIO CLAVE:
+       * No intentamos reconstruir Cookie desde Set-Cookie para reintentar /auth/me.
+       *
+       * Lo más robusto es que tu endpoint /auth/refresh devuelva el user:
+       *   return { user: {...} }
+       *
+       * Si hoy tu /auth/refresh no devuelve user, tenés dos opciones:
+       * - (Recomendado) cambiar Nest para que lo devuelva
+       * - (Fallback) reintentar /auth/me pero SIN parse manual (difícil en Edge)
+       */
+      let data: any = null;
+      try {
+        data = await refreshResponse.clone().json();
+      } catch {
+        // si /auth/refresh no devuelve JSON, data queda null
+      }
+
+      if (data?.user) {
+        return { user: data.user, refreshResponse };
+      }
+
+      // Si tu refresh todavía NO devuelve user, al menos consideramos sesión válida
+      // y dejamos que la navegación continúe, propagando cookies nuevas.
+      // (Podés ajustar esto si necesitás sí o sí el rol acá)
+      return { user: { role: "user" }, refreshResponse };
     } catch (error) {
       console.error("[Middleware] Error validando sesión:", error);
       return null;
     }
   };
 
-  // 1) Logica para rutas públicas (incluyendo Login)
+  // 1) Rutas públicas
   if (isPublicRoute(pathname)) {
-    // Si es Login y tiene cookie, verificar si ya está autenticado para redirigir
+    // Si es login y ya hay cookies, validar y redirigir
     if (
       pathname === "/login" &&
-      (request.cookies.has("access_token") ||
-        request.cookies.has("refresh_token"))
+      (request.cookies.has("access_token") || request.cookies.has("refresh_token"))
     ) {
       const session = await validateSession();
-      if (session) {
-        // Usuario autenticado intentando entrar a login -> Redirigir al dashboard (o home de su rol)
-        const defaultRoute = getDefaultRouteForRole(session.user.role);
-        const response = NextResponse.redirect(
-          new URL(defaultRoute, request.url),
-        );
 
-        // Si hubo refresh, propagar cookies al navegador
-        if (session.newCookiesResponse) {
-          const setCookieHeader =
-            session.newCookiesResponse.headers.get("set-cookie");
-          if (setCookieHeader) {
-            // Nota: respuesta simple copiando el header tal cual.
-            // Next.js maneja esto mejor con cookies.set() pero set-cookie raw funciona en headers.
-            response.headers.set("set-cookie", setCookieHeader);
-          }
+      if (session) {
+        const defaultRoute = getDefaultRouteForRole(session.user.role);
+        const response = NextResponse.redirect(new URL(defaultRoute, request.url));
+
+        if (session.refreshResponse) {
+          applySetCookies(session.refreshResponse, response);
         }
         return response;
       }
-      // Si la sesión no es válida, dejamos pasar al login (NextResponse.next())
     }
+
     return NextResponse.next();
   }
 
-  // 2) Rutas Protegidas - Verificar si existe access_token o refresh_token cookie
+  // 2) Rutas protegidas - validar presencia de cookies
   const accessToken = request.cookies.get("access_token")?.value;
   const refreshToken = request.cookies.get("refresh_token")?.value;
 
@@ -129,11 +163,10 @@ export async function middleware(request: NextRequest) {
     return NextResponse.redirect(loginUrl);
   }
 
-  // 3) Validar sesión en rutas protegidas
+  // 3) Validar sesión real
   const session = await validateSession();
 
   if (!session) {
-    // Token inválido o expirado y no refrescable
     const loginUrl = new URL("/login", request.url);
     loginUrl.searchParams.set("redirect", pathname);
     return NextResponse.redirect(loginUrl);
@@ -141,29 +174,23 @@ export async function middleware(request: NextRequest) {
 
   const { user } = session;
 
-  // 5) Autorización por rol y ruta
-  // 5) Autorización por rol y ruta
+  // 4) Autorización por rol
   if (!canAccessRoute(user.role, pathname)) {
     const defaultRoute = getDefaultRouteForRole(user.role);
     const response = NextResponse.redirect(new URL(defaultRoute, request.url));
-    if (session.newCookiesResponse) {
-      const setCookieHeader =
-        session.newCookiesResponse.headers.get("set-cookie");
-      if (setCookieHeader) {
-        response.headers.set("set-cookie", setCookieHeader);
-      }
+
+    if (session.refreshResponse) {
+      applySetCookies(session.refreshResponse, response);
     }
     return response;
   }
 
   const response = NextResponse.next();
-  if (session.newCookiesResponse) {
-    const setCookieHeader =
-      session.newCookiesResponse.headers.get("set-cookie");
-    if (setCookieHeader) {
-      response.headers.set("set-cookie", setCookieHeader);
-    }
+
+  if (session.refreshResponse) {
+    applySetCookies(session.refreshResponse, response);
   }
+
   return response;
 }
 
