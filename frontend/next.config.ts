@@ -9,6 +9,10 @@ const nextConfig: NextConfig = {
         hostname: "via.placeholder.com",
       },
       // Agregar aquí dominios externos cuando sea necesario
+      {
+        protocol: "https",
+        hostname: "ohxnsqyjcocbaeyqybpn.supabase.co",
+      },
     ],
   },
 };
