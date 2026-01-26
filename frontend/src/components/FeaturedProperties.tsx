@@ -1,7 +1,8 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import UniversalPropertyCard from "./UniversalPropertyCard";
+import Link from "next/link";
+import BasePropertyCard from "@/components/BasePropertyCard";
 import { featuredProperties } from "@/data/properties";
 
 export default function FeaturedProperties() {
@@ -105,23 +106,22 @@ export default function FeaturedProperties() {
                   key={property.id}
                   className="flex-shrink-0 w-full lg:w-[calc(33.333%-1rem)]"
                 >
-                  <UniversalPropertyCard
-                    property={{
-                      id: property.id,
-                      title: property.title,
-                      price: property.price,
-                      currency: property.currency,
-                      location: property.location,
-                      bedrooms: property.bedrooms,
-                      bathrooms: property.bathrooms,
-                      area: property.area,
-                      type: property.type === "venta" ? "Venta" : "Alquiler",
-                      image: property.image,
-                    }}
-                    href={`/propiedades/${property.id}`}
-                    showTypeBadge={true}
-                    showPropertyDetails={true}
-                  />
+                  <Link href={`/propiedades/${property.id}`} className="block group">
+                    <BasePropertyCard
+                      title={property.title}
+                      price={property.price}
+                      currency={property.currency}
+                      location={property.location}
+                      bedrooms={property.bedrooms}
+                      bathrooms={property.bathrooms}
+                      area={property.area}
+                      type={property.type === "venta" ? "Venta" : "Alquiler"}
+                      image={property.image}
+                      showTypeBadge={true}
+                      showDetails={true}
+                      className="cursor-pointer"
+                    />
+                  </Link>
                 </div>
               ))}
             </div>
@@ -134,11 +134,10 @@ export default function FeaturedProperties() {
             <button
               key={index}
               onClick={() => setCurrentIndex(index)}
-              className={`w-3 h-3 rounded-full transition-all duration-300 ${
-                index === currentIndex
+              className={`w-3 h-3 rounded-full transition-all duration-300 ${index === currentIndex
                   ? "bg-gradient-to-r from-[#14b8a6] to-[#0d9488] w-8"
                   : "bg-gray-300"
-              }`}
+                }`}
               aria-label={`Ir a propiedad ${index + 1}`}
             />
           ))}

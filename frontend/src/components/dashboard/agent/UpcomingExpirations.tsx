@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import Icon from "@/components/UI/Icon";
-import UniversalPropertyCard from "@/components/UniversalPropertyCard";
+import RentalPropertyCard from "@/components/RentalPropertyCard";
 
 // Tipos
 interface RentalContract {
@@ -100,7 +100,7 @@ export default function UpcomingExpirations() {
           </h3>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {expiringContracts.map((contract) => (
-              <UniversalPropertyCard
+              <RentalPropertyCard
                 key={contract.id}
                 property={{
                   id: contract.id,
@@ -148,7 +148,7 @@ export default function UpcomingExpirations() {
           </h3>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {adjustmentContracts.map((contract) => (
-              <UniversalPropertyCard
+              <RentalPropertyCard
                 key={contract.id}
                 property={{
                   id: contract.id,

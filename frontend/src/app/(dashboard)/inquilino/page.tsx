@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 
-import UniversalPropertyCard from "@/components/UniversalPropertyCard";
+import RentalPropertyCard from "@/components/RentalPropertyCard";
 import { useAuth } from "@/hooks/useAuth";
 
 // Tipos
@@ -249,7 +249,7 @@ function StatsCard({
   );
 }
 
-// Rental Card Component - Using UniversalPropertyCard with integrated modal
+// Rental Card Component - Using RentalPropertyCard with integrated modal
 function RentalCardWrapper({
   rental,
   daysUntilExpiration,
@@ -260,7 +260,7 @@ function RentalCardWrapper({
   daysUntilAdjustment: number;
 }) {
   return (
-    <UniversalPropertyCard
+    <RentalPropertyCard
       property={{
         id: rental.id,
         title: rental.propertyName,

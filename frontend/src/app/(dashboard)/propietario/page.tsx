@@ -2,8 +2,8 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-
-import UniversalPropertyCard from "@/components/UniversalPropertyCard";
+import RentalPropertyCard from "@/components/RentalPropertyCard";
+import BasePropertyCard from "@/components/BasePropertyCard";
 
 // Tipos
 interface Rental {
@@ -77,21 +77,19 @@ export default function LandlordDashboardPage() {
             <nav className="-mb-px flex space-x-8">
               <button
                 onClick={() => setActiveTab("rentals")}
-                className={`${
-                  activeTab === "rentals"
+                className={`${activeTab === "rentals"
                     ? "border-[#14b8a6] text-[#14b8a6]"
                     : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
-                } whitespace-nowrap py-5 px-2 border-b-2 font-semibold text-xl transition-colors`}
+                  } whitespace-nowrap py-5 px-2 border-b-2 font-semibold text-xl transition-colors`}
               >
                 Mis Rentas
               </button>
               <button
                 onClick={() => setActiveTab("properties")}
-                className={`${
-                  activeTab === "properties"
+                className={`${activeTab === "properties"
                     ? "border-[#14b8a6] text-[#14b8a6]"
                     : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
-                } whitespace-nowrap py-5 px-2 border-b-2 font-semibold text-xl transition-colors`}
+                  } whitespace-nowrap py-5 px-2 border-b-2 font-semibold text-xl transition-colors`}
               >
                 Mis Propiedades Publicadas
               </button>
@@ -180,7 +178,7 @@ export default function LandlordDashboardPage() {
   );
 }
 
-// Rental Card Component - Using UniversalPropertyCard with integrated modal
+// Rental Card Component - Using RentalPropertyCard with integrated modal
 function RentalCardWrapper({
   rental,
   daysUntilExpiration,
@@ -191,7 +189,7 @@ function RentalCardWrapper({
   daysUntilAdjustment: number;
 }) {
   return (
-    <UniversalPropertyCard
+    <RentalPropertyCard
       property={{
         id: rental.id,
         title: rental.propertyName,
@@ -225,11 +223,19 @@ function RentalCardWrapper({
 // Property Card Component - Using shared component
 function PropertyCardWrapper({ property }: { property: Property }) {
   return (
-    <UniversalPropertyCard
-      property={property}
+    <BasePropertyCard
+      title={property.title}
+      price={property.price}
+      location={property.location}
+      type={property.type}
+      bedrooms={property.bedrooms}
+      bathrooms={property.bathrooms}
+      area={property.area}
+      image={property.image}
+      status={property.status}
       showStatusBadge={true}
       showTypeBadge={true}
-      showPropertyDetails={true}
+      showDetails={true}
     />
   );
 }

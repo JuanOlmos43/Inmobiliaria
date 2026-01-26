@@ -2,7 +2,8 @@
 
 import { useState, useEffect, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
-import UniversalPropertyCard from "@/components/UniversalPropertyCard";
+import Link from "next/link";
+import BasePropertyCard from "@/components/BasePropertyCard";
 import PropertyFilters, {
   PropertyFiltersState,
 } from "@/components/PropertyFilters";
@@ -160,24 +161,26 @@ function PropiedadesContent() {
               <>
                 <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 mb-8">
                   {currentProperties.map((property) => (
-                    <UniversalPropertyCard
+                    <Link
                       key={property.id}
-                      property={{
-                        id: property.id,
-                        title: property.title,
-                        price: property.price,
-                        currency: property.currency,
-                        location: property.location,
-                        bedrooms: property.bedrooms,
-                        bathrooms: property.bathrooms,
-                        area: property.area,
-                        type: property.type === "venta" ? "Venta" : "Alquiler",
-                        image: property.image,
-                      }}
                       href={`/propiedades/${property.id}`}
-                      showTypeBadge={true}
-                      showPropertyDetails={true}
-                    />
+                      className="block group"
+                    >
+                      <BasePropertyCard
+                        title={property.title}
+                        price={property.price}
+                        currency={property.currency}
+                        location={property.location}
+                        bedrooms={property.bedrooms}
+                        bathrooms={property.bathrooms}
+                        area={property.area}
+                        type={property.type === "venta" ? "Venta" : "Alquiler"}
+                        image={property.image}
+                        showTypeBadge={true}
+                        showDetails={true}
+                        className="cursor-pointer"
+                      />
+                    </Link>
                   ))}
                 </div>
 
