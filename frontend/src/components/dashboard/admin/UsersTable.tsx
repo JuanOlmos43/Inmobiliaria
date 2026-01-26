@@ -1,0 +1,365 @@
+import { useState } from "react";
+// Tipos
+import { UserRole } from "@/types/api";
+
+// Tipos
+interface User {
+  id: string;
+  email: string;
+  name?: string;
+  phone?: string;
+  role: UserRole;
+  createdAt: string;
+  status: "active" | "inactive";
+}
+
+interface UsersTableProps {
+  users: User[];
+  onSaveEdit: (userId: string, data: Partial<User>) => Promise<void>;
+  onResetPassword: (userId: string) => void;
+}
+
+const roleLabels: Record<string, string> = {
+  [UserRole.Inquilino]: "Inquilino",
+  [UserRole.Propietario]: "Propietario",
+  [UserRole.Agente]: "Agente",
+  [UserRole.Gerencia]: "Gerencia",
+  [UserRole.Administrador]: "Administrador",
+};
+
+const roleColors: Record<string, string> = {
+  [UserRole.Inquilino]: "from-blue-500 to-blue-600",
+  [UserRole.Propietario]: "from-green-500 to-green-600",
+  [UserRole.Agente]: "from-purple-500 to-purple-600",
+  [UserRole.Gerencia]: "from-amber-500 to-amber-600",
+  [UserRole.Administrador]: "from-gray-700 to-gray-900",
+};
+
+export default function UsersTable({
+  users,
+  onSaveEdit,
+  onResetPassword,
+}: UsersTableProps) {
+  // Estado para manejar la edición en línea
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const [editFormData, setEditFormData] = useState<Partial<User>>({});
+  const [isSaving, setIsSaving] = useState(false);
+
+  /**
+   * Entra en modo de edición para una fila
+   */
+  const startEditing = (user: User) => {
+    setEditingId(user.id);
+    setEditFormData({
+      email: user.email,
+      name: user.name || "",
+      phone: user.phone || "",
+      role: user.role,
+      status: user.status,
+    });
+  };
+
+  /**
+   * Cancela la edición actual
+   */
+  const handleCancelEdit = () => {
+    setEditingId(null);
+    setEditFormData({});
+  };
+
+  /**
+   * Guarda los cambios realizados en línea
+   */
+  const saveEditing = async () => {
+    if (!editingId) return;
+    
+    try {
+      setIsSaving(true);
+      await onSaveEdit(editingId, editFormData);
+      setEditingId(null);
+      setEditFormData({});
+    } catch (error) {
+      console.error("Error al guardar edición en línea:", error);
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
+  return (
+    <div>
+
+
+      {/* Tabla de usuarios */}
+      <div className="overflow-x-auto">
+        <table className="w-full">
+          <thead className="bg-[#0f172a] text-white">
+            <tr>
+              <th className="px-6 py-3 text-left text-sm font-semibold">
+                Email
+              </th>
+              <th className="px-6 py-3 text-left text-sm font-semibold">
+                Nombre
+              </th>
+              <th className="px-6 py-3 text-left text-sm font-semibold">
+                Teléfono
+              </th>
+              <th className="px-6 py-3 text-left text-sm font-semibold">Rol</th>
+              <th className="px-6 py-3 text-left text-sm font-semibold">
+                Estado
+              </th>
+              <th className="px-6 py-3 text-left text-sm font-semibold">
+                Fecha creación
+              </th>
+              <th className="px-6 py-3 text-center text-sm font-semibold">
+                Acciones
+              </th>
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-gray-200">
+            {users.map((user) => {
+              const isEditing = editingId === user.id;
+
+              return (
+                <tr
+                  key={user.id}
+                  className={`transition-all duration-300 ${
+                    isEditing 
+                      ? "bg-[#14b8a6]/5 shadow-md relative z-10 border-l-4 border-[#14b8a6]" 
+                      : "hover:bg-gray-50 border-l-4 border-transparent"
+                  }`}
+                >
+                  {/* Celda Email */}
+                  <td className="px-6 py-4 text-sm text-gray-900 font-mono">
+                    {isEditing ? (
+                      <input
+                        type="email"
+                        value={editFormData.email}
+                        onChange={(e) =>
+                          setEditFormData({ ...editFormData, email: e.target.value })
+                        }
+                        className="w-full px-3 py-1.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#14b8a6] focus:border-transparent transition-all text-sm"
+                      />
+                    ) : (
+                      user.email
+                    )}
+                  </td>
+
+                  {/* Celda Nombre */}
+                  <td className="px-6 py-4 text-sm text-gray-900">
+                    {isEditing ? (
+                      <input
+                        type="text"
+                        value={editFormData.name}
+                        onChange={(e) =>
+                          setEditFormData({ ...editFormData, name: e.target.value })
+                        }
+                        className="w-full px-3 py-1.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#14b8a6] focus:border-transparent transition-all text-sm"
+                      />
+                    ) : (
+                      user.name || (
+                        <span className="text-gray-400 italic">Sin nombre</span>
+                      )
+                    )}
+                  </td>
+
+                  {/* Celda Teléfono */}
+                  <td className="px-6 py-4 text-sm text-gray-600">
+                    {isEditing ? (
+                      <input
+                        type="tel"
+                        value={editFormData.phone}
+                        onChange={(e) =>
+                          setEditFormData({ ...editFormData, phone: e.target.value })
+                        }
+                        className="w-full px-3 py-1.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#14b8a6] focus:border-transparent transition-all text-sm"
+                      />
+                    ) : (
+                      user.phone || (
+                        <span className="text-gray-400 italic">Sin teléfono</span>
+                      )
+                    )}
+                  </td>
+
+                  {/* Celda Rol */}
+                  <td className="px-6 py-4">
+                    {isEditing ? (
+                      <select
+                        value={editFormData.role}
+                        onChange={(e) =>
+                          setEditFormData({
+                            ...editFormData,
+                            role: e.target.value as UserRole,
+                          })
+                        }
+                        className="w-full px-3 py-1.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#14b8a6] focus:border-transparent transition-all text-sm bg-white"
+                      >
+                        <option value={UserRole.Inquilino}>Inquilino</option>
+                        <option value={UserRole.Propietario}>Propietario</option>
+                        <option value={UserRole.Agente}>Agente</option>
+                        <option value={UserRole.Gerencia}>Gerencia</option>
+                        <option value={UserRole.Administrador}>Administrador</option>
+                      </select>
+                    ) : (
+                      <span
+                        className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium text-white bg-linear-to-r ${roleColors[user.role]}`}
+                      >
+                        {roleLabels[user.role]}
+                      </span>
+                    )}
+                  </td>
+
+                  {/* Celda Estado */}
+                  <td className="px-6 py-4">
+                    {isEditing ? (
+                      <div className="flex items-center">
+                        <button
+                          type="button"
+                          onClick={() => 
+                            setEditFormData({
+                              ...editFormData,
+                              status: editFormData.status === "active" ? "inactive" : "active"
+                            })
+                          }
+                          className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-[#14b8a6] focus:ring-offset-2 ${
+                            editFormData.status === "active" ? "bg-green-500" : "bg-gray-300"
+                          }`}
+                        >
+                          <span
+                            className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform duration-200 ${
+                              editFormData.status === "active" ? "translate-x-6" : "translate-x-1"
+                            }`}
+                          />
+                        </button>
+                        <span className={`ml-3 text-xs font-medium ${
+                          editFormData.status === "active" ? "text-green-700" : "text-gray-500"
+                        }`}>
+                          {editFormData.status === "active" ? "Activo" : "Inactivo"}
+                        </span>
+                      </div>
+                    ) : (
+                      <span
+                        className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium ${
+                          user.status === "active"
+                            ? "bg-green-100 text-green-800"
+                            : "bg-red-100 text-red-800"
+                        }`}
+                      >
+                        {user.status === "active" ? "Activo" : "Inactivo"}
+                      </span>
+                    )}
+                  </td>
+
+                  {/* Celda Fecha */}
+                  <td className="px-6 py-4 text-sm text-gray-600">
+                    {new Date(user.createdAt).toLocaleDateString("es-ES")}
+                  </td>
+
+                  {/* Celda Acciones */}
+                  <td className="px-6 py-4">
+                    <div className="flex items-center justify-center gap-2">
+                      {isEditing ? (
+                        <>
+                          <button
+                            onClick={saveEditing}
+                            disabled={isSaving}
+                            className="p-1.5 text-green-600 hover:bg-green-50 rounded-lg transition-colors border border-green-200"
+                            title="Guardar"
+                          >
+                            {isSaving ? (
+                              <div className="w-5 h-5 border-2 border-green-600 border-t-transparent rounded-full animate-spin" />
+                            ) : (
+                              <svg
+                                className="w-5 h-5"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                                stroke="currentColor"
+                              >
+                                <path
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                  strokeWidth={2}
+                                  d="M5 13l4 4L19 7"
+                                />
+                              </svg>
+                            )}
+                          </button>
+
+                          <button
+                            onClick={handleCancelEdit}
+                            disabled={isSaving}
+                            className="p-1.5 text-gray-500 hover:bg-gray-100 rounded-lg transition-colors border border-gray-200"
+                            title="Cancelar"
+                          >
+                            <svg
+                              className="w-5 h-5"
+                              fill="none"
+                              viewBox="0 0 24 24"
+                              stroke="currentColor"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth={2}
+                                d="M6 18L18 6M6 6l12 12"
+                              />
+                            </svg>
+                          </button>
+                        </>
+                      ) : (
+                        <div className="flex gap-1">
+                          <button
+                            onClick={() => startEditing(user)}
+                            className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+                            title="Editar"
+                          >
+                            <svg
+                              className="w-5 h-5"
+                              fill="none"
+                              viewBox="0 0 24 24"
+                              stroke="currentColor"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth={2}
+                                d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
+                              />
+                            </svg>
+                          </button>
+                          <button
+                            onClick={() => onResetPassword(user.id)}
+                            className="p-2 text-amber-600 hover:bg-amber-50 rounded-lg transition-colors"
+                            title="Restaurar contraseña (admin123)"
+                          >
+                            <svg
+                              className="w-5 h-5"
+                              fill="none"
+                              viewBox="0 0 24 24"
+                              stroke="currentColor"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth={2}
+                                d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z"
+                              />
+                            </svg>
+                          </button>
+                        </div>
+                      )}
+                    </div>
+                  </td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+        {users.length === 0 && (
+          <div className="text-center py-12 text-gray-500">
+            No se encontraron usuarios
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}

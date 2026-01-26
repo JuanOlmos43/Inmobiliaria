@@ -54,13 +54,9 @@ export default function Modal({
   };
 
   return (
-    <div
-      className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4"
-      onClick={!staticBackdrop ? onClose : undefined} // Cerrar al hacer clic en el fondo solo si no es estático
-    >
+    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
       <div
         className={`bg-white rounded-2xl shadow-2xl ${maxWidthClasses[maxWidth]} w-full max-h-[90vh] flex flex-col animate-scale-in`}
-        onClick={(e) => e.stopPropagation()} // Prevenir cierre al hacer clic dentro del modal
       >
         <div className="flex justify-between items-start p-6 border-b border-gray-100 flex-shrink-0">
           <h3 className="text-2xl font-bold text-[#0f172a]">{title}</h3>

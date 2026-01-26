@@ -30,12 +30,33 @@ export interface LoginResponse {
 export interface UserProfile {
   id: string;
   email: string;
+  password?: string; // Agregado para permitir actualizaciones (reset)
   name: string;
   phone: string | null;
   role: UserRole;
   status: UserStatus;
   createdAt: string;
   updatedAt: string;
+}
+
+export interface UserStats {
+  summary: {
+    total: number;
+    active: number;
+    inactive: number;
+    suspended: number;
+  };
+  growth: {
+    newThisMonth: number;
+    registrationsToday: number;
+  };
+  roles: {
+    administrador: number;
+    agente: number;
+    gerencia: number;
+    inquilino: number;
+    propietario: number;
+  };
 }
 
 // ============================================

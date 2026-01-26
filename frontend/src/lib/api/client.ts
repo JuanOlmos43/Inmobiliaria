@@ -82,7 +82,10 @@ export class ApiClient {
     retryRequest?: () => Promise<Response>,
     skipRefresh?: boolean,
   ): Promise<T> {
-    if (response.ok) return response.json();
+    if (response.ok) {
+      if (response.status === 204) return null as T;
+      return response.json();
+    }
 
     if (!skipRefresh && response.status === 401 && retryRequest) {
       const refreshed = await this.refreshAccessToken();

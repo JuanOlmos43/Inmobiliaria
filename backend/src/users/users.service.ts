@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
-import { User, UserRole, UserStatus } from '@prisma/client';
+import { User, UserRole, UserStatus, Prisma } from '@prisma/client';
 import * as bcrypt from 'bcrypt';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
@@ -9,7 +9,7 @@ export { CreateUserDto, UpdateUserDto };
 
 @Injectable()
 export class UsersService {
-  constructor(private prisma: PrismaService) { }
+  constructor(private prisma: PrismaService) {}
 
   async findByEmail(email: string): Promise<User | null> {
     return this.prisma.user.findUnique({
@@ -37,9 +37,9 @@ export class UsersService {
   }
 
   async findAll(role?: UserRole, email?: string) {
-    const where: any = {};
+    const where: Prisma.UserWhereInput = {};
     if (role) where.role = role;
-    if (email) where.email = email;
+    if (email) where.email = { startsWith: email, mode: 'insensitive' };
 
     return this.prisma.user.findMany({
       where,
@@ -113,7 +113,15 @@ export class UsersService {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
 
-    const [total, active, inactive, suspended, newThisMonth, registrationsToday, rolesGrouped] = await Promise.all([
+    const [
+      total,
+      active,
+      inactive,
+      suspended,
+      newThisMonth,
+      registrationsToday,
+      rolesGrouped,
+    ] = await Promise.all([
       this.prisma.user.count(),
       this.prisma.user.count({ where: { status: UserStatus.active } }),
       this.prisma.user.count({ where: { status: UserStatus.inactive } }),

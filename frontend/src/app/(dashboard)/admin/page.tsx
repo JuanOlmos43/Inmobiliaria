@@ -3,10 +3,12 @@
 import { useState, useEffect } from "react";
 
 import StatsCard from "@/components/UI/StatsCard";
-import UserFormModal from "@/components/UserFormModal";
-import UsersTable from "@/components/UsersTable";
+import ConfirmModal from "@/components/UI/ConfirmModal";
+import Toast from "@/components/UI/Toast";
+import CreateUserModal from "@/components/dashboard/admin/CreateUserModal";
+import UsersTable from "@/components/dashboard/admin/UsersTable";
 import { usersService } from "@/lib/api/services/users";
-import { UserProfile, UserRole } from "@/types/api";
+import { UserProfile, UserRole, UserStats } from "@/types/api";
 
 // ============================================
 // TIPOS DE DATOS
@@ -19,7 +21,6 @@ import { UserProfile, UserRole } from "@/types/api";
 interface User {
   id: string; // ID único del usuario
   email: string; // Email para login
-  password: string; // Contraseña (solo para mostrar en admin)
   name?: string; // Nombre completo (opcional)
   phone?: string; // Teléfono de contacto (opcional)
   role: UserRole; // Rol del usuario en el sistema
@@ -64,47 +65,99 @@ export default function AdminDashboardPage() {
    */
   const [showModal, setShowModal] = useState(false);
 
+
+
   /**
-   * Usuario que se está editando actualmente
-   * - null: Modo crear (nuevo usuario)
-   * - User: Modo editar (usuario existente)
+   * Estadísticas de usuarios obtenidas del backend
    */
-  const [editingUser, setEditingUser] = useState<User | null>(null);
+  const [stats, setStats] = useState<UserStats | null>(null);
+
+  /**
+   * Filtro de búsqueda por email
+   */
+  const [searchEmail, setSearchEmail] = useState("");
+
+  /**
+   * Filtro por rol de usuario
+   */
+  const [filterRole, setFilterRole] = useState<string>("all");
+
+  /**
+   * Estados para el Toast (feedback)
+   */
+  const [toast, setToast] = useState({
+    isVisible: false,
+    message: "",
+    type: "success" as "success" | "error",
+    duration: 3000,
+  });
+
+  /**
+   * Estados para el ConfirmModal
+   */
+
+
+  /**
+   * Estados para el ConfirmModal de Reset Password
+   */
+  const [confirmReset, setConfirmReset] = useState({
+    isOpen: false,
+    userId: "",
+    isLoading: false,
+  });
 
   // ============================================
   // EFECTOS - CARGA DE DATOS
   // ============================================
 
   /**
-   * Carga la lista de usuarios desde el backend al montar el componente
+   * Carga las estadísticas iniciales desde el backend al montar el componente
    */
   useEffect(() => {
-    loadUsers();
+    loadStats();
   }, []);
+
+  /**
+   * Recargar usuarios cuando cambian los filtros
+   */
+  useEffect(() => {
+    const filters: { role?: UserRole; email?: string } = {};
+    
+    if (filterRole !== "all") {
+      filters.role = filterRole as UserRole;
+    }
+    
+    if (searchEmail.trim()) {
+      filters.email = searchEmail.trim();
+    }
+
+    loadUsers(Object.keys(filters).length > 0 ? filters : undefined);
+  }, [searchEmail, filterRole]);
 
   /**
    * Función para cargar usuarios desde el backend
    * Puede ser llamada para refrescar la lista
+   * @param filters - Filtros opcionales para la búsqueda
    */
-  const loadUsers = async () => {
+  const loadUsers = async (filters?: { role?: UserRole; email?: string }) => {
     try {
       setIsLoading(true);
       setError(null);
 
-      // Obtiene todos los usuarios (sin filtro de rol)
-      const usersData = await usersService.getUsers();
+      // Obtiene usuarios con filtros opcionales
+      const usersData = await usersService.getUsers(filters);
 
       // Mapea UserProfile del backend a User del frontend
       const mappedUsers: User[] = usersData.map((user: UserProfile) => ({
         id: user.id,
         email: user.email,
-        password: "********", // No mostramos la contraseña real
         name: user.name,
         phone: user.phone || undefined, // Convierte null a undefined
         role: user.role, // Los roles ya vienen en español del backend
         createdAt: user.createdAt,
         status: user.status === "active" ? "active" : "inactive", // Mapea status del backend
       }));
+
 
       setUsers(mappedUsers);
     } catch (err) {
@@ -113,6 +166,29 @@ export default function AdminDashboardPage() {
     } finally {
       setIsLoading(false);
     }
+  };
+
+  /**
+   * Función para cargar estadísticas desde el backend
+   * Puede ser llamada para refrescar las estadísticas
+   */
+  const loadStats = async () => {
+    try {
+      const statsData = await usersService.getStats();
+      setStats(statsData);
+    } catch (err) {
+      console.error("Error al cargar estadísticas:", err);
+      // No bloqueamos la UI si fallan las estadísticas
+    }
+  };
+
+  /**
+   * Función para mostrar feedback visual
+   */
+  const showToast = (message: string, type: "success" | "error" = "success") => {
+    // Si es error, dura 6 segundos (6000ms), si es éxito 3 segundos (3000ms)
+    const duration = type === "error" ? 6000 : 3000;
+    setToast({ isVisible: true, message, type, duration });
   };
 
   // ============================================
@@ -124,114 +200,71 @@ export default function AdminDashboardPage() {
    * Limpia editingUser para indicar que es un nuevo usuario
    */
   const handleCreateUser = () => {
-    setEditingUser(null);
     setShowModal(true);
   };
 
+
+
+
+
+
+
   /**
-   * Abre el modal en modo "editar usuario"
-   * @param user - Usuario a editar
+   * Inicia el proceso de restauración de contraseña
    */
-  const handleEditUser = (user: User) => {
-    setEditingUser(user);
-    setShowModal(true);
+  const handleResetPassword = (userId: string) => {
+    setConfirmReset({ isOpen: true, userId, isLoading: false });
   };
 
   /**
-   * Elimina un usuario del sistema
-   * Muestra confirmación antes de eliminar
-   *
-   * @param userId - ID del usuario a eliminar
-   * TODO: Implementar endpoint DELETE /users/:id en el backend
+   * Ejecuta el reset de la contraseña volviéndola a 'admin123'
    */
-  const handleDeleteUser = async (userId: string) => {
-    if (confirm("¿Estás seguro de que deseas eliminar este usuario?")) {
-      try {
-        // TODO: Llamar a usersService.deleteUser(userId) cuando exista el endpoint
-        // Por ahora solo actualizamos el estado local
-        const updatedUsers = users.filter((u) => u.id !== userId);
-        setUsers(updatedUsers);
+  const executeResetPassword = async () => {
+    const { userId } = confirmReset;
+    if (!userId) return;
 
-        // Opcional: Refrescar desde el backend
-        // await loadUsers();
-      } catch (err) {
-        console.error("Error al eliminar usuario:", err);
-        alert("Error al eliminar usuario. Por favor, intenta de nuevo.");
-      }
-    }
-  };
-
-  /**
-   * Alterna el estado de un usuario entre 'active' e 'inactive'
-   * Útil para desactivar usuarios sin eliminarlos
-   *
-   * @param userId - ID del usuario a cambiar estado
-   * TODO: Implementar endpoint PATCH /users/:id/status en el backend
-   */
-  const handleToggleStatus = async (userId: string) => {
     try {
-      // TODO: Llamar a usersService.updateStatus(userId, newStatus) cuando exista el endpoint
-      // Por ahora solo actualizamos el estado local
-      const updatedUsers = users.map((u) =>
-        u.id === userId
-          ? {
-              ...u,
-              status:
-                u.status === "active"
-                  ? ("inactive" as const)
-                  : ("active" as const),
-            }
-          : u,
-      );
-      setUsers(updatedUsers);
+      setConfirmReset((prev) => ({ ...prev, isLoading: true }));
+      await usersService.updateUser(userId, { password: "admin123" });
+
+      showToast("Contraseña restaurada a 'admin123' correctamente");
+      setConfirmReset({ isOpen: false, userId: "", isLoading: false });
     } catch (err) {
-      console.error("Error al cambiar estado:", err);
-      alert("Error al cambiar estado del usuario.");
+      console.error("Error al resetear contraseña:", err);
+      showToast("Error al restaurar la contraseña", "error");
+      setConfirmReset((prev) => ({ ...prev, isLoading: false }));
     }
   };
 
   /**
    * Callback ejecutado cuando se crea un nuevo usuario exitosamente
-   * Refresca la lista completa desde el backend
+   * Refresca la lista completa y las estadísticas desde el backend
    */
   const handleUserCreated = async () => {
-    // Refrescar la lista completa desde el backend
+    // Refrescar la lista completa y estadísticas desde el backend
     await loadUsers();
+    await loadStats();
   };
 
   /**
-   * Callback ejecutado cuando se actualiza un usuario existente
-   *
-   * @param updatedUser - Usuario con los datos actualizados
-   * TODO: Implementar endpoint PATCH /users/:id en el backend
+   * Callback ejecutado cuando se guarda una edición en línea desde la tabla
    */
-  const handleUserUpdated = async (updatedUser: User) => {
-    // Por ahora actualizamos localmente
-    const updatedUsers = users.map((u) =>
-      u.id === updatedUser.id ? updatedUser : u,
-    );
-    setUsers(updatedUsers);
-
-    // Opcional: Refrescar desde el backend
-    // await loadUsers();
+  const handleSaveInlineEdit = async (userId: string, data: Partial<User>) => {
+    try {
+      await usersService.updateUser(userId, data as Partial<UserProfile>);
+      showToast("Usuario actualizado correctamente");
+      await loadUsers();
+      await loadStats();
+    } catch (err) {
+      console.error("Error al guardar edición en línea:", err);
+      showToast("Error al actualizar usuario", "error");
+      throw err; // Re-lanzar para que la tabla sepa que falló
+    }
   };
 
-  // ============================================
-  // CÁLCULO DE ESTADÍSTICAS
-  // ============================================
 
-  /**
-   * Calcula estadísticas en tiempo real basadas en la lista de usuarios
-   * Se recalcula automáticamente cuando cambia el array 'users'
-   */
-  const stats = {
-    total: users.length, // Total de usuarios
-    active: users.filter((u) => u.status === "active").length, // Usuarios activos
-    tenants: users.filter((u) => u.role === UserRole.Inquilino).length, // Inquilinos
-    landlords: users.filter((u) => u.role === UserRole.Propietario).length, // Propietarios
-    agents: users.filter((u) => u.role === UserRole.Agente).length, // Agentes
-    owners: users.filter((u) => u.role === UserRole.Gerencia).length, // Gerencia
-  };
+
+
 
   // ============================================
   // RENDERIZADO
@@ -254,7 +287,7 @@ export default function AdminDashboardPage() {
             {/* Total de usuarios */}
             <StatsCard
               title="Total Usuarios"
-              value={stats.total}
+              value={stats?.summary.total ?? 0}
               color="from-[#0f172a] to-[#334155]"
               icon="users"
             />
@@ -262,7 +295,7 @@ export default function AdminDashboardPage() {
             {/* Usuarios activos */}
             <StatsCard
               title="Usuarios Activos"
-              value={stats.active}
+              value={stats?.summary.active ?? 0}
               color="from-[#14b8a6] to-[#0d9488]"
               icon="check"
             />
@@ -270,7 +303,7 @@ export default function AdminDashboardPage() {
             {/* Inquilinos */}
             <StatsCard
               title="Inquilinos"
-              value={stats.tenants}
+              value={stats?.roles.inquilino ?? 0}
               color="from-blue-500 to-blue-600"
               icon="key"
             />
@@ -278,7 +311,7 @@ export default function AdminDashboardPage() {
             {/* Propietarios */}
             <StatsCard
               title="Propietarios"
-              value={stats.landlords}
+              value={stats?.roles.propietario ?? 0}
               color="from-green-500 to-green-600"
               icon="home"
             />
@@ -286,7 +319,7 @@ export default function AdminDashboardPage() {
             {/* Agentes inmobiliarios */}
             <StatsCard
               title="Agentes"
-              value={stats.agents}
+              value={stats?.roles.agente ?? 0}
               color="from-purple-500 to-purple-600"
               icon="briefcase"
             />
@@ -294,7 +327,7 @@ export default function AdminDashboardPage() {
             {/* Gerencia */}
             <StatsCard
               title="Gerencia"
-              value={stats.owners}
+              value={stats?.roles.gerencia ?? 0}
               color="from-amber-500 to-amber-600"
               icon="star"
             />
@@ -330,8 +363,58 @@ export default function AdminDashboardPage() {
                   d="M12 4v16m8-8H4"
                 />
               </svg>
-              Crear Usuario
+              Crear usuario
             </button>
+          </div>
+
+          {/* ========================================
+              SECCIÓN: FILTROS DE BÚSQUEDA
+              ======================================== */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8 bg-gray-50 p-4 rounded-xl border border-gray-100">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Buscar por email
+              </label>
+              <div className="relative">
+                <input
+                  type="text"
+                  value={searchEmail}
+                  onChange={(e) => setSearchEmail(e.target.value)}
+                  placeholder="ejemplo@correo.com"
+                  className="w-full pl-10 pr-4 py-2 bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#14b8a6] focus:border-transparent transition-all"
+                />
+                <svg
+                  className="w-5 h-5 text-gray-400 absolute left-3 top-2.5"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                  />
+                </svg>
+              </div>
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Filtrar por rol
+              </label>
+              <select
+                value={filterRole}
+                onChange={(e) => setFilterRole(e.target.value)}
+                className="w-full px-4 py-2 bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#14b8a6] focus:border-transparent transition-all"
+              >
+                <option value="all">Todos los roles</option>
+                <option value={UserRole.Inquilino}>Inquilino</option>
+                <option value={UserRole.Propietario}>Propietario</option>
+                <option value={UserRole.Agente}>Agente</option>
+                <option value={UserRole.Gerencia}>Gerencia</option>
+                <option value={UserRole.Administrador}>Administrador</option>
+              </select>
+            </div>
           </div>
 
           {/* Estado de carga */}
@@ -347,7 +430,7 @@ export default function AdminDashboardPage() {
             <div className="bg-red-50 border border-red-200 rounded-lg p-6 text-center">
               <p className="text-red-600 mb-4">{error}</p>
               <button
-                onClick={loadUsers}
+                onClick={() => loadUsers()}
                 className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
               >
                 Reintentar
@@ -359,9 +442,8 @@ export default function AdminDashboardPage() {
           {!isLoading && !error && (
             <UsersTable
               users={users}
-              onEditUser={handleEditUser}
-              onDeleteUser={handleDeleteUser}
-              onToggleStatus={handleToggleStatus}
+              onSaveEdit={handleSaveInlineEdit}
+              onResetPassword={handleResetPassword}
             />
           )}
         </div>
@@ -370,12 +452,35 @@ export default function AdminDashboardPage() {
       {/* ========================================
           MODAL: CREAR/EDITAR USUARIO
           ======================================== */}
-      <UserFormModal
+      <CreateUserModal
         isOpen={showModal}
         onClose={() => setShowModal(false)}
-        editingUser={editingUser}
         onUserCreated={handleUserCreated}
-        onUserUpdated={handleUserUpdated}
+      />
+
+
+
+      {/* Confirmación de reseteo de contraseña */}
+      <ConfirmModal
+        isOpen={confirmReset.isOpen}
+        onClose={() =>
+          setConfirmReset({ isOpen: false, userId: "", isLoading: false })
+        }
+        onConfirm={executeResetPassword}
+        title="Restaurar Contraseña"
+        message="¿Estás seguro de que deseas restaurar la contraseña de este usuario? La nueva contraseña será 'admin123'."
+        confirmLabel="Restaurar"
+        isLoading={confirmReset.isLoading}
+        type="warning"
+      />
+
+      {/* Feedback visual */}
+      <Toast
+        isVisible={toast.isVisible}
+        message={toast.message}
+        type={toast.type}
+        duration={toast.duration}
+        onClose={() => setToast((prev) => ({ ...prev, isVisible: false }))}
       />
     </div>
   );

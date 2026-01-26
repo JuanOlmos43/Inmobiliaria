@@ -3,12 +3,14 @@ import { InputHTMLAttributes } from "react";
 interface FormInputProps extends InputHTMLAttributes<HTMLInputElement> {
   label: string;
   error?: string;
+  helpText?: string;
   theme?: "light" | "dark"; // Para formularios en fondos oscuros vs claros
 }
 
 export default function FormInput({
   label,
   error,
+  helpText,
   theme = "light",
   required,
   className = "",
@@ -35,6 +37,9 @@ export default function FormInput({
         {...props}
       />
       {error && <p className="text-red-500 text-sm mt-1">{error}</p>}
+      {helpText && !error && (
+        <p className="text-gray-400 text-xs mt-1">{helpText}</p>
+      )}
     </div>
   );
 }
