@@ -1,8 +1,5 @@
 import { useState } from "react";
-// Tipos
 import { UserRole } from "@/types/api";
-
-// Tipos
 interface User {
   id: string;
   email: string;
@@ -72,7 +69,7 @@ export default function UsersTable({
    */
   const saveEditing = async () => {
     if (!editingId) return;
-    
+
     try {
       setIsSaving(true);
       await onSaveEdit(editingId, editFormData);
@@ -87,8 +84,6 @@ export default function UsersTable({
 
   return (
     <div>
-
-
       {/* Tabla de usuarios */}
       <div className="overflow-x-auto">
         <table className="w-full">
@@ -123,8 +118,8 @@ export default function UsersTable({
                 <tr
                   key={user.id}
                   className={`transition-all duration-300 ${
-                    isEditing 
-                      ? "bg-[#14b8a6]/5 shadow-md relative z-10 border-l-4 border-[#14b8a6]" 
+                    isEditing
+                      ? "bg-[#14b8a6]/5 shadow-md relative z-10 border-l-4 border-[#14b8a6]"
                       : "hover:bg-gray-50 border-l-4 border-transparent"
                   }`}
                 >
@@ -133,9 +128,12 @@ export default function UsersTable({
                     {isEditing ? (
                       <input
                         type="email"
-                        value={editFormData.email}
+                        value={editFormData.email || ""}
                         onChange={(e) =>
-                          setEditFormData({ ...editFormData, email: e.target.value })
+                          setEditFormData({
+                            ...editFormData,
+                            email: e.target.value,
+                          })
                         }
                         className="w-full px-3 py-1.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#14b8a6] focus:border-transparent transition-all text-sm"
                       />
@@ -149,9 +147,12 @@ export default function UsersTable({
                     {isEditing ? (
                       <input
                         type="text"
-                        value={editFormData.name}
+                        value={editFormData.name || ""}
                         onChange={(e) =>
-                          setEditFormData({ ...editFormData, name: e.target.value })
+                          setEditFormData({
+                            ...editFormData,
+                            name: e.target.value,
+                          })
                         }
                         className="w-full px-3 py-1.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#14b8a6] focus:border-transparent transition-all text-sm"
                       />
@@ -167,15 +168,20 @@ export default function UsersTable({
                     {isEditing ? (
                       <input
                         type="tel"
-                        value={editFormData.phone}
+                        value={editFormData.phone || ""}
                         onChange={(e) =>
-                          setEditFormData({ ...editFormData, phone: e.target.value })
+                          setEditFormData({
+                            ...editFormData,
+                            phone: e.target.value,
+                          })
                         }
                         className="w-full px-3 py-1.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#14b8a6] focus:border-transparent transition-all text-sm"
                       />
                     ) : (
                       user.phone || (
-                        <span className="text-gray-400 italic">Sin teléfono</span>
+                        <span className="text-gray-400 italic">
+                          Sin teléfono
+                        </span>
                       )
                     )}
                   </td>
@@ -194,10 +200,14 @@ export default function UsersTable({
                         className="w-full px-3 py-1.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#14b8a6] focus:border-transparent transition-all text-sm bg-white"
                       >
                         <option value={UserRole.Inquilino}>Inquilino</option>
-                        <option value={UserRole.Propietario}>Propietario</option>
+                        <option value={UserRole.Propietario}>
+                          Propietario
+                        </option>
                         <option value={UserRole.Agente}>Agente</option>
                         <option value={UserRole.Gerencia}>Gerencia</option>
-                        <option value={UserRole.Administrador}>Administrador</option>
+                        <option value={UserRole.Administrador}>
+                          Administrador
+                        </option>
                       </select>
                     ) : (
                       <span
@@ -214,26 +224,39 @@ export default function UsersTable({
                       <div className="flex items-center">
                         <button
                           type="button"
-                          onClick={() => 
+                          onClick={() =>
                             setEditFormData({
                               ...editFormData,
-                              status: editFormData.status === "active" ? "inactive" : "active"
+                              status:
+                                editFormData.status === "active"
+                                  ? "inactive"
+                                  : "active",
                             })
                           }
                           className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-[#14b8a6] focus:ring-offset-2 ${
-                            editFormData.status === "active" ? "bg-green-500" : "bg-gray-300"
+                            editFormData.status === "active"
+                              ? "bg-green-500"
+                              : "bg-gray-300"
                           }`}
                         >
                           <span
                             className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform duration-200 ${
-                              editFormData.status === "active" ? "translate-x-6" : "translate-x-1"
+                              editFormData.status === "active"
+                                ? "translate-x-6"
+                                : "translate-x-1"
                             }`}
                           />
                         </button>
-                        <span className={`ml-3 text-xs font-medium ${
-                          editFormData.status === "active" ? "text-green-700" : "text-gray-500"
-                        }`}>
-                          {editFormData.status === "active" ? "Activo" : "Inactivo"}
+                        <span
+                          className={`ml-3 text-xs font-medium ${
+                            editFormData.status === "active"
+                              ? "text-green-700"
+                              : "text-gray-500"
+                          }`}
+                        >
+                          {editFormData.status === "active"
+                            ? "Activo"
+                            : "Inactivo"}
                         </span>
                       </div>
                     ) : (
