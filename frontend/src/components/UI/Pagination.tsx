@@ -89,8 +89,8 @@ export default function Pagination({
               onClick={() => onPageChange(page)}
               className={`px-4 py-2 rounded-lg transition-all duration-300 font-medium ${
                 currentPage === page
-                  ? "bg-[#14b8a6] text-white shadow-lg transform scale-105"
-                  : "bg-white border border-gray-300 text-gray-700 hover:bg-gray-50 hover:border-[#14b8a6]"
+                  ? "bg-(--accent) text-white shadow-lg transform scale-105"
+                  : "bg-white border border-gray-300 text-gray-700 hover:bg-gray-50 hover:border-(--accent)"
               }`}
               aria-label={`Página ${page}`}
               aria-current={currentPage === page ? "page" : undefined}

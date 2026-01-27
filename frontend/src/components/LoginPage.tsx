@@ -24,9 +24,6 @@ export default function LoginPage() {
       // Esto permite que las cookies se guarden en el navegador
       await authService.login(email, password);
 
-      // Guardar el email en localStorage para mostrarlo en el dashboard
-      localStorage.setItem("userEmail", email);
-
       // Login exitoso - redirigir al dashboard
       router.push("/dashboard");
     } catch (err) {
@@ -128,16 +125,6 @@ export default function LoginPage() {
               </div>
             </div>
 
-            {/* Forgot Password Link */}
-            <div className="text-right">
-              <Link
-                href="#"
-                className="text-sm text-(--accent) hover:text-[#2dd4bf] transition-colors"
-              >
-                ¿Olvidaste tu contraseña?
-              </Link>
-            </div>
-
             {/* Error Message */}
             {error && (
               <div className="bg-red-500/20 border border-red-500/50 rounded-lg p-3 text-red-200 text-sm">
@@ -174,7 +161,7 @@ export default function LoginPage() {
             </button>
           </form>
 
-          {/* Back to Home */}
+          {/* volver a Home */}
           <div className="mt-4 text-center">
             <Link
               href="/"

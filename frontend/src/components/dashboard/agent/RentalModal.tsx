@@ -63,29 +63,32 @@ export default function RentalModal({
   /* const [tenants, setTenants] = useState<SystemUser[]>([]); */
   // Use TanStack Query instead of manual fetch/effect
   const { data: tenants = [] } = useQuery({
-    queryKey: ['users', 'tenants'],
+    queryKey: ["users", "tenants"],
     queryFn: async () => {
       // Assuming usersService.getUsers returns correct type or we map it
       const users = await usersService.getUsers({ role: UserRole.Inquilino });
       // Ensure we filter active if API doesn't do it automatically, assuming API returns array
       // Map API user type to local SystemUser interface if needed, but for now assuming compatible fields
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      return users.filter((u: any) => u.status === 'active' || !u.status /* fallback if status missing */).map((u: any) => ({
-        id: u.id,
-        email: u.email,
-        name: u.name,
-        phone: u.phone,
-        role: u.role as UserRole,
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        status: (u.status || 'active') as "active" | "inactive"
-      }));
-    }
+      return users
+        .filter(
+          (u: any) =>
+            u.status === "active" || !u.status /* fallback if status missing */,
+        )
+        .map((u: any) => ({
+          id: u.id,
+          email: u.email,
+          name: u.name,
+          phone: u.phone,
+          role: u.role as UserRole,
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          status: (u.status || "active") as "active" | "inactive",
+        }));
+    },
   });
   const [tenantSearch, setTenantSearch] = useState("");
   const [showTenantDropdown, setShowTenantDropdown] = useState(false);
   const [selectedTenant, setSelectedTenant] = useState<SystemUser | null>(null);
-
-
 
   const handleTenantSelect = (tenant: SystemUser) => {
     setSelectedTenant(tenant);
@@ -177,7 +180,7 @@ export default function RentalModal({
       <form onSubmit={handleSubmit} className="space-y-6">
         {/* Información de la Propiedad y Propietario */}
         <div className="bg-gray-50 rounded-lg p-4">
-          <h3 className="text-lg font-semibold text-[#0f172a] mb-3">
+          <h3 className="text-lg font-semibold text-(--primary) mb-3">
             Propiedad
           </h3>
           <div className="space-y-2">
@@ -197,7 +200,7 @@ export default function RentalModal({
           {/* Información del Propietario */}
           {property.landlordName && (
             <div className="mt-4 pt-4 border-t border-gray-300">
-              <h4 className="text-md font-semibold text-[#0f172a] mb-2">
+              <h4 className="text-md font-semibold text-(--primary) mb-2">
                 Propietario
               </h4>
               <div className="space-y-1">
@@ -325,7 +328,7 @@ export default function RentalModal({
 
         {/* Fechas del Contrato */}
         <div>
-          <h3 className="text-lg font-semibold text-[#0f172a] mb-3">
+          <h3 className="text-lg font-semibold text-(--primary) mb-3">
             Fechas del Contrato
           </h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -340,7 +343,7 @@ export default function RentalModal({
                 onChange={(e) =>
                   setFormData({ ...formData, startDate: e.target.value })
                 }
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#14b8a6] focus:border-transparent"
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-(--accent) focus:border-transparent"
               />
             </div>
             <div>
@@ -354,7 +357,7 @@ export default function RentalModal({
                 onChange={(e) =>
                   setFormData({ ...formData, endDate: e.target.value })
                 }
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#14b8a6] focus:border-transparent"
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-(--accent) focus:border-transparent"
               />
             </div>
           </div>
@@ -362,7 +365,7 @@ export default function RentalModal({
 
         {/* Meses de Ajuste de Precio */}
         <div>
-          <h3 className="text-lg font-semibold text-[#0f172a] mb-3">
+          <h3 className="text-lg font-semibold text-(--primary) mb-3">
             Meses de Ajuste
           </h3>
           <div className="mb-4">
@@ -378,7 +381,7 @@ export default function RentalModal({
                     | "anual",
                 })
               }
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#14b8a6] focus:border-transparent"
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-(--accent) focus:border-transparent"
             >
               <option value="trimestral">Trimestral (cada 3 meses)</option>
               <option value="semestral">Semestral (cada 6 meses)</option>
@@ -396,7 +399,7 @@ export default function RentalModal({
                 {adjustmentMonths.map((date, index) => (
                   <span
                     key={index}
-                    className="px-3 py-1 bg-[#14b8a6] text-white rounded-full text-xs font-medium"
+                    className="px-3 py-1 bg-(--accent) text-white rounded-full text-xs font-medium"
                   >
                     {date.toLocaleDateString("es-ES", {
                       month: "long",
@@ -432,7 +435,7 @@ export default function RentalModal({
           </button>
           <button
             type="submit"
-            className="flex-1 px-6 py-3 bg-[#14b8a6] text-white font-semibold rounded-lg hover:bg-[#0d9488] transition-all duration-300 shadow-lg hover:shadow-xl"
+            className="flex-1 px-6 py-3 bg-(--accent) text-white font-semibold rounded-lg hover:bg-(--accent-hover) transition-all duration-300 shadow-lg hover:shadow-xl"
           >
             Crear Contrato
           </button>

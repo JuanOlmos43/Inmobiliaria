@@ -195,9 +195,11 @@ export default function DashboardPage() {
 
       // Invalidate queries to ensure fresh data
       queryClient.invalidateQueries({ queryKey: ["properties"] });
-      queryClient.invalidateQueries({ queryKey: ["property", savedPropertyId] });
+      queryClient.invalidateQueries({
+        queryKey: ["property", savedPropertyId],
+      });
       // Remove manual refetch as invalidate triggers it if active
-      // refetch(); 
+      // refetch();
     } catch (error) {
       console.error("Error saving property:", error);
       alert(
@@ -210,7 +212,7 @@ export default function DashboardPage() {
   const filteredProperties = properties;
 
   return (
-    <div className="min-h-screen bg-[#f8fafc]">
+    <div className="min-h-screen bg-(--background)">
       {/* Main Content */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Stats Cards */}
@@ -279,10 +281,11 @@ export default function DashboardPage() {
             <div className="flex gap-8">
               <button
                 onClick={() => setActiveTab("vencimientos")}
-                className={`pb-4 px-2 font-semibold transition-colors relative ${activeTab === "vencimientos"
-                  ? "text-[#14b8a6]"
-                  : "text-gray-500 hover:text-gray-700"
-                  }`}
+                className={`pb-4 px-2 font-semibold transition-colors relative ${
+                  activeTab === "vencimientos"
+                    ? "text-[#14b8a6]"
+                    : "text-gray-500 hover:text-gray-700"
+                }`}
               >
                 Próximos Vencimientos
                 {activeTab === "vencimientos" && (
@@ -291,10 +294,11 @@ export default function DashboardPage() {
               </button>
               <button
                 onClick={() => setActiveTab("propiedades")}
-                className={`pb-4 px-2 font-semibold transition-colors relative ${activeTab === "propiedades"
-                  ? "text-[#14b8a6]"
-                  : "text-gray-500 hover:text-gray-700"
-                  }`}
+                className={`pb-4 px-2 font-semibold transition-colors relative ${
+                  activeTab === "propiedades"
+                    ? "text-[#14b8a6]"
+                    : "text-gray-500 hover:text-gray-700"
+                }`}
               >
                 Gestión de Propiedades
                 {activeTab === "propiedades" && (

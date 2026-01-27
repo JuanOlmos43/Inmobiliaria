@@ -16,7 +16,7 @@ interface CreateUserModalProps {
 
 /**
  * CreateUserModal
- * 
+ *
  * Componente especializado en la creación de nuevos usuarios.
  * La contraseña se asigna automáticamente como "admin123" por defecto.
  */
@@ -77,12 +77,11 @@ export default function CreateUserModal({
 
       showToast("Usuario creado exitosamente");
       onUserCreated(); // Avisar al padre para refrescar la lista
-      
+
       // Cerrar modal tras un pequeño delay para que se vea el éxito
       setTimeout(() => {
         onClose();
       }, 500);
-
     } catch (error) {
       console.error("Error al guardar usuario:", error);
       showToast(
@@ -136,13 +135,15 @@ export default function CreateUserModal({
               label="Nombre completo"
               type="text"
               value={formData.name}
-              onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+              onChange={(e) =>
+                setFormData({ ...formData, name: e.target.value })
+              }
               placeholder="Nombre del usuario"
               disabled={isSubmitting}
             />
 
             <FormInput
-              label="Teléfono"  
+              label="Teléfono"
               type="tel"
               value={formData.phone}
               onChange={(e) =>
@@ -180,7 +181,7 @@ export default function CreateUserModal({
             <button
               type="submit"
               disabled={isSubmitting}
-              className="flex-1 px-4 py-2.5 bg-[#14b8a6] text-white rounded-lg font-medium hover:bg-[#0d9488] transition-all shadow-md hover:shadow-lg disabled:opacity-50 flex justify-center items-center gap-2"
+              className="flex-1 px-4 py-2.5 bg-(--accent) text-white rounded-lg font-medium hover:bg-(--accent-hover) transition-all shadow-md hover:shadow-lg disabled:opacity-50 flex justify-center items-center gap-2"
             >
               {isSubmitting && (
                 <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />

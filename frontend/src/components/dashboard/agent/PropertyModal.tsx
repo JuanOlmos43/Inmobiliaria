@@ -213,8 +213,14 @@ export default function PropertyModal({
       let currentLocalidadId = selectedLocalidadId;
 
       // Fallback: Si no tenemos ID pero tenemos nombre y lista, intentamos buscarlo de nuevo
-      if (!currentLocalidadId && inputModes.city === "select" && formData.city) {
-        currentLocalidadId = localidades.find(l => l.nombre === formData.city)?.id;
+      if (
+        !currentLocalidadId &&
+        inputModes.city === "select" &&
+        formData.city
+      ) {
+        currentLocalidadId = localidades.find(
+          (l) => l.nombre === formData.city,
+        )?.id;
       }
 
       let currentCalleId: string | undefined = undefined;
@@ -278,12 +284,14 @@ export default function PropertyModal({
         if (selectedCalle) {
           currentCalleId = selectedCalle.id;
         } else if (currentLocalidadId) {
-          // Fallback: try to finding in a potentially not-updated 'calles' list 
+          // Fallback: try to finding in a potentially not-updated 'calles' list
           // or maybe we should fetch? Async inside submit is tricky for queries.
           // However, if the user selected it from dropdown, it MUST be in 'calles'.
           // Unless they typed it? No, it's 'select' mode.
           // Maybe casing matches?
-          const looseMatch = calles.find(c => c.nombre.toLowerCase() === formData.street?.toLowerCase());
+          const looseMatch = calles.find(
+            (c) => c.nombre.toLowerCase() === formData.street?.toLowerCase(),
+          );
           if (looseMatch) currentCalleId = looseMatch.id;
         }
       }
@@ -311,7 +319,7 @@ export default function PropertyModal({
 
   // Determine if we are keeping the user waiting
   // Only critical for 'Edit' mode -> waiting for details
-  const isLoading = (!!property?.id && isLoadingDetails);
+  const isLoading = !!property?.id && isLoadingDetails;
 
   return (
     <Modal
@@ -323,8 +331,10 @@ export default function PropertyModal({
     >
       {isLoading ? (
         <div className="flex flex-col items-center justify-center py-12">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#14b8a6]"></div>
-          <p className="mt-4 text-gray-500 font-medium">Cargando datos de la propiedad...</p>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-(--accent)"></div>
+          <p className="mt-4 text-gray-500 font-medium">
+            Cargando datos de la propiedad...
+          </p>
         </div>
       ) : (
         <form onSubmit={handleSubmit} className="space-y-4">
@@ -333,7 +343,9 @@ export default function PropertyModal({
             type="text"
             required
             value={formData.title}
-            onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+            onChange={(e) =>
+              setFormData({ ...formData, title: e.target.value })
+            }
             placeholder="Ej: Casa Moderna en Zona Norte"
           />
 
@@ -433,7 +445,10 @@ export default function PropertyModal({
                     {loc.nombre}
                   </option>
                 ))}
-                <option value="custom" className="font-semibold text-teal-600">
+                <option
+                  value="custom"
+                  className="font-semibold text-(--accent)"
+                >
                   Ingresar manualmente...
                 </option>
               </FormSelect>
@@ -506,7 +521,10 @@ export default function PropertyModal({
                     {calle.nombre}
                   </option>
                 ))}
-                <option value="custom" className="font-semibold text-teal-600">
+                <option
+                  value="custom"
+                  className="font-semibold text-(--accent)"
+                >
                   Ingresar manualmente...
                 </option>
               </FormSelect>
@@ -583,7 +601,7 @@ export default function PropertyModal({
                 value={landlordSearch}
                 onChange={(e) => handleLandlordSearchChange(e.target.value)}
                 onFocus={() => setShowLandlordDropdown(true)}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#14b8a6] focus:border-transparent"
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-(--accent) focus:border-transparent"
                 placeholder="Buscar propietario por nombre o email..."
               />
               <svg
@@ -664,11 +682,15 @@ export default function PropertyModal({
                     </p>
                     <p className="text-xs text-green-700">
                       <span className="font-medium">Email:</span>{" "}
-                      <span className="font-mono">{formData.landlordEmail}</span>
+                      <span className="font-mono">
+                        {formData.landlordEmail}
+                      </span>
                     </p>
                     <p className="text-xs text-green-700">
                       <span className="font-medium">Teléfono:</span>{" "}
-                      <span className="font-mono">{formData.landlordPhone}</span>
+                      <span className="font-mono">
+                        {formData.landlordPhone}
+                      </span>
                     </p>
                   </div>
                 </div>
@@ -786,7 +808,7 @@ export default function PropertyModal({
                       }
                     }
                   }}
-                  className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#14b8a6] focus:border-transparent"
+                  className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-(--accent) focus:border-transparent"
                   placeholder="Ej: Cochera, Patio, Piscina..."
                 />
                 <button

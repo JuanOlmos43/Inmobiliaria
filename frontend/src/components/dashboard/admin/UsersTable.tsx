@@ -29,7 +29,7 @@ const roleColors: Record<string, string> = {
   [UserRole.Propietario]: "from-green-500 to-green-600",
   [UserRole.Agente]: "from-purple-500 to-purple-600",
   [UserRole.Gerencia]: "from-amber-500 to-amber-600",
-  [UserRole.Administrador]: "from-gray-700 to-gray-900",
+  [UserRole.Administrador]: "from-(--primary) to-(--primary-light)",
 };
 
 export default function UsersTable({
@@ -87,7 +87,7 @@ export default function UsersTable({
       {/* Tabla de usuarios */}
       <div className="overflow-x-auto">
         <table className="w-full">
-          <thead className="bg-[#0f172a] text-white">
+          <thead className="bg-(--primary) text-white">
             <tr>
               <th className="px-6 py-3 text-left text-sm font-semibold">
                 Email
@@ -119,7 +119,7 @@ export default function UsersTable({
                   key={user.id}
                   className={`transition-all duration-300 ${
                     isEditing
-                      ? "bg-[#14b8a6]/5 shadow-md relative z-10 border-l-4 border-[#14b8a6]"
+                      ? "bg-(--accent)/5 shadow-md relative z-10 border-l-4 border-(--accent)"
                       : "hover:bg-gray-50 border-l-4 border-transparent"
                   }`}
                 >
@@ -135,7 +135,7 @@ export default function UsersTable({
                             email: e.target.value,
                           })
                         }
-                        className="w-full px-3 py-1.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#14b8a6] focus:border-transparent transition-all text-sm"
+                        className="w-full px-3 py-1.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-(--accent) focus:border-transparent transition-all text-sm"
                       />
                     ) : (
                       user.email
@@ -154,7 +154,7 @@ export default function UsersTable({
                             name: e.target.value,
                           })
                         }
-                        className="w-full px-3 py-1.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#14b8a6] focus:border-transparent transition-all text-sm"
+                        className="w-full px-3 py-1.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-(--accent) focus:border-transparent transition-all text-sm"
                       />
                     ) : (
                       user.name || (
@@ -175,7 +175,7 @@ export default function UsersTable({
                             phone: e.target.value,
                           })
                         }
-                        className="w-full px-3 py-1.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#14b8a6] focus:border-transparent transition-all text-sm"
+                        className="w-full px-3 py-1.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-(--accent) focus:border-transparent transition-all text-sm"
                       />
                     ) : (
                       user.phone || (
@@ -197,7 +197,7 @@ export default function UsersTable({
                             role: e.target.value as UserRole,
                           })
                         }
-                        className="w-full px-3 py-1.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#14b8a6] focus:border-transparent transition-all text-sm bg-white"
+                        className="w-full px-3 py-1.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-(--accent) focus:border-transparent transition-all text-sm bg-white"
                       >
                         <option value={UserRole.Inquilino}>Inquilino</option>
                         <option value={UserRole.Propietario}>
@@ -233,7 +233,7 @@ export default function UsersTable({
                                   : "active",
                             })
                           }
-                          className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-[#14b8a6] focus:ring-offset-2 ${
+                          className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-(--accent) focus:ring-offset-2 ${
                             editFormData.status === "active"
                               ? "bg-green-500"
                               : "bg-gray-300"

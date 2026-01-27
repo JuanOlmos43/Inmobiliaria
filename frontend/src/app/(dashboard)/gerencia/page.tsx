@@ -27,21 +27,21 @@ export default function DashboardOwnerPage() {
   });
 
   return (
-    <div className="min-h-screen bg-[#f8fafc]">
+    <div className="min-h-screen bg-(--background)">
       {/* Header */}
 
       {/* Main Content */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Overview Stats */}
         <div className="mb-8">
-          <h2 className="text-2xl font-bold text-[#0f172a] mb-6">
+          <h2 className="text-2xl font-bold text-(--primary) mb-6">
             Estadísticas de la Organización
           </h2>
           <div className="flex flex-col gap-6 max-w-2xl mx-auto">
             <StatsCard
               title="Total Propiedades"
               value={stats.totalProperties}
-              color="from-[#0f172a] to-[#334155]"
+              color="from-(--primary) to-(--primary-light)"
               trend="+8 este mes"
               trendUp={true}
               icon="building"
@@ -49,7 +49,7 @@ export default function DashboardOwnerPage() {
             <StatsCard
               title="En Venta"
               value={`${stats.avgMarketTime} días`}
-              color="from-[#334155] to-[#0f172a]"
+              color="from-(--primary-light) to-(--primary)"
               trend="Tiempo Promedio en Mercado"
               trendUp={true}
               icon="tag"
@@ -57,7 +57,7 @@ export default function DashboardOwnerPage() {
             <StatsCard
               title="En Alquiler"
               value={`${stats.avgMarketTime} días`}
-              color="from-[#475569] to-[#334155]"
+              color="from-slate-600 to-(--primary-light)"
               trend="Tiempo Promedio en Mercado"
               trendUp={true}
               icon="key"
@@ -65,7 +65,7 @@ export default function DashboardOwnerPage() {
             <StatsCard
               title="Contratos Activos"
               value={stats.activeContracts}
-              color="from-[#14b8a6] to-[#0d9488]"
+              color="from-(--accent) to-(--accent-hover)"
               trend="+12 este mes"
               trendUp={true}
               icon="document"

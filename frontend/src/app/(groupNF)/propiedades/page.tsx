@@ -137,7 +137,7 @@ function PropiedadesContent() {
   };
 
   return (
-    <main className="grow bg-[#f8fafc]">
+    <main className="grow bg-(--background)">
       {/* Header */}
       <HeroSection
         title="Propiedades"

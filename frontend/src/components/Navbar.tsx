@@ -5,12 +5,15 @@ import Image from "next/image";
 import { useState } from "react";
 
 export default function Navbar() {
+  // Estado para controlar el menú móvil
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
+  // Alterna entre abrir y cerrar el menú
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
   };
 
+  // Cierra el menú al hacer clic en un enlace
   const closeMenu = () => {
     setIsMenuOpen(false);
   };
@@ -23,7 +26,7 @@ export default function Navbar() {
           <div className="shrink-0">
             <Link
               href="/"
-              className="flex items-center gap-3 text-3xl font-bold text-(--accent) hover:text-[#2dd4bf] transition-all duration-300 transform hover:scale-105"
+              className="flex items-center gap-3 text-3xl font-bold text-(--accent) hover:text-(--accent-hover) transition-all duration-300 transform hover:scale-105"
             >
               <Image
                 src="/icon.png"

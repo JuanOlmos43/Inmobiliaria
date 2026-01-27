@@ -57,7 +57,7 @@ export default function ConfirmModal({
             />
           </div>
           <div className="flex-1">
-            <h3 className="text-xl font-bold text-[#0f172a] mb-2">{title}</h3>
+            <h3 className="text-xl font-bold text-(--primary) mb-2">{title}</h3>
             <p className="text-gray-600 leading-relaxed">{message}</p>
           </div>
         </div>
@@ -73,7 +73,7 @@ export default function ConfirmModal({
           <button
             onClick={onConfirm}
             disabled={isLoading}
-            className={`flex-1 px-4 py-2.5 text-white rounded-lg font-medium transition-all shadow-lg hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50 flex items-center justify-center gap-2 ${buttonColors[type]}`}
+            className={`bg-(--primary) hover:bg-(--primary-light) text-white font-bold py-3 px-8 rounded-full transition-all duration-300 shadow-xl hover:shadow-2xl transform hover:-translate-y-1 hover:scale-105 inline-flex items-center justify-center gap-2 ${buttonColors[type]}`}
           >
             {isLoading && (
               <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />

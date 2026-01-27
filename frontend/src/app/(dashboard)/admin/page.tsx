@@ -40,13 +40,13 @@ export default function AdminDashboardPage() {
   } = useAdminUsers();
 
   return (
-    <div className="min-h-screen bg-[#f8fafc]">
+    <div className="min-h-screen bg-(--background)">
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* ========================================
             SECCIÓN: ESTADÍSTICAS DEL SISTEMA
             ======================================== */}
         <div className="mb-8">
-          <h2 className="text-2xl font-bold text-[#0f172a] mb-6">
+          <h2 className="text-2xl font-bold text-(--primary) mb-6">
             Estadísticas del Sistema
           </h2>
 
@@ -55,7 +55,7 @@ export default function AdminDashboardPage() {
             <StatsCard
               title="Total Usuarios"
               value={stats?.summary.total ?? 0}
-              color="from-[#0f172a] to-[#334155]"
+              color="from-(--primary) to-(--primary-light)"
               icon="users"
               subValue={[
                 { label: "Hoy", value: stats?.growth.registrationsToday ?? 0 },
@@ -66,7 +66,7 @@ export default function AdminDashboardPage() {
             <StatsCard
               title="Usuarios Activos"
               value={stats?.summary.active ?? 0}
-              color="from-[#14b8a6] to-[#0d9488]"
+              color="from-(--accent) to-(--accent-hover)"
               icon="check"
             />
 
@@ -105,13 +105,13 @@ export default function AdminDashboardPage() {
             ======================================== */}
         <div className="bg-white rounded-xl shadow-lg p-6">
           <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
-            <h2 className="text-2xl font-bold text-[#0f172a]">
+            <h2 className="text-2xl font-bold text-(--primary)">
               Gestión de Usuarios
             </h2>
 
             <button
               onClick={() => setShowModal(true)}
-              className="px-6 py-3 bg-[#14b8a6] text-white rounded-lg hover:bg-[#0d9488] transition-all shadow-md hover:shadow-lg flex items-center gap-2 transform hover:scale-105"
+              className="px-6 py-3 bg-(--accent) text-white rounded-lg hover:bg-(--accent-hover) transition-all shadow-md hover:shadow-lg flex items-center gap-2 transform hover:scale-105"
             >
               <svg
                 className="w-5 h-5"
@@ -142,7 +142,7 @@ export default function AdminDashboardPage() {
                   value={searchEmail}
                   onChange={(e) => setSearchEmail(e.target.value)}
                   placeholder="ejemplo@correo.com"
-                  className="w-full pl-10 pr-4 py-2 bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#14b8a6] focus:border-transparent transition-all"
+                  className="w-full pl-10 pr-4 py-2 bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-(--accent) focus:border-transparent transition-all"
                 />
                 <svg
                   className="w-5 h-5 text-gray-400 absolute left-3 top-2.5"
@@ -168,7 +168,7 @@ export default function AdminDashboardPage() {
                 onChange={(e) =>
                   setFilterRole(e.target.value as UserRole | "all")
                 }
-                className="w-full px-4 py-2 bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#14b8a6] focus:border-transparent transition-all"
+                className="w-full px-4 py-2 bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-(--accent) focus:border-transparent transition-all"
               >
                 <option value="all">Todos los roles</option>
                 <option value={UserRole.Inquilino}>Inquilino</option>
@@ -183,7 +183,7 @@ export default function AdminDashboardPage() {
           {/* ESTADOS DE CARGA Y ERROR */}
           {isLoading && (
             <div className="flex justify-center items-center py-12">
-              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#14b8a6]"></div>
+              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-(--accent)"></div>
               <p className="ml-4 text-gray-600">Cargando usuarios...</p>
             </div>
           )}

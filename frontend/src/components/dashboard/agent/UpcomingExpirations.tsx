@@ -94,7 +94,7 @@ export default function UpcomingExpirations() {
       {/* Contratos que vencen */}
       {expiringContracts.length > 0 && (
         <div>
-          <h3 className="text-lg font-bold text-[#0f172a] mb-4 flex items-center gap-2">
+          <h3 className="text-lg font-bold text-(--primary) mb-4 flex items-center gap-2">
             <Icon name="calendar" className="w-5 h-5 text-red-500" />
             Contratos por Vencer ({expiringContracts.length})
           </h3>
@@ -142,7 +142,7 @@ export default function UpcomingExpirations() {
       {/* Ajustes de precio próximos */}
       {adjustmentContracts.length > 0 && (
         <div>
-          <h3 className="text-lg font-bold text-[#0f172a] mb-4 flex items-center gap-2">
+          <h3 className="text-lg font-bold text-(--primary) mb-4 flex items-center gap-2">
             <Icon name="trending-up" className="w-5 h-5 text-amber-500" />
             Ajustes de Precio Próximos ({adjustmentContracts.length})
           </h3>

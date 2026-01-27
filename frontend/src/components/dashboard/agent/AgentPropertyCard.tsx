@@ -119,8 +119,8 @@ export default function AgentPropertyCard({
 
   const getActionStyles = (variant: string) => {
     const styles: Record<string, string> = {
-      primary: "bg-[#0f172a] text-white hover:bg-[#334155]",
-      secondary: "bg-[#14b8a6] text-white hover:bg-[#0d9488]",
+      primary: "bg-(--primary) text-white hover:bg-(--primary-light)",
+      secondary: "bg-(--accent) text-white hover:bg-(--accent-hover)",
       danger: "bg-red-500 text-white hover:bg-red-600",
       success: "bg-green-500 text-white hover:bg-green-600",
       warning: "bg-amber-500 text-white hover:bg-amber-600",

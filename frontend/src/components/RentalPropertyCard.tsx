@@ -88,8 +88,8 @@ export default function RentalPropertyCard({
     actionVariant: PropertyAction["variant"] = "primary",
   ) => {
     const styles = {
-      primary: "bg-[#0f172a] text-white hover:bg-[#334155]",
-      secondary: "bg-[#14b8a6] text-white hover:bg-[#0d9488]",
+      primary: "bg-(--primary) text-white hover:bg-(--primary-light)",
+      secondary: "bg-(--accent) text-white hover:bg-(--accent-hover)",
       danger: "bg-red-500 text-white hover:bg-red-600",
       success: "bg-green-500 text-white hover:bg-green-600",
       warning: "bg-amber-500 text-white hover:bg-amber-600",
@@ -195,7 +195,7 @@ export default function RentalPropertyCard({
               e.stopPropagation();
               handleCardClick();
             }}
-            className="w-full px-4 py-3 bg-[#14b8a6] text-white font-semibold rounded-lg hover:bg-[#0d9488] transition-all duration-300 shadow-md hover:shadow-lg flex items-center justify-center gap-2"
+            className="w-full px-4 py-3 bg-(--accent) text-white font-semibold rounded-lg hover:bg-(--accent-hover) transition-all duration-300 shadow-md hover:shadow-lg flex items-center justify-center gap-2"
           >
             <svg
               className="w-5 h-5"
@@ -262,7 +262,7 @@ export default function RentalPropertyCard({
           >
             <div className="sticky top-0 bg-white border-b border-gray-200 px-6 py-4 flex justify-between items-center">
               <div className="flex-1"></div>
-              <h2 className="text-2xl font-bold text-[#0f172a]">
+              <h2 className="text-2xl font-bold text-(--primary)">
                 Detalles de la Renta
               </h2>
               <div className="flex-1 flex justify-end">
@@ -290,7 +290,7 @@ export default function RentalPropertyCard({
             <div className="p-6 space-y-6">
               {/* Información de la Propiedad */}
               <div>
-                <h3 className="text-lg font-semibold text-[#0f172a] mb-3">
+                <h3 className="text-lg font-semibold text-(--primary) mb-3">
                   Propiedad
                 </h3>
                 <div className="bg-gray-50 rounded-lg p-4 space-y-2">
@@ -312,7 +312,7 @@ export default function RentalPropertyCard({
 
               {/* Información del Contrato */}
               <div>
-                <h3 className="text-lg font-semibold text-[#0f172a] mb-3">
+                <h3 className="text-lg font-semibold text-(--primary) mb-3">
                   Contrato
                 </h3>
                 <div className="bg-gray-50 rounded-lg p-4 space-y-2">
@@ -354,7 +354,7 @@ export default function RentalPropertyCard({
                           return adjustmentMonths.map((date, index) => (
                             <span
                               key={index}
-                              className="px-3 py-1 bg-[#14b8a6] text-white rounded-full text-xs font-medium"
+                              className="px-3 py-1 bg-(--accent) text-white rounded-full text-xs font-medium"
                             >
                               {date.toLocaleDateString("es-ES", {
                                 month: "long",
@@ -376,7 +376,7 @@ export default function RentalPropertyCard({
                   {/* Contacto del Propietario */}
                   {property.landlordName && (
                     <div>
-                      <h3 className="text-lg font-semibold text-[#0f172a] mb-3">
+                      <h3 className="text-lg font-semibold text-(--primary) mb-3">
                         Contacto del Propietario
                       </h3>
                       <div className="bg-gray-50 rounded-lg p-4 space-y-2">
@@ -403,7 +403,7 @@ export default function RentalPropertyCard({
                   {/* Contacto del Inquilino */}
                   {property.tenantName && (
                     <div>
-                      <h3 className="text-lg font-semibold text-[#0f172a] mb-3">
+                      <h3 className="text-lg font-semibold text-(--primary) mb-3">
                         Contacto del Inquilino
                       </h3>
                       <div className="bg-gray-50 rounded-lg p-4 space-y-2">
@@ -430,7 +430,7 @@ export default function RentalPropertyCard({
               ) : (
                 // Para inquilinos y propietarios: mostrar solo un contacto
                 <div>
-                  <h3 className="text-lg font-semibold text-[#0f172a] mb-3">
+                  <h3 className="text-lg font-semibold text-(--primary) mb-3">
                     {viewerRole === "tenant"
                       ? "Contacto del Propietario"
                       : "Contacto del Inquilino"}
@@ -465,7 +465,7 @@ export default function RentalPropertyCard({
               {/* Información del Agente - Siempre mostrar si está disponible */}
               {property.agentName && (
                 <div>
-                  <h3 className="text-lg font-semibold text-[#0f172a] mb-3">
+                  <h3 className="text-lg font-semibold text-(--primary) mb-3">
                     Contacto del Agente
                   </h3>
                   <div className="bg-gray-50 rounded-lg p-4 space-y-2">
