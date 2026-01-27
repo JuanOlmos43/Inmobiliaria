@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
+import { useDebounce } from "@/hooks/useDebounce";
 import Modal from "@/components/UI/Modal";
 import { UserRole } from "@/types/api";
 import { usersService } from "@/lib/api/services/users";
@@ -51,13 +52,19 @@ export default function RentalModal({
     status: "active",
   });
 
+  const [tenantSearch, setTenantSearch] = useState("");
+  const debouncedTenantSearch = useDebounce(tenantSearch, 500);
+
   /* const [tenants, setTenants] = useState<SystemUser[]>([]); */
   // Use TanStack Query instead of manual fetch/effect
   const { data: tenants = [] } = useQuery({
-    queryKey: ["users", "tenants"],
+    queryKey: ["users", "tenants", debouncedTenantSearch],
     queryFn: async () => {
       // Assuming usersService.getUsers returns correct type or we map it
-      const users = await usersService.getUsers({ role: UserRole.Inquilino });
+      const users = await usersService.getUsers({
+        role: UserRole.Inquilino,
+        search: debouncedTenantSearch,
+      });
       // Ensure we filter active if API doesn't do it automatically, assuming API returns array
       // Map API user type to local SystemUser interface if needed, but for now assuming compatible fields
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -77,7 +84,6 @@ export default function RentalModal({
         }));
     },
   });
-  const [tenantSearch, setTenantSearch] = useState("");
   const [showTenantDropdown, setShowTenantDropdown] = useState(false);
   const [selectedTenant, setSelectedTenant] = useState<SystemUser | null>(null);
 
@@ -97,12 +103,7 @@ export default function RentalModal({
     }
   };
 
-  const filteredTenants = tenants.filter((tenant) => {
-    const searchLower = tenantSearch.toLowerCase();
-    const name = (tenant.name || "").toLowerCase();
-    const email = tenant.email.toLowerCase();
-    return name.includes(searchLower) || email.includes(searchLower);
-  });
+  const filteredTenants = tenants; // Already filtered by backend
 
   const calculateAdjustmentMonths = () => {
     if (!formData.startDate || !formData.endDate) return [];

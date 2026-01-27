@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
+import { useDebounce } from "@/hooks/useDebounce";
 import Modal from "@/components/UI/Modal";
 import FormInput from "@/components/UI/FormInput";
 import FormSelect from "@/components/UI/FormSelect";
@@ -46,10 +47,11 @@ export default function PropertyModal({
     city: "",
     street: "",
     streetNumber: "",
-    apartment: "",
+    apartment: property?.apartment || "",
   });
 
   const [landlordSearch, setLandlordSearch] = useState("");
+  const debouncedLandlordSearch = useDebounce(landlordSearch, 500);
   const [showLandlordDropdown, setShowLandlordDropdown] = useState(false);
   const [featureInput, setFeatureInput] = useState("");
   const [inputModes, setInputModes] = useState<{
@@ -100,6 +102,10 @@ export default function PropertyModal({
         city: fullProperty.localidad?.nombre || prev.city,
         street: fullProperty.calle?.nombre || prev.street,
         streetNumber: fullProperty.streetNumber || prev.streetNumber,
+        apartment: fullProperty.apartment || prev.apartment,
+        provinciaId: fullProperty.provinciaId || prev.provinciaId,
+        localidadId: fullProperty.localidadId || prev.localidadId,
+        calleId: fullProperty.calleId || prev.calleId,
       }));
 
       // Update dependent states
@@ -114,33 +120,28 @@ export default function PropertyModal({
     }
   }, [fullProperty]);
 
-  // Derive selected IDs from names for dependent queries
-  const selectedProvinciaId = provincias.find(
-    (p) => p.nombre === formData.province,
-  )?.id;
-
   // Fetch localities dependent on province
   const { data: localidades = [], isLoading: isLoadingLocalidades } = useQuery({
-    queryKey: ["ubicaciones", "localidades", selectedProvinciaId],
-    queryFn: () => propertiesService.getLocalidades(selectedProvinciaId!),
-    enabled: !!selectedProvinciaId, // Only fetch if a province is selected
+    queryKey: ["ubicaciones", "localidades", formData.provinciaId],
+    queryFn: () => propertiesService.getLocalidades(formData.provinciaId!),
+    enabled: !!formData.provinciaId, // Only fetch if a province is selected
   });
-
-  const selectedLocalidadId = localidades.find(
-    (l) => l.nombre === formData.city,
-  )?.id;
 
   // Fetch streets dependent on locality
   const { data: calles = [], isLoading: isLoadingCalles } = useQuery({
-    queryKey: ["ubicaciones", "calles", selectedLocalidadId],
-    queryFn: () => propertiesService.getCalles(selectedLocalidadId!),
-    enabled: !!selectedLocalidadId,
+    queryKey: ["ubicaciones", "calles", formData.localidadId],
+    queryFn: () => propertiesService.getCalles(formData.localidadId!),
+    enabled: !!formData.localidadId,
   });
 
   // Fetch landlords using TanStack Query
   const { data: landlords = [], isLoading: isLoadingLandlords } = useQuery({
-    queryKey: ["users", "landlords"],
-    queryFn: () => usersService.getUsers({ role: UserRole.Propietario }),
+    queryKey: ["users", "landlords", debouncedLandlordSearch],
+    queryFn: () =>
+      usersService.getUsers({
+        role: UserRole.Propietario,
+        search: debouncedLandlordSearch,
+      }),
     staleTime: 1000 * 60 * 5, // Cache for 5 minutes
   });
 
@@ -169,52 +170,28 @@ export default function PropertyModal({
     }
   };
 
-  const filteredLandlords = landlords.filter((landlord) => {
-    const searchLower = landlordSearch.toLowerCase();
-    const name = (landlord.name || "").toLowerCase();
-    const email = landlord.email.toLowerCase();
-    return name.includes(searchLower) || email.includes(searchLower);
-  });
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     try {
       // 1. Handle Location Creation if Manual
-      let currentLocalidadId = selectedLocalidadId;
-
-      // Fallback: Si no tenemos ID pero tenemos nombre y lista, intentamos buscarlo de nuevo
-      if (
-        !currentLocalidadId &&
-        inputModes.city === "select" &&
-        formData.city
-      ) {
-        currentLocalidadId = localidades.find(
-          (l) => l.nombre === formData.city,
-        )?.id;
-      }
-
-      let currentCalleId: string | undefined = undefined;
+      let currentLocalidadId = formData.localidadId;
+      let currentCalleId = formData.calleId;
 
       // Create Localidad if in input mode
-      if (inputModes.city === "input" && formData.city && selectedProvinciaId) {
+      if (inputModes.city === "input" && formData.city && formData.provinciaId) {
         try {
           const newLocalidad = await propertiesService.createLocalidad({
             nombre: formData.city,
-            provinciaId: selectedProvinciaId,
+            provinciaId: formData.provinciaId,
           });
           currentLocalidadId = newLocalidad.id;
         } catch (error) {
           console.error("Error creating localidad:", error);
-          // Decide if stop or continue. For now continue but maybe alert?
         }
       }
 
-      if (
-        inputModes.street === "input" &&
-        formData.street &&
-        currentLocalidadId
-      ) {
+      if (inputModes.street === "input" && formData.street && currentLocalidadId) {
         try {
           const newCalle = await propertiesService.createCalle({
             nombre: formData.street,
@@ -222,12 +199,9 @@ export default function PropertyModal({
           });
           currentCalleId = newCalle.id;
         } catch (error: unknown) {
-          // ... conflict handling logic ...
-          console.error("Error creating calle:", error);
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           if ((error as any)?.status === 409 || (error as any)?.code === 409) {
             try {
-              // Recargamos las calles de esa localidad para encontrar la existente
               const callesExistentes =
                 await propertiesService.getCalles(currentLocalidadId);
               const calleEncontrada = callesExistentes.find(
@@ -246,25 +220,6 @@ export default function PropertyModal({
             }
           }
         }
-      } else if (inputModes.street === "select" && formData.street) {
-        // Find the ID of the selected street from the loaded 'calles' array
-        // We use the 'calles' from scope, but if logic changed, we might need to ensure they match currentLocalidadId
-        // Ideally we should trust the 'calles' query which depends on selectedLocalidadId.
-
-        const selectedCalle = calles.find((c) => c.nombre === formData.street);
-        if (selectedCalle) {
-          currentCalleId = selectedCalle.id;
-        } else if (currentLocalidadId) {
-          // Fallback: try to finding in a potentially not-updated 'calles' list
-          // or maybe we should fetch? Async inside submit is tricky for queries.
-          // However, if the user selected it from dropdown, it MUST be in 'calles'.
-          // Unless they typed it? No, it's 'select' mode.
-          // Maybe casing matches?
-          const looseMatch = calles.find(
-            (c) => c.nombre.toLowerCase() === formData.street?.toLowerCase(),
-          );
-          if (looseMatch) currentCalleId = looseMatch.id;
-        }
       }
 
       // 2. Prepare Submission
@@ -273,18 +228,14 @@ export default function PropertyModal({
 
       const submissionData = {
         ...formData,
-        location: fullLocation, // Keep for UI compatibility if needed
-        locationText: fullLocation, // Map to DTO locationText
-        streetNumber: formData.streetNumber, // Map streetNumber to DTO address parameter
+        location: fullLocation,
         localidadId: currentLocalidadId,
-        provinciaId: selectedProvinciaId,
         calleId: currentCalleId,
       };
 
       onSave(submissionData, selectedFiles);
     } catch (error) {
       console.error("Error submitting form:", error);
-      // handle global error
     }
   };
 
@@ -369,11 +320,16 @@ export default function PropertyModal({
               required
               value={formData.province}
               onChange={(e) => {
+                const nombre = e.target.value;
+                const prov = provincias.find((p) => p.nombre === nombre);
                 setFormData({
                   ...formData,
-                  province: e.target.value,
+                  province: nombre,
+                  provinciaId: prov?.id || "",
                   city: "", // Reset dependant fields
+                  localidadId: "",
                   street: "",
+                  calleId: "",
                 });
               }}
             >
@@ -393,15 +349,24 @@ export default function PropertyModal({
                 value={formData.city}
                 disabled={!formData.province}
                 onChange={(e) => {
-                  const val = e.target.value;
-                  if (val === "custom") {
+                  const nombre = e.target.value;
+                  if (nombre === "custom") {
                     setInputModes((prev) => ({ ...prev, city: "input" }));
-                    setFormData((prev) => ({ ...prev, city: "", street: "" }));
-                  } else {
                     setFormData((prev) => ({
                       ...prev,
-                      city: val,
+                      city: "",
+                      localidadId: "",
                       street: "",
+                      calleId: "",
+                    }));
+                  } else {
+                    const loc = localidades.find((l) => l.nombre === nombre);
+                    setFormData((prev) => ({
+                      ...prev,
+                      city: nombre,
+                      localidadId: loc?.id || "",
+                      street: "",
+                      calleId: "",
                     }));
                   }
                 }}
@@ -475,12 +440,17 @@ export default function PropertyModal({
                 value={formData.street}
                 disabled={!formData.city}
                 onChange={(e) => {
-                  const val = e.target.value;
-                  if (val === "custom") {
+                  const nombre = e.target.value;
+                  if (nombre === "custom") {
                     setInputModes((prev) => ({ ...prev, street: "input" }));
-                    setFormData((prev) => ({ ...prev, street: "" }));
+                    setFormData((prev) => ({ ...prev, street: "", calleId: "" }));
                   } else {
-                    setFormData((prev) => ({ ...prev, street: val }));
+                    const calle = calles.find((c) => c.nombre === nombre);
+                    setFormData((prev) => ({
+                      ...prev,
+                      street: nombre,
+                      calleId: calle?.id || "",
+                    }));
                   }
                 }}
               >
@@ -593,8 +563,8 @@ export default function PropertyModal({
             {/* Dropdown de resultados */}
             {showLandlordDropdown && landlordSearch && (
               <div className="absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-lg shadow-lg max-h-60 overflow-y-auto">
-                {filteredLandlords.length > 0 ? (
-                  filteredLandlords.map((landlord) => (
+                {landlords.length > 0 ? (
+                  landlords.map((landlord) => (
                     <button
                       key={landlord.email}
                       type="button"

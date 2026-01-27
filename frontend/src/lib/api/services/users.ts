@@ -9,14 +9,15 @@ export const usersService = {
   /**
    * Obtiene la lista de usuarios, opcionalmente filtrada por rol y/o email
    */
-  async getUsers(filters?: { role?: UserRole; email?: string }): Promise<UserProfile[]> {
+  async getUsers(filters?: { role?: UserRole; email?: string; search?: string }): Promise<UserProfile[]> {
     const params = new URLSearchParams();
     if (filters?.role) params.append("role", filters.role);
     if (filters?.email) params.append("email", filters.email);
-    
+    if (filters?.search) params.append("search", filters.search);
+
     const queryString = params.toString();
     const url = queryString ? `${API_ENDPOINTS.USERS}?${queryString}` : API_ENDPOINTS.USERS;
-    
+
     return apiClient.get<UserProfile[]>(url);
   },
 

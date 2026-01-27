@@ -61,6 +61,10 @@ export class CreatePropiedadeDto {
   streetNumber?: string;
 
   @IsOptional()
+  @IsString()
+  apartment?: string;
+
+  @IsOptional()
   @IsUUID()
   calleId?: string;
 
@@ -74,7 +78,7 @@ export class CreatePropiedadeDto {
 
   @IsOptional()
   @IsString()
-  locationText?: string;
+  location?: string;
 
   // Multimedia
   @IsOptional()

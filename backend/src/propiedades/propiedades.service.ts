@@ -104,7 +104,7 @@ export class PropiedadesService {
     }
 
     if (query.search) {
-      where.locationText = {
+      where.location = {
         contains: query.search,
         mode: 'insensitive',
       };

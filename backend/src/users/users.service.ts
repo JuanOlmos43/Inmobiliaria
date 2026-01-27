@@ -9,7 +9,7 @@ export { CreateUserDto, UpdateUserDto };
 
 @Injectable()
 export class UsersService {
-  constructor(private prisma: PrismaService) {}
+  constructor(private prisma: PrismaService) { }
 
   async findByEmail(email: string): Promise<User | null> {
     return this.prisma.user.findUnique({
@@ -36,10 +36,17 @@ export class UsersService {
     });
   }
 
-  async findAll(role?: UserRole, email?: string) {
+  async findAll(role?: UserRole, email?: string, search?: string) {
     const where: Prisma.UserWhereInput = {};
     if (role) where.role = role;
     if (email) where.email = { startsWith: email, mode: 'insensitive' };
+
+    if (search) {
+      where.OR = [
+        { name: { contains: search, mode: 'insensitive' } },
+        { email: { contains: search, mode: 'insensitive' } },
+      ];
+    }
 
     return this.prisma.user.findMany({
       where,
@@ -53,6 +60,10 @@ export class UsersService {
         createdAt: true,
         updatedAt: true,
       },
+      orderBy: [
+        { name: 'asc' },
+        { email: 'asc' },
+      ],
     });
   }
 

@@ -19,7 +19,7 @@ import { Roles } from '../auth/decorators/roles.decorator';
 @Controller('users')
 @UseGuards(JwtAuthGuard, RolesGuard)
 export class UsersController {
-  constructor(private readonly usersService: UsersService) {}
+  constructor(private readonly usersService: UsersService) { }
 
   @Get('stats')
   @Roles(UserRole.Administrador)
@@ -29,8 +29,12 @@ export class UsersController {
 
   @Get()
   @Roles(UserRole.Administrador, UserRole.Agente)
-  async findAll(@Query('role') role?: UserRole, @Query('email') email?: string) {
-    return this.usersService.findAll(role, email);
+  async findAll(
+    @Query('role') role?: UserRole,
+    @Query('email') email?: string,
+    @Query('search') search?: string,
+  ) {
+    return this.usersService.findAll(role, email, search);
   }
 
   @Patch(':id')

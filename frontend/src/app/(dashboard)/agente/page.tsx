@@ -133,6 +133,7 @@ export default function DashboardPage() {
         streetNumber: propertyData.streetNumber,
         features: propertyData.features,
         images: propertyData.images,
+        apartment: propertyData.apartment,
       };
 
       let savedPropertyId: string;

@@ -15,10 +15,11 @@ export interface CreatePropertyDto {
   area: number;
   yearBuilt?: number | null;
   streetNumber?: string;
+  apartment?: string;
   calleId?: string;
   localidadId?: string;
   provinciaId?: string;
-  locationText?: string;
+  location?: string;
   ownerId?: string;
   agentId?: string;
   status?: "activa" | "pausada" | "archivada";
