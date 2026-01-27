@@ -37,7 +37,7 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#0f172a] via-[#0f172a] to-[#334155] flex items-center justify-center px-4 py-12">
+    <div className="min-h-screen bg-linear-to-br from-(--primary) via-(--primary) to-(--primary-light) flex items-center justify-center px-4 py-12">
       <div className="max-w-md w-full">
         {/* Card Container */}
         <div className="bg-white/10 backdrop-blur-lg rounded-2xl shadow-2xl p-8 border border-white/20 animate-scale-in">
@@ -77,7 +77,7 @@ export default function LoginPage() {
                   required
                   placeholder="••••••••"
                   autoComplete="new-password"
-                  className="w-full px-4 py-2 pr-12 border rounded-lg transition-all duration-300 bg-white/10 border-white/30 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#14b8a6] focus:border-transparent [&::-ms-reveal]:hidden [&::-ms-clear]:hidden [&::-webkit-credentials-auto-fill-button]:hidden [&::-webkit-contacts-auto-fill-button]:hidden"
+                  className="w-full px-4 py-2 pr-12 border rounded-lg transition-all duration-300 bg-white/10 border-white/30 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-(--accent) focus:border-transparent [&::-ms-reveal]:hidden [&::-ms-clear]:hidden [&::-webkit-credentials-auto-fill-button]:hidden [&::-webkit-contacts-auto-fill-button]:hidden"
                 />
                 <button
                   type="button"
@@ -132,7 +132,7 @@ export default function LoginPage() {
             <div className="text-right">
               <Link
                 href="#"
-                className="text-sm text-[#14b8a6] hover:text-[#2dd4bf] transition-colors"
+                className="text-sm text-(--accent) hover:text-[#2dd4bf] transition-colors"
               >
                 ¿Olvidaste tu contraseña?
               </Link>
@@ -149,7 +149,7 @@ export default function LoginPage() {
             <button
               type="submit"
               disabled={isLoading}
-              className="w-full bg-[#14b8a6] text-white font-bold py-3 px-6 rounded-full hover:bg-[#0d9488] transition-all duration-300 shadow-xl hover:shadow-2xl transform hover:-translate-y-1 hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none flex items-center justify-center gap-2"
+              className="w-full bg-(--accent) text-white font-bold py-3 px-6 rounded-full hover:bg-(--accent-hover) transition-all duration-300 shadow-xl hover:shadow-2xl transform hover:-translate-y-1 hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none flex items-center justify-center gap-2"
             >
               {isLoading ? (
                 "Iniciando sesión..."

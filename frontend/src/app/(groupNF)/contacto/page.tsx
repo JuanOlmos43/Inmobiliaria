@@ -54,7 +54,7 @@ export default function ContactoPage() {
   };
 
   return (
-    <div className="flex-grow bg-gray-50">
+    <div>
       {/* Hero Section */}
       <HeroSection
         title="Contáctanos"
@@ -66,7 +66,7 @@ export default function ContactoPage() {
         <div className="grid md:grid-cols-2 gap-8 items-start">
           {/* Información de Contacto */}
           <div>
-            <h2 className="text-4xl font-bold text-[#0f172a] mb-8">
+            <h2 className="text-4xl font-bold text-(--primary) mb-8">
               Información de Contacto
             </h2>
 
@@ -108,19 +108,9 @@ export default function ContactoPage() {
                 title="Teléfono"
                 content={
                   <>
-                    <a
-                      href="tel:+541112345678"
-                      className="hover:text-[#14b8a6] transition-colors"
-                    >
                       +54 11 1234-5678
-                    </a>
                     <br />
-                    <a
-                      href="tel:+541187654321"
-                      className="hover:text-[#14b8a6] transition-colors"
-                    >
                       +54 11 8765-4321
-                    </a>
                   </>
                 }
               />
@@ -139,19 +129,9 @@ export default function ContactoPage() {
                 title="Email"
                 content={
                   <>
-                    <a
-                      href="mailto:info@inmohogar.com"
-                      className="hover:text-[#14b8a6] transition-colors"
-                    >
                       info@inmohogar.com
-                    </a>
                     <br />
-                    <a
-                      href="mailto:ventas@inmohogar.com"
-                      className="hover:text-[#14b8a6] transition-colors"
-                    >
                       ventas@inmohogar.com
-                    </a>
                   </>
                 }
               />
@@ -183,8 +163,8 @@ export default function ContactoPage() {
 
           {/* Formulario de Contacto */}
           <div>
-            <div className="bg-white p-6 rounded-2xl shadow-xl border-l-4 border-teal-500">
-              <h2 className="text-2xl font-bold text-[#0f172a] mb-4">
+            <div className="bg-white p-6 rounded-2xl shadow-xl border-l-4 border-(--accent)">
+              <h2 className="text-2xl font-bold text-(--primary) mb-4">
                 Envíanos un Mensaje
               </h2>
 
@@ -271,10 +251,10 @@ export default function ContactoPage() {
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className={`w-full bg-[#0f172a] text-white py-3 rounded-lg font-bold text-base transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl flex items-center justify-center gap-2 ${
+                  className={`w-full bg-(--primary) text-white py-3 rounded-lg font-bold text-base transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl flex items-center justify-center gap-2 ${
                     isSubmitting
                       ? "opacity-50 cursor-not-allowed"
-                      : "hover:bg-[#334155]"
+                      : "hover:bg-(--primary-light)"
                   }`}
                 >
                   {isSubmitting ? (

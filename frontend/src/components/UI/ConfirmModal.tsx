@@ -46,7 +46,13 @@ export default function ConfirmModal({
             className={`shrink-0 w-12 h-12 rounded-full flex items-center justify-center ${colors[type]}`}
           >
             <Icon
-              name={type === "danger" ? "pause" : type === "warning" ? "key" : "home"}
+              name={
+                type === "danger"
+                  ? "pause"
+                  : type === "warning"
+                    ? "key"
+                    : "home"
+              }
               className="w-6 h-6"
             />
           </div>

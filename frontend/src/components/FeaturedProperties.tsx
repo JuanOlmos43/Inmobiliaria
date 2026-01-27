@@ -31,7 +31,7 @@ export default function FeaturedProperties() {
   }, [isPaused, maxIndex]);
 
   return (
-    <section className="pb-12 bg-gradient-to-b from-[#0f172a] via-[#0f172a] to-[#1e293b]">
+    <section className="pb-12 bg-linear-to-b from-(--primary) via-(--primary) to-(--primary-light)">
       {/* Header */}
       <div className="pt-8 pb-8">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -53,7 +53,7 @@ export default function FeaturedProperties() {
             <>
               <button
                 onClick={handlePrev}
-                className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-4 z-10 bg-gradient-to-r from-[#0f172a] to-[#334155] hover:from-[#14b8a6] hover:to-[#0d9488] text-white p-4 rounded-full shadow-xl transition-all duration-300 hidden lg:block transform hover:scale-110"
+                className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-4 z-10 bg-linear-to-r from-(--primary) to-(--primary-light) hover:from-(--accent) hover:to-(--accent-hover) text-white p-4 rounded-full shadow-xl transition-all duration-300 hidden lg:block transform hover:scale-110"
                 aria-label="Anterior"
               >
                 <svg
@@ -73,7 +73,7 @@ export default function FeaturedProperties() {
 
               <button
                 onClick={handleNext}
-                className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-4 z-10 bg-gradient-to-r from-[#0f172a] to-[#334155] hover:from-[#14b8a6] hover:to-[#0d9488] text-white p-4 rounded-full shadow-xl transition-all duration-300 hidden lg:block transform hover:scale-110"
+                className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-4 z-10 bg-linear-to-r from-(--primary) to-(--primary-light) hover:from-(--accent) hover:to-(--accent-hover) text-white p-4 rounded-full shadow-xl transition-all duration-300 hidden lg:block transform hover:scale-110"
                 aria-label="Siguiente"
               >
                 <svg
@@ -104,9 +104,12 @@ export default function FeaturedProperties() {
               {featuredProperties.map((property) => (
                 <div
                   key={property.id}
-                  className="flex-shrink-0 w-full lg:w-[calc(33.333%-1rem)]"
+                  className="shrink-0 w-full lg:w-[calc(33.333%-1rem)]"
                 >
-                  <Link href={`/propiedades/${property.id}`} className="block group">
+                  <Link
+                    href={`/propiedades/${property.id}`}
+                    className="block group"
+                  >
                     <BasePropertyCard
                       title={property.title}
                       price={property.price}
@@ -134,10 +137,11 @@ export default function FeaturedProperties() {
             <button
               key={index}
               onClick={() => setCurrentIndex(index)}
-              className={`w-3 h-3 rounded-full transition-all duration-300 ${index === currentIndex
-                  ? "bg-gradient-to-r from-[#14b8a6] to-[#0d9488] w-8"
+              className={`w-3 h-3 rounded-full transition-all duration-300 ${
+                index === currentIndex
+                  ? "bg-linear-to-r from-(--accent) to-(--accent-hover) w-8"
                   : "bg-gray-300"
-                }`}
+              }`}
               aria-label={`Ir a propiedad ${index + 1}`}
             />
           ))}

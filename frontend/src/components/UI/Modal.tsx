@@ -58,8 +58,8 @@ export default function Modal({
       <div
         className={`bg-white rounded-2xl shadow-2xl ${maxWidthClasses[maxWidth]} w-full max-h-[90vh] flex flex-col animate-scale-in`}
       >
-        <div className="flex justify-between items-start p-6 border-b border-gray-100 flex-shrink-0">
-          <h3 className="text-2xl font-bold text-[#0f172a]">{title}</h3>
+        <div className="flex justify-between items-start p-6 border-b border-gray-100 shrink-0">
+          <h3 className="text-2xl font-bold text-(--primary)">{title}</h3>
           <button
             onClick={onClose}
             className="text-gray-400 hover:text-gray-600 transition-colors"

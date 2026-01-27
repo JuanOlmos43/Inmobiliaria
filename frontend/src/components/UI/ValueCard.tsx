@@ -15,14 +15,14 @@ export default function ValueCard({
 }: ValueCardProps) {
   const colorClasses =
     color === "dark"
-      ? "from-[#0f172a] to-[#334155]"
-      : "from-[#14b8a6] to-[#0d9488]";
+      ? "from-(--primary) to-(--primary-light)"
+      : "from-(--accent) to-(--accent-hover)";
 
   const textColor = color === "dark" ? "text-gray-100" : "text-gray-50";
 
   return (
     <div
-      className={`bg-gradient-to-br ${colorClasses} p-8 rounded-2xl shadow-xl text-white transform hover:scale-105 transition-all duration-300 hover:shadow-2xl`}
+      className={`bg-linear-to-br ${colorClasses} p-8 rounded-2xl shadow-xl text-white transform hover:scale-105 transition-all duration-300 hover:shadow-2xl`}
     >
       <div className="mb-4">{icon}</div>
       <h3 className="text-2xl font-bold mb-4">{title}</h3>

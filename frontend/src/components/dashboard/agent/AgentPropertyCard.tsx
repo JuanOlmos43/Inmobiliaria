@@ -39,7 +39,6 @@ export default function AgentPropertyCard({
   onToggleStatus,
   onRent,
 }: AgentPropertyCardProps) {
-
   // Definir acciones
   const actions = [
     {
@@ -90,7 +89,9 @@ export default function AgentPropertyCard({
     {
       label: property.status === "activa" ? "Pausar" : "Activar",
       onClick: () => onToggleStatus(property.id),
-      variant: (property.status === "activa" ? "secondary" : "warning") as "secondary" | "warning",
+      variant: (property.status === "activa" ? "secondary" : "warning") as
+        | "secondary"
+        | "warning",
       show: true,
     },
     {
@@ -162,11 +163,9 @@ export default function AgentPropertyCard({
       bathrooms={property.bathrooms}
       area={property.area}
       image={property.image}
-
       showStatusBadge={true}
       showTypeBadge={true}
       showDetails={true}
-
       footerSlot={renderActions()}
     />
   );

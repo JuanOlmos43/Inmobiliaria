@@ -2,7 +2,7 @@ import Image from "next/image";
 
 export default function Footer() {
   return (
-    <footer className="bg-[#0f172a] text-white mt-auto">
+    <footer className="bg-(--primary) text-white mt-auto">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
           {/* Company Info */}
@@ -15,7 +15,7 @@ export default function Footer() {
                 height={60}
                 className="transition-transform duration-300"
               />
-              <h3 className="text-3xl font-bold text-[#14b8a6]">InmoHogar</h3>
+              <h3 className="text-3xl font-bold text-(--accent)">InmoHogar</h3>
             </div>
             <p className="text-gray-300 text-sm leading-relaxed">
               Tu socio de confianza en bienes raíces. Ayudándote a encontrar el
@@ -25,12 +25,12 @@ export default function Footer() {
 
           {/* Contact Info */}
           <div>
-            <h4 className="text-xl font-bold mb-6 text-[#14b8a6]">Contacto</h4>
+            <h4 className="text-xl font-bold mb-6 text-(--accent)">Contacto</h4>
             <ul className="space-y-4 text-gray-300 text-sm">
               <li className="flex items-center gap-3 group">
                 <div className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center transition-all duration-300">
                   <svg
-                    className="w-5 h-5 flex-shrink-0"
+                    className="w-5 h-5 shrink-0"
                     fill="currentColor"
                     viewBox="0 0 24 24"
                   >
@@ -42,7 +42,7 @@ export default function Footer() {
               <li className="flex items-center gap-3 group">
                 <div className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center transition-all duration-300">
                   <svg
-                    className="w-5 h-5 flex-shrink-0"
+                    className="w-5 h-5 shrink-0"
                     fill="currentColor"
                     viewBox="0 0 24 24"
                   >
@@ -54,7 +54,7 @@ export default function Footer() {
               <li className="flex items-center gap-3 group">
                 <div className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center transition-all duration-300">
                   <svg
-                    className="w-5 h-5 flex-shrink-0"
+                    className="w-5 h-5 shrink-0"
                     fill="currentColor"
                     viewBox="0 0 24 24"
                   >
@@ -68,11 +68,11 @@ export default function Footer() {
 
           {/* Social Media */}
           <div>
-            <h4 className="text-xl font-bold mb-6 text-[#14b8a6]">Síguenos</h4>
+            <h4 className="text-xl font-bold mb-6 text-(--accent)">Síguenos</h4>
             <div className="flex space-x-4">
               <a
                 href="#"
-                className="w-12 h-12 rounded-full bg-white/10 hover:bg-[#14b8a6] flex items-center justify-center transition-all duration-300 transform hover:scale-110 hover:shadow-lg"
+                className="w-12 h-12 rounded-full bg-white/10 hover:bg-(--accent) flex items-center justify-center transition-all duration-300 transform hover:scale-110 hover:shadow-lg"
               >
                 <span className="sr-only">Facebook</span>
                 <svg
@@ -85,7 +85,7 @@ export default function Footer() {
               </a>
               <a
                 href="#"
-                className="w-12 h-12 rounded-full bg-white/10 hover:bg-[#14b8a6] flex items-center justify-center transition-all duration-300 transform hover:scale-110 hover:shadow-lg"
+                className="w-12 h-12 rounded-full bg-white/10 hover:bg-(--accent) flex items-center justify-center transition-all duration-300 transform hover:scale-110 hover:shadow-lg"
               >
                 <span className="sr-only">Instagram</span>
                 <svg

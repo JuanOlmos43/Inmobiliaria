@@ -103,7 +103,7 @@ function StatsCard({
 }) {
   return (
     <div
-      className={`bg-gradient-to-br ${color} rounded-xl shadow-lg p-6 text-white transform hover:scale-105 transition-transform duration-300`}
+      className={`bg-linear-to-br ${color} rounded-xl shadow-lg p-6 text-white transform hover:scale-105 transition-transform duration-300`}
     >
       <div className="flex items-start justify-between mb-3">
         <div

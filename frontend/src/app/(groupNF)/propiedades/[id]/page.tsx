@@ -15,14 +15,14 @@ export default function PropertyDetailPage() {
 
   if (!property) {
     return (
-      <main className="flex-grow bg-[#f8fafc] flex items-center justify-center">
+      <main className="grow bg-(--background) flex items-center justify-center">
         <div className="text-center">
-          <h1 className="text-4xl font-bold text-[#0f172a] mb-4">
+          <h1 className="text-4xl font-bold text-(--primary) mb-4">
             Propiedad no encontrada
           </h1>
           <Link
             href="/propiedades"
-            className="text-[#14b8a6] hover:text-[#0d9488] font-semibold"
+            className="text-(--accent) hover:text-(--accent-hover) font-semibold"
           >
             Volver a propiedades
           </Link>
@@ -48,7 +48,7 @@ export default function PropertyDetailPage() {
   };
 
   return (
-    <main className="flex-grow bg-[#f8fafc]">
+    <main className="grow bg-(--background)">
       {/* Property Details */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -63,7 +63,7 @@ export default function PropertyDetailPage() {
                 className="object-cover transition-opacity duration-300"
               />
               <div className="absolute top-4 right-4 z-10">
-                <span className="bg-[#14b8a6] text-white px-4 py-2 rounded-lg text-sm font-semibold">
+                <span className="bg-(--accent) text-white px-4 py-2 rounded-lg text-sm font-semibold">
                   {property.type === "venta" ? "Venta" : "Alquiler"}
                 </span>
               </div>
@@ -131,12 +131,12 @@ export default function PropertyDetailPage() {
 
             {/* Title and Location */}
             <div className="bg-white rounded-lg shadow-lg p-6 mb-6">
-              <h1 className="text-3xl font-bold text-[#0f172a] mb-3">
+              <h1 className="text-3xl font-bold text-(--primary) mb-3">
                 {property.title}
               </h1>
               <div className="flex items-center mb-4">
                 <svg
-                  className="w-5 h-5 mr-2 text-[#14b8a6]"
+                  className="w-5 h-5 mr-2 text-(--accent)"
                   fill="currentColor"
                   viewBox="0 0 20 20"
                 >
@@ -230,7 +230,7 @@ export default function PropertyDetailPage() {
 
             {/* Description */}
             <div className="bg-white rounded-lg shadow-lg p-6 mb-6">
-              <h2 className="text-2xl font-bold text-[#0f172a] mb-4">
+              <h2 className="text-2xl font-bold text-(--primary) mb-4">
                 Descripción
               </h2>
               <p className="text-gray-700 leading-relaxed">
@@ -240,14 +240,14 @@ export default function PropertyDetailPage() {
 
             {/* Features */}
             <div className="bg-white rounded-lg shadow-lg p-6">
-              <h2 className="text-2xl font-bold text-[#0f172a] mb-4">
+              <h2 className="text-2xl font-bold text-(--primary) mb-4">
                 Características
               </h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                 {property.features?.map((feature, index) => (
                   <div key={index} className="flex items-center">
                     <svg
-                      className="w-5 h-5 text-[#14b8a6] mr-2"
+                      className="w-5 h-5 text-(--accent) mr-2"
                       fill="currentColor"
                       viewBox="0 0 20 20"
                     >
@@ -270,18 +270,18 @@ export default function PropertyDetailPage() {
             <div className="bg-white rounded-lg shadow-lg p-6 sticky top-20 mb-6">
               <div className="mb-6">
                 <p className="text-gray-600 text-sm mb-2">Precio</p>
-                <p className="text-4xl font-bold text-[#0f172a]">
+                <p className="text-4xl font-bold text-(--primary)">
                   {property.currency} {property.price.toLocaleString("es-AR")}
                 </p>
                 {property.type === "alquiler" && (
-                  <p className="text-[#0f172a] text-sm mt-1">por mes</p>
+                  <p className="text-(--primary) text-sm mt-1">por mes</p>
                 )}
               </div>
 
               {/* Contact Button */}
               <Link
                 href="/contacto"
-                className="block w-full bg-[#14b8a6] hover:bg-[#0d9488] text-white font-semibold py-3 px-4 rounded-lg transition-colors text-center"
+                className="block w-full bg-(--accent) hover:bg-(--accent-hover) text-white font-semibold py-3 px-4 rounded-lg transition-colors text-center"
               >
                 Contactar
               </Link>

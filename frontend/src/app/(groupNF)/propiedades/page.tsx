@@ -137,7 +137,7 @@ function PropiedadesContent() {
   };
 
   return (
-    <main className="flex-grow bg-[#f8fafc]">
+    <main className="grow bg-[#f8fafc]">
       {/* Header */}
       <HeroSection
         title="Propiedades"

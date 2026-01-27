@@ -6,7 +6,7 @@ export default function Home() {
     <>
       <SearchBlock />
 
-      <main className="flex-grow bg-[#f8fafc]">
+      <main>
         {/* Propiedades destacadas */}
         <FeaturedProperties />
       </main>

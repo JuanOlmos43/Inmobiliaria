@@ -4,7 +4,7 @@ import ValueCard from "@/components/UI/ValueCard";
 
 export default function NosotrosPage() {
   return (
-    <div className="flex-grow bg-gray-50">
+    <div className="grow bg-gray-50">
       {/* Hero Section */}
       <HeroSection
         title="Sobre Nosotros"
@@ -89,7 +89,7 @@ export default function NosotrosPage() {
       </section>
 
       {/* Estadísticas */}
-      <section className="py-16 bg-gradient-to-r from-[#0f172a] to-[#334155] text-white shadow-inner">
+      <section className="py-16 bg-linear-to-r from-[#0f172a] to-[#334155] text-white shadow-inner">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <h2 className="text-4xl font-bold text-center mb-12">
             Nuestros Logros
@@ -125,7 +125,7 @@ export default function NosotrosPage() {
         <div className="grid md:grid-cols-3 gap-8">
           {/* Miembro 1 */}
           <div className="bg-white rounded-2xl shadow-xl overflow-hidden transform hover:scale-105 transition-all duration-300 hover:shadow-2xl">
-            <div className="h-64 bg-gradient-to-br from-[#0f172a] to-[#334155] flex items-center justify-center">
+            <div className="h-64 bg-linear-to-br from-[#0f172a] to-[#334155] flex items-center justify-center">
               <Icon
                 name="user"
                 className="w-32 h-32 text-white"
@@ -148,7 +148,7 @@ export default function NosotrosPage() {
 
           {/* Miembro 2 */}
           <div className="bg-white rounded-2xl shadow-xl overflow-hidden transform hover:scale-105 transition-all duration-300 hover:shadow-2xl">
-            <div className="h-64 bg-gradient-to-br from-[#14b8a6] to-[#0d9488] flex items-center justify-center">
+            <div className="h-64 bg-linear-to-br from-[#14b8a6] to-[#0d9488] flex items-center justify-center">
               <Icon
                 name="user"
                 className="w-32 h-32 text-white"
@@ -171,7 +171,7 @@ export default function NosotrosPage() {
 
           {/* Miembro 3 */}
           <div className="bg-white rounded-2xl shadow-xl overflow-hidden transform hover:scale-105 transition-all duration-300 hover:shadow-2xl">
-            <div className="h-64 bg-gradient-to-br from-[#0f172a] to-[#334155] flex items-center justify-center">
+            <div className="h-64 bg-linear-to-br from-[#0f172a] to-[#334155] flex items-center justify-center">
               <Icon
                 name="user"
                 className="w-32 h-32 text-white"
@@ -193,7 +193,7 @@ export default function NosotrosPage() {
       </section>
 
       {/* Call to Action */}
-      <section className="py-16 bg-gradient-to-r from-[#14b8a6] to-[#0d9488] text-white shadow-lg">
+      <section className="py-16 bg-linear-to-r from-[#14b8a6] to-[#0d9488] text-white shadow-lg">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h2 className="text-4xl font-bold mb-6">
             ¿Listo para encontrar tu hogar ideal?

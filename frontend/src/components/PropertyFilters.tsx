@@ -84,9 +84,9 @@ export default function PropertyFilters({
   };
 
   return (
-    <aside className="lg:w-64 flex-shrink-0">
-      <div className="bg-white rounded-2xl shadow-lg p-6 sticky top-20 border-l-4 border-teal-500">
-        <h2 className="text-xl font-bold text-[#0f172a] mb-6">Filtros</h2>
+    <aside className="lg:w-64 shrink-0">
+      <div className="bg-white rounded-2xl shadow-lg p-6 sticky top-20 border-l-4 border-(--accent)">
+        <h2 className="text-xl font-bold text-(--primary) mb-6">Filtros</h2>
 
         {/* Tipo de operación */}
         <FormSelect
@@ -173,7 +173,7 @@ export default function PropertyFilters({
         {/* Botón Buscar */}
         <button
           onClick={handleSearch}
-          className="w-full bg-[#0f172a] hover:bg-[#334155] text-white font-bold py-3 px-4 rounded-lg transition-all duration-300 mb-3 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 flex items-center justify-center gap-2"
+          className="w-full bg-(--primary) hover:bg-(--primary-light) text-white font-bold py-3 px-4 rounded-lg transition-all duration-300 mb-3 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 flex items-center justify-center gap-2"
         >
           <svg
             className="w-5 h-5"

@@ -51,7 +51,7 @@ export default function SearchBlock() {
   };
 
   return (
-    <section className="relative bg-gradient-to-b from-[#1e293b] via-[#0f172a] to-[#0f172a] pt-16">
+    <section className="relative bg-linear-to-b from-(--primary-light) via-(--primary) to-(--primary) pt-16">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Title */}
         <h2 className="text-white text-4xl md:text-5xl font-bold mb-10 text-center animate-fade-in">
@@ -66,7 +66,7 @@ export default function SearchBlock() {
               onClick={() => setActiveTab("alquilar")}
               className={`flex-1 py-5 px-6 text-center font-bold transition-all duration-300 ${
                 activeTab === "alquilar"
-                  ? "bg-[#14b8a6] text-white shadow-lg"
+                  ? "bg-(--accent) text-white shadow-lg"
                   : "bg-gray-50 text-gray-700 hover:bg-gray-100"
               }`}
             >
@@ -76,7 +76,7 @@ export default function SearchBlock() {
               onClick={() => setActiveTab("venta")}
               className={`flex-1 py-5 px-6 text-center font-bold transition-all duration-300 ${
                 activeTab === "venta"
-                  ? "bg-[#14b8a6] text-white shadow-lg"
+                  ? "bg-(--accent) text-white shadow-lg"
                   : "bg-gray-50 text-gray-700 hover:bg-gray-100"
               }`}
             >
@@ -181,7 +181,7 @@ export default function SearchBlock() {
             <div className="flex justify-center">
               <button
                 onClick={handleSearch}
-                className="bg-[#0f172a] hover:bg-[#334155] text-white font-bold px-16 py-4 rounded-full transition-all duration-300 shadow-xl hover:shadow-2xl transform hover:-translate-y-1 hover:scale-105 flex items-center justify-center gap-2"
+                className="bg-(--primary) hover:bg-(--primary-light) text-white font-bold px-16 py-4 rounded-full transition-all duration-300 shadow-xl hover:shadow-2xl transform hover:-translate-y-1 hover:scale-105 flex items-center justify-center gap-2"
               >
                 <svg
                   className="w-5 h-5"

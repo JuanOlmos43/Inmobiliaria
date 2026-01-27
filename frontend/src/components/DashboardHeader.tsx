@@ -28,14 +28,14 @@ export default function DashboardHeader({
   const icon = roleIconMap[role] || ("user" as IconName);
 
   return (
-    <header className="bg-[#0f172a] shadow-lg sticky top-0 z-40">
+    <header className="bg-(--primary) shadow-lg sticky top-0 z-40">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
         <div className="flex justify-between items-center">
           {/* Left side - Title and User */}
           <div className="flex items-center gap-3">
-            <Icon name={icon} className="w-8 h-8 text-[#14b8a6]" />
+            <Icon name={icon} className="w-8 h-8 text-(--accent)" />
             <div>
-              <h1 className="text-2xl font-bold text-[#14b8a6]">{role}</h1>
+              <h1 className="text-2xl font-bold text-(--accent)">{role}</h1>
               <p className="text-sm text-gray-300 font-mono">
                 Bienvenido, {userEmail || ""}
               </p>

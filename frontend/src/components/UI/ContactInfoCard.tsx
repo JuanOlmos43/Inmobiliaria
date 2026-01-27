@@ -14,7 +14,7 @@ export default function ContactInfoCard({
   return (
     <div className="bg-white p-6 rounded-2xl shadow-lg hover:shadow-xl transition-shadow duration-300 border-l-4 border-[#14b8a6]">
       <div className="flex items-start space-x-4">
-        <div className="flex-shrink-0 w-12 h-12 bg-[#14b8a6] rounded-full flex items-center justify-center">
+        <div className="shrink-0 w-12 h-12 bg-[#14b8a6] rounded-full flex items-center justify-center">
           {icon}
         </div>
         <div>
