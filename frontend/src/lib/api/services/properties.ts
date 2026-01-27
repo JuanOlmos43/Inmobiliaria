@@ -22,6 +22,8 @@ export interface CreatePropertyDto {
   ownerId?: string;
   agentId?: string;
   status?: "activa" | "pausada" | "archivada";
+  features?: string[];
+  images?: string[];
 }
 
 export interface UploadUrlResponse {
@@ -81,9 +83,15 @@ export const propertiesService = {
    */
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   async findAll(query?: any): Promise<any> {
-    const queryString = query
-      ? "?" + new URLSearchParams(query).toString()
-      : "";
+    const params = new URLSearchParams();
+    if (query) {
+      Object.entries(query).forEach(([key, value]) => {
+        if (value !== undefined && value !== null) {
+          params.append(key, String(value));
+        }
+      });
+    }
+    const queryString = params.toString() ? "?" + params.toString() : "";
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     return apiClient.get<any>(`/propiedades${queryString}`);
   },

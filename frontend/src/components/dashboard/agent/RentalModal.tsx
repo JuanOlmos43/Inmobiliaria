@@ -66,7 +66,7 @@ export default function RentalModal({
     queryKey: ['users', 'tenants'],
     queryFn: async () => {
       // Assuming usersService.getUsers returns correct type or we map it
-      const users = await usersService.getUsers(UserRole.Inquilino);
+      const users = await usersService.getUsers({ role: UserRole.Inquilino });
       // Ensure we filter active if API doesn't do it automatically, assuming API returns array
       // Map API user type to local SystemUser interface if needed, but for now assuming compatible fields
       // eslint-disable-next-line @typescript-eslint/no-explicit-any

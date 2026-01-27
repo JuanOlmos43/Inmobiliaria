@@ -4,7 +4,7 @@ import { useState } from "react";
 
 import { useAuth } from "@/hooks/useAuth";
 import { useDebounce } from "@/hooks/useDebounce";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 
 // Components
 import StatsCard from "@/components/UI/StatsCard";
@@ -43,9 +43,12 @@ interface Property {
   localidadId?: string;
   calleId?: string;
   ownerId?: string;
+  streetNumber?: string;
+  apartment?: string;
 }
 
 export default function DashboardPage() {
+  const queryClient = useQueryClient();
 
   const { user } = useAuth();
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -76,6 +79,7 @@ export default function DashboardPage() {
         response.data = response.data.map((p: any) => ({
           ...p,
           type: p.listingType === "venta" ? "Venta" : "Alquiler",
+          image: p.mainImage,
           // Ensure status matches the type (it should be lowercase from backend)
         }));
       }
@@ -154,6 +158,9 @@ export default function DashboardPage() {
         agentId: user?.id || undefined,
         calleId: propertyData.calleId || undefined,
         localidadId: propertyData.localidadId || undefined,
+        streetNumber: propertyData.streetNumber,
+        features: propertyData.features,
+        images: propertyData.images,
       };
 
       let savedPropertyId: string;
@@ -185,7 +192,12 @@ export default function DashboardPage() {
       }
 
       setIsModalOpen(false);
-      refetch();
+
+      // Invalidate queries to ensure fresh data
+      queryClient.invalidateQueries({ queryKey: ["properties"] });
+      queryClient.invalidateQueries({ queryKey: ["property", savedPropertyId] });
+      // Remove manual refetch as invalidate triggers it if active
+      // refetch(); 
     } catch (error) {
       console.error("Error saving property:", error);
       alert(
@@ -433,7 +445,6 @@ export default function DashboardPage() {
       {/* Modal */}
       {isModalOpen && (
         <PropertyModal
-          key={editingProperty?.id || 'new'}
           property={editingProperty}
           onSave={handleSaveProperty}
           onClose={() => setIsModalOpen(false)}

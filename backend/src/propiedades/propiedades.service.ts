@@ -207,11 +207,10 @@ export class PropiedadesService {
     // Verificar que la propiedad existe
     await this.findOne(id);
 
-    const { features, ...propertyData } = updatePropiedadeDto;
+    const { features, images, ...propertyData } = updatePropiedadeDto;
 
     // Si vienen features, usamos una transacción para limpiar las viejas e insertar las nuevas
     // O simplemente usamos la capacidad de nested writes de prisma en el update si queremos reemplazar todo
-
     // Para simplificar y asegurar consistencia: si se envían features, reemplazamos todas.
     const updateData: any = { ...propertyData };
 
@@ -220,6 +219,31 @@ export class PropiedadesService {
         deleteMany: {}, // Borra todas las features existentes de esta propiedad
         create: features.map(name => ({ name })), // Crea las nuevas
       };
+    }
+
+    // Manejo de imágenes: Si se envía una lista de imágenes, sincronizamos.
+    // Principalmente para eliminar las que ya no están en la lista.
+    if (images !== undefined) {
+      // Obtenemos las imágenes actuales
+      const currentImages = await this.prisma.propertyImage.findMany({
+        where: { propertyId: id },
+      });
+
+      // Identificar imágenes a eliminar (las que están en DB pero no en la nueva lista)
+      const imagesToDelete = currentImages.filter(
+        (img) => !images.includes(img.url),
+      );
+
+      if (imagesToDelete.length > 0) {
+        await this.prisma.propertyImage.deleteMany({
+          where: {
+            id: { in: imagesToDelete.map((img) => img.id) },
+          },
+        });
+      }
+
+      // Nota: No creamos imágenes aquí, eso se hace vía upload.
+      // Tampoco reordenamos por simplicidad, aunque se podría agregar campo 'order'.
     }
 
     return this.prisma.property.update({
