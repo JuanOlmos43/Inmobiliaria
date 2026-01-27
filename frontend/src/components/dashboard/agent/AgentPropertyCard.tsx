@@ -1,28 +1,6 @@
 import BasePropertyCard from "@/components/BasePropertyCard";
 
-// Tipos (should ideally be imported from a shared types file, but keeping localized for now as per extraction)
-interface Property {
-  id: string;
-  title: string;
-  type: "Venta" | "Alquiler";
-  price: number;
-  currency: "USD" | "ARS";
-  location: string;
-  bedrooms: number;
-  rooms: number;
-  bathrooms: number;
-  area: number;
-  image?: string;
-  images?: string[];
-  status: "activa" | "pausada";
-  description: string;
-  propertyType: string;
-  yearBuilt?: number | null;
-  features?: string[];
-  landlordName?: string;
-  landlordPhone?: string;
-  landlordEmail?: string;
-}
+import { Property } from "@/types/property";
 
 interface AgentPropertyCardProps {
   property: Property;
@@ -88,7 +66,7 @@ export default function AgentPropertyCard({
     },
     {
       label: property.status === "activa" ? "Pausar" : "Activar",
-      onClick: () => onToggleStatus(property.id),
+      onClick: () => onToggleStatus(property.id!),
       variant: (property.status === "activa" ? "secondary" : "warning") as
         | "secondary"
         | "warning",
@@ -96,7 +74,7 @@ export default function AgentPropertyCard({
     },
     {
       label: "",
-      onClick: () => onDelete(property.id),
+      onClick: () => onDelete(property.id!),
       variant: "danger" as const,
       icon: (
         <svg

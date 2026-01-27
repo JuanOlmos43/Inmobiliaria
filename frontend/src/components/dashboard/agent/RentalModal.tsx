@@ -4,16 +4,7 @@ import Modal from "@/components/UI/Modal";
 import { UserRole } from "@/types/api";
 import { usersService } from "@/lib/api/services/users";
 
-// Tipos
-interface Property {
-  id: string;
-  title: string;
-  price: number;
-  location: string;
-  landlordName?: string;
-  landlordPhone?: string;
-  landlordEmail?: string;
-}
+import { Property } from "@/types/property";
 
 interface RentalData {
   tenantEmail: string;

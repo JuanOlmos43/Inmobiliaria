@@ -17,35 +17,7 @@ import {
   CreatePropertyDto,
 } from "@/lib/api/services/properties";
 
-// Tipos
-interface Property {
-  id: string;
-  title: string;
-  type: "Venta" | "Alquiler";
-  price: number;
-  currency: "USD" | "ARS";
-  location: string;
-  bedrooms: number;
-  rooms: number; // Ambientes
-  bathrooms: number;
-  area: number;
-  image?: string;
-  images?: string[]; // Array de imágenes de la propiedad
-  status: "activa" | "pausada";
-  description: string;
-  propertyType: string;
-  yearBuilt?: number | null;
-  features?: string[];
-  landlordName?: string;
-  landlordPhone?: string;
-  landlordEmail?: string;
-  provinciaId?: string;
-  localidadId?: string;
-  calleId?: string;
-  ownerId?: string;
-  streetNumber?: string;
-  apartment?: string;
-}
+import { Property } from "@/types/property";
 
 export default function DashboardPage() {
   const queryClient = useQueryClient();
@@ -166,8 +138,8 @@ export default function DashboardPage() {
       let savedPropertyId: string;
 
       if (editingProperty) {
-        savedPropertyId = editingProperty.id;
-        await propertiesService.update(editingProperty.id, apiData);
+        savedPropertyId = editingProperty.id!;
+        await propertiesService.update(editingProperty.id!, apiData);
       } else {
         const newProperty = await propertiesService.create(apiData);
         savedPropertyId = newProperty.id;
@@ -281,11 +253,10 @@ export default function DashboardPage() {
             <div className="flex gap-8">
               <button
                 onClick={() => setActiveTab("vencimientos")}
-                className={`pb-4 px-2 font-semibold transition-colors relative ${
-                  activeTab === "vencimientos"
-                    ? "text-[#14b8a6]"
-                    : "text-gray-500 hover:text-gray-700"
-                }`}
+                className={`pb-4 px-2 font-semibold transition-colors relative ${activeTab === "vencimientos"
+                  ? "text-[#14b8a6]"
+                  : "text-gray-500 hover:text-gray-700"
+                  }`}
               >
                 Próximos Vencimientos
                 {activeTab === "vencimientos" && (
@@ -294,11 +265,10 @@ export default function DashboardPage() {
               </button>
               <button
                 onClick={() => setActiveTab("propiedades")}
-                className={`pb-4 px-2 font-semibold transition-colors relative ${
-                  activeTab === "propiedades"
-                    ? "text-[#14b8a6]"
-                    : "text-gray-500 hover:text-gray-700"
-                }`}
+                className={`pb-4 px-2 font-semibold transition-colors relative ${activeTab === "propiedades"
+                  ? "text-[#14b8a6]"
+                  : "text-gray-500 hover:text-gray-700"
+                  }`}
               >
                 Gestión de Propiedades
                 {activeTab === "propiedades" && (
@@ -462,14 +432,14 @@ export default function DashboardPage() {
           onClose={() => setIsRentalModalOpen(false)}
           onSave={(rentalData) => {
             // Pausar la propiedad
-            handleToggleStatus(rentingProperty.id);
+            handleToggleStatus(rentingProperty.id!);
             // Mock Save to localStorage (to be replaced by API)
             const existingRentals = JSON.parse(
               localStorage.getItem("rentalContracts") || "[]",
             );
             const newRental = {
               id: Date.now().toString(),
-              propertyId: rentingProperty.id,
+              propertyId: rentingProperty.id!,
               propertyName: rentingProperty.title,
               address: rentingProperty.location,
               monthlyRent: rentingProperty.price,

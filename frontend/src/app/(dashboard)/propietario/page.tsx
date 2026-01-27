@@ -27,19 +27,7 @@ interface Rental {
   status: "active" | "expiring" | "expired";
 }
 
-interface Property {
-  id: string;
-  title: string;
-  type: "Venta" | "Alquiler";
-  price: number;
-  location: string;
-  bedrooms: number;
-  bathrooms: number;
-  area: number;
-  image?: string;
-  status: "Activa" | "Pausada";
-  description: string;
-}
+import { Property } from "@/types/property";
 
 export default function LandlordDashboardPage() {
   const router = useRouter();
@@ -77,21 +65,19 @@ export default function LandlordDashboardPage() {
             <nav className="-mb-px flex space-x-8">
               <button
                 onClick={() => setActiveTab("rentals")}
-                className={`${
-                  activeTab === "rentals"
-                    ? "border-[#14b8a6] text-[#14b8a6]"
-                    : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
-                } whitespace-nowrap py-5 px-2 border-b-2 font-semibold text-xl transition-colors`}
+                className={`${activeTab === "rentals"
+                  ? "border-[#14b8a6] text-[#14b8a6]"
+                  : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
+                  } whitespace-nowrap py-5 px-2 border-b-2 font-semibold text-xl transition-colors`}
               >
                 Mis Rentas
               </button>
               <button
                 onClick={() => setActiveTab("properties")}
-                className={`${
-                  activeTab === "properties"
-                    ? "border-[#14b8a6] text-[#14b8a6]"
-                    : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
-                } whitespace-nowrap py-5 px-2 border-b-2 font-semibold text-xl transition-colors`}
+                className={`${activeTab === "properties"
+                  ? "border-[#14b8a6] text-[#14b8a6]"
+                  : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
+                  } whitespace-nowrap py-5 px-2 border-b-2 font-semibold text-xl transition-colors`}
               >
                 Mis Propiedades Publicadas
               </button>
@@ -169,7 +155,7 @@ export default function LandlordDashboardPage() {
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {properties.map((property) => (
-                  <PropertyCardWrapper key={property.id} property={property} />
+                  <PropertyCardWrapper key={property.id!} property={property} />
                 ))}
               </div>
             )}

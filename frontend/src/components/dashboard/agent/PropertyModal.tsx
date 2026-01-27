@@ -7,36 +7,7 @@ import { usersService } from "@/lib/api/services/users";
 import { propertiesService } from "@/lib/api/services/properties";
 import { UserRole, type UserProfile } from "@/types/api";
 
-// Tipos localizados por ahora
-interface Property {
-  id?: string; // made optional as it's not present for new properties in general interface usage here
-  title: string;
-  type: "Venta" | "Alquiler";
-  price: number;
-  currency: "USD" | "ARS";
-  location: string;
-  // Temporary UI fields (optional in Property interface as they might not come from DB yet)
-  province?: string;
-  city?: string;
-  street?: string;
-  streetNumber?: string;
-  apartment?: string;
-  bedrooms: number;
-  rooms: number;
-  bathrooms: number;
-  area: number;
-  image?: string;
-  images?: string[];
-  status: "activa" | "pausada";
-  description: string;
-  propertyType: string;
-  yearBuilt?: number | null;
-  features?: string[];
-  landlordName?: string;
-  landlordPhone?: string;
-  landlordEmail?: string;
-  ownerId?: string; // Captured owner ID
-}
+import { Property } from "@/types/property";
 
 interface PropertyModalProps {
   property: Property | null;
