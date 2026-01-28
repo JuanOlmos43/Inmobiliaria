@@ -44,12 +44,14 @@ export default function Toast({
   const style = styles[type];
 
   return (
-    <div className="fixed top-6 left-1/2 -translate-x-1/2 z-9999 animate-slide-in-down">
-      <div
-        className={`${style.bg} text-white rounded-lg shadow-2xl px-6 py-3 flex items-center gap-3 min-w-[300px]`}
-      >
-        <Icon name={style.icon} className="w-5 h-5 shrink-0" />
-        <p className="font-medium text-sm">{message}</p>
+    <div className="fixed top-6 left-0 right-0 flex justify-center z-9999 pointer-events-none">
+      <div className="animate-slide-in-down pointer-events-auto">
+        <div
+          className={`${style.bg} text-white rounded-lg shadow-2xl px-6 py-3 flex items-center gap-3 min-w-[300px]`}
+        >
+          <Icon name={style.icon} className="w-5 h-5 shrink-0" />
+          <p className="font-medium text-sm">{message}</p>
+        </div>
       </div>
     </div>
   );

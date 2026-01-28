@@ -3,7 +3,7 @@ import { ReactNode, useEffect } from "react";
 interface ModalProps {
   isOpen: boolean;
   onClose: () => void;
-  title: string;
+  title: ReactNode;
   children: ReactNode;
   maxWidth?: "sm" | "md" | "lg" | "xl"; // Tamaño del modal
   staticBackdrop?: boolean; // Si es true, no cierra al hacer click fuera ni escape
@@ -58,8 +58,8 @@ export default function Modal({
       <div
         className={`bg-white rounded-2xl shadow-2xl ${maxWidthClasses[maxWidth]} w-full max-h-[90vh] flex flex-col animate-scale-in`}
       >
-        <div className="flex justify-between items-start p-6 border-b border-gray-100 shrink-0">
-          <h3 className="text-2xl font-bold text-(--primary)">{title}</h3>
+        <div className="flex justify-between items-center p-6 border-b border-gray-100 shrink-0">
+          <div className="text-2xl font-bold text-(--primary)">{title}</div>
           <button
             onClick={onClose}
             className="text-gray-400 hover:text-gray-600 transition-colors"

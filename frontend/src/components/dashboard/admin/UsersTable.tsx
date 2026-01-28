@@ -1,28 +1,11 @@
 import { useState } from "react";
-import { UserRole } from "@/types/api";
-interface User {
-  id: string;
-  email: string;
-  name?: string;
-  phone?: string;
-  role: UserRole;
-  createdAt: string;
-  status: "active" | "inactive";
-}
+import { UserProfile, UserRole, UserStatus } from "@/types/api";
 
 interface UsersTableProps {
-  users: User[];
-  onSaveEdit: (userId: string, data: Partial<User>) => Promise<void>;
+  users: UserProfile[];
+  onSaveEdit: (userId: string, data: Partial<UserProfile>) => Promise<void>;
   onResetPassword: (userId: string) => void;
 }
-
-const roleLabels: Record<string, string> = {
-  [UserRole.Inquilino]: "Inquilino",
-  [UserRole.Propietario]: "Propietario",
-  [UserRole.Agente]: "Agente",
-  [UserRole.Gerencia]: "Gerencia",
-  [UserRole.Administrador]: "Administrador",
-};
 
 const roleColors: Record<string, string> = {
   [UserRole.Inquilino]: "from-blue-500 to-blue-600",
@@ -39,13 +22,13 @@ export default function UsersTable({
 }: UsersTableProps) {
   // Estado para manejar la edición en línea
   const [editingId, setEditingId] = useState<string | null>(null);
-  const [editFormData, setEditFormData] = useState<Partial<User>>({});
+  const [editFormData, setEditFormData] = useState<Partial<UserProfile>>({});
   const [isSaving, setIsSaving] = useState(false);
 
   /**
    * Entra en modo de edición para una fila
    */
-  const startEditing = (user: User) => {
+  const startEditing = (user: UserProfile) => {
     setEditingId(user.id);
     setEditFormData({
       email: user.email,
@@ -213,7 +196,7 @@ export default function UsersTable({
                       <span
                         className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium text-white bg-linear-to-r ${roleColors[user.role]}`}
                       >
-                        {roleLabels[user.role]}
+                        {user.role}
                       </span>
                     )}
                   </td>
@@ -228,20 +211,20 @@ export default function UsersTable({
                             setEditFormData({
                               ...editFormData,
                               status:
-                                editFormData.status === "active"
-                                  ? "inactive"
-                                  : "active",
+                                editFormData.status === UserStatus.ACTIVE
+                                  ? UserStatus.INACTIVE
+                                  : UserStatus.ACTIVE,
                             })
                           }
                           className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-(--accent) focus:ring-offset-2 ${
-                            editFormData.status === "active"
+                            editFormData.status === UserStatus.ACTIVE
                               ? "bg-green-500"
                               : "bg-gray-300"
                           }`}
                         >
                           <span
                             className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform duration-200 ${
-                              editFormData.status === "active"
+                              editFormData.status === UserStatus.ACTIVE
                                 ? "translate-x-6"
                                 : "translate-x-1"
                             }`}
@@ -249,12 +232,12 @@ export default function UsersTable({
                         </button>
                         <span
                           className={`ml-3 text-xs font-medium ${
-                            editFormData.status === "active"
+                            editFormData.status === UserStatus.ACTIVE
                               ? "text-green-700"
                               : "text-gray-500"
                           }`}
                         >
-                          {editFormData.status === "active"
+                          {editFormData.status === UserStatus.ACTIVE
                             ? "Activo"
                             : "Inactivo"}
                         </span>
@@ -262,12 +245,14 @@ export default function UsersTable({
                     ) : (
                       <span
                         className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium ${
-                          user.status === "active"
+                          user.status === UserStatus.ACTIVE
                             ? "bg-green-100 text-green-800"
                             : "bg-red-100 text-red-800"
                         }`}
                       >
-                        {user.status === "active" ? "Activo" : "Inactivo"}
+                        {user.status === UserStatus.ACTIVE
+                          ? "Activo"
+                          : "Inactivo"}
                       </span>
                     )}
                   </td>
