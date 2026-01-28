@@ -1,4 +1,5 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
+import { randomUUID } from 'crypto';
 import { CreatePropiedadeDto } from './dto/create-propiedade.dto';
 import { UpdatePropiedadeDto } from './dto/update-propiedade.dto';
 import { QueryPropiedadesDto } from './dto/query-propiedades.dto';
@@ -305,8 +306,10 @@ export class PropiedadesService {
 
     // Obtener extensión del archivo
     const ext = filename.split('.').pop();
-    // Definir path: {propiedad_id}/{orden}.{ext}
-    const path = `${id}/${nextOrder}.${ext}`;
+    // Generar UUID para el nombre del archivo para evitar conflictos
+    const fileUuid = randomUUID();
+    // Definir path: {propiedad_id}/{uuid}.{ext}
+    const path = `${id}/${fileUuid}.${ext}`;
 
     const { signedUrl, token } = await this.storageService.getSignedUploadUrl(path);
 
@@ -315,7 +318,7 @@ export class PropiedadesService {
       path,
       token,
       order: nextOrder,
-      filename: `${nextOrder}.${ext}`,
+      filename: `${fileUuid}.${ext}`,
     };
   }
 
