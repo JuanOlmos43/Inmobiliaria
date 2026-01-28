@@ -308,6 +308,7 @@ export default function PropertyModal({ property, onSave, onClose }: PropertyMod
 
             {/* Imágenes */}
             <ImageSection
+              key={property?.id || "new-property"}
               initialUrls={fullProperty?.images?.map((img: any) => img.url)}
               onFilesChange={setSelectedFiles}
               onExistingImagesChange={(urls) => setFormData({ ...formData, images: urls })}
