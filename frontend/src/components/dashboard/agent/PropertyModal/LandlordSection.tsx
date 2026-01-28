@@ -90,6 +90,14 @@ export default function LandlordSection({
                     )}
                 </div>
             )}
+
+            {formData.ownerId && (
+                <div className="mt-3 p-3 bg-green-50 border border-green-200 rounded-lg text-sm">
+                    <div className="font-semibold text-green-800">{formData.landlordName}</div>
+                    <div className="text-green-700">{formData.landlordEmail}</div>
+                    <div className="text-green-700">{formData.landlordPhone}</div>
+                </div>
+            )}
         </div>
     );
 }
