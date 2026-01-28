@@ -1,0 +1,88 @@
+import { useLandlordSearch } from "@/hooks/useLandlordSearch";
+import { type UserProfile } from "@/types/api";
+
+interface LandlordSectionProps {
+    formData: any;
+    setFormData: (data: any) => void;
+    initialSearchName?: string;
+}
+
+export default function LandlordSection({
+    formData,
+    setFormData,
+    initialSearchName = "",
+}: LandlordSectionProps) {
+    const {
+        landlordSearch,
+        setLandlordSearch,
+        showLandlordDropdown,
+        setShowLandlordDropdown,
+        landlords,
+    } = useLandlordSearch(initialSearchName);
+
+    const handleSelect = (landlord: UserProfile) => {
+        setFormData((prev: any) => ({
+            ...prev,
+            landlordEmail: landlord.email,
+            landlordName: landlord.name || landlord.email,
+            landlordPhone: landlord.phone || "No especificado",
+            ownerId: landlord.id,
+        }));
+        setLandlordSearch(landlord.name || landlord.email);
+        setShowLandlordDropdown(false);
+    };
+
+    return (
+        <div className="relative">
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+                Propietario *
+            </label>
+            <div className="relative">
+                <input
+                    type="text"
+                    required
+                    value={landlordSearch}
+                    onChange={(e) => {
+                        const val = e.target.value;
+                        setLandlordSearch(val);
+                        setShowLandlordDropdown(true);
+                        if (!val) {
+                            setFormData((prev: any) => ({
+                                ...prev,
+                                landlordEmail: "",
+                                landlordName: "",
+                                landlordPhone: "",
+                                ownerId: "",
+                            }));
+                        }
+                    }}
+                    onFocus={() => setShowLandlordDropdown(true)}
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-(--accent)"
+                    placeholder="Buscar propietario..."
+                />
+            </div>
+
+            {showLandlordDropdown && landlordSearch && (
+                <div className="absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-lg shadow-lg max-h-60 overflow-y-auto">
+                    {landlords.length > 0 ? (
+                        landlords.map((landlord) => (
+                            <button
+                                key={landlord.id}
+                                type="button"
+                                onClick={() => handleSelect(landlord)}
+                                className="w-full px-4 py-3 text-left hover:bg-gray-50 border-b last:border-0"
+                            >
+                                <div className="font-medium">{landlord.name || landlord.email}</div>
+                                <div className="text-sm text-gray-500">{landlord.email}</div>
+                            </button>
+                        ))
+                    ) : (
+                        <div className="px-4 py-3 text-sm text-gray-500 italic">
+                            No se encontraron propietarios
+                        </div>
+                    )}
+                </div>
+            )}
+        </div>
+    );
+}
