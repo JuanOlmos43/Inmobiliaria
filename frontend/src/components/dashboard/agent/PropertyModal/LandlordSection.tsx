@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { useLandlordSearch } from "@/hooks/useLandlordSearch";
 import { type UserProfile } from "@/types/api";
 
@@ -19,6 +20,12 @@ export default function LandlordSection({
         setShowLandlordDropdown,
         landlords,
     } = useLandlordSearch(initialSearchName);
+
+    useEffect(() => {
+        if (initialSearchName) {
+            setLandlordSearch(initialSearchName);
+        }
+    }, [initialSearchName, setLandlordSearch]);
 
     const handleSelect = (landlord: UserProfile) => {
         setFormData((prev: any) => ({

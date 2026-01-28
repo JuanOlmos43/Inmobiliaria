@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useQuery } from "@tanstack/react-query";
 import Modal from "@/components/UI/Modal";
 import FormInput from "@/components/UI/FormInput";
@@ -60,10 +60,21 @@ export default function PropertyModal({ property, onSave, onClose }: PropertyMod
 
   useEffect(() => {
     if (fullProperty) {
-      const { id, owner, features, images, ...rest } = fullProperty;
+      const { id, owner, features, images, localidad, calle, ...rest } = fullProperty;
+
       setFormData((prev) => ({
         ...prev,
         ...rest,
+        // Map location names from nested objects if available
+        province: localidad?.provincia?.nombre || prev.province,
+        city: localidad?.nombre || prev.city,
+        street: calle?.nombre || prev.street,
+
+        // Ensure IDs are consistent
+        localidadId: localidad?.id || rest.localidadId || prev.localidadId,
+        calleId: calle?.id || rest.calleId || prev.calleId,
+        provinciaId: localidad?.provinciaId || rest.provinciaId || prev.provinciaId,
+
         features: features?.map((f: any) => typeof f === "string" ? f : f.name) || [],
         images: images?.map((img: any) => typeof img === "string" ? img : img.url) || [],
         landlordName: owner?.name || prev.landlordName,
@@ -73,6 +84,17 @@ export default function PropertyModal({ property, onSave, onClose }: PropertyMod
       }));
     }
   }, [fullProperty]);
+
+  // Handler memoizado para evitar ciclos infinitos de renderizado
+  const handleExistingImagesChange = useCallback((urls: string[]) => {
+    setFormData((prev) => {
+      // Simple comparison to avoid unnecessary updates if needed, though SetState optimization often handles primitives/references.
+      // Since we create a new object, React will re-render. 
+      // We rely on ImageSection not firing this on every render unless props change.
+      // But the issue was the function identity changing.
+      return { ...prev, images: urls };
+    });
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -311,7 +333,7 @@ export default function PropertyModal({ property, onSave, onClose }: PropertyMod
               key={property?.id || "new-property"}
               initialUrls={fullProperty?.images?.map((img: any) => img.url)}
               onFilesChange={setSelectedFiles}
-              onExistingImagesChange={(urls) => setFormData({ ...formData, images: urls })}
+              onExistingImagesChange={handleExistingImagesChange}
             />
 
             <div className="flex justify-end gap-3 pt-6 border-t border-gray-100">
