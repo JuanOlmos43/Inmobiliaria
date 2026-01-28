@@ -243,8 +243,27 @@ export class PropiedadesService {
         });
       }
 
-      // Nota: No creamos imágenes aquí, eso se hace vía upload.
-      // Tampoco reordenamos por simplicidad, aunque se podría agregar campo 'order'.
+      // Actualizar el orden de las imágenes restantes según el array recibido
+      const updatePromises = images.map((url, index) => {
+        const imgRecord = currentImages.find((img) => img.url === url);
+        // Solo actualizamos si encontramos la imagen y el orden es diferente (opcional check)
+        if (imgRecord) {
+          return this.prisma.propertyImage.update({
+            where: { id: imgRecord.id },
+            data: { order: index + 1 },
+          });
+        }
+        return Promise.resolve();
+      });
+
+      await Promise.all(updatePromises);
+
+      // Actualizar mainImage con la primera imagen del nuevo orden
+      if (images.length > 0) {
+        updateData.mainImage = images[0];
+      } else {
+        updateData.mainImage = null;
+      }
     }
 
     return this.prisma.property.update({

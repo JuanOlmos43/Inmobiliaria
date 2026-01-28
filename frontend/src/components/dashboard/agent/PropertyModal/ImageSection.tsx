@@ -49,6 +49,7 @@ export default function ImageSection({
         }
     };
 
+
     const removeImage = (index: number) => {
         setItems(prev => prev.filter((_, i) => i !== index));
     };
