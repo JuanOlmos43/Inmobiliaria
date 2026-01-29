@@ -7,7 +7,8 @@ import { useDebounce } from "@/hooks/useDebounce";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 
 // Components
-import StatsCard from "@/components/UI/StatsCard";
+import AgentStatsGrid from "@/components/dashboard/agent/AgentStatsGrid";
+import Icon from "@/components/UI/Icon";
 import AgentPropertyCard from "@/components/dashboard/agent/AgentPropertyCard";
 import PropertyModal from "@/components/dashboard/agent/PropertyModal";
 import RentalModal from "@/components/dashboard/agent/RentalModal";
@@ -188,64 +189,8 @@ export default function DashboardPage() {
     <div className="min-h-screen bg-(--background)">
       {/* Main Content */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Stats Cards */}
-        <div className="mb-8">
-          <h2 className="text-2xl font-bold text-[#0f172a] mb-6">
-            Resumen de Propiedades
-          </h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-6">
-            <StatsCard
-              title="Total Propiedades"
-              value={properties.length} // Note: This might only be the fetched page if paginated, but for now assuming all or enough
-              color="from-[#0f172a] to-[#334155]"
-              icon="building"
-            />
-            {/* Note: Stats logic might need adjustment if we only fetch filtered results. 
-                Ideally we should have a separate stats endpoint or returned stats in meta. 
-                For now keeping as is but it will reflect the filtered list which is maybe not what we want for "Total" 
-                BUT since it's a dashboard, the user might expect stats to reflect the view OR global. 
-                Typically global stats are separate. 
-                For this iteration, I'll invoke a separate stats query? No, let's keep it simple. 
-                The user asked for filtering in the list. */}
-            <StatsCard
-              title="En Venta"
-              value={
-                data?.data?.filter((p: Property) => p.type === "Venta")
-                  .length || 0
-              }
-              color="from-[#334155] to-[#0f172a]"
-              icon="tag"
-            />
-            {/* ... keeping other stats similar but aware they depend on current data ... */}
-            <StatsCard
-              title="En Alquiler"
-              value={
-                data?.data?.filter((p: Property) => p.type === "Alquiler")
-                  .length || 0
-              }
-              color="from-[#475569] to-[#334155]"
-              icon="key"
-            />
-            <StatsCard
-              title="Activas"
-              value={
-                data?.data?.filter((p: Property) => p.status === "activa")
-                  .length || 0
-              }
-              color="from-[#14b8a6] to-[#0d9488]"
-              icon="check"
-            />
-            <StatsCard
-              title="Pausadas"
-              value={
-                data?.data?.filter((p: Property) => p.status === "pausada")
-                  .length || 0
-              }
-              color="from-amber-500 to-amber-600"
-              icon="pause"
-            />
-          </div>
-        </div>
+        {/* Stats Section */}
+        <AgentStatsGrid properties={properties} />
 
         {/* Tabs Section */}
         <div className="mb-8">
@@ -254,10 +199,11 @@ export default function DashboardPage() {
             <div className="flex gap-8">
               <button
                 onClick={() => setActiveTab("vencimientos")}
-                className={`pb-4 px-2 font-semibold transition-colors relative ${activeTab === "vencimientos"
-                  ? "text-[#14b8a6]"
-                  : "text-gray-500 hover:text-gray-700"
-                  }`}
+                className={`pb-4 px-2 font-semibold transition-colors relative ${
+                  activeTab === "vencimientos"
+                    ? "text-[#14b8a6]"
+                    : "text-gray-500 hover:text-gray-700"
+                }`}
               >
                 Próximos Vencimientos
                 {activeTab === "vencimientos" && (
@@ -266,10 +212,11 @@ export default function DashboardPage() {
               </button>
               <button
                 onClick={() => setActiveTab("propiedades")}
-                className={`pb-4 px-2 font-semibold transition-colors relative ${activeTab === "propiedades"
-                  ? "text-[#14b8a6]"
-                  : "text-gray-500 hover:text-gray-700"
-                  }`}
+                className={`pb-4 px-2 font-semibold transition-colors relative ${
+                  activeTab === "propiedades"
+                    ? "text-[#14b8a6]"
+                    : "text-gray-500 hover:text-gray-700"
+                }`}
               >
                 Gestión de Propiedades
                 {activeTab === "propiedades" && (
@@ -288,7 +235,11 @@ export default function DashboardPage() {
               <div className="bg-white rounded-xl shadow-md p-6 mb-6">
                 <div className="flex flex-col md:flex-row gap-4 items-center justify-between">
                   <div className="flex-1 w-full md:w-auto">
-                    <div className="relative">
+                    <div className="relative flex-1">
+                      <Icon
+                        name="search"
+                        className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400"
+                      />
                       <input
                         type="text"
                         placeholder="Buscar propiedades por dirección..."
@@ -296,19 +247,6 @@ export default function DashboardPage() {
                         onChange={(e) => setSearchTerm(e.target.value)}
                         className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#14b8a6] focus:border-transparent"
                       />
-                      <svg
-                        className="w-5 h-5 text-gray-400 absolute left-3 top-3.5"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-                        />
-                      </svg>
                     </div>
                   </div>
 
@@ -329,22 +267,10 @@ export default function DashboardPage() {
 
                     <button
                       onClick={handleAddProperty}
-                      className="px-6 py-3 bg-[#14b8a6] text-white font-semibold rounded-lg hover:bg-[#0d9488] transition-all duration-300 shadow-lg hover:shadow-xl flex items-center gap-2 whitespace-nowrap"
+                      className="px-6 py-3 bg-(--accent) text-white rounded-lg hover:bg-(--accent-hover) transition-all shadow-md hover:shadow-lg flex items-center gap-2 transform hover:scale-105"
                     >
-                      <svg
-                        className="w-5 h-5"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M12 4v16m8-8H4"
-                        />
-                      </svg>
-                      Nueva Propiedad
+                      <Icon name="plus" className="w-5 h-5" />
+                      Agregar Propiedad
                     </button>
                   </div>
                 </div>
@@ -356,21 +282,11 @@ export default function DashboardPage() {
                   <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600"></div>
                 </div>
               ) : filteredProperties.length === 0 ? (
-                <div className="bg-white rounded-xl shadow-md p-12 text-center">
-                  <svg
-                    className="w-24 h-24 mx-auto mb-4 text-gray-300"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"
-                    />
-                  </svg>
-                  <h3 className="text-xl font-semibold text-gray-700 mb-2">
+                <div className="bg-white rounded-xl shadow-md p-12 text-center border border-gray-100">
+                  <div className="inline-flex items-center justify-center w-20 h-20 bg-blue-50 rounded-full mb-6">
+                    <Icon name="building" className="w-10 h-10 text-blue-500" />
+                  </div>
+                  <h3 className="text-xl font-bold text-(--primary) mb-2">
                     No se encontraron propiedades
                   </h3>
                   <p className="text-gray-500 mb-6">
@@ -380,22 +296,10 @@ export default function DashboardPage() {
                   </p>
                   <button
                     onClick={handleAddProperty}
-                    className="px-6 py-3 bg-[#14b8a6] text-white font-semibold rounded-lg hover:bg-[#0d9488] transition-all duration-300 flex items-center gap-2 mx-auto"
+                    className="bg-(--accent) hover:bg-(--accent-hover) text-white px-6 py-2 rounded-lg flex items-center gap-2 transition-all shadow-md hover:shadow-lg font-semibold"
                   >
-                    <svg
-                      className="w-5 h-5"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M12 4v16m8-8H4"
-                      />
-                    </svg>
-                    Agregar Propiedad
+                    <Icon name="plus" className="w-5 h-5" />
+                    Nueva Propiedad
                   </button>
                 </div>
               ) : (

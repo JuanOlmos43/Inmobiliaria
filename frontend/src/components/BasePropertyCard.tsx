@@ -78,13 +78,11 @@ export default function BasePropertyCard({
         ) : (
           // Icono de casa cuando no hay imagen
           <div className="absolute inset-0 flex items-center justify-center">
-            <svg
+            <Icon
+              name="home"
               className="w-32 h-32 text-gray-300"
               fill="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z" />
-            </svg>
+            />
           </div>
         )}
 
@@ -144,13 +142,7 @@ export default function BasePropertyCard({
               {bedrooms !== undefined && (
                 <div className="flex items-center gap-2">
                   <div className="w-8 h-8 rounded-lg bg-blue-100 flex items-center justify-center group-hover:bg-blue-200 transition-colors">
-                    <svg
-                      className="w-4 h-4 text-(--primary)"
-                      fill="currentColor"
-                      viewBox="0 0 640 512"
-                    >
-                      <path d="M32 32c17.7 0 32 14.3 32 32V320H288V160c0-17.7 14.3-32 32-32H544c53 0 96 43 96 96V448c0 17.7-14.3 32-32 32s-32-14.3-32-32V416H352 320 64v32c0 17.7-14.3 32-32 32s-32-14.3-32-32V64C0 46.3 14.3 32 32 32zm144 96a80 80 0 1 1 0 160 80 80 0 1 1 0-160z" />
-                    </svg>
+                    <Icon name="bed" className="w-4 h-4 text-(--primary)" />
                   </div>
                   <span className="text-sm font-semibold">{bedrooms}</span>
                 </div>
@@ -160,13 +152,7 @@ export default function BasePropertyCard({
               {bathrooms !== undefined && (
                 <div className="flex items-center gap-2">
                   <div className="w-8 h-8 rounded-lg bg-blue-100 flex items-center justify-center group-hover:bg-blue-200 transition-colors">
-                    <svg
-                      className="w-4 h-4 text-(--primary)"
-                      fill="currentColor"
-                      viewBox="0 0 512 512"
-                    >
-                      <path d="M64 131.9C64 112.1 80.1 96 99.9 96c9.5 0 18.6 3.8 25.4 10.5l16.2 16.2c-21 38.9-17.4 87.5 10.9 123L151 247c-9.4 9.4-9.4 24.6 0 33.9s24.6 9.4 33.9 0L345 121c9.4-9.4 9.4-24.6 0-33.9s-24.6-9.4-33.9 0l-1.3 1.3c-35.5-28.3-84.2-31.9-123-10.9L170.5 61.3C151.8 42.5 126.4 32 99.9 32C44.7 32 0 76.7 0 131.9V448c0 17.7 14.3 32 32 32s32-14.3 32-32V131.9zM256 352a32 32 0 1 0 0-64 32 32 0 1 0 0 64zm64 64a32 32 0 1 0 -64 0 32 32 0 1 0 64 0zm0-128a32 32 0 1 0 0-64 32 32 0 1 0 0 64zm64 64a32 32 0 1 0 -64 0 32 32 0 1 0 64 0zm0-128a32 32 0 1 0 0-64 32 32 0 1 0 0 64zm64 64a32 32 0 1 0 -64 0 32 32 0 1 0 64 0zm32-32a32 32 0 1 0 0-64 32 32 0 1 0 0 64z" />
-                    </svg>
+                    <Icon name="bath" className="w-4 h-4 text-(--primary)" />
                   </div>
                   <span className="text-sm font-semibold">{bathrooms}</span>
                 </div>
@@ -176,19 +162,7 @@ export default function BasePropertyCard({
               {area !== undefined && (
                 <div className="flex items-center gap-2">
                   <div className="w-8 h-8 rounded-lg bg-blue-100 flex items-center justify-center group-hover:bg-blue-200 transition-colors">
-                    <svg
-                      className="w-4 h-4 text-(--primary)"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4"
-                      />
-                    </svg>
+                    <Icon name="area" className="w-4 h-4 text-(--primary)" />
                   </div>
                   <span className="text-sm font-semibold">{area} m²</span>
                 </div>

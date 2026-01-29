@@ -1,4 +1,5 @@
 import { useState } from "react";
+import Icon from "@/components/UI/Icon";
 import { UserProfile, UserRole, UserStatus } from "@/types/api";
 
 interface UsersTableProps {
@@ -276,19 +277,7 @@ export default function UsersTable({
                             {isSaving ? (
                               <div className="w-5 h-5 border-2 border-green-600 border-t-transparent rounded-full animate-spin" />
                             ) : (
-                              <svg
-                                className="w-5 h-5"
-                                fill="none"
-                                viewBox="0 0 24 24"
-                                stroke="currentColor"
-                              >
-                                <path
-                                  strokeLinecap="round"
-                                  strokeLinejoin="round"
-                                  strokeWidth={2}
-                                  d="M5 13l4 4L19 7"
-                                />
-                              </svg>
+                              <Icon name="check" className="w-5 h-5" />
                             )}
                           </button>
 
@@ -298,60 +287,24 @@ export default function UsersTable({
                             className="p-1.5 text-gray-500 hover:bg-gray-100 rounded-lg transition-colors border border-gray-200"
                             title="Cancelar"
                           >
-                            <svg
-                              className="w-5 h-5"
-                              fill="none"
-                              viewBox="0 0 24 24"
-                              stroke="currentColor"
-                            >
-                              <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                strokeWidth={2}
-                                d="M6 18L18 6M6 6l12 12"
-                              />
-                            </svg>
+                            <Icon name="close" className="w-5 h-5" />
                           </button>
                         </>
                       ) : (
                         <div className="flex gap-1">
                           <button
                             onClick={() => startEditing(user)}
-                            className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+                            className="p-1 text-blue-600 hover:text-blue-900 transition-colors"
                             title="Editar"
                           >
-                            <svg
-                              className="w-5 h-5"
-                              fill="none"
-                              viewBox="0 0 24 24"
-                              stroke="currentColor"
-                            >
-                              <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                strokeWidth={2}
-                                d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
-                              />
-                            </svg>
+                            <Icon name="edit" className="w-5 h-5" />
                           </button>
                           <button
                             onClick={() => onResetPassword(user.id)}
-                            className="p-2 text-amber-600 hover:bg-amber-50 rounded-lg transition-colors"
-                            title="Restaurar contraseña (admin123)"
+                            className="p-1 text-amber-600 hover:text-amber-900 transition-colors"
+                            title="Restaurar contraseña"
                           >
-                            <svg
-                              className="w-5 h-5"
-                              fill="none"
-                              viewBox="0 0 24 24"
-                              stroke="currentColor"
-                            >
-                              <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                strokeWidth={2}
-                                d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z"
-                              />
-                            </svg>
+                            <Icon name="key" className="w-5 h-5" />
                           </button>
                         </div>
                       )}

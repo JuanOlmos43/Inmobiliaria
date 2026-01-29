@@ -64,7 +64,7 @@ export default function PropertyModal({
 
   useEffect(() => {
     if (fullProperty) {
-      const { id, owner, features, images, localidad, calle, ...rest } =
+      const { owner, features, images, localidad, calle, ...rest } =
         fullProperty;
 
       setFormData((prev) => ({
@@ -82,9 +82,11 @@ export default function PropertyModal({
           localidad?.provinciaId || rest.provinciaId || prev.provinciaId,
 
         features:
-          features?.map((f: any) => (typeof f === "string" ? f : f.name)) || [],
+          features?.map((f: string | { name: string }) =>
+            typeof f === "string" ? f : f.name,
+          ) || [],
         images:
-          images?.map((img: any) =>
+          images?.map((img: string | { url: string }) =>
             typeof img === "string" ? img : img.url,
           ) || [],
         landlordName: owner?.name || prev.landlordName,
@@ -136,11 +138,13 @@ export default function PropertyModal({
             localidadId: currentLocalidadId,
           });
           currentCalleId = newCalle.id;
-        } catch (error: any) {
-          if (error.status === 409) {
+        } catch (error: unknown) {
+          const apiError = error as { status?: number };
+          if (apiError.status === 409) {
             const list = await propertiesService.getCalles(currentLocalidadId);
             currentCalleId = list.find(
-              (c) => c.nombre.toLowerCase() === formData.street?.toLowerCase(),
+              (c: { nombre: string; id: string }) =>
+                c.nombre.toLowerCase() === formData.street?.toLowerCase(),
             )?.id;
           }
         }
@@ -195,7 +199,10 @@ export default function PropertyModal({
                 label="Tipo Op."
                 value={formData.type}
                 onChange={(e) =>
-                  setFormData({ ...formData, type: e.target.value as any })
+                  setFormData({
+                    ...formData,
+                    type: e.target.value as "Venta" | "Alquiler",
+                  })
                 }
               >
                 <option value="Venta">Venta</option>
@@ -235,7 +242,10 @@ export default function PropertyModal({
                 label="Estado"
                 value={formData.status}
                 onChange={(e) =>
-                  setFormData({ ...formData, status: e.target.value as any })
+                  setFormData({
+                    ...formData,
+                    status: e.target.value as "activa" | "pausada",
+                  })
                 }
               >
                 <option value="activa">Activa</option>
@@ -424,7 +434,9 @@ export default function PropertyModal({
             {/* Imágenes */}
             <ImageSection
               key={property?.id || "new-property"}
-              initialUrls={fullProperty?.images?.map((img: any) => img.url)}
+              initialUrls={fullProperty?.images?.map(
+                (img: { url: string }) => img.url,
+              )}
               onFilesChange={setSelectedFiles}
               onExistingImagesChange={handleExistingImagesChange}
             />

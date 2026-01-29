@@ -6,6 +6,7 @@ import CreateUserModal from "@/components/dashboard/admin/CreateUserModal";
 import UsersTable from "@/components/dashboard/admin/UsersTable";
 import AdminStatsGrid from "@/components/dashboard/admin/AdminStatsGrid";
 import AdminUsersFilters from "@/components/dashboard/admin/AdminUsersFilters";
+import Icon from "@/components/UI/Icon";
 import { useAdminUsers, DEFAULT_PASSWORD } from "@/hooks/useAdminUsers";
 
 /**
@@ -61,19 +62,7 @@ export default function AdminDashboardPage() {
               onClick={() => setShowModal(true)}
               className="px-6 py-3 bg-(--accent) text-white rounded-lg hover:bg-(--accent-hover) transition-all shadow-md hover:shadow-lg flex items-center gap-2 transform hover:scale-105"
             >
-              <svg
-                className="w-5 h-5"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M12 4v16m8-8H4"
-                />
-              </svg>
+              <Icon name="plus" className="w-5 h-5" />
               Crear usuario
             </button>
           </div>

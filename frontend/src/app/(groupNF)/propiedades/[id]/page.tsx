@@ -5,6 +5,7 @@ import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { allProperties } from "@/data/properties";
+import Icon from "@/components/UI/Icon";
 
 export default function PropertyDetailPage() {
   const params = useParams();
@@ -135,17 +136,11 @@ export default function PropertyDetailPage() {
                 {property.title}
               </h1>
               <div className="flex items-center mb-4">
-                <svg
+                <Icon
+                  name="location"
                   className="w-5 h-5 mr-2 text-(--accent)"
                   fill="currentColor"
-                  viewBox="0 0 20 20"
-                >
-                  <path
-                    fillRule="evenodd"
-                    d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z"
-                    clipRule="evenodd"
-                  />
-                </svg>
+                />
                 <span className="text-lg text-gray-600">
                   {property.location}
                 </span>
@@ -153,13 +148,11 @@ export default function PropertyDetailPage() {
               <div className="flex flex-wrap items-center gap-4 text-gray-700 border-t pt-4">
                 {property.bedrooms > 0 && (
                   <div className="flex items-center">
-                    <svg
+                    <Icon
+                      name="bed"
                       className="w-6 h-6 mr-2"
                       fill="currentColor"
-                      viewBox="0 0 640 512"
-                    >
-                      <path d="M32 32c17.7 0 32 14.3 32 32V320H288V160c0-17.7 14.3-32 32-32H544c53 0 96 43 96 96V448c0 17.7-14.3 32-32 32s-32-14.3-32-32V416H352 320 64v32c0 17.7-14.3 32-32 32s-32-14.3-32-32V64C0 46.3 14.3 32 32 32zm144 96a80 80 0 1 1 0 160 80 80 0 1 1 0-160z" />
-                    </svg>
+                    />
                     <span>{property.bedrooms} Dormitorios</span>
                   </div>
                 )}
@@ -177,30 +170,16 @@ export default function PropertyDetailPage() {
                 )}
                 {property.bathrooms > 0 && (
                   <div className="flex items-center">
-                    <svg
+                    <Icon
+                      name="bath"
                       className="w-6 h-6 mr-2"
                       fill="currentColor"
-                      viewBox="0 0 512 512"
-                    >
-                      <path d="M64 131.9C64 112.1 80.1 96 99.9 96c9.5 0 18.6 3.8 25.4 10.5l16.2 16.2c-21 38.9-17.4 87.5 10.9 123L151 247c-9.4 9.4-9.4 24.6 0 33.9s24.6 9.4 33.9 0L345 121c9.4-9.4 9.4-24.6 0-33.9s-24.6-9.4-33.9 0l-1.3 1.3c-35.5-28.3-84.2-31.9-123-10.9L170.5 61.3C151.8 42.5 126.4 32 99.9 32C44.7 32 0 76.7 0 131.9V448c0 17.7 14.3 32 32 32s32-14.3 32-32V131.9zM256 352a32 32 0 1 0 0-64 32 32 0 1 0 0 64zm64 64a32 32 0 1 0 -64 0 32 32 0 1 0 64 0zm0-128a32 32 0 1 0 0-64 32 32 0 1 0 0 64zm64 64a32 32 0 1 0 -64 0 32 32 0 1 0 64 0zm0-128a32 32 0 1 0 0-64 32 32 0 1 0 0 64zm64 64a32 32 0 1 0 -64 0 32 32 0 1 0 64 0zm32-32a32 32 0 1 0 0-64 32 32 0 1 0 0 64z" />
-                    </svg>
+                    />
                     <span>{property.bathrooms} Baños</span>
                   </div>
                 )}
                 <div className="flex items-center">
-                  <svg
-                    className="w-6 h-6 mr-2"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4"
-                    />
-                  </svg>
+                  <Icon name="area" className="w-6 h-6 mr-2" />
                   <span>{property.area} m²</span>
                 </div>
                 <div className="flex items-center">

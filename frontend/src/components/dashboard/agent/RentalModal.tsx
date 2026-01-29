@@ -2,7 +2,8 @@ import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useDebounce } from "@/hooks/useDebounce";
 import Modal from "@/components/UI/Modal";
-import { UserRole } from "@/types/api";
+import Icon from "@/components/UI/Icon";
+import { UserRole, UserProfile, UserStatus } from "@/types/api";
 import { usersService } from "@/lib/api/services/users";
 
 import { Property } from "@/types/property";
@@ -55,32 +56,24 @@ export default function RentalModal({
   const [tenantSearch, setTenantSearch] = useState("");
   const debouncedTenantSearch = useDebounce(tenantSearch, 500);
 
-  /* const [tenants, setTenants] = useState<SystemUser[]>([]); */
   // Use TanStack Query instead of manual fetch/effect
   const { data: tenants = [] } = useQuery({
     queryKey: ["users", "tenants", debouncedTenantSearch],
-    queryFn: async () => {
-      // Assuming usersService.getUsers returns correct type or we map it
+    queryFn: async (): Promise<SystemUser[]> => {
       const users = await usersService.getUsers({
         role: UserRole.Inquilino,
         search: debouncedTenantSearch,
       });
-      // Ensure we filter active if API doesn't do it automatically, assuming API returns array
-      // Map API user type to local SystemUser interface if needed, but for now assuming compatible fields
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
       return users
-        .filter(
-          (u: any) =>
-            u.status === "active" || !u.status /* fallback if status missing */,
-        )
-        .map((u: any) => ({
+        .filter((u: UserProfile) => u.status === UserStatus.ACTIVE)
+        .map((u: UserProfile) => ({
           id: u.id,
           email: u.email,
           name: u.name,
-          phone: u.phone,
-          role: u.role as UserRole,
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          status: (u.status || "active") as "active" | "inactive",
+          phone: u.phone || undefined,
+          role: u.role,
+          status: u.status === UserStatus.ACTIVE ? "active" : "inactive",
         }));
     },
   });
@@ -103,7 +96,7 @@ export default function RentalModal({
     }
   };
 
-  const filteredTenants = tenants; // Already filtered by backend
+  const filteredTenants = tenants;
 
   const calculateAdjustmentMonths = () => {
     if (!formData.startDate || !formData.endDate) return [];
@@ -218,36 +211,27 @@ export default function RentalModal({
           <label className="block text-sm font-medium text-gray-700 mb-2">
             Inquilino *
           </label>
-          <div className="relative">
+          <div className="relative flex-1">
+            <Icon
+              name="search"
+              className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400"
+            />
             <input
               type="text"
               required
               value={tenantSearch}
               onChange={(e) => handleTenantSearchChange(e.target.value)}
               onFocus={() => setShowTenantDropdown(true)}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#14b8a6] focus:border-transparent"
+              className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#14b8a6] focus:border-transparent"
               placeholder="Buscar inquilino por nombre o email..."
             />
-            <svg
-              className="w-5 h-5 text-gray-400 absolute right-3 top-3"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-              />
-            </svg>
           </div>
 
           {/* Dropdown de resultados */}
           {showTenantDropdown && tenantSearch && (
             <div className="absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-lg shadow-lg max-h-60 overflow-y-auto">
               {filteredTenants.length > 0 ? (
-                filteredTenants.map((tenant) => (
+                filteredTenants.map((tenant: SystemUser) => (
                   <button
                     key={tenant.email}
                     type="button"

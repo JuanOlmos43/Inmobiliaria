@@ -8,44 +8,46 @@ export { DEFAULT_PASSWORD };
 
 /**
  * useAdminUsers - Orchestrator Hook
- * 
+ *
  * Este hook ahora actúa como una "fachada" que combina hooks especializados.
- * Mantiene la compatibilidad con los componentes existentes pero con una 
+ * Mantiene la compatibilidad con los componentes existentes pero con una
  * estructura interna mucho más limpia y mantenible.
  */
 export function useAdminUsers() {
   // 1. Capa de Filtros
-  const { 
-    searchEmail, setSearchEmail, 
-    filterRole, setFilterRole, 
-    activeFilters 
+  const {
+    searchEmail,
+    setSearchEmail,
+    filterRole,
+    setFilterRole,
+    activeFilters,
   } = useAdminFilters();
 
   // 2. Capa de UI (Modales, Toasts)
   const {
-    showModal, setShowModal,
-    toast, showToast, hideToast,
-    confirmReset, initiateResetPassword, closeConfirmReset
+    showModal,
+    setShowModal,
+    toast,
+    showToast,
+    hideToast,
+    confirmReset,
+    initiateResetPassword,
+    closeConfirmReset,
   } = useAdminUI();
 
   // 3. Capa de Datos (Queries)
-  const { 
-    users, stats, isLoading, error, retryLoadUsers 
-  } = useAdminQueries(activeFilters);
+  const { users, stats, isLoading, error, retryLoadUsers } =
+    useAdminQueries(activeFilters);
 
   // 4. Capa de Acciones (Mutations)
-  const {
-    handleUserCreated,
-    executeEdit,
-    executeReset,
-    isResetting
-  } = useAdminMutations({
-    showToast,
-    onSuccessClose: () => {
-      setShowModal(false);
-      closeConfirmReset();
-    }
-  });
+  const { handleUserCreated, executeEdit, executeReset, isResetting } =
+    useAdminMutations({
+      showToast,
+      onSuccessClose: () => {
+        setShowModal(false);
+        closeConfirmReset();
+      },
+    });
 
   // Retornamos todo lo que la Page necesita (misma firma que antes)
   return {
@@ -54,7 +56,7 @@ export function useAdminUsers() {
     stats,
     isLoading,
     error,
-    
+
     // Filtros
     searchEmail,
     setSearchEmail,
@@ -73,7 +75,10 @@ export function useAdminUsers() {
 
     // Acciones y Handlers
     handleUserCreated,
-    handleSaveInlineEdit: async (userId: string, data: Partial<UserProfile>) => {
+    handleSaveInlineEdit: async (
+      userId: string,
+      data: Partial<UserProfile>,
+    ) => {
       await executeEdit(userId, data);
     },
     initiateResetPassword,

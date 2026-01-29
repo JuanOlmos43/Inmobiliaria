@@ -1,5 +1,4 @@
 import StatsCard from "@/components/UI/StatsCard";
-import Icon from "@/components/UI/Icon";
 import { UserStats } from "@/types/api";
 
 interface AdminStatsGridProps {
@@ -24,7 +23,19 @@ export default function AdminStatsGrid({ stats }: AdminStatsGridProps) {
             {/* Lado Izquierdo: Total y Crecimiento */}
             <div className="flex items-center gap-6">
               <div className="p-4 bg-white/10 rounded-2xl border border-white/20">
-                <Icon name="users" className="w-10 h-10 text-white" />
+                <svg
+                  className="w-10 h-10 text-white"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  strokeWidth={2}
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"
+                  />
+                </svg>
               </div>
               <div className="flex flex-col gap-1">
                 <div className="flex items-start gap-10">
