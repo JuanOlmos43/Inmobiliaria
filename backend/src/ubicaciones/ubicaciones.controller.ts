@@ -28,7 +28,7 @@ import { UserRole } from '@prisma/client';
 @UseGuards(JwtAuthGuard, RolesGuard)
 @UsePipes(new ValidationPipe({ transform: true, whitelist: true }))
 export class UbicacionesController {
-  constructor(private readonly ubicacionesService: UbicacionesService) { }
+  constructor(private readonly ubicacionesService: UbicacionesService) {}
 
   // ==========================================
   // PROVINCIAS

@@ -14,7 +14,7 @@ export class PropiedadesService {
   constructor(
     private prisma: PrismaService,
     private storageService: StorageService,
-  ) { }
+  ) {}
 
   async create(createPropiedadeDto: CreatePropiedadeDto) {
     const {
@@ -35,14 +35,17 @@ export class PropiedadesService {
         provincia: provinciaId ? { connect: { id: provinciaId } } : undefined,
         owner: ownerId ? { connect: { id: ownerId } } : undefined,
         agent: agentId ? { connect: { id: agentId } } : undefined,
-        features: (features && features.length > 0) ? {
-          create: features.map(name => ({ name }))
-        } : undefined,
+        features:
+          features && features.length > 0
+            ? {
+                create: features.map((name) => ({ name })),
+              }
+            : undefined,
       },
       include: {
         localidad: true,
         calle: true,
-        features: true, // Incluir features en la respuesta
+        features: true,
         owner: {
           select: {
             id: true,
@@ -213,12 +216,12 @@ export class PropiedadesService {
     // Si vienen features, usamos una transacción para limpiar las viejas e insertar las nuevas
     // O simplemente usamos la capacidad de nested writes de prisma en el update si queremos reemplazar todo
     // Para simplificar y asegurar consistencia: si se envían features, reemplazamos todas.
-    const updateData: any = { ...propertyData };
+    const updateData: Prisma.PropertyUpdateInput = { ...propertyData };
 
     if (features !== undefined) {
       updateData.features = {
         deleteMany: {}, // Borra todas las features existentes de esta propiedad
-        create: features.map(name => ({ name })), // Crea las nuevas
+        create: features.map((name) => ({ name })), // Crea las nuevas
       };
     }
 
@@ -302,7 +305,10 @@ export class PropiedadesService {
     try {
       await this.storageService.deleteFolder(id);
     } catch (error) {
-      console.error(`Warning: Failed to cleanup storage for property ${id}`, error);
+      console.error(
+        `Warning: Failed to cleanup storage for property ${id}`,
+        error,
+      );
       // We continue to delete the record even if storage fails, or we could throw.
       // Usually better to ensure DB consistency.
     }
@@ -330,7 +336,8 @@ export class PropiedadesService {
     // Definir path: {propiedad_id}/{uuid}.{ext}
     const path = `${id}/${fileUuid}.${ext}`;
 
-    const { signedUrl, token } = await this.storageService.getSignedUploadUrl(path);
+    const { signedUrl, token } =
+      await this.storageService.getSignedUploadUrl(path);
 
     return {
       uploadUrl: signedUrl,

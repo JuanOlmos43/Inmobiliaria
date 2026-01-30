@@ -65,7 +65,7 @@ export default function LandlordSection({
             }
           }}
           onFocus={() => setShowLandlordDropdown(true)}
-          className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-(--accent)"
+          className="w-full px-4 py-2 border rounded-lg transition-all duration-300 border-gray-300 bg-white text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-(--accent) focus:border-transparent disabled:bg-gray-100 disabled:text-gray-500"
           placeholder="Buscar propietario..."
         />
       </div>

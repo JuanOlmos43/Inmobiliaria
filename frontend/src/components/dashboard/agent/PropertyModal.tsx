@@ -22,30 +22,33 @@ export default function PropertyModal({
   onSave,
   onClose,
 }: PropertyModalProps) {
-  const [formData, setFormData] = useState<Omit<Property, "id">>({
-    title: property?.title || "",
-    type: property?.type || "Venta",
-    price: property?.price || 0,
-    currency: property?.currency || "USD",
-    location: property?.location || "",
-    bedrooms: property?.bedrooms || 1,
-    rooms: property?.rooms || 1,
-    bathrooms: property?.bathrooms || 1,
-    area: property?.area || 0,
-    status: property?.status || "activa",
-    description: property?.description || "",
-    propertyType: property?.propertyType || "casa",
-    yearBuilt: property?.yearBuilt || null,
-    features: property?.features || [],
-    provinciaId: property?.provinciaId || "",
-    localidadId: property?.localidadId || "",
-    calleId: property?.calleId || "",
-    ownerId: property?.ownerId || "",
-    province: property?.province || "",
-    city: property?.city || "",
-    street: property?.street || "",
-    streetNumber: property?.streetNumber || "",
-    apartment: property?.apartment || "",
+  const [formData, setFormData] = useState<Omit<Property, "id">>(() => {
+    const initialType = property?.type || "Venta";
+    return {
+      title: property?.title || "",
+      type: initialType,
+      price: property?.price || 0,
+      currency: property?.currency || (initialType === "Venta" ? "USD" : "ARS"),
+      location: property?.location || "",
+      bedrooms: property?.bedrooms || 1,
+      rooms: property?.rooms || 1,
+      bathrooms: property?.bathrooms || 1,
+      area: property?.area || 0,
+      status: property?.status || "activa",
+      description: property?.description || "",
+      propertyType: property?.propertyType || "casa",
+      yearBuilt: property?.yearBuilt || null,
+      features: property?.features || [],
+      provinciaId: property?.provinciaId || "",
+      localidadId: property?.localidadId || "",
+      calleId: property?.calleId || "",
+      ownerId: property?.ownerId || "",
+      province: property?.province || "",
+      city: property?.city || "",
+      street: property?.street || "",
+      streetNumber: property?.streetNumber || "",
+      apartment: property?.apartment || "",
+    };
   });
 
   const [inputModes, setInputModes] = useState<{
@@ -196,14 +199,16 @@ export default function PropertyModal({
             {/* Detalles Principales: Tipo Op + Precio / Tipo Prop + Estado */}
             <div className="grid grid-cols-2 gap-4">
               <FormSelect
-                label="Tipo Op."
+                label="Tipo"
                 value={formData.type}
-                onChange={(e) =>
+                onChange={(e) => {
+                  const newType = e.target.value as "Venta" | "Alquiler";
                   setFormData({
                     ...formData,
-                    type: e.target.value as "Venta" | "Alquiler",
-                  })
-                }
+                    type: newType,
+                    currency: newType === "Venta" ? "USD" : "ARS",
+                  });
+                }}
               >
                 <option value="Venta">Venta</option>
                 <option value="Alquiler">Alquiler</option>
@@ -221,7 +226,7 @@ export default function PropertyModal({
               />
 
               <FormSelect
-                label="Tipo Prop."
+                label="Tipo de Propiedad"
                 value={formData.propertyType}
                 required
                 onChange={(e) =>
@@ -325,9 +330,10 @@ export default function PropertyModal({
                   }
                 />
                 <FormInput
-                  label="Año Constr."
+                  label="Año de Construcción"
                   type="number"
-                  min="0"
+                  min="1800"
+                  placeholder="Ej: 2020"
                   value={formData.yearBuilt || ""}
                   onChange={(e) =>
                     setFormData({
@@ -400,7 +406,7 @@ export default function PropertyModal({
                       setFeatureInput("");
                     }
                   }}
-                  className="px-6 py-2 bg-gray-100 text-gray-700 font-medium rounded-lg hover:bg-gray-200 transition-colors"
+                  className="px-6 py-2 bg-gray-100 text-gray-700 font-medium rounded-lg hover:bg-(--accent-hover) hover:text-white transition-colors"
                 >
                   Agregar
                 </button>
@@ -441,17 +447,17 @@ export default function PropertyModal({
               onExistingImagesChange={handleExistingImagesChange}
             />
 
-            <div className="flex justify-end gap-3 pt-6 border-t border-gray-100">
+            <div className="flex gap-3 pt-6">
               <button
                 type="button"
                 onClick={onClose}
-                className="px-6 py-2.5 border border-gray-300 text-gray-700 font-medium hover:bg-red-600 hover:text-white hover:border-red-600 rounded-lg transition-all duration-200"
+                className="flex-1 px-4 py-2.5 border border-gray-300 text-gray-700 rounded-lg font-medium hover:bg-red-600 hover:text-white hover:border-red-600 transition-all duration-200 disabled:opacity-50"
               >
                 Cancelar
               </button>
               <button
                 type="submit"
-                className="px-6 py-2.5 bg-(--accent) text-white font-medium rounded-lg hover:bg-(--accent-hover) shadow-sm shadow-(--accent)/30 transition-all"
+                className="flex-1 px-4 py-2.5 bg-(--accent) text-white rounded-lg font-medium hover:bg-(--accent-hover) transition-all shadow-md hover:shadow-lg disabled:opacity-50 flex justify-center items-center gap-2"
               >
                 Guardar Propiedad
               </button>

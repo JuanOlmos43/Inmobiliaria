@@ -190,7 +190,6 @@ export class AuthService {
     }
   }
 
-
   /**
    * Logs out user by invalidating refresh token
    */

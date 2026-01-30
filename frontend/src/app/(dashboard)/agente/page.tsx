@@ -115,26 +115,31 @@ export default function DashboardPage() {
     try {
       // Mapear datos del formulario al DTO del backend
       const apiData: CreatePropertyDto = {
-        ...propertyData,
+        title: propertyData.title,
+        description: propertyData.description,
+        propertyType: propertyData.propertyType,
+        listingType: propertyData.type === "Venta" ? "venta" : "alquiler",
         price: Number(propertyData.price),
         bedrooms: Number(propertyData.bedrooms),
         rooms: Number(propertyData.rooms),
         bathrooms: Number(propertyData.bathrooms),
         area: Number(propertyData.area),
-        yearBuilt: propertyData.yearBuilt
-          ? Number(propertyData.yearBuilt)
-          : undefined,
-        listingType: propertyData.type === "Venta" ? "venta" : "alquiler",
-        propertyType: propertyData.propertyType,
+        // Solo enviar yearBuilt si es un valor válido (>= 1800)
+        yearBuilt:
+          propertyData.yearBuilt && Number(propertyData.yearBuilt) >= 1800
+            ? Number(propertyData.yearBuilt)
+            : undefined,
+        streetNumber: propertyData.streetNumber,
+        apartment: propertyData.apartment,
+        location: propertyData.location,
         provinciaId: propertyData.provinciaId || undefined,
+        localidadId: propertyData.localidadId || undefined,
+        calleId: propertyData.calleId || undefined,
         ownerId: propertyData.ownerId || undefined,
         agentId: user?.id || undefined,
-        calleId: propertyData.calleId || undefined,
-        localidadId: propertyData.localidadId || undefined,
-        streetNumber: propertyData.streetNumber,
         features: propertyData.features,
-        images: propertyData.images,
-        apartment: propertyData.apartment,
+        // Note: images are NOT part of CreatePropertyDto - they're uploaded separately
+        // mainImage will be set when first image is uploaded
       };
 
       let savedPropertyId: string;
@@ -245,7 +250,7 @@ export default function DashboardPage() {
                         placeholder="Buscar propiedades por dirección..."
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
-                        className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#14b8a6] focus:border-transparent"
+                        className="w-full pl-10 pr-4 py-2 bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-(--accent) focus:border-transparent transition-all"
                       />
                     </div>
                   </div>
@@ -258,7 +263,7 @@ export default function DashboardPage() {
                           e.target.value as "all" | "activa" | "pausada",
                         )
                       }
-                      className="px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#14b8a6] focus:border-transparent"
+                    className=" px-4 py-2 bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-(--accent) focus:border-transparent transition-all"
                     >
                       <option value="all">Todos los estados</option>
                       <option value="activa">Activas</option>
@@ -284,23 +289,11 @@ export default function DashboardPage() {
               ) : filteredProperties.length === 0 ? (
                 <div className="bg-white rounded-xl shadow-md p-12 text-center border border-gray-100">
                   <div className="inline-flex items-center justify-center w-20 h-20 bg-blue-50 rounded-full mb-6">
-                    <Icon name="building" className="w-10 h-10 text-blue-500" />
+                    <Icon name="building" className="w-10 h-10 text-(--accent)" />
                   </div>
                   <h3 className="text-xl font-bold text-(--primary) mb-2">
                     No se encontraron propiedades
                   </h3>
-                  <p className="text-gray-500 mb-6">
-                    {searchTerm
-                      ? "Intenta con otra búsqueda"
-                      : "Comienza agregando tu primera propiedad"}
-                  </p>
-                  <button
-                    onClick={handleAddProperty}
-                    className="bg-(--accent) hover:bg-(--accent-hover) text-white px-6 py-2 rounded-lg flex items-center gap-2 transition-all shadow-md hover:shadow-lg font-semibold"
-                  >
-                    <Icon name="plus" className="w-5 h-5" />
-                    Nueva Propiedad
-                  </button>
                 </div>
               ) : (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">

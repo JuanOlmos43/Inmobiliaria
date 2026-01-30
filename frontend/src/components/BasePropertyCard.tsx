@@ -80,8 +80,8 @@ export default function BasePropertyCard({
           <div className="absolute inset-0 flex items-center justify-center">
             <Icon
               name="home"
-              className="w-32 h-32 text-gray-300"
-              fill="currentColor"
+              className="w-24 h-24 text-(--accent)"
+              strokeWidth={1.5}
             />
           </div>
         )}

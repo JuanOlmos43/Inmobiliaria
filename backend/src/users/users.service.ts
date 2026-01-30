@@ -9,7 +9,7 @@ export { CreateUserDto, UpdateUserDto };
 
 @Injectable()
 export class UsersService {
-  constructor(private prisma: PrismaService) { }
+  constructor(private prisma: PrismaService) {}
 
   async findByEmail(email: string): Promise<User | null> {
     return this.prisma.user.findUnique({
@@ -60,10 +60,7 @@ export class UsersService {
         createdAt: true,
         updatedAt: true,
       },
-      orderBy: [
-        { name: 'asc' },
-        { email: 'asc' },
-      ],
+      orderBy: [{ name: 'asc' }, { email: 'asc' }],
     });
   }
 

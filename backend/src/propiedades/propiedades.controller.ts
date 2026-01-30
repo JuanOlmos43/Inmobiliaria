@@ -1,4 +1,3 @@
-
 import {
   Controller,
   Get,
@@ -16,7 +15,10 @@ import { PropiedadesService } from './propiedades.service';
 import { CreatePropiedadeDto } from './dto/create-propiedade.dto';
 import { UpdatePropiedadeDto } from './dto/update-propiedade.dto';
 import { QueryPropiedadesDto } from './dto/query-propiedades.dto';
-import { GenerateUploadUrlDto, ConfirmImageUploadDto } from './dto/property-images.dto';
+import {
+  GenerateUploadUrlDto,
+  ConfirmImageUploadDto,
+} from './dto/property-images.dto';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { RolesGuard } from '../auth/guards/roles.guard';
 import { Roles } from '../auth/decorators/roles.decorator';
@@ -26,18 +28,12 @@ import { UserRole } from '@prisma/client';
 @UseGuards(JwtAuthGuard, RolesGuard)
 @UsePipes(new ValidationPipe({ transform: true, whitelist: true }))
 export class PropiedadesController {
-  constructor(private readonly propiedadesService: PropiedadesService) { }
+  constructor(private readonly propiedadesService: PropiedadesService) {}
 
   @Post()
   @Roles(UserRole.Agente)
   async create(@Body() createPropiedadeDto: CreatePropiedadeDto) {
-    console.log('Receiving Create Property DTO:', JSON.stringify(createPropiedadeDto, null, 2));
-    try {
-      return await this.propiedadesService.create(createPropiedadeDto);
-    } catch (error) {
-      console.error('Error creating property in controller:', error);
-      throw error;
-    }
+    return await this.propiedadesService.create(createPropiedadeDto);
   }
 
   @Get()
@@ -83,6 +79,9 @@ export class PropiedadesController {
     @Param('id') id: string,
     @Body() confirmImageUploadDto: ConfirmImageUploadDto,
   ) {
-    return this.propiedadesService.confirmImageUpload(id, confirmImageUploadDto);
+    return this.propiedadesService.confirmImageUpload(
+      id,
+      confirmImageUploadDto,
+    );
   }
 }

@@ -36,7 +36,7 @@ interface RequestWithCookies extends Omit<Request, 'cookies'> {
 
 @Controller('auth')
 export class AuthController {
-  constructor(private authService: AuthService) { }
+  constructor(private authService: AuthService) {}
 
   /**
    * POST /auth/login
@@ -62,7 +62,6 @@ export class AuthController {
       path: '/', // Enviado a todos los endpoints (igual que access_token) - luego pasar a path: '/auth/refresh' es lo correcto que no se envie en esa ruta
     });
 
-
     // Set access token in httpOnly cookie
     res.cookie('access_token', tokens.access_token, {
       httpOnly: true,
@@ -72,9 +71,8 @@ export class AuthController {
       path: '/', // Sent to all endpoints
     });
 
-
     return {
-      "ok": true
+      ok: true,
     };
   }
 
@@ -134,9 +132,8 @@ export class AuthController {
       path: '/', // Sent to all endpoints
     });
 
-    return { "ok": true };
+    return { ok: true };
   }
-
 
   /**
    * POST /auth/logout
