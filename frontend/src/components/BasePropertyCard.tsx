@@ -34,7 +34,7 @@ export interface BasePropertyCardProps {
 export default function BasePropertyCard({
   title,
   price,
-  currency = "USD",
+  currency,
   location,
   image,
   type,
@@ -57,13 +57,20 @@ export default function BasePropertyCard({
     return "bg-yellow-500 text-white";
   };
 
+  const getTypeBadgeStyles = () => {
+    if (type === "Venta") {
+      return "bg-(--primary) text-white";
+    }
+    return "bg-(--accent) text-white";
+  };
+
   return (
     <div
-      className={`bg-white rounded-2xl shadow-xl overflow-hidden hover:shadow-2xl transition-all duration-500 border border-gray-100 hover:border-(--accent) transform hover:-translate-y-2 animate-scale-in ${className}`}
+      className={`group bg-white rounded-2xl shadow-xl overflow-hidden hover:shadow-2xl transition-all duration-500 border border-gray-100 hover:border-(--accent) transform hover:-translate-y-2 animate-scale-in ${className}`}
       onClick={onClick}
     >
       {/* Image Section */}
-      <div className="relative h-56 bg-linear-to-br from-gray-100 to-gray-200 overflow-hidden group">
+      <div className="relative h-56 bg-linear-to-br from-gray-100 to-gray-200 overflow-hidden">
         {image ? (
           <>
             <Image
@@ -90,7 +97,9 @@ export default function BasePropertyCard({
         <div className="absolute top-4 right-4 flex flex-col gap-2">
           {/* Type Badge (Venta/Alquiler) */}
           {showTypeBadge && type && (
-            <span className="bg-(--accent) text-white px-4 py-2 rounded-full text-sm font-bold shadow-lg backdrop-blur-sm">
+            <span
+              className={`px-4 py-2 rounded-full text-sm font-bold shadow-lg backdrop-blur-sm ${getTypeBadgeStyles()}`}
+            >
               {type}
             </span>
           )}
@@ -114,13 +123,13 @@ export default function BasePropertyCard({
       {/* Content Section */}
       <div className="p-6">
         {/* Title */}
-        <h3 className="text-xl font-bold text-(--primary) mb-3 line-clamp-2 group-hover:text-(--primary) transition-colors">
+        <h3 className="text-xl font-bold text-(--primary) mb-3 line-clamp-3 group-hover:text-(--primary) transition-colors">
           {title}
         </h3>
 
         {/* Price */}
         <p className="text-2xl font-bold text-(--primary) mb-4">
-          {currency} {price.toLocaleString("es-AR")}
+          {currency === "USD" ? "USD" : "$"} {price.toLocaleString("es-AR")}
           {type === "Alquiler" && (
             <span className="text-sm text-gray-500 font-normal ml-1">/mes</span>
           )}

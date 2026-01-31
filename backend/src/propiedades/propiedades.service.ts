@@ -16,6 +16,28 @@ export class PropiedadesService {
     private storageService: StorageService,
   ) {}
 
+  /**
+   * Helper function to add calculated currency field based on listingType
+   * Venta -> USD, Alquiler -> ARS
+   */
+  private addCurrency<T extends { listingType: string }>(
+    property: T,
+  ): T & { currency: string } {
+    return {
+      ...property,
+      currency: property.listingType === 'venta' ? 'USD' : 'ARS',
+    };
+  }
+
+  /**
+   * Helper function to add currency to an array of properties
+   */
+  private addCurrencyToMany<T extends { listingType: string }>(
+    properties: T[],
+  ): Array<T & { currency: string }> {
+    return properties.map((p) => this.addCurrency(p));
+  }
+
   async create(createPropiedadeDto: CreatePropiedadeDto) {
     const {
       features,
@@ -27,7 +49,7 @@ export class PropiedadesService {
       ...propertyData
     } = createPropiedadeDto;
 
-    return this.prisma.property.create({
+    const property = await this.prisma.property.create({
       data: {
         ...propertyData,
         calle: calleId ? { connect: { id: calleId } } : undefined,
@@ -64,6 +86,8 @@ export class PropiedadesService {
         },
       },
     });
+
+    return this.addCurrency(property);
   }
 
   async findAll(query: QueryPropiedadesDto) {
@@ -155,7 +179,7 @@ export class PropiedadesService {
     ]);
 
     return {
-      data: properties,
+      data: this.addCurrencyToMany(properties),
       meta: {
         total,
         page,
@@ -204,7 +228,7 @@ export class PropiedadesService {
       throw new NotFoundException(`Propiedad con ID ${id} no encontrada`);
     }
 
-    return property;
+    return this.addCurrency(property);
   }
 
   async update(id: string, updatePropiedadeDto: UpdatePropiedadeDto) {
@@ -269,7 +293,7 @@ export class PropiedadesService {
       }
     }
 
-    return this.prisma.property.update({
+    const updatedProperty = await this.prisma.property.update({
       where: { id },
       data: updateData,
       include: {
@@ -294,6 +318,8 @@ export class PropiedadesService {
         },
       },
     });
+
+    return this.addCurrency(updatedProperty);
   }
 
   async remove(id: string) {

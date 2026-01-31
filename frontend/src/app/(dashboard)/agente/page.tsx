@@ -9,10 +9,13 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 // Components
 import AgentStatsGrid from "@/components/dashboard/agent/AgentStatsGrid";
 import Icon from "@/components/UI/Icon";
+import Toast from "@/components/UI/Toast";
+import TabNavigation from "@/components/UI/TabNavigation";
 import AgentPropertyCard from "@/components/dashboard/agent/AgentPropertyCard";
 import PropertyModal from "@/components/dashboard/agent/PropertyModal";
 import RentalModal from "@/components/dashboard/agent/RentalModal";
 import UpcomingExpirations from "@/components/dashboard/agent/UpcomingExpirations";
+import AgentPropertiesFilters from "@/components/dashboard/agent/AgentPropertiesFilters";
 import {
   propertiesService,
   CreatePropertyDto,
@@ -35,6 +38,20 @@ export default function DashboardPage() {
   const [activeTab, setActiveTab] = useState<"vencimientos" | "propiedades">(
     "vencimientos",
   );
+
+  // Toast state
+  const [toastVisible, setToastVisible] = useState(false);
+  const [toastMessage, setToastMessage] = useState("");
+  const [toastType, setToastType] = useState<"success" | "error">("success");
+
+  const showToast = (
+    message: string,
+    type: "success" | "error" = "success",
+  ) => {
+    setToastMessage(message);
+    setToastType(type);
+    setToastVisible(true);
+  };
 
   const debouncedSearch = useDebounce(searchTerm, 500);
 
@@ -77,9 +94,10 @@ export default function DashboardPage() {
       try {
         await propertiesService.remove(id);
         refetch();
+        showToast("Propiedad eliminada exitosamente", "success");
       } catch (error) {
         console.error("Error deleting property:", error);
-        alert("Error al eliminar la propiedad");
+        showToast("Error al eliminar la propiedad", "error");
       }
     }
   };
@@ -165,7 +183,7 @@ export default function DashboardPage() {
             await propertiesService.confirmImageUpload(savedPropertyId, path);
           } catch (uploadError) {
             console.error(`Error uploading file ${file.name}:`, uploadError);
-            alert(`Error al subir la imagen ${file.name}`);
+            showToast(`Error al subir la imagen ${file.name}`, "error");
           }
         }
       }
@@ -179,10 +197,18 @@ export default function DashboardPage() {
       });
       // Remove manual refetch as invalidate triggers it if active
       // refetch();
+
+      showToast(
+        editingProperty
+          ? "Propiedad actualizada exitosamente"
+          : "Propiedad creada exitosamente",
+        "success",
+      );
     } catch (error) {
       console.error("Error saving property:", error);
-      alert(
+      showToast(
         "Hubo un error al guardar la propiedad. Por favor intente nuevamente.",
+        "error",
       );
     }
   };
@@ -198,87 +224,46 @@ export default function DashboardPage() {
         <AgentStatsGrid properties={properties} />
 
         {/* Tabs Section */}
-        <div className="mb-8">
-          {/* Tab Navigation */}
-          <div className="border-b border-gray-200 mb-6">
-            <div className="flex gap-8">
-              <button
-                onClick={() => setActiveTab("vencimientos")}
-                className={`pb-4 px-2 font-semibold transition-colors relative ${
-                  activeTab === "vencimientos"
-                    ? "text-[#14b8a6]"
-                    : "text-gray-500 hover:text-gray-700"
-                }`}
-              >
-                Próximos Vencimientos
-                {activeTab === "vencimientos" && (
-                  <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#14b8a6]"></div>
-                )}
-              </button>
-              <button
-                onClick={() => setActiveTab("propiedades")}
-                className={`pb-4 px-2 font-semibold transition-colors relative ${
-                  activeTab === "propiedades"
-                    ? "text-[#14b8a6]"
-                    : "text-gray-500 hover:text-gray-700"
-                }`}
-              >
-                Gestión de Propiedades
-                {activeTab === "propiedades" && (
-                  <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#14b8a6]"></div>
-                )}
-              </button>
-            </div>
-          </div>
+        <TabNavigation
+          tabs={[
+            { id: "vencimientos", label: "Próximos Vencimientos" },
+            { id: "propiedades", label: "Gestión de Propiedades" },
+          ]}
+          activeTab={activeTab}
+          onTabChange={(tabId) =>
+            setActiveTab(tabId as "vencimientos" | "propiedades")
+          }
+        />
 
+        <div className="mb-8">
           {/* Tab Content */}
           {activeTab === "vencimientos" ? (
             <UpcomingExpirations />
           ) : (
             <>
-              {/* Toolbar */}
-              <div className="bg-white rounded-xl shadow-md p-6 mb-6">
-                <div className="flex flex-col md:flex-row gap-4 items-center justify-between">
-                  <div className="flex-1 w-full md:w-auto">
-                    <div className="relative flex-1">
-                      <Icon
-                        name="search"
-                        className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400"
-                      />
-                      <input
-                        type="text"
-                        placeholder="Buscar propiedades por dirección..."
-                        value={searchTerm}
-                        onChange={(e) => setSearchTerm(e.target.value)}
-                        className="w-full pl-10 pr-4 py-2 bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-(--accent) focus:border-transparent transition-all"
-                      />
-                    </div>
-                  </div>
+              {/* Header with title and button */}
+              <div className="bg-white rounded-xl shadow-lg p-6 mb-6">
+                <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
+                  <h2 className="text-2xl font-bold text-(--primary)">
+                    Gestión de Propiedades
+                  </h2>
 
-                  <div className="flex gap-3 w-full md:w-auto">
-                    <select
-                      value={filterStatus}
-                      onChange={(e) =>
-                        setFilterStatus(
-                          e.target.value as "all" | "activa" | "pausada",
-                        )
-                      }
-                    className=" px-4 py-2 bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-(--accent) focus:border-transparent transition-all"
-                    >
-                      <option value="all">Todos los estados</option>
-                      <option value="activa">Activas</option>
-                      <option value="pausada">Pausadas</option>
-                    </select>
-
-                    <button
-                      onClick={handleAddProperty}
-                      className="px-6 py-3 bg-(--accent) text-white rounded-lg hover:bg-(--accent-hover) transition-all shadow-md hover:shadow-lg flex items-center gap-2 transform hover:scale-105"
-                    >
-                      <Icon name="plus" className="w-5 h-5" />
-                      Agregar Propiedad
-                    </button>
-                  </div>
+                  <button
+                    onClick={handleAddProperty}
+                    className="px-6 py-3 bg-(--accent) text-white rounded-lg hover:bg-(--accent-hover) transition-all shadow-md hover:shadow-lg flex items-center gap-2 transform hover:scale-105"
+                  >
+                    <Icon name="plus" className="w-5 h-5" />
+                    Agregar Propiedad
+                  </button>
                 </div>
+
+                {/* Filters */}
+                <AgentPropertiesFilters
+                  searchTerm={searchTerm}
+                  setSearchTerm={setSearchTerm}
+                  filterStatus={filterStatus}
+                  setFilterStatus={setFilterStatus}
+                />
               </div>
 
               {/* Properties Grid */}
@@ -289,7 +274,10 @@ export default function DashboardPage() {
               ) : filteredProperties.length === 0 ? (
                 <div className="bg-white rounded-xl shadow-md p-12 text-center border border-gray-100">
                   <div className="inline-flex items-center justify-center w-20 h-20 bg-blue-50 rounded-full mb-6">
-                    <Icon name="building" className="w-10 h-10 text-(--accent)" />
+                    <Icon
+                      name="building"
+                      className="w-10 h-10 text-(--accent)"
+                    />
                   </div>
                   <h3 className="text-xl font-bold text-(--primary) mb-2">
                     No se encontraron propiedades
@@ -351,10 +339,18 @@ export default function DashboardPage() {
               JSON.stringify([...existingRentals, newRental]),
             );
             setIsRentalModalOpen(false);
-            alert("Contrato de alquiler creado exitosamente");
+            showToast("Contrato de alquiler creado exitosamente", "success");
           }}
         />
       )}
+
+      {/* Toast Notification */}
+      <Toast
+        message={toastMessage}
+        type={toastType}
+        isVisible={toastVisible}
+        onClose={() => setToastVisible(false)}
+      />
     </div>
   );
 }

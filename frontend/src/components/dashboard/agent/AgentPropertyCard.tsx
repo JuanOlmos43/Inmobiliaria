@@ -105,7 +105,7 @@ export default function AgentPropertyCard({
     <BasePropertyCard
       title={property.title}
       price={property.price}
-      currency={property.type === "Venta" ? "USD" : "ARS"}
+      currency={property.currency}
       location={property.location}
       type={property.type}
       status={property.status === "activa" ? "Activa" : "Pausada"}

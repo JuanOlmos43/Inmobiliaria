@@ -98,13 +98,6 @@ export default function RentalPropertyCard({
     return styles[actionVariant];
   };
 
-  const getStatusBadgeStyles = () => {
-    if (property.status === "Activa") {
-      return "bg-green-500 text-white";
-    }
-    return "bg-yellow-500 text-white";
-  };
-
   // Renderizar warning badge dinámicamente
   const renderWarningBadge = () => {
     if (

@@ -85,22 +85,22 @@ export default function AgentStatsGrid({ properties }: AgentStatsGridProps) {
             <StatsCard
               title="En Venta"
               value={forSale}
-              color="from-blue-500 to-blue-600"
+              color="from-(--primary) to-(--primary)"
               icon="tag"
             />
 
             <StatsCard
               title="En Alquiler"
               value={forRent}
-              color="from-purple-500 to-purple-600"
+              color="from-(--accent) to-(--accent)"
               icon="key"
             />
 
-            {/* Added for symmetry if needed, or just keep 2. 
-                Let's stick to 2 but centered or in a grid that looks good. 
-                Actually, having 4 slots might look better if we find more stats.
-                Maybe "Total Superficie" or "Valor Total"? No, data not easily available here.
-                Let's just keep 2 but make them larger or responsive. */}
+            {/* Se añade por simetría si es necesario, o simplemente se conservan 2.
+            Mantengamos 2, pero centrados o en una cuadrícula que se vea bien.
+            De hecho, tener 4 ranuras podría verse mejor si encontramos más estadísticas.
+            ¿Quizás "Superficie total" o "Valor total"? No, los datos no están fácilmente disponibles aquí.
+            Mantengamos 2, pero hagámoslos más grandes o con mayor capacidad de respuesta. */}
           </div>
         </div>
       </div>

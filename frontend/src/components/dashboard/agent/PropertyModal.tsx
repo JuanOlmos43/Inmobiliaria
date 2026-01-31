@@ -22,33 +22,30 @@ export default function PropertyModal({
   onSave,
   onClose,
 }: PropertyModalProps) {
-  const [formData, setFormData] = useState<Omit<Property, "id">>(() => {
-    const initialType = property?.type || "Venta";
-    return {
-      title: property?.title || "",
-      type: initialType,
-      price: property?.price || 0,
-      currency: property?.currency || (initialType === "Venta" ? "USD" : "ARS"),
-      location: property?.location || "",
-      bedrooms: property?.bedrooms || 1,
-      rooms: property?.rooms || 1,
-      bathrooms: property?.bathrooms || 1,
-      area: property?.area || 0,
-      status: property?.status || "activa",
-      description: property?.description || "",
-      propertyType: property?.propertyType || "casa",
-      yearBuilt: property?.yearBuilt || null,
-      features: property?.features || [],
-      provinciaId: property?.provinciaId || "",
-      localidadId: property?.localidadId || "",
-      calleId: property?.calleId || "",
-      ownerId: property?.ownerId || "",
-      province: property?.province || "",
-      city: property?.city || "",
-      street: property?.street || "",
-      streetNumber: property?.streetNumber || "",
-      apartment: property?.apartment || "",
-    };
+  const [formData, setFormData] = useState<Omit<Property, "id">>({
+    title: property?.title || "",
+    type: property?.type || "Venta",
+    price: property?.price || 1,
+    currency: property?.currency || "USD", // Solo para mostrar, no se envía al backend
+    location: property?.location || "",
+    bedrooms: property?.bedrooms || 1,
+    rooms: property?.rooms || 1,
+    bathrooms: property?.bathrooms || 1,
+    area: property?.area || 1,
+    status: property?.status || "activa",
+    description: property?.description || "",
+    propertyType: property?.propertyType || "casa",
+    yearBuilt: property?.yearBuilt || null,
+    features: property?.features || [],
+    provinciaId: property?.provinciaId || "",
+    localidadId: property?.localidadId || "",
+    calleId: property?.calleId || "",
+    ownerId: property?.ownerId || "",
+    province: property?.province || "",
+    city: property?.city || "",
+    street: property?.street || "",
+    streetNumber: property?.streetNumber || "",
+    apartment: property?.apartment || "",
   });
 
   const [inputModes, setInputModes] = useState<{
@@ -206,6 +203,7 @@ export default function PropertyModal({
                   setFormData({
                     ...formData,
                     type: newType,
+                    // Actualizar currency solo para mostrar en el label del precio
                     currency: newType === "Venta" ? "USD" : "ARS",
                   });
                 }}
@@ -322,7 +320,7 @@ export default function PropertyModal({
                 <FormInput
                   label="Superficie (m²)"
                   type="number"
-                  min="0"
+                  min="1"
                   required
                   value={formData.area}
                   onChange={(e) =>
