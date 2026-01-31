@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from "react";
 import { useQuery } from "@tanstack/react-query";
 import Modal from "@/components/UI/Modal";
 import FormInput from "@/components/UI/FormInput";
+import FormTextarea from "@/components/UI/FormTextarea";
 import FormSelect from "@/components/UI/FormSelect";
 import { propertiesService } from "@/lib/api/services/properties";
 import { Property } from "@/types/property";
@@ -353,22 +354,18 @@ export default function PropertyModal({
             </div>
 
             {/* Descripción */}
-            <div className="space-y-2">
-              <label className="block text-sm font-medium text-gray-700">
-                Descripción *
-              </label>
-              <textarea
-                className="w-full px-4 py-2 border border-gray-300 bg-white text-gray-900 placeholder-gray-500 rounded-lg focus:outline-none focus:ring-2 focus:ring-(--accent) focus:border-transparent transition-all duration-300 resize-y min-h-[100px]"
-                rows={4}
-                required
-                value={formData.description}
-                onChange={(e) =>
-                  setFormData({ ...formData, description: e.target.value })
-                }
-                placeholder="Detalles sobre la propiedad..."
-                maxLength={2000}
-              />
-            </div>
+            <FormTextarea
+              label="Descripción"
+              rows={4}
+              required
+              value={formData.description}
+              onChange={(e) =>
+                setFormData({ ...formData, description: e.target.value })
+              }
+              placeholder="Detalles sobre la propiedad..."
+              maxLength={2000}
+              className="min-h-[100px] resize-y"
+            />
 
             {/* Características */}
             <div className="space-y-3">

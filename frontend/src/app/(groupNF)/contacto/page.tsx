@@ -174,6 +174,7 @@ export default function ContactoPage() {
                   required
                   placeholder="Tu nombre"
                   className="text-sm"
+                  maxLength={100}
                 />
 
                 {/* Email */}
@@ -187,6 +188,7 @@ export default function ContactoPage() {
                   required
                   placeholder="tu@email.com"
                   className="text-sm"
+                  maxLength={255}
                 />
 
                 {/* Teléfono */}
@@ -199,6 +201,7 @@ export default function ContactoPage() {
                   onChange={handleChange}
                   placeholder="+54 11 1234-5678"
                   className="text-sm"
+                  maxLength={20}
                 />
 
                 {/* Asunto */}
@@ -211,7 +214,6 @@ export default function ContactoPage() {
                   required
                   className="text-sm"
                 >
-                  <option value="">Selecciona un asunto</option>
                   <option value="compra">Consulta sobre Compra</option>
                   <option value="venta">Consulta sobre Venta</option>
                   <option value="alquiler">Consulta sobre Alquiler</option>
@@ -228,6 +230,7 @@ export default function ContactoPage() {
                   rows={4}
                   placeholder="Cuéntanos cómo podemos ayudarte..."
                   className="text-sm"
+                  maxLength={1000}
                 />
 
                 {/* Botón de Envío */}

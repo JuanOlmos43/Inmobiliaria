@@ -19,7 +19,7 @@ export default function FormTextarea({
 
   const themeClasses =
     theme === "light"
-      ? "border-gray-300 bg-white text-gray-900 placeholder-gray-500 focus:ring-2 focus:ring-(--accent) focus:border-transparent"
+      ? "border-gray-300 bg-white text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-(--accent) focus:border-transparent"
       : "bg-white/10 border-white/30 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-(--accent) focus:border-transparent";
 
   const labelClasses = theme === "light" ? "text-gray-700" : "text-gray-200";

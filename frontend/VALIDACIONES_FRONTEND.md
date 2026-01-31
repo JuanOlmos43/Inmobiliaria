@@ -119,6 +119,15 @@ Se han implementado validaciones de longitud en **TODOS** los formularios del fr
 | ------------------ | ---- | ---------- | ------ | --------- |
 | Búsqueda por email | text | maxLength  | 255    | ❌        |
 
+### 10. **ContactPage** (Formulario de Contacto)
+
+| Campo    | Tipo     | Validación | Límite | Requerido |
+| -------- | -------- | ---------- | ------ | --------- |
+| Nombre   | text     | maxLength  | 100    | ✅        |
+| Email    | email    | maxLength  | 255    | ✅        |
+| Teléfono | tel      | maxLength  | 20     | ❌        |
+| Mensaje  | textarea | maxLength  | 1000   | ✅        |
+
 ## 🎨 Características de UX
 
 ### Validación Simple y Efectiva
@@ -220,8 +229,8 @@ Para completar la implementación:
 
 ## 📊 Resumen de Cobertura
 
-- **Total de componentes**: 9
-- **Total de inputs validados**: 36+
+- **Total de componentes**: 10
+- **Total de inputs validados**: 40
 - **Tipos de validación**: `maxLength` (texto) y `max` (números)
 - **Cobertura**: 100% de inputs de texto y número en la aplicación
 
@@ -240,28 +249,30 @@ Para completar la implementación:
 | **PropertyFilters**        | 2      | Precios (999999999)                                                                                                                         |
 | **AgentPropertiesFilters** | 1      | Búsqueda (200)                                                                                                                              |
 | **AdminUsersFilters**      | 1      | Búsqueda (255)                                                                                                                              |
+| **ContactPage**            | 4      | Nombre (100), Email (255), Teléfono (20), Mensaje (1000)                                                                                    |
 
 ### Desglose por Tipo de Validación
 
-| Tipo de Campo       | Validación | Límite    | Cantidad | Ejemplos                            |
-| ------------------- | ---------- | --------- | -------- | ----------------------------------- |
-| **Email**           | maxLength  | 255       | 4        | Login, CreateUser, UsersTable       |
-| **Password**        | maxLength  | 100       | 2        | Login, CreateUser                   |
-| **Name**            | maxLength  | 100       | 3        | CreateUser, UsersTable              |
-| **Phone**           | maxLength  | 20        | 3        | CreateUser, UsersTable              |
-| **Title**           | maxLength  | 200       | 1        | PropertyModal                       |
-| **Description**     | maxLength  | 2000      | 1        | PropertyModal                       |
-| **Location (text)** | maxLength  | 100       | 6        | SearchBlock, PropertyModal          |
-| **Street Number**   | maxLength  | 10        | 1        | PropertyModal                       |
-| **Apartment**       | maxLength  | 10        | 1        | PropertyModal                       |
-| **Features**        | maxLength  | 100       | 1        | PropertyModal                       |
-| **Search Fields**   | maxLength  | 100-255   | 4        | Filters, RentalModal                |
-| **Price**           | max        | 999999999 | 5        | PropertyModal, SearchBlock, Filters |
-| **Rooms/Bed/Bath**  | max        | 99        | 3        | PropertyModal                       |
-| **Area**            | max        | 99999999  | 1        | PropertyModal                       |
-| **Year**            | max        | 9999      | 1        | PropertyModal                       |
+| Tipo de Campo       | Validación | Límite    | Cantidad | Ejemplos                               |
+| ------------------- | ---------- | --------- | -------- | -------------------------------------- |
+| **Email**           | maxLength  | 255       | 5        | Login, CreateUser, UsersTable, Contact |
+| **Password**        | maxLength  | 100       | 2        | Login, CreateUser                      |
+| **Name**            | maxLength  | 100       | 4        | CreateUser, UsersTable, Contact        |
+| **Phone**           | maxLength  | 20        | 4        | CreateUser, UsersTable, Contact        |
+| **Title**           | maxLength  | 200       | 1        | PropertyModal                          |
+| **Description**     | maxLength  | 2000      | 1        | PropertyModal                          |
+| **Message**         | maxLength  | 1000      | 1        | ContactPage                            |
+| **Location (text)** | maxLength  | 100       | 6        | SearchBlock, PropertyModal             |
+| **Street Number**   | maxLength  | 10        | 1        | PropertyModal                          |
+| **Apartment**       | maxLength  | 10        | 1        | PropertyModal                          |
+| **Features**        | maxLength  | 100       | 1        | PropertyModal                          |
+| **Search Fields**   | maxLength  | 100-255   | 4        | Filters, RentalModal                   |
+| **Price**           | max        | 999999999 | 5        | PropertyModal, SearchBlock, Filters    |
+| **Rooms/Bed/Bath**  | max        | 99        | 3        | PropertyModal                          |
+| **Area**            | max        | 99999999  | 1        | PropertyModal                          |
+| **Year**            | max        | 9999      | 1        | PropertyModal                          |
 
-**Total**: 36 inputs validados ✅
+**Total**: 40 inputs validados ✅
 
 ## 🔧 Implementación Técnica
 
