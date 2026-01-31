@@ -132,7 +132,8 @@ export default function DashboardPage() {
   ) => {
     try {
       // Mapear datos del formulario al DTO del backend
-      const apiData: CreatePropertyDto = {
+      // Mapear datos del formulario al DTO del backend
+      const baseApiData: CreatePropertyDto = {
         title: propertyData.title,
         description: propertyData.description,
         propertyType: propertyData.propertyType,
@@ -156,17 +157,20 @@ export default function DashboardPage() {
         ownerId: propertyData.ownerId || undefined,
         agentId: user?.id || undefined,
         features: propertyData.features,
-        // Note: images are NOT part of CreatePropertyDto - they're uploaded separately
-        // mainImage will be set when first image is uploaded
       };
 
       let savedPropertyId: string;
 
       if (editingProperty) {
         savedPropertyId = editingProperty.id!;
-        await propertiesService.update(editingProperty.id!, apiData);
+        // En updates, enviamos las imágenes existentes para manejar reordenamiento y borrado
+        await propertiesService.update(editingProperty.id!, {
+          ...baseApiData,
+          images: propertyData.images,
+        });
       } else {
-        const newProperty = await propertiesService.create(apiData);
+        // En create, no enviamos imágenes ya que la propiedad aun no existe
+        const newProperty = await propertiesService.create(baseApiData);
         savedPropertyId = newProperty.id;
       }
 
