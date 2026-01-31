@@ -157,6 +157,7 @@ export default function DashboardPage() {
         ownerId: propertyData.ownerId || undefined,
         agentId: user?.id || undefined,
         features: propertyData.features,
+        status: propertyData.status as "activa" | "pausada" | "archivada",
       };
 
       let savedPropertyId: string;
