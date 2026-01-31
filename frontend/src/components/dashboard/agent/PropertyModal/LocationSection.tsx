@@ -123,6 +123,7 @@ export default function LocationSection({
                 }))
               }
               placeholder="Ingrese Localidad"
+              maxLength={100}
             />
             <button
               type="button"
@@ -185,6 +186,7 @@ export default function LocationSection({
                 setFormData((prev) => ({ ...prev, street: e.target.value }))
               }
               placeholder="Ingrese Calle"
+              maxLength={100}
             />
             <button
               type="button"
@@ -209,6 +211,7 @@ export default function LocationSection({
               setFormData((prev) => ({ ...prev, streetNumber: e.target.value }))
             }
             placeholder="1234"
+            maxLength={10}
           />
           <FormInput
             label="Depto"
@@ -218,6 +221,7 @@ export default function LocationSection({
               setFormData((prev) => ({ ...prev, apartment: e.target.value }))
             }
             placeholder="4B"
+            maxLength={10}
           />
         </div>
       </div>

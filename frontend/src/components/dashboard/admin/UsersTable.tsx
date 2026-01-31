@@ -119,6 +119,7 @@ export default function UsersTable({
                             email: e.target.value,
                           })
                         }
+                        maxLength={255}
                         className="w-full px-3 py-1.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-(--accent) focus:border-transparent transition-all text-sm"
                       />
                     ) : (
@@ -138,6 +139,7 @@ export default function UsersTable({
                             name: e.target.value,
                           })
                         }
+                        maxLength={100}
                         className="w-full px-3 py-1.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-(--accent) focus:border-transparent transition-all text-sm"
                       />
                     ) : (
@@ -159,6 +161,7 @@ export default function UsersTable({
                             phone: e.target.value,
                           })
                         }
+                        maxLength={20}
                         className="w-full px-3 py-1.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-(--accent) focus:border-transparent transition-all text-sm"
                       />
                     ) : (

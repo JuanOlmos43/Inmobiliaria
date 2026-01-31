@@ -30,6 +30,7 @@ export default function AdminUsersFilters({
             value={searchEmail}
             onChange={(e) => setSearchEmail(e.target.value)}
             placeholder="ejemplo@correo.com"
+            maxLength={255}
             className="w-full pl-10 pr-4 py-2 bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-(--accent) focus:border-transparent transition-all"
           />
           <Icon

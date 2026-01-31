@@ -119,6 +119,7 @@ export default function CreateUserModal({
             required
             placeholder="usuario@email.com"
             disabled={isSubmitting}
+            maxLength={255}
           />
 
           <FormInput
@@ -128,6 +129,7 @@ export default function CreateUserModal({
             onChange={() => {}}
             disabled={true} // Bloqueado según requerimiento
             helpText="Valor fijo para nuevos registros."
+            maxLength={100}
           />
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -140,6 +142,7 @@ export default function CreateUserModal({
               }
               placeholder="Nombre del usuario"
               disabled={isSubmitting}
+              maxLength={100}
             />
 
             <FormInput
@@ -151,6 +154,7 @@ export default function CreateUserModal({
               }
               placeholder="+54 11 1234-5678"
               disabled={isSubmitting}
+              maxLength={20}
             />
           </div>
 

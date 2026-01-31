@@ -14,6 +14,11 @@ export default function FormInput({
   theme = "light",
   required,
   className = "",
+  type,
+  max,
+  min,
+  maxLength,
+  onInput,
   ...props
 }: FormInputProps) {
   const baseClasses =
@@ -26,6 +31,35 @@ export default function FormInput({
 
   const labelClasses = theme === "light" ? "text-gray-700" : "text-gray-200";
 
+  // Handler para validar max/min en inputs numéricos en tiempo real
+  const handleInput = (e: React.FormEvent<HTMLInputElement>) => {
+    const input = e.currentTarget;
+
+    if (type === "number") {
+      const value = input.value;
+
+      // Si hay un valor
+      if (value !== "") {
+        const numValue = Number(value);
+
+        // Validar max
+        if (max !== undefined && numValue > Number(max)) {
+          input.value = String(max);
+        }
+
+        // Validar min
+        if (min !== undefined && numValue < Number(min)) {
+          input.value = String(min);
+        }
+      }
+    }
+
+    // Llamar al onInput original si existe
+    if (onInput) {
+      onInput(e);
+    }
+  };
+
   return (
     <div>
       <label className={`block text-sm font-medium ${labelClasses} mb-2`}>
@@ -34,6 +68,11 @@ export default function FormInput({
       <input
         className={`${baseClasses} ${themeClasses} ${error ? "border-red-500" : ""} ${className}`}
         required={required}
+        type={type}
+        max={max}
+        min={min}
+        maxLength={maxLength}
+        onInput={handleInput}
         {...props}
       />
       {error && <p className="text-red-500 text-sm mt-1">{error}</p>}

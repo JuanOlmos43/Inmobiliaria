@@ -190,6 +190,7 @@ export default function PropertyModal({
                   setFormData({ ...formData, title: e.target.value })
                 }
                 placeholder="Ej: Hermosa casa en el centro"
+                maxLength={200}
               />
             </div>
 
@@ -217,6 +218,7 @@ export default function PropertyModal({
                 type="number"
                 required
                 min="0"
+                max="999999999"
                 value={formData.price}
                 onChange={(e) =>
                   setFormData({ ...formData, price: Number(e.target.value) })
@@ -281,6 +283,7 @@ export default function PropertyModal({
                   label="Ambientes"
                   type="number"
                   min="0"
+                  max="99"
                   required
                   value={formData.rooms}
                   onChange={(e) =>
@@ -291,6 +294,7 @@ export default function PropertyModal({
                   label="Dormitorios"
                   type="number"
                   min="0"
+                  max="99"
                   required
                   value={formData.bedrooms}
                   onChange={(e) =>
@@ -304,6 +308,7 @@ export default function PropertyModal({
                   label="Baños"
                   type="number"
                   min="0"
+                  max="99"
                   required
                   value={formData.bathrooms}
                   onChange={(e) =>
@@ -321,6 +326,7 @@ export default function PropertyModal({
                   label="Superficie (m²)"
                   type="number"
                   min="1"
+                  max="99999999"
                   required
                   value={formData.area}
                   onChange={(e) =>
@@ -331,6 +337,7 @@ export default function PropertyModal({
                   label="Año de Construcción"
                   type="number"
                   min="1800"
+                  max="9999"
                   placeholder="Ej: 2020"
                   value={formData.yearBuilt || ""}
                   onChange={(e) =>
@@ -348,7 +355,7 @@ export default function PropertyModal({
             {/* Descripción */}
             <div className="space-y-2">
               <label className="block text-sm font-medium text-gray-700">
-                Descripción
+                Descripción *
               </label>
               <textarea
                 className="w-full px-4 py-2 border border-gray-300 bg-white text-gray-900 placeholder-gray-500 rounded-lg focus:outline-none focus:ring-2 focus:ring-(--accent) focus:border-transparent transition-all duration-300 resize-y min-h-[100px]"
@@ -359,6 +366,7 @@ export default function PropertyModal({
                   setFormData({ ...formData, description: e.target.value })
                 }
                 placeholder="Detalles sobre la propiedad..."
+                maxLength={2000}
               />
             </div>
 
@@ -374,6 +382,7 @@ export default function PropertyModal({
                   placeholder="Ej: Aire Acondicionado, Patio, Cochera..."
                   value={featureInput}
                   onChange={(e) => setFeatureInput(e.target.value)}
+                  maxLength={100}
                   onKeyDown={(e) => {
                     if (e.key === "Enter") {
                       e.preventDefault();

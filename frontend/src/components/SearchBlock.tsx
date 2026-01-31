@@ -108,6 +108,7 @@ export default function SearchBlock() {
                 placeholder="Ej: Buenos Aires"
                 value={location}
                 onChange={(e) => setLocation(e.target.value)}
+                maxLength={100}
               />
 
               {/* Dormitorios */}
@@ -143,6 +144,7 @@ export default function SearchBlock() {
                 placeholder="Ej: Palermo"
                 value={neighborhood}
                 onChange={(e) => setNeighborhood(e.target.value)}
+                maxLength={100}
               />
 
               {/* Precio */}
@@ -158,6 +160,7 @@ export default function SearchBlock() {
                     value={minPrice}
                     onChange={handleMinPriceChange}
                     min="0"
+                    max="999999999"
                   />
                   <FormInput
                     label=""
@@ -166,6 +169,7 @@ export default function SearchBlock() {
                     value={maxPrice}
                     onChange={handleMaxPriceChange}
                     min="0"
+                    max="999999999"
                   />
                 </div>
                 {minPrice &&

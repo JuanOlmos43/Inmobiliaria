@@ -58,6 +58,7 @@ export default function LoginPage() {
               required
               placeholder="tu@email.com"
               theme="dark"
+              maxLength={255}
             />
 
             {/* Password Input con botón de mostrar/ocultar */}
@@ -74,6 +75,7 @@ export default function LoginPage() {
                   required
                   placeholder="••••••••"
                   autoComplete="new-password"
+                  maxLength={100}
                   className="w-full px-4 py-2 pr-12 border rounded-lg transition-all duration-300 bg-white/10 border-white/30 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-(--accent) focus:border-transparent [&::-ms-reveal]:hidden [&::-ms-clear]:hidden [&::-webkit-credentials-auto-fill-button]:hidden [&::-webkit-contacts-auto-fill-button]:hidden"
                 />
                 <button

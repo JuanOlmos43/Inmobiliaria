@@ -176,6 +176,7 @@ export default function PropertyFilters({
               placeholder="Mín"
               value={tempMinPrice}
               onChange={(e) => setTempMinPrice(e.target.value)}
+              max="999999999"
             />
             <FormInput
               label=""
@@ -183,6 +184,7 @@ export default function PropertyFilters({
               placeholder="Máx"
               value={tempMaxPrice}
               onChange={(e) => setTempMaxPrice(e.target.value)}
+              max="999999999"
             />
           </div>
         </div>
