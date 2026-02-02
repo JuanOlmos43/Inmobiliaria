@@ -18,6 +18,7 @@ export default function FormInput({
   max,
   min,
   maxLength,
+  minLength,
   onInput,
   ...props
 }: FormInputProps) {
@@ -72,6 +73,7 @@ export default function FormInput({
         max={max}
         min={min}
         maxLength={maxLength}
+        minLength={minLength}
         onInput={handleInput}
         {...props}
       />
