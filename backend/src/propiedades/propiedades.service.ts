@@ -14,7 +14,7 @@ export class PropiedadesService {
   constructor(
     private prisma: PrismaService,
     private storageService: StorageService,
-  ) {}
+  ) { }
 
   /**
    * Helper function to add calculated currency field based on listingType
@@ -60,8 +60,8 @@ export class PropiedadesService {
         features:
           features && features.length > 0
             ? {
-                create: features.map((name) => ({ name })),
-              }
+              create: features.map((name) => ({ name })),
+            }
             : undefined,
       },
       include: {
@@ -263,6 +263,28 @@ export class PropiedadesService {
       );
 
       if (imagesToDelete.length > 0) {
+        // Eliminar de Storage (Supabase)
+        // URL format: .../propiedades/propertyId/filename
+        const pathsToDelete = imagesToDelete
+          .map((img) => {
+            // Asumimos que la URL contiene /propiedades/ y tomamos lo que sigue
+            const parts = img.url.split('/propiedades/');
+            if (parts.length > 1) {
+              return parts[1]; // propertyId/filename
+            }
+            return null;
+          })
+          .filter((p): p is string => p !== null);
+
+        if (pathsToDelete.length > 0) {
+          try {
+            await this.storageService.deleteFiles(pathsToDelete);
+          } catch (error) {
+            console.error('Error deleting files from storage:', error);
+            // No bloqueamos el borrado de BD si falla storage
+          }
+        }
+
         await this.prisma.propertyImage.deleteMany({
           where: {
             id: { in: imagesToDelete.map((img) => img.id) },

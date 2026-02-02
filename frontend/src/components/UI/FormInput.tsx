@@ -32,30 +32,9 @@ export default function FormInput({
 
   const labelClasses = theme === "light" ? "text-gray-700" : "text-gray-200";
 
-  // Handler para validar max/min en inputs numéricos en tiempo real
+  // Handler para validar inputs
   const handleInput = (e: React.FormEvent<HTMLInputElement>) => {
-    const input = e.currentTarget;
-
-    if (type === "number") {
-      const value = input.value;
-
-      // Si hay un valor
-      if (value !== "") {
-        const numValue = Number(value);
-
-        // Validar max
-        if (max !== undefined && numValue > Number(max)) {
-          input.value = String(max);
-        }
-
-        // Validar min
-        if (min !== undefined && numValue < Number(min)) {
-          input.value = String(min);
-        }
-      }
-    }
-
-    // Llamar al onInput original si existe
+    // Solo llamar al onInput original si existe
     if (onInput) {
       onInput(e);
     }

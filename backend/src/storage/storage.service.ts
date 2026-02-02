@@ -190,4 +190,18 @@ export class StorageService implements OnModuleInit {
       throw deleteError;
     }
   }
+  async deleteFiles(paths: string[]) {
+    if (!this.supabase) throw new Error('Storage not configured');
+
+    const { error: deleteError } = await this.supabase.storage
+      .from(this.bucketName)
+      .remove(paths);
+
+    if (deleteError) {
+      this.logger.error(
+        `Error deleting files: ${deleteError.message}`,
+      );
+      throw deleteError;
+    }
+  }
 }
