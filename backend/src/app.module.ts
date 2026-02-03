@@ -9,6 +9,7 @@ import { AuthModule } from './auth/auth.module';
 import { StorageModule } from './storage/storage.module';
 
 import { ConfigModule } from '@nestjs/config';
+import { ContratosModule } from './contratos/contratos.module';
 
 @Module({
   imports: [
@@ -19,6 +20,7 @@ import { ConfigModule } from '@nestjs/config';
     UsersModule,
     AuthModule,
     StorageModule,
+    ContratosModule,
   ],
   controllers: [AppController],
   providers: [AppService],
