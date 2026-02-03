@@ -95,12 +95,6 @@ export default function AgentStatsGrid({ properties }: AgentStatsGridProps) {
               color="from-(--accent) to-(--accent)"
               icon="key"
             />
-
-            {/* Se añade por simetría si es necesario, o simplemente se conservan 2.
-            Mantengamos 2, pero centrados o en una cuadrícula que se vea bien.
-            De hecho, tener 4 ranuras podría verse mejor si encontramos más estadísticas.
-            ¿Quizás "Superficie total" o "Valor total"? No, los datos no están fácilmente disponibles aquí.
-            Mantengamos 2, pero hagámoslos más grandes o con mayor capacidad de respuesta. */}
           </div>
         </div>
       </div>

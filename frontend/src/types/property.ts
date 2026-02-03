@@ -1,7 +1,7 @@
 export interface Property {
     id?: string;
     title: string;
-    listingType: "venta" | "alquiler"; // Unificado con backend
+    listingType: "venta" | "alquiler";
     price: number;
     currency: "USD" | "ARS";
     location: string;
@@ -9,7 +9,7 @@ export interface Property {
     rooms: number;
     bathrooms: number;
     area: number;
-    mainImage?: string; // Unificado con backend
+    mainImage?: string;
     images?: string[];
     status: "activa" | "pausada";
     description: string;
@@ -19,7 +19,7 @@ export interface Property {
     landlordName?: string;
     landlordPhone?: string;
     landlordEmail?: string;
-    // Extra fields for creation/edit
+    // Campos adicionales para creación/edición
     province?: string;
     city?: string;
     street?: string;

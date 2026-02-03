@@ -3,6 +3,8 @@ import { useQuery } from "@tanstack/react-query";
 import { useDebounce } from "@/hooks/useDebounce";
 import Modal from "@/components/UI/Modal";
 import Icon from "@/components/UI/Icon";
+import FormInput from "@/components/UI/FormInput";
+import FormSelect from "@/components/UI/FormSelect";
 import {
   UserRole,
   UserProfile,
@@ -23,8 +25,18 @@ interface SystemUser {
   status: "active" | "inactive";
 }
 
+// Extend Property type to include owner from backend
+interface PropertyWithOwner extends Property {
+  owner?: {
+    id: string;
+    name: string;
+    email: string;
+    phone: string | null;
+  };
+}
+
 interface RentalModalProps {
-  property: Property;
+  property: PropertyWithOwner;
   onClose: () => void;
   onSave: (data: CreateRentalDto) => void;
 }
@@ -38,7 +50,7 @@ export default function RentalModal({
     tenantEmail: "",
     startDate: new Date().toISOString().split("T")[0],
     endDate: "",
-    adjustmentPeriod: "anual",
+    adjustmentPeriod: "mensual",
     adjustmentPercentage: 0,
     status: "active",
   });
@@ -86,63 +98,30 @@ export default function RentalModal({
     }
   };
 
-  const filteredTenants = tenants;
-
-  const calculateAdjustmentMonths = () => {
-    if (!formData.startDate || !formData.endDate) return [];
-
-    const start = new Date(formData.startDate);
-    const end = new Date(formData.endDate);
-    const adjustmentMonths = [];
-    const current = new Date(start);
-
-    const incrementMonths =
-      formData.adjustmentPeriod === "trimestral"
-        ? 3
-        : formData.adjustmentPeriod === "semestral"
-          ? 6
-          : 12;
-
-    current.setMonth(current.getMonth() + incrementMonths);
-
-    while (current <= end) {
-      adjustmentMonths.push(new Date(current));
-      current.setMonth(current.getMonth() + incrementMonths);
-    }
-
-    return adjustmentMonths;
-  };
-
-  const adjustmentMonths = calculateAdjustmentMonths();
-
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
     const nextAdjustmentDate = new Date(formData.startDate);
-    const incrementMonths =
-      formData.adjustmentPeriod === "trimestral"
-        ? 3
-        : formData.adjustmentPeriod === "semestral"
-          ? 6
-          : 12;
+    const periodMonths: Record<string, number> = {
+      mensual: 1,
+      bimestral: 2,
+      trimestral: 3,
+      cuatrimestral: 4,
+      semestral: 6,
+      anual: 12,
+    };
+    const incrementMonths = periodMonths[formData.adjustmentPeriod] || 1;
     nextAdjustmentDate.setMonth(
       nextAdjustmentDate.getMonth() + incrementMonths,
     );
 
-    const landlordInfo = {
-      landlordName: property.landlordName || "Propietario de " + property.title,
-      landlordPhone: property.landlordPhone || "+54 11 0000-0000",
-      landlordEmail: property.landlordEmail || "propietario@email.com",
+    onSave({
+      ...formData,
+      landlordName: property.owner?.name || "No especificado",
+      landlordPhone: property.owner?.phone || "No especificado",
+      landlordEmail: property.owner?.email || "No especificado",
       nextAdjustmentDate: nextAdjustmentDate.toISOString().split("T")[0],
-    };
-
-    onSave({ ...formData, ...landlordInfo });
-  };
-
-  const periodLabels = {
-    trimestral: "Trimestral (cada 3 meses)",
-    semestral: "Semestral (cada 6 meses)",
-    anual: "Anual (cada año)",
+    });
   };
 
   return (
@@ -163,7 +142,7 @@ export default function RentalModal({
               <span className="font-medium">Título:</span> {property.title}
             </p>
             <p className="text-gray-700">
-              <span className="font-medium">Ubicación:</span>{" "}
+              <span className="font-medium">Ubicación: </span>
               {property.location}
             </p>
             <p className="text-gray-700">
@@ -173,27 +152,29 @@ export default function RentalModal({
           </div>
 
           {/* Información del Propietario */}
-          {property.landlordName && (
-            <div className="mt-4 pt-4 border-t border-gray-300">
-              <h4 className="text-md font-semibold text-(--primary) mb-2">
-                Propietario
-              </h4>
-              <div className="space-y-1">
-                <p className="text-gray-700">
-                  <span className="font-medium">Nombre:</span>{" "}
-                  {property.landlordName}
-                </p>
-                <p className="text-gray-700">
-                  <span className="font-medium">Teléfono:</span>{" "}
-                  <span className="font-mono">{property.landlordPhone}</span>
-                </p>
-                <p className="text-gray-700">
-                  <span className="font-medium">Email:</span>{" "}
-                  <span className="font-mono">{property.landlordEmail}</span>
-                </p>
-              </div>
+          <div className="mt-4 pt-4 border-t border-(--border)">
+            <h4 className="text-lg font-semibold text-(--primary) mb-3">
+              Propietario
+            </h4>
+            <div className="space-y-1">
+              <p className="text-gray-700">
+                <span className="font-medium">Nombre: </span>
+                {property.owner?.name || "No especificado"}
+              </p>
+              <p className="text-gray-700">
+                <span className="font-medium">Teléfono: </span>
+                <span className="font-mono">
+                  {property.owner?.phone || "No especificado"}
+                </span>
+              </p>
+              <p className="text-gray-700">
+                <span className="font-medium">Email: </span>
+                <span className="font-mono">
+                  {property.owner?.email || "No especificado"}
+                </span>
+              </p>
             </div>
-          )}
+          </div>
         </div>
 
         {/* Búsqueda de Inquilino */}
@@ -213,16 +194,16 @@ export default function RentalModal({
               onChange={(e) => handleTenantSearchChange(e.target.value)}
               onFocus={() => setShowTenantDropdown(true)}
               maxLength={100}
-              className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#14b8a6] focus:border-transparent"
+              className="w-full pl-10 px-4 py-2 border rounded-lg transition-all duration-300 border-gray-300 bg-white text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-(--accent) focus:border-transparent disabled:bg-gray-100 disabled:text-gray-500"
               placeholder="Buscar inquilino por nombre o email..."
             />
           </div>
 
           {/* Dropdown de resultados */}
           {showTenantDropdown && tenantSearch && (
-            <div className="absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-lg shadow-lg max-h-60 overflow-y-auto">
-              {filteredTenants.length > 0 ? (
-                filteredTenants.map((tenant: SystemUser) => (
+            <div className="absolute z-10 w-full mt-1 bg-white border border-(--border) rounded-lg shadow-lg max-h-60 overflow-y-auto">
+              {tenants.length > 0 ? (
+                tenants.map((tenant: SystemUser) => (
                   <button
                     key={tenant.email}
                     type="button"
@@ -299,34 +280,24 @@ export default function RentalModal({
             Fechas del Contrato
           </h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Fecha de Inicio *
-              </label>
-              <input
-                type="date"
-                required
-                value={formData.startDate}
-                onChange={(e) =>
-                  setFormData({ ...formData, startDate: e.target.value })
-                }
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-(--accent) focus:border-transparent"
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Fecha de Vencimiento *
-              </label>
-              <input
-                type="date"
-                required
-                value={formData.endDate}
-                onChange={(e) =>
-                  setFormData({ ...formData, endDate: e.target.value })
-                }
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-(--accent) focus:border-transparent"
-              />
-            </div>
+            <FormInput
+              label="Fecha de Inicio"
+              type="date"
+              required
+              value={formData.startDate}
+              onChange={(e) =>
+                setFormData({ ...formData, startDate: e.target.value })
+              }
+            />
+            <FormInput
+              label="Fecha de Vencimiento"
+              type="date"
+              required
+              value={formData.endDate}
+              onChange={(e) =>
+                setFormData({ ...formData, endDate: e.target.value })
+              }
+            />
           </div>
         </div>
 
@@ -335,74 +306,44 @@ export default function RentalModal({
           <h3 className="text-lg font-semibold text-(--primary) mb-3">
             Meses de Ajuste
           </h3>
-          <div className="mb-4">
-            <select
-              required
-              value={formData.adjustmentPeriod}
-              onChange={(e) =>
-                setFormData({
-                  ...formData,
-                  adjustmentPeriod: e.target.value as
-                    | "trimestral"
-                    | "semestral"
-                    | "anual",
-                })
-              }
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-(--accent) focus:border-transparent"
-            >
-              <option value="trimestral">Trimestral (cada 3 meses)</option>
-              <option value="semestral">Semestral (cada 6 meses)</option>
-              <option value="anual">Anual (cada año)</option>
-            </select>
-          </div>
-
-          {/* Mostrar meses de ajuste calculados */}
-          {adjustmentMonths.length > 0 && (
-            <div className="bg-gray-50 rounded-lg p-4">
-              <p className="text-sm font-medium text-gray-700 mb-2">
-                Meses en que se ajustará el precio:
-              </p>
-              <div className="flex flex-wrap gap-2">
-                {adjustmentMonths.map((date, index) => (
-                  <span
-                    key={index}
-                    className="px-3 py-1 bg-(--accent) text-white rounded-full text-xs font-medium"
-                  >
-                    {date.toLocaleDateString("es-ES", {
-                      month: "long",
-                      year: "numeric",
-                    })}
-                  </span>
-                ))}
-              </div>
-              <p className="text-xs text-gray-500 mt-2">
-                El ajuste se aplicará{" "}
-                {periodLabels[formData.adjustmentPeriod].toLowerCase()}.
-              </p>
-            </div>
-          )}
-
-          {adjustmentMonths.length === 0 &&
-            formData.startDate &&
-            formData.endDate && (
-              <p className="text-sm text-gray-500">
-                No hay ajustes programados para el periodo seleccionado.
-              </p>
-            )}
+          <FormSelect
+            label="Período de Ajuste"
+            required
+            value={formData.adjustmentPeriod}
+            onChange={(e) =>
+              setFormData({
+                ...formData,
+                adjustmentPeriod: e.target.value as
+                  | "mensual"
+                  | "bimestral"
+                  | "trimestral"
+                  | "cuatrimestral"
+                  | "semestral"
+                  | "anual",
+              })
+            }
+          >
+            <option value="mensual">Mensual (cada mes)</option>
+            <option value="bimestral">Bimestral (cada 2 meses)</option>
+            <option value="trimestral">Trimestral (cada 3 meses)</option>
+            <option value="cuatrimestral">Cuatrimestral (cada 4 meses)</option>
+            <option value="semestral">Semestral (cada 6 meses)</option>
+            <option value="anual">Anual (cada año)</option>
+          </FormSelect>
         </div>
 
         {/* Botones */}
-        <div className="flex gap-3 pt-4 border-t border-gray-200">
+        <div className="flex gap-3 pt-6">
           <button
             type="button"
             onClick={onClose}
-            className="flex-1 px-6 py-3 border border-gray-300 text-gray-700 font-semibold rounded-lg hover:bg-gray-50 transition-colors"
+            className="flex-1 px-4 py-2.5 border border-gray-300 text-gray-700 rounded-lg font-medium hover:bg-red-600 hover:text-white hover:border-red-600 transition-all duration-200 disabled:opacity-50"
           >
             Cancelar
           </button>
           <button
             type="submit"
-            className="flex-1 px-6 py-3 bg-(--accent) text-white font-semibold rounded-lg hover:bg-(--accent-hover) transition-all duration-300 shadow-lg hover:shadow-xl"
+            className="flex-1 px-4 py-2.5 bg-(--accent) text-white rounded-lg font-medium hover:bg-(--accent-hover) transition-all shadow-md hover:shadow-lg disabled:opacity-50 flex justify-center items-center gap-2"
           >
             Crear Contrato
           </button>

@@ -88,7 +88,7 @@ export interface RentalData {
   tenantEmail: string;
   startDate: string;
   endDate: string;
-  adjustmentPeriod: "trimestral" | "semestral" | "anual";
+  adjustmentPeriod: "mensual" | "bimestral" | "trimestral" | "cuatrimestral" | "semestral" | "anual";
   adjustmentPercentage: number;
   status: "active" | "expiring" | "expired";
 }
