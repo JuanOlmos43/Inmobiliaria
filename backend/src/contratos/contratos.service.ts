@@ -46,23 +46,35 @@ export class ContratosService {
       createContratoDto.adjustmentFrequency,
     );
 
-    return this.prisma.rentalContract.create({
-      data: {
-        ...createContratoDto,
-        nextAdjustmentDate,
-      },
-      include: {
-        property: true,
-        tenant: {
-          select: { id: true, name: true, email: true },
+    return this.prisma.$transaction(async (tx) => {
+      const contract = await tx.rentalContract.create({
+        data: {
+          ...createContratoDto,
+          nextAdjustmentDate,
         },
-        landlord: {
-          select: { id: true, name: true, email: true },
+        include: {
+          property: true,
+          tenant: {
+            select: { id: true, name: true, email: true },
+          },
+          landlord: {
+            select: { id: true, name: true, email: true },
+          },
+          agent: {
+            select: { id: true, name: true, email: true },
+          },
         },
-        agent: {
-          select: { id: true, name: true, email: true },
-        },
-      },
+      });
+
+      // Si el contrato se crea activo, marcar la propiedad como alquilada
+      if (!createContratoDto.status || createContratoDto.status === 'active') {
+        await tx.property.update({
+          where: { id: createContratoDto.propertyId },
+          data: { status: 'alquilada' },
+        });
+      }
+
+      return contract;
     });
   }
 
@@ -186,7 +198,11 @@ export class ContratosService {
     }
   }
 
-  async getMonthlyActivity(type: 'all' | 'end_contract' | 'adjustment' = 'all') {
+  async getMonthlyActivity(
+    type: 'all' | 'end_contract' | 'adjustment' = 'all',
+    search?: string,
+    role?: 'tenant' | 'landlord'
+  ) {
     // 1. Recalcular fechas desactualizadas primero
     await this.updateOverdueAdjustments();
 
@@ -198,11 +214,11 @@ export class ContratosService {
     endOfMonth.setHours(23, 59, 59, 999);
 
     const where: any = { status: 'active' };
-    const conditions: any[] = [];
+    const dateConditions: any[] = [];
 
-    // Lógica de filtro según el tipo
+    // Lógica de filtro según el tipo (Fechas)
     if (type === 'end_contract' || type === 'all') {
-      conditions.push({
+      dateConditions.push({
         endDate: {
           gte: startOfMonth,
           lte: endOfMonth,
@@ -211,7 +227,7 @@ export class ContratosService {
     }
 
     if (type === 'adjustment' || type === 'all') {
-      conditions.push({
+      dateConditions.push({
         nextAdjustmentDate: {
           gte: startOfMonth,
           lte: endOfMonth,
@@ -219,11 +235,40 @@ export class ContratosService {
       });
     }
 
-    if (conditions.length > 0) {
-      where.OR = conditions;
+    if (dateConditions.length > 0) {
+      where.OR = dateConditions; // Coincidir con vencimiento O ajuste
     } else {
-      // Si por alguna razón no hay condiciones (ej. tipo inválido), no retornar nada o todo (decisión de diseño: retornar vacío)
       return [];
+    }
+
+    // 3. Agregar filtro de búsqueda (Nombres/Emails) si existe
+    if (search) {
+      const searchFilters: any[] = [];
+
+      // Si rol es tenant o no se especificó rol, buscar en tenant
+      if (!role || role === 'tenant') {
+        searchFilters.push(
+          { tenant: { name: { contains: search, mode: 'insensitive' } } },
+          { tenant: { email: { contains: search, mode: 'insensitive' } } }
+        );
+      }
+
+      // Si rol es landlord o no se especificó rol, buscar en landlord
+      if (!role || role === 'landlord') {
+        searchFilters.push(
+          { landlord: { name: { contains: search, mode: 'insensitive' } } },
+          { landlord: { email: { contains: search, mode: 'insensitive' } } }
+        );
+      }
+
+      // Aplicar filtro combinado con lógica adecuada
+      if (searchFilters.length > 0) {
+        // Necesitamos asegurar que cumpla con el criterio de fecha (AND)
+        // Y además coincida con alguno de los criterios de búsqueda (AND ( ... OR ...))
+        where.AND = [
+          { OR: searchFilters }
+        ];
+      }
     }
 
     const contracts = await this.prisma.rentalContract.findMany({
@@ -254,6 +299,54 @@ export class ContratosService {
         eventType: isEnding && isAdjusting ? 'both' : (isEnding ? 'end_contract' : 'adjustment'),
       };
     });
+  }
+
+  async getStats() {
+    const today = new Date();
+    const startOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
+    const endOfMonth = new Date(today.getFullYear(), today.getMonth() + 1, 0);
+    endOfMonth.setHours(23, 59, 59, 999);
+
+    const [
+      newThisMonth,
+      active,
+      expired,
+      expiringThisMonth
+    ] = await Promise.all([
+      // Contratos de alquiler nuevos este mes (por fecha de inicio)
+      this.prisma.rentalContract.count({
+        where: {
+          startDate: {
+            gte: startOfMonth,
+            lte: endOfMonth,
+          }
+        }
+      }),
+      // Activos totales
+      this.prisma.rentalContract.count({ where: { status: 'active' } }),
+      // Expirados totales
+      this.prisma.rentalContract.count({ where: { status: 'expired' } }),
+      // Vencen este mes
+      this.prisma.rentalContract.count({
+        where: {
+          endDate: {
+            gte: startOfMonth,
+            lte: endOfMonth,
+          }
+        }
+      })
+    ]);
+
+    return {
+      monthly: {
+        new: newThisMonth,
+        expiring: expiringThisMonth
+      },
+      status: {
+        active,
+        expired
+      }
+    };
   }
 
   async findOne(id: string) {

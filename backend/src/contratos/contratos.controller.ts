@@ -26,9 +26,18 @@ import { UserRole } from '@prisma/client';
 export class ContratosController {
   constructor(private readonly contratosService: ContratosService) { }
 
+  @Get('stats')
+  getStats() {
+    return this.contratosService.getStats();
+  }
+
   @Get('dashboard/expirations')
-  getMonthlyActivity(@Query('type') type?: 'all' | 'end_contract' | 'adjustment') {
-    return this.contratosService.getMonthlyActivity(type);
+  getMonthlyActivity(
+    @Query('type') type?: 'all' | 'end_contract' | 'adjustment',
+    @Query('search') search?: string,
+    @Query('role') role?: 'tenant' | 'landlord',
+  ) {
+    return this.contratosService.getMonthlyActivity(type, search, role);
   }
 
   @Post()

@@ -28,12 +28,17 @@ import { UserRole } from '@prisma/client';
 @UseGuards(JwtAuthGuard, RolesGuard)
 @UsePipes(new ValidationPipe({ transform: true, whitelist: true }))
 export class PropiedadesController {
-  constructor(private readonly propiedadesService: PropiedadesService) {}
+  constructor(private readonly propiedadesService: PropiedadesService) { }
 
   @Post()
   @Roles(UserRole.Agente)
   async create(@Body() createPropiedadeDto: CreatePropiedadeDto) {
     return await this.propiedadesService.create(createPropiedadeDto);
+  }
+
+  @Get('stats')
+  getStats() {
+    return this.propiedadesService.getStats();
   }
 
   @Get()

@@ -432,4 +432,49 @@ export class PropiedadesService {
 
     return newImage;
   }
+
+  async getStats() {
+    const today = new Date();
+    const startOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
+    const endOfMonth = new Date(today.getFullYear(), today.getMonth() + 1, 0);
+    endOfMonth.setHours(23, 59, 59, 999);
+
+    const [
+      total,
+      activa,
+      pausada,
+      createdThisMonth,
+      venta,
+      alquiler
+    ] = await Promise.all([
+      this.prisma.property.count(),
+      this.prisma.property.count({ where: { status: 'activa' } }),
+      this.prisma.property.count({ where: { status: 'pausada' } }),
+      this.prisma.property.count({
+        where: {
+          createdAt: {
+            gte: startOfMonth,
+            lte: endOfMonth,
+          }
+        }
+      }),
+      this.prisma.property.count({ where: { listingType: 'venta' } }),
+      this.prisma.property.count({ where: { listingType: 'alquiler' } }),
+    ]);
+
+    return {
+      total,
+      status: {
+        activa,
+        pausada,
+      },
+      monthly: {
+        new: createdThisMonth
+      },
+      listingType: {
+        venta,
+        alquiler
+      }
+    };
+  }
 }
