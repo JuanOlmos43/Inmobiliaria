@@ -3,19 +3,16 @@ import { useQuery } from "@tanstack/react-query";
 import { useDebounce } from "@/hooks/useDebounce";
 import Modal from "@/components/UI/Modal";
 import Icon from "@/components/UI/Icon";
-import { UserRole, UserProfile, UserStatus } from "@/types/api";
+import {
+  UserRole,
+  UserProfile,
+  UserStatus,
+  RentalData,
+  CreateRentalDto,
+} from "@/types/api";
 import { usersService } from "@/lib/api/services/users";
 
 import { Property } from "@/types/property";
-
-interface RentalData {
-  tenantEmail: string;
-  startDate: string;
-  endDate: string;
-  adjustmentPeriod: "trimestral" | "semestral" | "anual";
-  adjustmentPercentage: number;
-  status: "active" | "expiring" | "expired";
-}
 
 interface SystemUser {
   id: string;
@@ -29,14 +26,7 @@ interface SystemUser {
 interface RentalModalProps {
   property: Property;
   onClose: () => void;
-  onSave: (
-    data: RentalData & {
-      landlordName: string;
-      landlordPhone: string;
-      landlordEmail: string;
-      nextAdjustmentDate: string;
-    },
-  ) => void;
+  onSave: (data: CreateRentalDto) => void;
 }
 
 export default function RentalModal({

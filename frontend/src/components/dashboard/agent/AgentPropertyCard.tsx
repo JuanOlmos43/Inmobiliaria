@@ -6,7 +6,6 @@ interface AgentPropertyCardProps {
   property: Property;
   onEdit: (property: Property) => void;
   onDelete: (id: string) => void;
-  onToggleStatus: (id: string) => void;
   onRent?: (property: Property) => void;
 }
 
@@ -14,7 +13,6 @@ export default function AgentPropertyCard({
   property,
   onEdit,
   onDelete,
-  onToggleStatus,
   onRent,
 }: AgentPropertyCardProps) {
   // Definir acciones
@@ -32,18 +30,11 @@ export default function AgentPropertyCard({
       variant: "info" as const,
       icon: <Icon name="document" className="w-4 h-4" />,
       show:
-        property.type === "Alquiler" &&
+        property.listingType === "alquiler" &&
         property.status === "activa" &&
         !!onRent,
     },
-    {
-      label: property.status === "activa" ? "Pausar" : "Activar",
-      onClick: () => onToggleStatus(property.id!),
-      variant: (property.status === "activa" ? "secondary" : "warning") as
-        | "secondary"
-        | "warning",
-      show: true,
-    },
+
     {
       label: "",
       onClick: () => onDelete(property.id!),
@@ -107,12 +98,12 @@ export default function AgentPropertyCard({
       price={property.price}
       currency={property.currency}
       location={property.location}
-      type={property.type}
+      type={property.listingType === "venta" ? "Venta" : "Alquiler"}
       status={property.status === "activa" ? "Activa" : "Pausada"}
       bedrooms={property.bedrooms}
       bathrooms={property.bathrooms}
       area={property.area}
-      image={property.image}
+      image={property.mainImage}
       showStatusBadge={true}
       showTypeBadge={true}
       showDetails={true}

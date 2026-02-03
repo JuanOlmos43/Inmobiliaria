@@ -15,8 +15,8 @@ export default function AgentStatsGrid({ properties }: AgentStatsGridProps) {
   const total = properties.length;
   const active = properties.filter((p) => p.status === "activa").length;
   const paused = properties.filter((p) => p.status === "pausada").length;
-  const forSale = properties.filter((p) => p.type === "Venta").length;
-  const forRent = properties.filter((p) => p.type === "Alquiler").length;
+  const forSale = properties.filter((p) => p.listingType === "venta").length;
+  const forRent = properties.filter((p) => p.listingType === "alquiler").length;
 
   return (
     <div className="mb-8">
@@ -79,7 +79,7 @@ export default function AgentStatsGrid({ properties }: AgentStatsGridProps) {
         {/* Fila 2: Tipos de Listado */}
         <div>
           <h3 className="text-sm font-medium text-slate-500 mb-4 uppercase tracking-wider">
-            Distribución por Tipo de Negocio
+            Distribución por Tipo
           </h3>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             <StatsCard

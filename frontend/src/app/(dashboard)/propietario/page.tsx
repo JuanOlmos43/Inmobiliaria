@@ -202,11 +202,11 @@ function PropertyCardWrapper({ property }: { property: Property }) {
       title={property.title}
       price={property.price}
       location={property.location}
-      type={property.type}
+      type={property.listingType === "venta" ? "Venta" : "Alquiler"}
       bedrooms={property.bedrooms}
       bathrooms={property.bathrooms}
       area={property.area}
-      image={property.image}
+      image={property.mainImage}
       status={property.status}
       showStatusBadge={true}
       showTypeBadge={true}
