@@ -2,14 +2,12 @@ import { InputHTMLAttributes } from "react";
 
 interface FormInputProps extends InputHTMLAttributes<HTMLInputElement> {
   label: string;
-  error?: string;
   helpText?: string;
   theme?: "light" | "dark"; // Para formularios en fondos oscuros vs claros
 }
 
 export default function FormInput({
   label,
-  error,
   helpText,
   theme = "light",
   required,
@@ -18,6 +16,7 @@ export default function FormInput({
   max,
   min,
   maxLength,
+  minLength,
   onInput,
   ...props
 }: FormInputProps) {
@@ -31,9 +30,8 @@ export default function FormInput({
 
   const labelClasses = theme === "light" ? "text-gray-700" : "text-gray-200";
 
-  // Handler para validar inputs
+  // Handler para llamar al onInput original si existe
   const handleInput = (e: React.FormEvent<HTMLInputElement>) => {
-    // Solo llamar al onInput original si existe
     if (onInput) {
       onInput(e);
     }
@@ -45,19 +43,17 @@ export default function FormInput({
         {label} {required && "*"}
       </label>
       <input
-        className={`${baseClasses} ${themeClasses} ${error ? "border-red-500" : ""} ${className}`}
+        className={`${baseClasses} ${themeClasses} ${className}`}
         required={required}
         type={type}
         max={max}
         min={min}
         maxLength={maxLength}
+        minLength={minLength}
         onInput={handleInput}
         {...props}
       />
-      {error && <p className="text-red-500 text-sm mt-1">{error}</p>}
-      {helpText && !error && (
-        <p className="text-gray-400 text-xs mt-1">{helpText}</p>
-      )}
+      {helpText && <p className="text-gray-400 text-xs mt-1">{helpText}</p>}
     </div>
   );
 }

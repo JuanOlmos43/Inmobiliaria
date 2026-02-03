@@ -25,7 +25,7 @@ export default function PropertyModal({
 }: PropertyModalProps) {
   const [formData, setFormData] = useState<Omit<Property, "id">>({
     title: property?.title || "",
-    type: property?.type || "Venta",
+    listingType: property?.listingType || "venta",
     price: property?.price || 1,
     currency: property?.currency || "USD", // Solo para mostrar, no se envía al backend
     location: property?.location || "",
@@ -199,19 +199,19 @@ export default function PropertyModal({
             <div className="grid grid-cols-2 gap-4">
               <FormSelect
                 label="Tipo"
-                value={formData.type}
+                value={formData.listingType}
                 onChange={(e) => {
-                  const newType = e.target.value as "Venta" | "Alquiler";
+                  const newType = e.target.value as "venta" | "alquiler";
                   setFormData({
                     ...formData,
-                    type: newType,
+                    listingType: newType,
                     // Actualizar currency solo para mostrar en el label del precio
-                    currency: newType === "Venta" ? "USD" : "ARS",
+                    currency: newType === "venta" ? "USD" : "ARS",
                   });
                 }}
               >
-                <option value="Venta">Venta</option>
-                <option value="Alquiler">Alquiler</option>
+                <option value="venta">Venta</option>
+                <option value="alquiler">Alquiler</option>
               </FormSelect>
 
               <FormInput

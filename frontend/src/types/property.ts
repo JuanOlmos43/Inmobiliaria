@@ -1,7 +1,7 @@
 export interface Property {
     id?: string;
     title: string;
-    type: "Venta" | "Alquiler";
+    listingType: "venta" | "alquiler"; // Unificado con backend
     price: number;
     currency: "USD" | "ARS";
     location: string;
@@ -9,7 +9,7 @@ export interface Property {
     rooms: number;
     bathrooms: number;
     area: number;
-    image?: string;
+    mainImage?: string; // Unificado con backend
     images?: string[];
     status: "activa" | "pausada";
     description: string;

@@ -57,7 +57,7 @@ export default function AdminDashboardPage() {
             <h2 className="text-2xl font-bold text-(--primary)">
               Gestión de Usuarios
             </h2>
-
+            {/*BOTON CREAR USUARIO */}
             <button
               onClick={() => setShowModal(true)}
               className="px-6 py-3 bg-(--accent) text-white rounded-lg hover:bg-(--accent-hover) transition-all shadow-md hover:shadow-lg flex items-center gap-2 transform hover:scale-105"

@@ -78,6 +78,33 @@ export enum UserStatus {
 }
 
 // ============================================
+// Tipos de Contratos de Alquiler
+// ============================================
+
+/**
+ * Datos base del formulario de alquiler
+ */
+export interface RentalData {
+  tenantEmail: string;
+  startDate: string;
+  endDate: string;
+  adjustmentPeriod: "trimestral" | "semestral" | "anual";
+  adjustmentPercentage: number;
+  status: "active" | "expiring" | "expired";
+}
+
+/**
+ * Datos completos del contrato de alquiler incluyendo información del propietario
+ * Este es el tipo que se pasa a la mutación de creación de contratos
+ */
+export interface CreateRentalDto extends RentalData {
+  landlordName: string;
+  landlordPhone: string;
+  landlordEmail: string;
+  nextAdjustmentDate: string;
+}
+
+// ============================================
 // Error Handling
 // ============================================
 
