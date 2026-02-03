@@ -2,6 +2,7 @@ import { Dispatch, SetStateAction, useEffect } from "react";
 import { useLandlordSearch } from "@/hooks/useLandlordSearch";
 import { type UserProfile } from "@/types/api";
 import { Property } from "@/types/property";
+import Icon from "@/components/UI/Icon";
 
 interface LandlordSectionProps {
   formData: Omit<Property, "id">;
@@ -46,6 +47,10 @@ export default function LandlordSection({
         Propietario *
       </label>
       <div className="relative">
+        <Icon
+          name="search"
+          className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400"
+        />
         <input
           type="text"
           required
@@ -65,7 +70,7 @@ export default function LandlordSection({
             }
           }}
           onFocus={() => setShowLandlordDropdown(true)}
-          className="w-full px-4 py-2 border rounded-lg transition-all duration-300 border-gray-300 bg-white text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-(--accent) focus:border-transparent disabled:bg-gray-100 disabled:text-gray-500"
+          className="w-full pl-10 px-4 py-2 border rounded-lg transition-all duration-300 border-gray-300 bg-white text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-(--accent) focus:border-transparent disabled:bg-gray-100 disabled:text-gray-500"
           placeholder="Buscar propietario..."
           maxLength={100}
         />
