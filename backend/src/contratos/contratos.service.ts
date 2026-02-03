@@ -106,13 +106,19 @@ export class ContratosService {
     // Filtros de texto parcial (insensitive)
     if (tenantName) {
       where.tenant = {
-        name: { contains: tenantName, mode: 'insensitive' },
+        OR: [
+          { name: { contains: tenantName, mode: 'insensitive' } },
+          { email: { contains: tenantName, mode: 'insensitive' } },
+        ],
       };
     }
 
     if (landlordName) {
       where.landlord = {
-        name: { contains: landlordName, mode: 'insensitive' },
+        OR: [
+          { name: { contains: landlordName, mode: 'insensitive' } },
+          { email: { contains: landlordName, mode: 'insensitive' } },
+        ],
       };
     }
 
