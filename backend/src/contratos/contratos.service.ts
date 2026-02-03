@@ -146,6 +146,116 @@ export class ContratosService {
     };
   }
 
+  // --- Lógica de Vencimientos y Ajustes Mensuales ---
+
+  private async updateOverdueAdjustments() {
+    const today = new Date();
+    // Primer día del mes actual
+    const startOfCurrentMonth = new Date(today.getFullYear(), today.getMonth(), 1);
+
+    // Buscar contratos con próxima fecha de ajuste anterior a este mes (vencida)
+    const contractsToUpdate = await this.prisma.rentalContract.findMany({
+      where: {
+        nextAdjustmentDate: {
+          lt: startOfCurrentMonth,
+        },
+        status: 'active', // Solo activos
+      },
+    });
+
+    // Actualizar cada contrato
+    for (const contract of contractsToUpdate) {
+      if (!contract.adjustmentFrequency || !contract.nextAdjustmentDate) continue;
+
+      let nextDate = new Date(contract.nextAdjustmentDate);
+      const endDate = new Date(contract.endDate);
+
+      // Sumar frecuencia hasta que la fecha sea futura (este mes o después) o supere el fin del contrato
+      while (nextDate < startOfCurrentMonth && nextDate <= endDate) {
+        nextDate = this.addMonths(nextDate, contract.adjustmentFrequency);
+      }
+
+      // Si se pasó del final del contrato, ya no hay próximo ajuste
+      const finalNextDate = nextDate > endDate ? null : nextDate;
+
+      // Actualizar en BD
+      await this.prisma.rentalContract.update({
+        where: { id: contract.id },
+        data: { nextAdjustmentDate: finalNextDate },
+      });
+    }
+  }
+
+  async getMonthlyActivity(type: 'all' | 'end_contract' | 'adjustment' = 'all') {
+    // 1. Recalcular fechas desactualizadas primero
+    await this.updateOverdueAdjustments();
+
+    // 2. Definir rango del mes actual
+    const today = new Date();
+    const startOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
+    const endOfMonth = new Date(today.getFullYear(), today.getMonth() + 1, 0);
+    // Ajustar endOfMonth al final del día
+    endOfMonth.setHours(23, 59, 59, 999);
+
+    const where: any = { status: 'active' };
+    const conditions: any[] = [];
+
+    // Lógica de filtro según el tipo
+    if (type === 'end_contract' || type === 'all') {
+      conditions.push({
+        endDate: {
+          gte: startOfMonth,
+          lte: endOfMonth,
+        },
+      });
+    }
+
+    if (type === 'adjustment' || type === 'all') {
+      conditions.push({
+        nextAdjustmentDate: {
+          gte: startOfMonth,
+          lte: endOfMonth,
+        },
+      });
+    }
+
+    if (conditions.length > 0) {
+      where.OR = conditions;
+    } else {
+      // Si por alguna razón no hay condiciones (ej. tipo inválido), no retornar nada o todo (decisión de diseño: retornar vacío)
+      return [];
+    }
+
+    const contracts = await this.prisma.rentalContract.findMany({
+      where,
+      include: {
+        property: {
+          select: { title: true, location: true },
+        },
+        tenant: {
+          select: { name: true, email: true },
+        },
+        landlord: {
+          select: { name: true, email: true },
+        },
+      },
+      orderBy: {
+        endDate: 'asc',
+      },
+    });
+
+    // Mapear respuesta para indicar qué evento ocurre (Vencimiento o Ajuste)
+    return contracts.map(c => {
+      const isEnding = c.endDate >= startOfMonth && c.endDate <= endOfMonth;
+      const isAdjusting = c.nextAdjustmentDate && c.nextAdjustmentDate >= startOfMonth && c.nextAdjustmentDate <= endOfMonth;
+
+      return {
+        ...c,
+        eventType: isEnding && isAdjusting ? 'both' : (isEnding ? 'end_contract' : 'adjustment'),
+      };
+    });
+  }
+
   async findOne(id: string) {
     const contrato = await this.prisma.rentalContract.findUnique({
       where: { id },

@@ -26,6 +26,11 @@ import { UserRole } from '@prisma/client';
 export class ContratosController {
   constructor(private readonly contratosService: ContratosService) { }
 
+  @Get('dashboard/expirations')
+  getMonthlyActivity(@Query('type') type?: 'all' | 'end_contract' | 'adjustment') {
+    return this.contratosService.getMonthlyActivity(type);
+  }
+
   @Post()
   @Roles(UserRole.Agente)
   create(@Body() createContratoDto: CreateContratoDto) {
