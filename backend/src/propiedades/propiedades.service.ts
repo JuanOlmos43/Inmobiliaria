@@ -433,6 +433,18 @@ export class PropiedadesService {
     return newImage;
   }
 
+  /**
+   * Obtiene estadísticas generales del inventario de propiedades.
+   * 
+   * @returns Objeto con métricas de propiedades.
+   * @example
+   * {
+   *   "total": 150,
+   *   "status": { "activa": 120, "pausada": 5 },
+   *   "monthly": { "new": 12 },
+   *   "listingType": { "venta": 80, "alquiler": 70 }
+   * }
+   */
   async getStats() {
     const today = new Date();
     const startOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);

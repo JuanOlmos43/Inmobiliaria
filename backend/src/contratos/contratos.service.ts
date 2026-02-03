@@ -301,6 +301,16 @@ export class ContratosService {
     });
   }
 
+  /**
+   * Obtiene estadísticas de la operación de alquileres.
+   * 
+   * @returns Objeto con métricas de contratos.
+   * @example
+   * {
+   *   "monthly": { "new": 8, "expiring": 3 },
+   *   "status": { "active": 45, "expired": 120 }
+   * }
+   */
   async getStats() {
     const today = new Date();
     const startOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
