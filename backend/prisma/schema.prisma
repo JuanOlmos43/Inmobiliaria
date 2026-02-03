@@ -207,10 +207,8 @@ model PropertyFeature {
 
 enum ContractStatus {
   active // Contrato activo
-  expiring // Por vencer (próximos 30 días)
   expired // Vencido
   terminated // Terminado anticipadamente
-  renewed // Renovado
 }
 
 model RentalContract {
@@ -229,15 +227,16 @@ model RentalContract {
   agentId    String?
 
   // Términos económicos
-  monthlyRent          Float
-  deposit              Float? // Depósito de garantía
-  adjustmentPercentage Float? // Porcentaje de ajuste
+  monthlyRent         Float
+  deposit             Float? // Depósito de garantía
+  adjustmentFrequency Int? // Frecuencia de ajuste en meses (1-12)
 
   // Fechas
   startDate          DateTime
   endDate            DateTime
   nextAdjustmentDate DateTime?
-  actualEndDate      DateTime? // Fecha real de finalización (si terminó antes)
+
+  actualEndDate DateTime? // Fecha real de finalización (si terminó antes)
 
   // Estado
   status ContractStatus @default(active)

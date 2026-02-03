@@ -5,6 +5,7 @@ import {
     IsOptional,
     IsUUID,
     Min,
+    Max,
 } from 'class-validator';
 import { ContractStatus } from '@prisma/client';
 
@@ -26,24 +27,20 @@ export class CreateContratoDto {
     @Min(0)
     monthlyRent: number;
 
-    @IsOptional()
-    @IsNumber()
     @Min(0)
     deposit?: number;
 
     @IsOptional()
     @IsNumber()
-    adjustmentPercentage?: number;
+    @Min(1)
+    @Max(12)
+    adjustmentFrequency?: number;
 
     @IsDateString()
     startDate: string;
 
     @IsDateString()
     endDate: string;
-
-    @IsOptional()
-    @IsDateString()
-    nextAdjustmentDate?: string;
 
     @IsOptional()
     @IsDateString()
