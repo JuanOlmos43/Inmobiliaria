@@ -25,6 +25,8 @@ export type IconName =
   | "calendar" // Calendario / Fechas
   | "money" // Dinero / Pagos
   | "print" // Imprimir
+  | "trending-up" // Ajustes / Tendencia
+  | "archive" // Archivar
   | "trash"; // Eliminar / Revocar
 
 interface IconProps {
@@ -184,6 +186,20 @@ const iconPaths: Record<IconName, React.ReactElement> = {
       strokeLinecap="round"
       strokeLinejoin="round"
       d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"
+    />
+  ),
+  archive: (
+    <path
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4"
+    />
+  ),
+  "trending-up": (
+    <path
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"
     />
   ),
   trash: (
