@@ -1,15 +1,18 @@
 import { InputHTMLAttributes } from "react";
+import Icon, { IconName } from "./Icon";
 
 interface FormInputProps extends InputHTMLAttributes<HTMLInputElement> {
   label: string;
   helpText?: string;
   theme?: "light" | "dark"; // Para formularios en fondos oscuros vs claros
+  icon?: IconName; // Nombre del icono opcional
 }
 
 export default function FormInput({
   label,
   helpText,
   theme = "light",
+  icon,
   required,
   className = "",
   type,
@@ -21,7 +24,10 @@ export default function FormInput({
   ...props
 }: FormInputProps) {
   const baseClasses =
-    "w-full px-4 py-2 border rounded-lg transition-all duration-300";
+    "w-full py-2 border rounded-lg transition-all duration-300";
+
+  // Ajustar padding según si hay icono o no
+  const paddingClasses = icon ? "pl-10 pr-4" : "px-4";
 
   const themeClasses =
     theme === "light"
@@ -42,17 +48,25 @@ export default function FormInput({
       <label className={`block text-sm font-medium ${labelClasses} mb-2`}>
         {label} {required && "*"}
       </label>
-      <input
-        className={`${baseClasses} ${themeClasses} ${className}`}
-        required={required}
-        type={type}
-        max={max}
-        min={min}
-        maxLength={maxLength}
-        minLength={minLength}
-        onInput={handleInput}
-        {...props}
-      />
+      <div className="relative">
+        {icon && (
+          <Icon
+            name={icon}
+            className="w-5 h-5 text-gray-400 absolute left-3 top-2.5"
+          />
+        )}
+        <input
+          className={`${baseClasses} ${paddingClasses} ${themeClasses} ${className}`}
+          required={required}
+          type={type}
+          max={max}
+          min={min}
+          maxLength={maxLength}
+          minLength={minLength}
+          onInput={handleInput}
+          {...props}
+        />
+      </div>
       {helpText && <p className="text-gray-400 text-xs mt-1">{helpText}</p>}
     </div>
   );

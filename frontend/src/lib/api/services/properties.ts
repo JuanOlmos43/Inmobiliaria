@@ -1,6 +1,7 @@
 import { apiClient } from "@/lib/api/client";
 import { API_ENDPOINTS } from "@/lib/api/endpoints";
 import type { Provincia, Localidad, Calle } from "@/types/location";
+import type { PropertyStats } from "@/types/property";
 
 // Definir interfaces aquí o importar de un archivo de tipos
 export interface CreatePropertyDto {
@@ -68,6 +69,14 @@ export const propertiesService = {
     localidadId: string;
   }): Promise<Calle> {
     return apiClient.post<Calle>("/ubicaciones/calles", data);
+  },
+
+  // --- Estadísticas ---
+  /**
+   * Get property statistics
+   */
+  async getStats(): Promise<PropertyStats> {
+    return apiClient.get<PropertyStats>("/propiedades/stats");
   },
 
   // --- Propiedades ---

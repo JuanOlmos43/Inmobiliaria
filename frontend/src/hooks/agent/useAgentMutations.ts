@@ -30,6 +30,14 @@ export function useAgentMutations({
   const queryClient = useQueryClient();
   const { user } = useAuth();
 
+  // Función para refrescar datos tras cualquier cambio
+  const refreshData = async () => {
+    await Promise.all([
+      queryClient.invalidateQueries({ queryKey: ["properties"] }),
+      queryClient.invalidateQueries({ queryKey: ["property-stats"] }),
+    ]);
+  };
+
   // ============================================
   // CREAR O ACTUALIZAR PROPIEDAD
   // ============================================
@@ -105,7 +113,7 @@ export function useAgentMutations({
       }
 
       // Invalidar queries para refrescar datos
-      queryClient.invalidateQueries({ queryKey: ["properties"] });
+      await refreshData();
       queryClient.invalidateQueries({
         queryKey: ["property", savedPropertyId],
       });
@@ -141,7 +149,7 @@ export function useAgentMutations({
         await propertiesService.remove(id);
         
         // Invalidar queries
-        queryClient.invalidateQueries({ queryKey: ["properties"] });
+        await refreshData();
         
         showToast("Propiedad eliminada exitosamente", "success");
       } catch (error) {
@@ -166,7 +174,7 @@ export function useAgentMutations({
       await propertiesService.update(id, { status: newStatus as any });
       
       // Invalidar queries
-      queryClient.invalidateQueries({ queryKey: ["properties"] });
+      await refreshData();
       
       return newStatus;
     } catch (error) {

@@ -1,9 +1,10 @@
 import StatsCard from "@/components/UI/StatsCard";
 import Icon from "@/components/UI/Icon";
-import { Property } from "@/types/property";
+import { PropertyStats } from "@/types/property";
 
 interface AgentStatsGridProps {
-  properties: Property[];
+  stats?: PropertyStats;
+  isLoading?: boolean;
 }
 
 /**
@@ -11,12 +12,31 @@ interface AgentStatsGridProps {
  * Muestra el resumen de estadísticas de propiedades para el agente.
  * Replica el diseño de AdminStatsGrid pero adaptado a propiedades.
  */
-export default function AgentStatsGrid({ properties }: AgentStatsGridProps) {
-  const total = properties.length;
-  const active = properties.filter((p) => p.status === "activa").length;
-  const paused = properties.filter((p) => p.status === "pausada").length;
-  const forSale = properties.filter((p) => p.listingType === "venta").length;
-  const forRent = properties.filter((p) => p.listingType === "alquiler").length;
+export default function AgentStatsGrid({
+  stats,
+  isLoading,
+}: AgentStatsGridProps) {
+  // Mostrar estado de carga
+  if (isLoading) {
+    return (
+      <div className="mb-8">
+        <h2 className="text-2xl font-bold text-(--primary) mb-6">
+          Resumen de Propiedades
+        </h2>
+        <div className="flex justify-center py-12">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600"></div>
+        </div>
+      </div>
+    );
+  }
+
+  // Si no hay estadísticas, mostrar valores por defecto
+  const total = stats?.total ?? 0;
+  const active = stats?.status.activa ?? 0;
+  const paused = stats?.status.pausada ?? 0;
+  const forSale = stats?.listingType.venta ?? 0;
+  const forRent = stats?.listingType.alquiler ?? 0;
+  const newThisMonth = stats?.monthly.new ?? 0;
 
   return (
     <div className="mb-8">
@@ -28,7 +48,7 @@ export default function AgentStatsGrid({ properties }: AgentStatsGridProps) {
         {/* Bloque Unificado de Resumen */}
         <div className="bg-linear-to-br from-slate-800 to-slate-900 rounded-2xl shadow-xl overflow-hidden text-white border border-white/10">
           <div className="p-6 sm:p-8 flex flex-col lg:flex-row lg:items-center justify-between gap-8">
-            {/* Lado Izquierdo: Total */}
+            {/* Lado Izquierdo: Total y Crecimiento */}
             <div className="flex items-center gap-6">
               <div className="p-4 bg-white/10 rounded-2xl border border-white/20">
                 <Icon name="building" className="w-10 h-10 text-white" />
@@ -43,6 +63,16 @@ export default function AgentStatsGrid({ properties }: AgentStatsGridProps) {
                     <h3 className="text-5xl font-black tracking-tight leading-none">
                       {total}
                     </h3>
+                  </div>
+
+                  {/* Columna Mes */}
+                  <div className="flex flex-col pt-1">
+                    <span className="text-[10px] font-semibold text-slate-500 uppercase tracking-widest mb-2">
+                      Mes
+                    </span>
+                    <span className="text-xl font-bold text-emerald-400 leading-none">
+                      +{newThisMonth}
+                    </span>
                   </div>
                 </div>
               </div>

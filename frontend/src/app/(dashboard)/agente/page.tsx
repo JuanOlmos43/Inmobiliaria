@@ -1,6 +1,8 @@
 "use client";
 
+import { useState } from "react";
 import { useAgentProperties } from "@/hooks/useAgentProperties";
+import { Property } from "@/types/property";
 
 // Components
 import AgentStatsGrid from "@/components/dashboard/agent/AgentStatsGrid";
@@ -12,6 +14,8 @@ import PropertyModal from "@/components/dashboard/agent/PropertyModal";
 import RentalModal from "@/components/dashboard/agent/RentalModal";
 import UpcomingExpirations from "@/components/dashboard/agent/UpcomingExpirations";
 import AgentPropertiesFilters from "@/components/dashboard/agent/AgentPropertiesFilters";
+import ContractFilters from "@/components/dashboard/agent/ContractFilters";
+import BasePropertyCard from "@/components/BasePropertyCard";
 
 /**
  * AgentDashboardPage
@@ -30,11 +34,17 @@ export default function AgentDashboardPage() {
     properties,
     isLoading,
 
+    // Estadísticas
+    stats,
+    isLoadingStats,
+
     // Filtros
     searchTerm,
     setSearchTerm,
     filterStatus,
     setFilterStatus,
+    filterListingType,
+    setFilterListingType,
     activeTab,
     setActiveTab,
 
@@ -59,28 +69,38 @@ export default function AgentDashboardPage() {
     closeRentalModal,
   } = useAgentProperties();
 
+  // Estado para filtros de contratos
+  const [searchAddress, setSearchAddress] = useState("");
+  const [searchOwner, setSearchOwner] = useState("");
+  const [searchTenant, setSearchTenant] = useState("");
+  const [contractStatus, setContractStatus] = useState("all");
+
+  // TODO: Implementar query para obtener contratos desde el backend
+  const rentedProperties: Property[] = [];
+
   return (
     <div className="min-h-screen bg-(--background)">
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* SECCIÓN: ESTADÍSTICAS */}
-        <AgentStatsGrid properties={properties} />
+        <AgentStatsGrid stats={stats} isLoading={isLoadingStats} />
 
         {/* SECCIÓN: PESTAÑAS */}
         <TabNavigation
           tabs={[
             { id: "vencimientos", label: "Próximos Vencimientos" },
             { id: "propiedades", label: "Gestión de Propiedades" },
+            { id: "contratos", label: "Gestión de Contratos" },
           ]}
           activeTab={activeTab}
           onTabChange={(tabId) =>
-            setActiveTab(tabId as "vencimientos" | "propiedades")
+            setActiveTab(tabId as "vencimientos" | "propiedades" | "contratos")
           }
         />
 
         <div className="mb-8">
           {activeTab === "vencimientos" ? (
             <UpcomingExpirations />
-          ) : (
+          ) : activeTab === "propiedades" ? (
             <>
               {/* SECCIÓN: GESTIÓN DE PROPIEDADES */}
               <div className="bg-white rounded-xl shadow-lg p-6 mb-6">
@@ -105,6 +125,8 @@ export default function AgentDashboardPage() {
                   setSearchTerm={setSearchTerm}
                   filterStatus={filterStatus}
                   setFilterStatus={setFilterStatus}
+                  filterListingType={filterListingType}
+                  setFilterListingType={setFilterListingType}
                 />
               </div>
 
@@ -134,6 +156,87 @@ export default function AgentDashboardPage() {
                       onEdit={handleEditProperty}
                       onDelete={handleDeleteProperty}
                       onRent={handleRentProperty}
+                    />
+                  ))}
+                </div>
+              )}
+            </>
+          ) : (
+            <>
+              {/* SECCIÓN: GESTIÓN DE CONTRATOS */}
+              <div className="bg-white rounded-xl shadow-lg p-6 mb-6">
+                <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
+                  <h2 className="text-2xl font-bold text-(--primary)">
+                    Gestión de Contratos
+                  </h2>
+                  <div className="flex items-center gap-2 text-sm text-gray-600">
+                    <Icon name="document" className="w-5 h-5" />
+                    <span className="font-semibold">
+                      {rentedProperties.length} contratos
+                    </span>
+                  </div>
+                </div>
+
+                {/* FILTROS DE CONTRATOS */}
+                <ContractFilters
+                  searchAddress={searchAddress}
+                  setSearchAddress={setSearchAddress}
+                  searchOwner={searchOwner}
+                  setSearchOwner={setSearchOwner}
+                  searchTenant={searchTenant}
+                  setSearchTenant={setSearchTenant}
+                  contractStatus={contractStatus}
+                  setContractStatus={setContractStatus}
+                />
+              </div>
+
+              {/* GRID DE CONTRATOS */}
+              {rentedProperties.length === 0 ? (
+                <div className="bg-white rounded-xl shadow-md p-12 text-center border border-gray-100">
+                  <div className="inline-flex items-center justify-center w-20 h-20 bg-blue-50 rounded-full mb-6">
+                    <Icon
+                      name="document"
+                      className="w-10 h-10 text-(--accent)"
+                    />
+                  </div>
+                  <h3 className="text-xl font-bold text-(--primary) mb-2">
+                    No se encontraron contratos
+                  </h3>
+                  <p className="text-gray-600">
+                    Los contratos de alquiler aparecerán aquí
+                  </p>
+                </div>
+              ) : (
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {rentedProperties.map((property) => (
+                    <BasePropertyCard
+                      key={property.id}
+                      title={property.title}
+                      price={property.price}
+                      currency={property.currency}
+                      location={property.location}
+                      image={property.mainImage}
+                      type="Alquiler"
+                      bedrooms={property.bedrooms}
+                      bathrooms={property.bathrooms}
+                      area={property.area}
+                      showTypeBadge={false}
+                      showStatusBadge={false}
+                      footerSlot={
+                        <button
+                          className="w-full px-4 py-3 bg-(--accent) text-white rounded-lg hover:bg-(--accent-hover) transition-all shadow-md hover:shadow-lg flex items-center justify-center gap-2 font-semibold"
+                          onClick={() => {
+                            // TODO: Implementar navegación al contrato
+                            console.log(
+                              "Ver contrato de propiedad:",
+                              property.id,
+                            );
+                          }}
+                        >
+                          <Icon name="document" className="w-5 h-5" />
+                          Ver Contrato
+                        </button>
+                      }
                     />
                   ))}
                 </div>

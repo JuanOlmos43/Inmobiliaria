@@ -1,10 +1,11 @@
 import { useQuery } from "@tanstack/react-query";
 import { propertiesService } from "@/lib/api/services/properties";
-import { Property } from "@/types/property";
+import { Property, PropertyStats } from "@/types/property";
 
 interface Filters {
   search?: string;
   status?: "activa" | "pausada";
+  listingType?: "venta" | "alquiler";
 }
 
 /**
@@ -29,6 +30,7 @@ export function useAgentQueries(filters?: Filters) {
       const response = await propertiesService.findAll({
         search: filters?.search,
         status: filters?.status,
+        listingType: filters?.listingType,
       });
 
       // Ya no necesitamos transformar datos, Property ahora coincide con el backend
@@ -43,6 +45,40 @@ export function useAgentQueries(filters?: Filters) {
     properties,
     isLoading,
     error: error ? "Error al cargar las propiedades" : null,
+    refetch,
+  };
+}
+
+/**
+ * usePropertyStats
+ * 
+ * Obtiene las estadísticas de propiedades desde el backend.
+ * Incluye totales, distribución por estado y tipo de listado.
+ * 
+ * @returns {Object} Estadísticas, estado de carga y funciones de retry
+ */
+export function usePropertyStats(): {
+  stats: PropertyStats | undefined;
+  isLoading: boolean;
+  error: string | null;
+  refetch: () => void;
+} {
+  const {
+    data: stats,
+    isLoading,
+    error,
+    refetch,
+  } = useQuery({
+    queryKey: ["property-stats"],
+    queryFn: async () => {
+      return await propertiesService.getStats();
+    },
+  });
+
+  return {
+    stats,
+    isLoading,
+    error: error ? "Error al cargar las estadísticas" : null,
     refetch,
   };
 }

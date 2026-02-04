@@ -1,6 +1,6 @@
 import { useAgentFilters } from "./agent/useAgentFilters";
 import { useAgentUI } from "./agent/useAgentUI";
-import { useAgentQueries } from "./agent/useAgentQueries";
+import { useAgentQueries, usePropertyStats } from "./agent/useAgentQueries";
 import { useAgentMutations } from "./agent/useAgentMutations";
 import { Property } from "@/types/property";
 import { CreateRentalDto } from "@/types/api";
@@ -15,7 +15,7 @@ import { CreateRentalDto } from "@/types/api";
  * Arquitectura en capas:
  * 1. Filtros → Maneja búsqueda, status y tabs
  * 2. UI → Maneja modales y toasts
- * 3. Queries → Maneja fetching de propiedades
+ * 3. Queries → Maneja fetching de propiedades y estadísticas
  * 4. Mutations → Maneja operaciones CRUD
  */
 export function useAgentProperties() {
@@ -25,6 +25,8 @@ export function useAgentProperties() {
     setSearchTerm,
     filterStatus,
     setFilterStatus,
+    filterListingType,
+    setFilterListingType,
     activeTab,
     setActiveTab,
     activeFilters,
@@ -49,6 +51,9 @@ export function useAgentProperties() {
   // 3. Capa de Datos (Queries)
   const { properties, isLoading, error, refetch } =
     useAgentQueries(activeFilters);
+
+  // Query de estadísticas
+  const { stats, isLoading: isLoadingStats } = usePropertyStats();
 
   // 4. Capa de Acciones (Mutations)
   const {
@@ -114,11 +119,17 @@ export function useAgentProperties() {
     isLoading,
     error,
 
+    // Estadísticas
+    stats,
+    isLoadingStats,
+
     // Filtros
     searchTerm,
     setSearchTerm,
     filterStatus,
     setFilterStatus,
+    filterListingType,
+    setFilterListingType,
     activeTab,
     setActiveTab,
 

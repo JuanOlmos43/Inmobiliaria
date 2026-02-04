@@ -30,3 +30,18 @@ export interface Property {
     calleId?: string;
     ownerId?: string;
 }
+
+export interface PropertyStats {
+    total: number;
+    status: {
+        activa: number;
+        pausada: number;
+    };
+    monthly: {
+        new: number;
+    };
+    listingType: {
+        venta: number;
+        alquiler: number;
+    };
+}
