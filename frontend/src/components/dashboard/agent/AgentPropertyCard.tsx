@@ -106,7 +106,7 @@ export default function AgentPropertyCard({
       image={property.mainImage}
       showStatusBadge={true}
       showTypeBadge={true}
-      showDetails={true}
+      showDetails={false}
       footerSlot={renderActions()}
     />
   );

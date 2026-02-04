@@ -298,6 +298,9 @@ export class ContratosService {
         landlord: {
           select: { name: true, email: true },
         },
+        agent: {
+          select: { name: true, email: true },
+        },
       },
       orderBy: {
         endDate: 'asc',

@@ -139,9 +139,13 @@ export interface Contract {
     bathrooms: number;
     area: number;
   };
-  tenant: { id: string; name: string; email: string };
-  landlord: { id: string; name: string; email: string };
-  agent?: { id: string; name: string; email: string };
+  tenant: { id: string; name: string; email: string; phone?: string };
+  landlord: { id: string; name: string; email: string; phone?: string };
+  agent?: { id: string; name: string; email: string; phone?: string };
+}
+
+export interface ContractActivity extends Contract {
+  eventType: "end_contract" | "adjustment" | "both";
 }
 
 // ============================================

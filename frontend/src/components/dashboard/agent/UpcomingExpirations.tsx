@@ -1,212 +1,110 @@
-import { useState, useEffect } from "react";
 import Icon from "@/components/UI/Icon";
-import RentalPropertyCard from "@/components/RentalPropertyCard";
+import BasePropertyCard from "@/components/BasePropertyCard";
+import { useContractExpirations } from "@/hooks/agent/useContractExpirations";
+import { ContractActivity, Contract } from "@/types/api";
 
-// Tipos
-interface RentalContract {
-  id: string;
-  propertyId?: string;
-  propertyName: string;
-  address: string;
-  monthlyRent: number;
-  bedrooms: number;
-  bathrooms: number;
-  area: number;
-  startDate: string;
-  endDate: string;
-  nextAdjustmentDate: string;
-  adjustmentPercentage: number;
-  landlordName: string;
-  landlordPhone: string;
-  landlordEmail: string;
-  tenantName: string;
-  tenantPhone: string;
-  tenantEmail: string;
-  agentName: string;
-  agentPhone: string;
-  agentEmail: string;
-  status: "active" | "inactive";
+interface UpcomingExpirationsProps {
+  onViewContract?: (contract: Contract) => void;
 }
 
-export default function UpcomingExpirations() {
-  const [expiringContracts, setExpiringContracts] = useState<RentalContract[]>(
-    [],
-  );
-  const [adjustmentContracts, setAdjustmentContracts] = useState<
-    RentalContract[]
-  >([]);
+export default function UpcomingExpirations({
+  onViewContract,
+}: UpcomingExpirationsProps) {
+  const { expiringContracts, adjustmentContracts, isLoading } =
+    useContractExpirations();
 
-  useEffect(() => {
-    // Mock fetch replacement using localStorage (to be replaced by API)
-    const storedContracts = localStorage.getItem("rentalContracts");
-    const contracts = storedContracts ? JSON.parse(storedContracts) : [];
-
-    const today = new Date();
-    const thirtyDaysFromNow = new Date(today);
-    thirtyDaysFromNow.setDate(today.getDate() + 30);
-
-    // Filtrar contratos que vencen en los próximos 30 días
-    const expiring = contracts.filter((contract: RentalContract) => {
-      const endDate = new Date(contract.endDate);
-      return (
-        endDate >= today &&
-        endDate <= thirtyDaysFromNow &&
-        contract.status === "active"
-      );
-    });
-
-    // Filtrar contratos que requieren ajuste de precio en los próximos 30 días
-    const adjustments = contracts.filter((contract: RentalContract) => {
-      if (!contract.nextAdjustmentDate || contract.status !== "active")
-        return false;
-      const adjustmentDate = new Date(contract.nextAdjustmentDate);
-      return adjustmentDate >= today && adjustmentDate <= thirtyDaysFromNow;
-    });
-
-    setExpiringContracts(expiring);
-    setAdjustmentContracts(adjustments);
-  }, []);
-
-  const getDaysUntil = (dateString: string) => {
-    const today = new Date();
-    const targetDate = new Date(dateString);
-    const diffTime = targetDate.getTime() - today.getTime();
-    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-    return diffDays;
-  };
+  if (isLoading) {
+    return (
+      <div className="flex justify-center py-12">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-(--accent)"></div>
+      </div>
+    );
+  }
 
   if (expiringContracts.length === 0 && adjustmentContracts.length === 0) {
     return (
-      <div className="bg-white rounded-xl shadow-md p-8 text-center">
+      <div className="bg-white rounded-xl shadow-md p-8 text-center border border-gray-100">
         <Icon name="check" className="w-16 h-16 mx-auto mb-4 text-green-500" />
-        <h3 className="text-xl font-semibold text-gray-700 mb-2">
+        <h3 className="text-xl font-semibold text-(--primary) mb-2">
           No hay vencimientos próximos
         </h3>
         <p className="text-gray-500">
-          No hay contratos que venzan o requieran ajuste en los próximos 30 días
+          No hay contratos que venzan o requieran ajuste en el mes actual
         </p>
       </div>
     );
   }
 
+  const renderContractCard = (contract: ContractActivity) => (
+    <BasePropertyCard
+      key={contract.id}
+      title={contract.property.title}
+      price={contract.monthlyRent}
+      currency={contract.property.currency || "ARS"}
+      location={contract.property.location}
+      image={contract.property.mainImage}
+      type="Alquiler"
+      bedrooms={undefined}
+      bathrooms={undefined}
+      area={undefined}
+      showTypeBadge={false}
+      showStatusBadge={false}
+      showDetails={false}
+      footerSlot={
+        <button
+          className="w-full px-4 py-3 bg-(--accent) text-white rounded-lg hover:bg-(--accent-hover) transition-all shadow-md hover:shadow-lg flex items-center justify-center gap-2 font-semibold group/btn"
+          onClick={() => onViewContract?.(contract)}
+        >
+          <Icon
+            name="document"
+            className="w-5 h-5 transition-transform group-hover/btn:scale-110"
+          />
+          Ver Contrato
+        </button>
+      }
+    />
+  );
+
   return (
-    <div className="space-y-8">
+    <div className="space-y-12 animate-fade-in">
       {/* Contratos que vencen */}
       {expiringContracts.length > 0 && (
-        <div>
-          <h3 className="text-lg font-bold text-(--primary) mb-4 flex items-center gap-2">
-            <svg
-              className="w-5 h-5 text-red-500"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-              strokeWidth={2}
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
-              />
-            </svg>
-            Contratos por Vencer ({expiringContracts.length})
-          </h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {expiringContracts.map((contract) => (
-              <RentalPropertyCard
-                key={contract.id}
-                property={{
-                  id: contract.id,
-                  title: contract.propertyName,
-                  price: contract.monthlyRent,
-                  location: contract.address,
-                  type: "Alquiler",
-                  bedrooms: contract.bedrooms,
-                  bathrooms: contract.bathrooms,
-                  area: contract.area,
-                  startDate: contract.startDate,
-                  endDate: contract.endDate,
-                  nextAdjustmentDate: contract.nextAdjustmentDate,
-                  landlordName: contract.landlordName,
-                  landlordPhone: contract.landlordPhone,
-                  landlordEmail: contract.landlordEmail,
-                  tenantName: contract.tenantName,
-                  tenantPhone: contract.tenantPhone,
-                  tenantEmail: contract.tenantEmail,
-                  agentName: contract.agentName,
-                  agentPhone: contract.agentPhone,
-                  agentEmail: contract.agentEmail,
-                }}
-                viewerRole="agent"
-                showPropertyDetails={true}
-                warningBadge={{
-                  daysUntilExpiration: getDaysUntil(contract.endDate),
-                  daysUntilAdjustment: getDaysUntil(
-                    contract.nextAdjustmentDate,
-                  ),
-                  showWarning: true,
-                }}
-              />
-            ))}
+        <div className="animate-slide-up">
+          <div className="flex items-center justify-between mb-6">
+            <h3 className="text-xl font-bold text-(--primary) flex items-center gap-3">
+              <div className="w-10 h-10 rounded-xl bg-red-50 flex items-center justify-center">
+                <Icon name="calendar" className="w-6 h-6 text-red-500" />
+              </div>
+              Vencimientos del Mes
+              <span className="px-3 py-1 bg-red-100 text-red-600 rounded-full text-sm">
+                {expiringContracts.length}
+              </span>
+            </h3>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {expiringContracts.map((contract) => renderContractCard(contract))}
           </div>
         </div>
       )}
 
       {/* Ajustes de precio próximos */}
       {adjustmentContracts.length > 0 && (
-        <div>
-          <h3 className="text-lg font-bold text-(--primary) mb-4 flex items-center gap-2">
-            <svg
-              className="w-5 h-5 text-amber-500"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-              strokeWidth={2}
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"
-              />
-            </svg>
-            Ajustes de Precio Próximos ({adjustmentContracts.length})
-          </h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {adjustmentContracts.map((contract) => (
-              <RentalPropertyCard
-                key={contract.id}
-                property={{
-                  id: contract.id,
-                  title: contract.propertyName,
-                  price: contract.monthlyRent,
-                  location: contract.address,
-                  type: "Alquiler",
-                  bedrooms: contract.bedrooms,
-                  bathrooms: contract.bathrooms,
-                  area: contract.area,
-                  startDate: contract.startDate,
-                  endDate: contract.endDate,
-                  nextAdjustmentDate: contract.nextAdjustmentDate,
-                  landlordName: contract.landlordName,
-                  landlordPhone: contract.landlordPhone,
-                  landlordEmail: contract.landlordEmail,
-                  tenantName: contract.tenantName,
-                  tenantPhone: contract.tenantPhone,
-                  tenantEmail: contract.tenantEmail,
-                  agentName: contract.agentName,
-                  agentPhone: contract.agentPhone,
-                  agentEmail: contract.agentEmail,
-                }}
-                viewerRole="agent"
-                showPropertyDetails={true}
-                warningBadge={{
-                  daysUntilExpiration: getDaysUntil(contract.endDate),
-                  daysUntilAdjustment: getDaysUntil(
-                    contract.nextAdjustmentDate,
-                  ),
-                  showWarning: true,
-                }}
-              />
-            ))}
+        <div className="animate-slide-up" style={{ animationDelay: "0.1s" }}>
+          <div className="flex items-center justify-between mb-6">
+            <h3 className="text-xl font-bold text-(--primary) flex items-center gap-3">
+              <div className="w-10 h-10 rounded-xl bg-amber-50 flex items-center justify-center">
+                <Icon name="trending-up" className="w-6 h-6 text-amber-500" />
+              </div>
+              Ajustes de Precio del Mes
+              <span className="px-3 py-1 bg-amber-100 text-amber-600 rounded-full text-sm">
+                {adjustmentContracts.length}
+              </span>
+            </h3>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {adjustmentContracts.map((contract) =>
+              renderContractCard(contract),
+            )}
           </div>
         </div>
       )}

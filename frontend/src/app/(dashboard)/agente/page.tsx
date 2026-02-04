@@ -106,7 +106,7 @@ export default function AgentDashboardPage() {
 
         <div className="mb-8">
           {activeTab === "vencimientos" ? (
-            <UpcomingExpirations />
+            <UpcomingExpirations onViewContract={openViewContractModal} />
           ) : activeTab === "propiedades" ? (
             <>
               {/* SECCIÓN: GESTIÓN DE PROPIEDADES */}
@@ -218,11 +218,12 @@ export default function AgentDashboardPage() {
                       location={contract.property.location}
                       image={contract.property.mainImage}
                       type="Alquiler"
-                      bedrooms={contract.property.bedrooms}
-                      bathrooms={contract.property.bathrooms}
-                      area={contract.property.area}
+                      bedrooms={undefined}
+                      bathrooms={undefined}
+                      area={undefined}
                       showTypeBadge={false}
-                      showStatusBadge={true}
+                      showStatusBadge={false}
+                      showDetails={false}
                       status={
                         contract.status === "active" ? "Activa" : "Pausada"
                       }

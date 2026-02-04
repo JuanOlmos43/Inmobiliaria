@@ -51,5 +51,22 @@ export const contratosService = {
    */
   async getStats(): Promise<unknown> {
     return apiClient.get("/contratos/stats");
-  }
+  },
+
+  /**
+   * Obtiene la actividad de contratos del mes actual (vencimientos y ajustes)
+   */
+  async getDashboardExpirations(filters?: {
+    type?: "all" | "end_contract" | "adjustment";
+    search?: string;
+    role?: "tenant" | "landlord";
+  }): Promise<any[]> {
+    const params = new URLSearchParams();
+    if (filters?.type) params.append("type", filters.type);
+    if (filters?.search) params.append("search", filters.search);
+    if (filters?.role) params.append("role", filters.role);
+
+    const queryString = params.toString() ? "?" + params.toString() : "";
+    return apiClient.get<any[]>(`/contratos/dashboard/expirations${queryString}`);
+  },
 };
