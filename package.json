@@ -8,7 +8,8 @@
     "dev:frontend": "cd frontend && npm run dev",
     "dev:backend": "cd backend && npm run start:dev",
     "install:all": "npm install && cd frontend && npm install && cd ../backend && npm install",
-    "build:all": "cd frontend && npm run build && cd ../backend && npm run build"
+    "build:all": "cd frontend && npm run build && cd ../backend && npm run build",
+    "quality": "set PYTHONUTF8=1 && semgrep --config p/ci"
   },
   "keywords": [
     "nextjs",
