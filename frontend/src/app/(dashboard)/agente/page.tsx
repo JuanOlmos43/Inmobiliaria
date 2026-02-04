@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useAgentProperties } from "@/hooks/useAgentProperties";
-import { Property } from "@/types/property";
+import { Contract } from "@/types/api";
 
 // Components
 import AgentStatsGrid from "@/components/dashboard/agent/AgentStatsGrid";
@@ -12,6 +12,7 @@ import TabNavigation from "@/components/UI/TabNavigation";
 import AgentPropertyCard from "@/components/dashboard/agent/AgentPropertyCard";
 import PropertyModal from "@/components/dashboard/agent/PropertyModal";
 import RentalModal from "@/components/dashboard/agent/RentalModal";
+import ViewContractModal from "@/components/dashboard/agent/ViewContractModal";
 import UpcomingExpirations from "@/components/dashboard/agent/UpcomingExpirations";
 import AgentPropertiesFilters from "@/components/dashboard/agent/AgentPropertiesFilters";
 import ContractFilters from "@/components/dashboard/agent/ContractFilters";
@@ -32,7 +33,9 @@ export default function AgentDashboardPage() {
   const {
     // Datos
     properties,
+    contracts,
     isLoading,
+    // isLoadingContracts,
 
     // Estadísticas
     stats,
@@ -65,8 +68,13 @@ export default function AgentDashboardPage() {
     handleSave,
     handleRentProperty,
     handleSaveRental,
+    handleDeleteContract,
     closePropertyModal,
     closeRentalModal,
+    isViewContractModalOpen,
+    viewingContract,
+    openViewContractModal,
+    closeViewContractModal,
   } = useAgentProperties();
 
   // Estado para filtros de contratos
@@ -75,8 +83,7 @@ export default function AgentDashboardPage() {
   const [searchTenant, setSearchTenant] = useState("");
   const [contractStatus, setContractStatus] = useState("all");
 
-  // TODO: Implementar query para obtener contratos desde el backend
-  const rentedProperties: Property[] = [];
+  const rentedProperties = contracts;
 
   return (
     <div className="min-h-screen bg-(--background)">
@@ -169,12 +176,6 @@ export default function AgentDashboardPage() {
                   <h2 className="text-2xl font-bold text-(--primary)">
                     Gestión de Contratos
                   </h2>
-                  <div className="flex items-center gap-2 text-sm text-gray-600">
-                    <Icon name="document" className="w-5 h-5" />
-                    <span className="font-semibold">
-                      {rentedProperties.length} contratos
-                    </span>
-                  </div>
                 </div>
 
                 {/* FILTROS DE CONTRATOS */}
@@ -208,30 +209,27 @@ export default function AgentDashboardPage() {
                 </div>
               ) : (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                  {rentedProperties.map((property) => (
+                  {rentedProperties.map((contract: Contract) => (
                     <BasePropertyCard
-                      key={property.id}
-                      title={property.title}
-                      price={property.price}
-                      currency={property.currency}
-                      location={property.location}
-                      image={property.mainImage}
+                      key={contract.id}
+                      title={contract.property.title}
+                      price={contract.monthlyRent}
+                      currency={contract.property.currency || "ARS"}
+                      location={contract.property.location}
+                      image={contract.property.mainImage}
                       type="Alquiler"
-                      bedrooms={property.bedrooms}
-                      bathrooms={property.bathrooms}
-                      area={property.area}
+                      bedrooms={contract.property.bedrooms}
+                      bathrooms={contract.property.bathrooms}
+                      area={contract.property.area}
                       showTypeBadge={false}
-                      showStatusBadge={false}
+                      showStatusBadge={true}
+                      status={
+                        contract.status === "active" ? "Activa" : "Pausada"
+                      }
                       footerSlot={
                         <button
                           className="w-full px-4 py-3 bg-(--accent) text-white rounded-lg hover:bg-(--accent-hover) transition-all shadow-md hover:shadow-lg flex items-center justify-center gap-2 font-semibold"
-                          onClick={() => {
-                            // TODO: Implementar navegación al contrato
-                            console.log(
-                              "Ver contrato de propiedad:",
-                              property.id,
-                            );
-                          }}
+                          onClick={() => openViewContractModal(contract)}
                         >
                           <Icon name="document" className="w-5 h-5" />
                           Ver Contrato
@@ -261,6 +259,19 @@ export default function AgentDashboardPage() {
           onClose={closeRentalModal}
           onSave={(rentalData) => {
             handleSaveRental(rentalData);
+          }}
+        />
+      )}
+      {isViewContractModalOpen && viewingContract && (
+        <ViewContractModal
+          isOpen={isViewContractModalOpen}
+          onClose={closeViewContractModal}
+          contract={viewingContract}
+          onRevoke={async (id) => {
+            const success = await handleDeleteContract(id);
+            if (success) {
+              closeViewContractModal();
+            }
           }}
         />
       )}

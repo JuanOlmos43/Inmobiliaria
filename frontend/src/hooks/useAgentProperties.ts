@@ -1,6 +1,6 @@
 import { useAgentFilters } from "./agent/useAgentFilters";
 import { useAgentUI } from "./agent/useAgentUI";
-import { useAgentQueries, usePropertyStats } from "./agent/useAgentQueries";
+import { useAgentQueries, usePropertyStats, useAgentContracts } from "./agent/useAgentQueries";
 import { useAgentMutations } from "./agent/useAgentMutations";
 import { Property } from "@/types/property";
 import { CreateRentalDto } from "@/types/api";
@@ -46,6 +46,10 @@ export function useAgentProperties() {
     toast,
     showToast,
     hideToast,
+    isViewContractModalOpen,
+    viewingContract,
+    openViewContractModal,
+    closeViewContractModal,
   } = useAgentUI();
 
   // 3. Capa de Datos (Queries)
@@ -55,11 +59,15 @@ export function useAgentProperties() {
   // Query de estadísticas
   const { stats, isLoading: isLoadingStats } = usePropertyStats();
 
+  // Query de contratos
+  const { contracts, isLoading: isLoadingContracts } = useAgentContracts();
+
   // 4. Capa de Acciones (Mutations)
   const {
     handleSaveProperty,
     handleDeleteProperty,
     handleCreateRental,
+    handleDeleteContract,
   } = useAgentMutations({
     showToast,
     onPropertySaved: closePropertyModal,
@@ -116,7 +124,9 @@ export function useAgentProperties() {
   return {
     // Datos
     properties,
+    contracts,
     isLoading,
+    isLoadingContracts,
     error,
 
     // Estadísticas
@@ -150,8 +160,13 @@ export function useAgentProperties() {
     handleSave,
     handleRentProperty,
     handleSaveRental,
+    handleDeleteContract,
     closePropertyModal,
     closeRentalModal,
+    isViewContractModalOpen,
+    viewingContract,
+    openViewContractModal,
+    closeViewContractModal,
     refetch,
   };
 }

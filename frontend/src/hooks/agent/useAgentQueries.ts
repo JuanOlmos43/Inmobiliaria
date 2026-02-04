@@ -1,6 +1,8 @@
 import { useQuery } from "@tanstack/react-query";
 import { propertiesService } from "@/lib/api/services/properties";
+import { contratosService } from "@/lib/api/services/contratos";
 import { Property, PropertyStats } from "@/types/property";
+import { Contract } from "@/types/api";
 
 interface Filters {
   search?: string;
@@ -79,6 +81,34 @@ export function usePropertyStats(): {
     stats,
     isLoading,
     error: error ? "Error al cargar las estadísticas" : null,
+    refetch,
+  };
+}
+
+/**
+ * useAgentContracts
+ * 
+ * Obtiene la lista de contratos de alquiler.
+ */
+export function useAgentContracts(filters?: unknown) {
+  const {
+    data,
+    isLoading,
+    error,
+    refetch,
+  } = useQuery({
+    queryKey: ["contracts", filters],
+    queryFn: async () => {
+      return await contratosService.findAll(filters);
+    },
+  });
+
+  const contracts: Contract[] = data?.data || [];
+
+  return {
+    contracts,
+    isLoading,
+    error: error ? "Error al cargar los contratos" : null,
     refetch,
   };
 }

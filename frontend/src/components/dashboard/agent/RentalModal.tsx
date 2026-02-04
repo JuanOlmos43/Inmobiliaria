@@ -2,15 +2,15 @@ import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useDebounce } from "@/hooks/useDebounce";
 import Modal from "@/components/UI/Modal";
-import Icon from "@/components/UI/Icon";
 import FormInput from "@/components/UI/FormInput";
 import FormSelect from "@/components/UI/FormSelect";
 import {
   UserRole,
   UserProfile,
   UserStatus,
-  RentalData,
+  RentalFormData,
   CreateRentalDto,
+  ContractStatus,
 } from "@/types/api";
 import { usersService } from "@/lib/api/services/users";
 
@@ -46,13 +46,15 @@ export default function RentalModal({
   onClose,
   onSave,
 }: RentalModalProps) {
-  const [formData, setFormData] = useState<RentalData>({
+  const [formData, setFormData] = useState<RentalFormData>({
+    tenantId: "",
     tenantEmail: "",
+    tenantName: "",
     startDate: new Date().toISOString().split("T")[0],
     endDate: "",
-    adjustmentPeriod: "mensual",
-    adjustmentPercentage: 0,
-    status: "active",
+    adjustmentFrequency: 1, // Mensual por defecto
+    deposit: 0,
+    status: ContractStatus.ACTIVE,
   });
 
   const [tenantSearch, setTenantSearch] = useState("");
@@ -84,7 +86,12 @@ export default function RentalModal({
 
   const handleTenantSelect = (tenant: SystemUser) => {
     setSelectedTenant(tenant);
-    setFormData({ ...formData, tenantEmail: tenant.email });
+    setFormData({
+      ...formData,
+      tenantId: tenant.id,
+      tenantEmail: tenant.email,
+      tenantName: tenant.name || tenant.email,
+    });
     setTenantSearch(tenant.name || tenant.email);
     setShowTenantDropdown(false);
   };
@@ -94,33 +101,38 @@ export default function RentalModal({
     setShowTenantDropdown(true);
     if (!value) {
       setSelectedTenant(null);
-      setFormData({ ...formData, tenantEmail: "" });
+      setFormData({
+        ...formData,
+        tenantId: "",
+        tenantEmail: "",
+        tenantName: "",
+      });
     }
   };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
-    const nextAdjustmentDate = new Date(formData.startDate);
-    const periodMonths: Record<string, number> = {
-      mensual: 1,
-      bimestral: 2,
-      trimestral: 3,
-      cuatrimestral: 4,
-      semestral: 6,
-      anual: 12,
-    };
-    const incrementMonths = periodMonths[formData.adjustmentPeriod] || 1;
-    nextAdjustmentDate.setMonth(
-      nextAdjustmentDate.getMonth() + incrementMonths,
-    );
+    if (!selectedTenant) {
+      alert("Por favor seleccione un inquilino");
+      return;
+    }
+
+    if (!property.owner?.id) {
+      alert("La propiedad no tiene un propietario asignado");
+      return;
+    }
 
     onSave({
-      ...formData,
-      landlordName: property.owner?.name || "No especificado",
-      landlordPhone: property.owner?.phone || "No especificado",
-      landlordEmail: property.owner?.email || "No especificado",
-      nextAdjustmentDate: nextAdjustmentDate.toISOString().split("T")[0],
+      propertyId: property.id!,
+      tenantId: selectedTenant.id,
+      landlordId: property.owner.id,
+      monthlyRent: property.price,
+      deposit: formData.deposit,
+      adjustmentFrequency: formData.adjustmentFrequency,
+      startDate: formData.startDate,
+      endDate: formData.endDate,
+      status: formData.status,
     });
   };
 
@@ -179,23 +191,15 @@ export default function RentalModal({
 
         {/* Búsqueda de Inquilino */}
         <div className="relative">
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            Inquilino *
-          </label>
           <div className="relative flex-1">
-            <Icon
-              name="user"
-              className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400"
-            />
-            <input
+            <FormInput
+              label="Inquilino *"
               type="text"
-              required
               value={tenantSearch}
               onChange={(e) => handleTenantSearchChange(e.target.value)}
               onFocus={() => setShowTenantDropdown(true)}
               maxLength={100}
-              className="w-full pl-10 px-4 py-2 border rounded-lg transition-all duration-300 border-gray-300 bg-white text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-(--accent) focus:border-transparent disabled:bg-gray-100 disabled:text-gray-500"
-              placeholder="Buscar inquilino por nombre o email..."
+              icon="user"
             />
           </div>
 
@@ -301,35 +305,50 @@ export default function RentalModal({
           </div>
         </div>
 
-        {/* Meses de Ajuste de Precio */}
-        <div>
-          <h3 className="text-lg font-semibold text-(--primary) mb-3">
-            Meses de Ajuste
-          </h3>
-          <FormSelect
-            label="Período de Ajuste"
-            required
-            value={formData.adjustmentPeriod}
-            onChange={(e) =>
-              setFormData({
-                ...formData,
-                adjustmentPeriod: e.target.value as
-                  | "mensual"
-                  | "bimestral"
-                  | "trimestral"
-                  | "cuatrimestral"
-                  | "semestral"
-                  | "anual",
-              })
-            }
-          >
-            <option value="mensual">Mensual (cada mes)</option>
-            <option value="bimestral">Bimestral (cada 2 meses)</option>
-            <option value="trimestral">Trimestral (cada 3 meses)</option>
-            <option value="cuatrimestral">Cuatrimestral (cada 4 meses)</option>
-            <option value="semestral">Semestral (cada 6 meses)</option>
-            <option value="anual">Anual (cada año)</option>
-          </FormSelect>
+        {/* Ajuste de Precio y Depósito */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <h3 className="text-lg font-semibold text-(--primary) mb-3">
+              Meses de Ajuste
+            </h3>
+            <FormSelect
+              label="Período de Ajuste"
+              required
+              value={formData.adjustmentFrequency.toString()}
+              onChange={(e) =>
+                setFormData({
+                  ...formData,
+                  adjustmentFrequency: parseInt(e.target.value),
+                })
+              }
+            >
+              <option value="1">Mensual (cada mes)</option>
+              <option value="2">Bimestral (cada 2 meses)</option>
+              <option value="3">Trimestral (cada 3 meses)</option>
+              <option value="4">Cuatrimestral (cada 4 meses)</option>
+              <option value="6">Semestral (cada 6 meses)</option>
+              <option value="12">Anual (cada año)</option>
+            </FormSelect>
+          </div>
+
+          <div>
+            <h3 className="text-lg font-semibold text-(--primary) mb-3">
+              Garantía
+            </h3>
+            <FormInput
+              label="Depósito ($)"
+              type="number"
+              required
+              min={0}
+              value={formData.deposit}
+              onChange={(e) =>
+                setFormData({
+                  ...formData,
+                  deposit: parseFloat(e.target.value),
+                })
+              }
+            />
+          </div>
         </div>
 
         {/* Botones */}

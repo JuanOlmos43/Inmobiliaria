@@ -11,7 +11,7 @@ export interface Property {
     area: number;
     mainImage?: string;
     images?: string[];
-    status: "activa" | "pausada";
+    status: "activa" | "pausada" | "alquilada";
     description: string;
     propertyType: string;
     yearBuilt?: number | null;
@@ -36,6 +36,7 @@ export interface PropertyStats {
     status: {
         activa: number;
         pausada: number;
+        alquilada: number;
     };
     monthly: {
         new: number;

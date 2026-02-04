@@ -49,8 +49,17 @@ export class ContratosService {
     return this.prisma.$transaction(async (tx) => {
       const contract = await tx.rentalContract.create({
         data: {
-          ...createContratoDto,
+          propertyId: createContratoDto.propertyId,
+          tenantId: createContratoDto.tenantId,
+          landlordId: createContratoDto.landlordId,
+          agentId: createContratoDto.agentId,
+          monthlyRent: createContratoDto.monthlyRent,
+          deposit: createContratoDto.deposit,
+          adjustmentFrequency: createContratoDto.adjustmentFrequency,
+          startDate,
+          endDate,
           nextAdjustmentDate,
+          status: createContratoDto.status || 'active',
         },
         include: {
           property: true,
@@ -436,9 +445,21 @@ export class ContratosService {
   }
 
   async remove(id: string) {
-    await this.findOne(id); // Validate existence
-    return this.prisma.rentalContract.delete({
-      where: { id },
+    const contract = await this.findOne(id);
+    
+    return this.prisma.$transaction(async (tx) => {
+      // 1. Eliminar el contrato
+      const deleted = await tx.rentalContract.delete({
+        where: { id },
+      });
+
+      // 2. Volver a poner la propiedad como activa
+      await tx.property.update({
+        where: { id: contract.propertyId },
+        data: { status: 'activa' },
+      });
+
+      return deleted;
     });
   }
 }

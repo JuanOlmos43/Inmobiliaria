@@ -1,5 +1,6 @@
 import { useState, useCallback } from "react";
 import { Property } from "@/types/property";
+import { Contract } from "@/types/api";
 
 /**
  * useAgentUI
@@ -15,6 +16,10 @@ export function useAgentUI() {
   // Estado de Modal de Alquiler
   const [isRentalModalOpen, setIsRentalModalOpen] = useState(false);
   const [rentingProperty, setRentingProperty] = useState<Property | null>(null);
+
+  // Estado de Modal de Ver Contrato
+  const [isViewContractModalOpen, setIsViewContractModalOpen] = useState(false);
+  const [viewingContract, setViewingContract] = useState<Contract | null>(null);
 
   // Estado de Notificaciones (Toast)
   const [toast, setToast] = useState({
@@ -86,6 +91,26 @@ export function useAgentUI() {
     setRentingProperty(null);
   }, []);
 
+  // ============================================
+  // FUNCIONES HELPER PARA MODAL DE VER CONTRATO
+  // ============================================
+
+  /**
+   * Abre el modal de ver contrato con el contrato seleccionado
+   */
+  const openViewContractModal = useCallback((contract: Contract) => {
+    setViewingContract(contract);
+    setIsViewContractModalOpen(true);
+  }, []);
+
+  /**
+   * Cierra el modal de ver contrato y limpia el estado
+   */
+  const closeViewContractModal = useCallback(() => {
+    setIsViewContractModalOpen(false);
+    setViewingContract(null);
+  }, []);
+
   return {
     // Estados de Modal de Propiedades
     isModalOpen,
@@ -99,6 +124,12 @@ export function useAgentUI() {
     rentingProperty,
     openRentalModal,
     closeRentalModal,
+
+    // Estados de Modal de Ver Contrato
+    isViewContractModalOpen,
+    viewingContract,
+    openViewContractModal,
+    closeViewContractModal,
 
     // Estados de Toast
     toast,

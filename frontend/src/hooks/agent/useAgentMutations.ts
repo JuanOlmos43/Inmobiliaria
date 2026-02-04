@@ -6,6 +6,7 @@ import {
 } from "@/lib/api/services/properties";
 import { Property } from "@/types/property";
 import { CreateRentalDto } from "@/types/api";
+import { contratosService } from "@/lib/api/services/contratos";
 
 interface UseAgentMutationsProps {
   showToast: (message: string, type: "success" | "error") => void;
@@ -189,38 +190,24 @@ export function useAgentMutations({
   // ============================================
 
   /**
-   * Crea un contrato de alquiler y pausa la propiedad
-   * TODO: Reemplazar localStorage por API cuando esté disponible
+   * Crea un contrato de alquiler
    */
   const handleCreateRental = async (
     property: Property,
     rentalData: CreateRentalDto
   ) => {
     try {
-      // Pausar la propiedad
-      await handleToggleStatus(property.id!, property.status);
-
-      // Mock: Guardar en localStorage (temporal)
-      const existingRentals = JSON.parse(
-        localStorage.getItem("rentalContracts") || "[]"
-      );
-      
-      const newRental = {
-        id: Date.now().toString(),
-        propertyId: property.id!,
-        propertyName: property.title,
-        address: property.location,
-        monthlyRent: property.price,
+      // Incluir el ID del agente (usuario actual)
+      const finalRentalData = {
         ...rentalData,
-        agentName: user?.name || user?.email || "Agente",
-        agentPhone: user?.phone || "+54 11 2345-6789",
-        agentEmail: user?.email || "agente@inmobiliaria.com",
+        agentId: user?.id,
       };
-      
-      localStorage.setItem(
-        "rentalContracts",
-        JSON.stringify([...existingRentals, newRental])
-      );
+
+      await contratosService.create(finalRentalData);
+
+      // Invalidar queries para refrescar datos
+      await refreshData();
+      await queryClient.invalidateQueries({ queryKey: ["contracts"] });
 
       // Callback de éxito
       onRentalSaved?.();
@@ -232,10 +219,34 @@ export function useAgentMutations({
     }
   };
 
+  /**
+   * Elimina un contrato de alquiler
+   */
+  const handleDeleteContract = async (id: string) => {
+    if (confirm("¿Estás seguro de que deseas revocar este contrato? Esta acción volverá a poner la propiedad como activa.")) {
+      try {
+        await contratosService.remove(id);
+        
+        // Invalidar queries
+        await refreshData();
+        await queryClient.invalidateQueries({ queryKey: ["contracts"] });
+        
+        showToast("Contrato revocado exitosamente", "success");
+        return true;
+      } catch (error) {
+        console.error("Error deleting contract:", error);
+        showToast("Error al revocar el contrato", "error");
+        return false;
+      }
+    }
+    return false;
+  };
+
   return {
     handleSaveProperty,
     handleDeleteProperty,
     handleToggleStatus,
     handleCreateRental,
+    handleDeleteContract,
   };
 }

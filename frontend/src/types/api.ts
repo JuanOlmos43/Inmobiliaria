@@ -81,27 +81,67 @@ export enum UserStatus {
 // Tipos de Contratos de Alquiler
 // ============================================
 
-/**
- * Datos base del formulario de alquiler
- */
-export interface RentalData {
-  tenantEmail: string;
-  startDate: string;
-  endDate: string;
-  adjustmentPeriod: "mensual" | "bimestral" | "trimestral" | "cuatrimestral" | "semestral" | "anual";
-  adjustmentPercentage: number;
-  status: "active" | "expiring" | "expired";
+export enum ContractStatus {
+  ACTIVE = "active",
+  EXPIRED = "expired",
+  TERMINATED = "terminated",
 }
 
 /**
- * Datos completos del contrato de alquiler incluyendo información del propietario
- * Este es el tipo que se pasa a la mutación de creación de contratos
+ * DTO para la creación de un contrato de alquiler (Coincide con el Backend)
  */
-export interface CreateRentalDto extends RentalData {
-  landlordName: string;
-  landlordPhone: string;
-  landlordEmail: string;
-  nextAdjustmentDate: string;
+export interface CreateRentalDto {
+  propertyId: string;
+  tenantId: string;
+  landlordId: string;
+  agentId?: string;
+  monthlyRent: number;
+  deposit?: number;
+  adjustmentFrequency?: number; // En meses
+  startDate: string;
+  endDate: string;
+  status?: ContractStatus;
+}
+
+/**
+ * Datos del formulario local (UI)
+ */
+export interface RentalFormData {
+  tenantId: string;
+  tenantEmail: string;
+  tenantName: string;
+  startDate: string;
+  endDate: string;
+  adjustmentFrequency: number;
+  deposit: number;
+  status: ContractStatus;
+}
+
+export interface Contract {
+  id: string;
+  propertyId: string;
+  tenantId: string;
+  landlordId: string;
+  agentId?: string;
+  monthlyRent: number;
+  deposit?: number;
+  adjustmentFrequency?: number;
+  startDate: string;
+  endDate: string;
+  nextAdjustmentDate?: string;
+  status: ContractStatus;
+  property: {
+    title: string;
+    location: string;
+    mainImage?: string;
+    currency?: string;
+    bedrooms: number;
+    bathrooms: number;
+    area: number;
+  };
+  tenant: { id: string; name: string; email: string };
+  landlord: { id: string; name: string; email: string };
+  agent?: { id: string; name: string; email: string };
 }
 
 // ============================================

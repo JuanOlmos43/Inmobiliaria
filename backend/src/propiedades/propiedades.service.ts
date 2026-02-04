@@ -14,7 +14,7 @@ export class PropiedadesService {
   constructor(
     private prisma: PrismaService,
     private storageService: StorageService,
-  ) { }
+  ) {}
 
   /**
    * Helper function to add calculated currency field based on listingType
@@ -455,6 +455,7 @@ export class PropiedadesService {
       total,
       activa,
       pausada,
+      alquilada,
       createdThisMonth,
       venta,
       alquiler
@@ -462,6 +463,7 @@ export class PropiedadesService {
       this.prisma.property.count(),
       this.prisma.property.count({ where: { status: 'activa' } }),
       this.prisma.property.count({ where: { status: 'pausada' } }),
+      this.prisma.property.count({ where: { status: 'alquilada' } }),
       this.prisma.property.count({
         where: {
           createdAt: {
@@ -479,14 +481,15 @@ export class PropiedadesService {
       status: {
         activa,
         pausada,
+        alquilada,
       },
       monthly: {
         new: createdThisMonth
       },
       listingType: {
         venta,
-        alquiler
-      }
+        alquiler,
+      },
     };
   }
 }
