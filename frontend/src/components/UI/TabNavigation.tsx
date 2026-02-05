@@ -1,3 +1,5 @@
+"use client";
+
 interface Tab {
   id: string;
   label: string;
@@ -14,7 +16,7 @@ interface TabNavigationProps {
  * Componente reutilizable para navegación por pestañas (tabs).
  * Proporciona una interfaz consistente para cambiar entre diferentes vistas.
  */
-export default function TabNavigation({
+export function TabNavigation({
   tabs,
   activeTab,
   onTabChange,

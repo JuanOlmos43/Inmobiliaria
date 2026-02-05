@@ -1,6 +1,6 @@
 import React from "react";
 import Image from "next/image";
-import Icon from "@/components/UI/Icon";
+import { Icon } from "@/components/UI";
 
 export interface BasePropertyCardProps {
   // Datos principales

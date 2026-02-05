@@ -35,6 +35,28 @@ export interface Property {
     email: string;
     phone: string | null;
   };
+  localidad?: {
+    id: string;
+    nombre: string;
+    provinciaId: string;
+    provincia?: {
+      id: string;
+      nombre: string;
+    };
+  };
+  calle?: {
+    id: string;
+    nombre: string;
+    localidadId: string;
+  };
+
+  // Helper fields for UI/Forms
+  province?: string;
+  city?: string;
+  street?: string;
+  landlordName?: string;
+  landlordEmail?: string;
+  landlordPhone?: string;
 }
 
 export interface CreatePropertyDto {
@@ -59,6 +81,13 @@ export interface CreatePropertyDto {
   status?: "activa" | "pausada" | "archivada";
   features?: string[];
   images?: string[];
+  // Helper fields for UI/Forms
+  province?: string;
+  city?: string;
+  street?: string;
+  landlordName?: string;
+  landlordEmail?: string;
+  landlordPhone?: string;
 }
 
 export type UpdatePropertyDto = Partial<CreatePropertyDto>;

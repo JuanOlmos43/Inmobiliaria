@@ -1,6 +1,5 @@
-import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
-import ScrollToTop from "@/components/UI/ScrollToTop";
+import { Navbar, Footer } from "@/components/layout";
+import { ScrollToTop } from "@/components/UI";
 
 export default function GroupNFLayout({
   children,

@@ -1,9 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import { useQuery } from "@tanstack/react-query";
-import Modal from "@/components/UI/Modal";
-import FormInput from "@/components/UI/FormInput";
-import FormTextarea from "@/components/UI/FormTextarea";
-import FormSelect from "@/components/UI/FormSelect";
+import { Modal, FormInput, FormTextarea, FormSelect } from "@/components/UI";
 import { propertiesService } from "@/lib/api/services/properties";
 import { Property } from "@/types/property";
 
@@ -93,7 +90,6 @@ export default function PropertyModal({
         landlordName: owner?.name || prev.landlordName,
         landlordEmail: owner?.email || prev.landlordEmail,
         landlordPhone: owner?.phone || prev.landlordPhone,
-        ownerId: owner?.id || prev.ownerId,
       }));
     }
   }, [fullProperty]);
@@ -445,7 +441,8 @@ export default function PropertyModal({
             <ImageSection
               key={property?.id || "new-property"}
               initialUrls={fullProperty?.images?.map(
-                (img: { url: string }) => img.url,
+                (img: string | { url: string }) =>
+                  typeof img === "string" ? img : img.url,
               )}
               onFilesChange={setSelectedFiles}
               onExistingImagesChange={handleExistingImagesChange}

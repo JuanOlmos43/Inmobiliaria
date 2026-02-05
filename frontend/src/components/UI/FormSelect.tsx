@@ -1,3 +1,5 @@
+"use client";
+
 import { SelectHTMLAttributes, ReactNode } from "react";
 
 interface FormSelectProps extends SelectHTMLAttributes<HTMLSelectElement> {
@@ -7,7 +9,7 @@ interface FormSelectProps extends SelectHTMLAttributes<HTMLSelectElement> {
   children: ReactNode;
 }
 
-export default function FormSelect({
+export function FormSelect({
   label,
   error,
   theme = "light",

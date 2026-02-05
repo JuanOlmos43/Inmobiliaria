@@ -4,7 +4,7 @@ import { AuthProvider, useAuth } from "@/context/AuthContext";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 
-import DashboardHeader from "@/components/DashboardHeader";
+import { DashboardHeader } from "@/components/layout";
 
 // Wrapper interno para manejar la lógica de redirección y loading UI
 // Necesitamos esto porque useAuth debe usarse DENTRO de AuthProvider

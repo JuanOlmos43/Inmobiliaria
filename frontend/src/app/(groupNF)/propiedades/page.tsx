@@ -7,8 +7,7 @@ import BasePropertyCard from "@/components/BasePropertyCard";
 import PropertyFilters, {
   PropertyFiltersState,
 } from "@/components/PropertyFilters";
-import EmptyState from "@/components/UI/EmptyState";
-import Pagination from "@/components/UI/Pagination";
+import { EmptyState, Pagination } from "@/components/UI";
 import HeroSection from "@/components/HeroSection";
 import { allProperties } from "@/data/properties";
 

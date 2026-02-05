@@ -211,7 +211,7 @@ const iconPaths: Record<IconName, React.ReactElement> = {
   ),
 };
 
-export default function Icon({
+export function Icon({
   name,
   className = "w-6 h-6",
   fill = "none",

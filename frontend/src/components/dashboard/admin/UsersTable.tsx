@@ -1,5 +1,5 @@
 import { useState } from "react";
-import Icon from "@/components/UI/Icon";
+import { Icon } from "@/components/UI";
 import { UserProfile, UserRole, UserStatus } from "@/types/api";
 
 interface UsersTableProps {

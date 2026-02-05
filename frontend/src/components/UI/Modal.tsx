@@ -1,5 +1,7 @@
+"use client";
+
 import { ReactNode, useEffect } from "react";
-import Icon from "./Icon";
+import { Icon } from "./Icon";
 
 interface ModalProps {
   isOpen: boolean;
@@ -10,7 +12,7 @@ interface ModalProps {
   staticBackdrop?: boolean; // Si es true, no cierra al hacer click fuera ni escape
 }
 
-export default function Modal({
+export function Modal({
   isOpen,
   onClose,
   title,

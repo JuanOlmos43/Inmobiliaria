@@ -1,5 +1,5 @@
 import BasePropertyCard from "@/components/BasePropertyCard";
-import Icon from "@/components/UI/Icon";
+import { Icon } from "@/components/UI";
 import { Property } from "@/types/property";
 
 interface AgentPropertyCardProps {

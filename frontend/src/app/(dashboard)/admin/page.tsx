@@ -1,12 +1,10 @@
 "use client";
 
-import ConfirmModal from "@/components/UI/ConfirmModal";
-import Toast from "@/components/UI/Toast";
+import { ConfirmModal, Toast, Icon } from "@/components/UI";
 import CreateUserModal from "@/components/dashboard/admin/CreateUserModal";
 import UsersTable from "@/components/dashboard/admin/UsersTable";
 import AdminStatsGrid from "@/components/dashboard/admin/AdminStatsGrid";
 import AdminUsersFilters from "@/components/dashboard/admin/AdminUsersFilters";
-import Icon from "@/components/UI/Icon";
 import { useAdminUsers, DEFAULT_PASSWORD } from "@/hooks/useAdminUsers";
 
 /**
@@ -119,9 +117,9 @@ export default function AdminDashboardPage() {
         onConfirm={executeResetPassword}
         title="Restaurar Contraseña"
         message={`¿Estás seguro de que deseas restaurar la contraseña de este usuario? La nueva contraseña será '${DEFAULT_PASSWORD}'.`}
-        confirmLabel="Restaurar"
+        confirmText="Restaurar"
         isLoading={confirmReset.isLoading}
-        type="warning"
+        variant="warning"
       />
 
       <Toast

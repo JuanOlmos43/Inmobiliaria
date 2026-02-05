@@ -2,11 +2,13 @@
 
 import { useState } from "react";
 import HeroSection from "@/components/HeroSection";
-import ContactInfoCard from "@/components/UI/ContactInfoCard";
-import FormInput from "@/components/UI/FormInput";
-import FormTextarea from "@/components/UI/FormTextarea";
-import FormSelect from "@/components/UI/FormSelect";
-import Icon from "@/components/UI/Icon";
+import {
+  ContactInfoCard,
+  FormInput,
+  FormTextarea,
+  FormSelect,
+  Icon,
+} from "@/components/UI";
 
 export default function ContactoPage() {
   const [formData, setFormData] = useState({

@@ -1,7 +1,7 @@
 import Image from "next/image";
-import Icon from "@/components/UI/Icon";
+import { Icon } from "@/components/UI";
 
-export default function Footer() {
+export function Footer() {
   return (
     <footer className="bg-(--primary) text-white mt-auto">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">

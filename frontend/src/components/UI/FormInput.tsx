@@ -1,5 +1,8 @@
+"use client";
+
 import { InputHTMLAttributes } from "react";
-import Icon, { IconName } from "./Icon";
+import { Icon } from "./Icon";
+import type { IconName } from "./Icon";
 
 interface FormInputProps extends InputHTMLAttributes<HTMLInputElement> {
   label: string;
@@ -8,7 +11,7 @@ interface FormInputProps extends InputHTMLAttributes<HTMLInputElement> {
   icon?: IconName; // Nombre del icono opcional
 }
 
-export default function FormInput({
+export function FormInput({
   label,
   helpText,
   theme = "light",

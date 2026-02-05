@@ -1,4 +1,4 @@
-import Icon from "@/components/UI/Icon";
+import { Icon } from "@/components/UI";
 import BasePropertyCard from "@/components/BasePropertyCard";
 import { useContractExpirations } from "@/hooks/agent/useContractExpirations";
 import { ContractActivity, Contract } from "@/types/api";

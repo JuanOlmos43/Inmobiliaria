@@ -1,7 +1,5 @@
 import { useState, useEffect } from "react";
-import FormSelect from "@/components/UI/FormSelect";
-import FormInput from "@/components/UI/FormInput";
-import Icon from "@/components/UI/Icon";
+import { FormSelect, FormInput, Icon } from "@/components/UI";
 
 export interface PropertyFiltersState {
   operationType: "todos" | "venta" | "alquiler";

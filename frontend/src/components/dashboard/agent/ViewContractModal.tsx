@@ -1,6 +1,5 @@
 import React from "react";
-import Modal from "@/components/UI/Modal";
-import Icon from "@/components/UI/Icon";
+import { Modal, Icon } from "@/components/UI";
 import { Contract } from "@/types/api";
 
 interface ViewContractModalProps {

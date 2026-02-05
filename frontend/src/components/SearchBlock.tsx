@@ -2,9 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import FormSelect from "@/components/UI/FormSelect";
-import FormInput from "@/components/UI/FormInput";
-import Icon from "@/components/UI/Icon";
+import { FormSelect, FormInput, Icon } from "@/components/UI";
 
 export default function SearchBlock() {
   const router = useRouter();

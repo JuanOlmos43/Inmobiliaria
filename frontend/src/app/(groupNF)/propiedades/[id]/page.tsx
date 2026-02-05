@@ -5,7 +5,7 @@ import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { allProperties } from "@/data/properties";
-import Icon from "@/components/UI/Icon";
+import { Icon } from "@/components/UI";
 
 export default function PropertyDetailPage() {
   const params = useParams();

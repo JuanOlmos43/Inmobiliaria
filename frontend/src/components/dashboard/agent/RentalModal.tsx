@@ -1,9 +1,7 @@
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useDebounce } from "@/hooks/useDebounce";
-import Modal from "@/components/UI/Modal";
-import FormInput from "@/components/UI/FormInput";
-import FormSelect from "@/components/UI/FormSelect";
+import { Modal, FormInput, FormSelect } from "@/components/UI";
 import {
   UserProfile,
   UserStatus,

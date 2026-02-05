@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import Icon from "@/components/UI/Icon";
+import { Icon } from "@/components/UI";
 
 import { useAuth } from "@/hooks/useAuth";
 

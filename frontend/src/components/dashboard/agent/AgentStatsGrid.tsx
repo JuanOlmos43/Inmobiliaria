@@ -1,5 +1,4 @@
-import StatsCard from "@/components/UI/StatsCard";
-import Icon from "@/components/UI/Icon";
+import { StatsCard, Icon } from "@/components/UI";
 import { PropertyStats } from "@/types/property";
 
 interface AgentStatsGridProps {

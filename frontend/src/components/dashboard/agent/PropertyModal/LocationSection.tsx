@@ -1,6 +1,5 @@
 import { Dispatch, SetStateAction } from "react";
-import FormInput from "@/components/UI/FormInput";
-import FormSelect from "@/components/UI/FormSelect";
+import { FormInput, FormSelect } from "@/components/UI";
 import { useLocationLogic } from "@/hooks/useLocationLogic";
 import { Property } from "@/types/property";
 import { Provincia, Localidad, Calle } from "@/types/location";

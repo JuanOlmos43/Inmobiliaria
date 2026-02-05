@@ -2,9 +2,8 @@ import { useQueryClient } from "@tanstack/react-query";
 import { useAuth } from "@/hooks/useAuth";
 import {
   propertiesService,
-  CreatePropertyDto,
 } from "@/lib/api/services/properties";
-import { Property } from "@/types/property";
+import { Property, CreatePropertyDto } from "@/types/property";
 import { CreateRentalDto } from "@/types/api";
 import { contratosService } from "@/lib/api/services/contratos";
 

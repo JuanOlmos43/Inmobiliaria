@@ -7,12 +7,7 @@ interface ValueCardProps {
   color: "dark" | "aqua"; // Dos variantes de color
 }
 
-export default function ValueCard({
-  icon,
-  title,
-  description,
-  color,
-}: ValueCardProps) {
+export function ValueCard({ icon, title, description, color }: ValueCardProps) {
   const colorClasses =
     color === "dark"
       ? "from-(--primary) to-(--primary-light)"

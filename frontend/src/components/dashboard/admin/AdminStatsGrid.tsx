@@ -1,4 +1,4 @@
-import StatsCard from "@/components/UI/StatsCard";
+import { StatsCard } from "@/components/UI";
 import { UserStats } from "@/types/api";
 
 interface AdminStatsGridProps {

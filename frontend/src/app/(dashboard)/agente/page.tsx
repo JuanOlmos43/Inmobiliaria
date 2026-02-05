@@ -5,9 +5,7 @@ import { Contract } from "@/types/api";
 
 // Components
 import AgentStatsGrid from "@/components/dashboard/agent/AgentStatsGrid";
-import Icon from "@/components/UI/Icon";
-import Toast from "@/components/UI/Toast";
-import TabNavigation from "@/components/UI/TabNavigation";
+import { Icon, Toast, TabNavigation } from "@/components/UI";
 import AgentPropertyCard from "@/components/dashboard/agent/AgentPropertyCard";
 import PropertyModal from "@/components/dashboard/agent/PropertyModal";
 import RentalModal from "@/components/dashboard/agent/RentalModal";

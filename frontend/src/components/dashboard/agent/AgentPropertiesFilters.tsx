@@ -1,5 +1,4 @@
-import FormInput from "@/components/UI/FormInput";
-import FormSelect from "@/components/UI/FormSelect";
+import { FormInput, FormSelect } from "@/components/UI";
 
 interface AgentPropertiesFiltersProps {
   searchTerm: string;

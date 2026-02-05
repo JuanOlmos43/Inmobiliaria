@@ -6,7 +6,7 @@ interface ContactInfoCardProps {
   content: ReactNode; // Puede ser string o JSX (para links, saltos de línea, etc.)
 }
 
-export default function ContactInfoCard({
+export function ContactInfoCard({
   icon,
   title,
   content,

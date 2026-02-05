@@ -1,6 +1,5 @@
-import Icon from "@/components/UI/Icon";
 import HeroSection from "@/components/HeroSection";
-import ValueCard from "@/components/UI/ValueCard";
+import { Icon, ValueCard } from "@/components/UI";
 
 export default function NosotrosPage() {
   return (

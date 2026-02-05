@@ -1,6 +1,6 @@
 "use client";
 
-import Icon, { IconName } from "@/components/UI/Icon";
+import { Icon, IconName } from "@/components/UI";
 import { UserRole } from "@/types/api";
 
 interface DashboardHeaderProps {
@@ -19,7 +19,7 @@ const roleIconMap: Record<UserRole, IconName> = {
   [UserRole.Inquilino]: "key",
 };
 
-export default function DashboardHeader({
+export function DashboardHeader({
   role,
   onLogout,
   userEmail,

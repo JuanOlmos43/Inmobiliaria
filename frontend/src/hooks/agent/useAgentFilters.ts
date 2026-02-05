@@ -1,5 +1,6 @@
 import { useState, useMemo } from "react";
 import { useDebounce } from "@/hooks/useDebounce";
+import { ContractFilters, ContractStatus } from "@/types/api";
 
 /**
  * useAgentFilters
@@ -45,19 +46,13 @@ export function useAgentFilters() {
     return Object.keys(filters).length > 0 ? filters : undefined;
   }, [debouncedSearch, filterStatus, filterListingType]);
 
-  // Filtros procesados para Contratos
   const activeContractFilters = useMemo(() => {
-    const filters: {
-      propertyLocation?: string;
-      landlordName?: string;
-      tenantName?: string;
-      status?: string;
-    } = {};
+    const filters: ContractFilters = {};
 
     if (debouncedAddress.trim()) filters.propertyLocation = debouncedAddress.trim();
     if (debouncedOwner.trim()) filters.landlordName = debouncedOwner.trim();
     if (debouncedTenant.trim()) filters.tenantName = debouncedTenant.trim();
-    if (contractStatus !== "all") filters.status = contractStatus;
+    if (contractStatus !== "all") filters.status = contractStatus as ContractStatus;
 
     return Object.keys(filters).length > 0 ? filters : undefined;
   }, [debouncedAddress, debouncedOwner, debouncedTenant, contractStatus]);

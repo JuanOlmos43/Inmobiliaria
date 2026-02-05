@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import FormInput from "@/components/UI/FormInput";
+import { FormInput } from "@/components/UI";
 import { authService } from "@/lib/api/services/auth";
 
 export default function LoginPage() {

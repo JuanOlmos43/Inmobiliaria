@@ -1,7 +1,7 @@
 "use client";
 
 import { ReactNode } from "react";
-import Icon from "./Icon";
+import { Icon } from "./Icon";
 
 interface EmptyStateProps {
   icon?: ReactNode;
@@ -12,7 +12,7 @@ interface EmptyStateProps {
   actionIcon?: ReactNode;
 }
 
-export default function EmptyState({
+export function EmptyState({
   icon,
   title,
   description,

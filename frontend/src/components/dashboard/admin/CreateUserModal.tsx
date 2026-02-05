@@ -1,10 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import Modal from "@/components/UI/Modal";
-import FormInput from "@/components/UI/FormInput";
-import FormSelect from "@/components/UI/FormSelect";
-import Toast from "@/components/UI/Toast";
+import { Modal, FormInput, FormSelect, Toast } from "@/components/UI";
 import { authService } from "@/lib/api/services/auth";
 import { UserRole } from "@/types/api";
 

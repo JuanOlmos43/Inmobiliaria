@@ -3,9 +3,9 @@
 import Link from "next/link";
 import Image from "next/image";
 import { useState } from "react";
-import Icon from "@/components/UI/Icon";
+import { Icon } from "@/components/UI";
 
-export default function Navbar() {
+export function Navbar() {
   // Estado para controlar el menú móvil
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 

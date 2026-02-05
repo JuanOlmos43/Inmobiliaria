@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import TabNavigation from "@/components/UI/TabNavigation";
+import { TabNavigation } from "@/components/UI";
 import RentalPropertyCard from "@/components/RentalPropertyCard";
 import BasePropertyCard from "@/components/BasePropertyCard";
 
@@ -30,7 +30,6 @@ interface Rental {
 import { Property } from "@/types/property";
 
 export default function LandlordDashboardPage() {
-
   const [rentals, setRentals] = useState<Rental[]>([]);
   const [properties, setProperties] = useState<Property[]>([]);
   const [activeTab, setActiveTab] = useState<"rentals" | "properties">(

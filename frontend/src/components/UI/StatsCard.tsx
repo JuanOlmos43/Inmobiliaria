@@ -1,4 +1,5 @@
-import Icon, { IconName } from "./Icon";
+import { Icon } from "./Icon";
+import type { IconName } from "./Icon";
 
 interface StatsCardProps {
   title: string;
@@ -11,7 +12,7 @@ interface StatsCardProps {
   }[];
 }
 
-export default function StatsCard({
+export function StatsCard({
   title,
   value,
   color,

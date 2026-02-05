@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
-import Icon from "./Icon";
+import { Icon } from "./Icon";
 
 interface ToastProps {
   message: string;
@@ -11,7 +11,7 @@ interface ToastProps {
   duration?: number;
 }
 
-export default function Toast({
+export function Toast({
   message,
   type = "success",
   isVisible,

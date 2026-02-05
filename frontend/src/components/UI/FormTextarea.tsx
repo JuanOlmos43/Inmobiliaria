@@ -1,3 +1,5 @@
+"use client";
+
 import { TextareaHTMLAttributes } from "react";
 
 interface FormTextareaProps extends TextareaHTMLAttributes<HTMLTextAreaElement> {
@@ -6,7 +8,7 @@ interface FormTextareaProps extends TextareaHTMLAttributes<HTMLTextAreaElement> 
   theme?: "light" | "dark";
 }
 
-export default function FormTextarea({
+export function FormTextarea({
   label,
   error,
   theme = "light",
