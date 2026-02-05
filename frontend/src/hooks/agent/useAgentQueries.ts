@@ -1,14 +1,8 @@
 import { useQuery } from "@tanstack/react-query";
 import { propertiesService } from "@/lib/api/services/properties";
 import { contratosService } from "@/lib/api/services/contratos";
-import { Property, PropertyStats } from "@/types/property";
-import { Contract } from "@/types/api";
-
-interface Filters {
-  search?: string;
-  status?: "activa" | "pausada";
-  listingType?: "venta" | "alquiler";
-}
+import { Property, PropertyStats, PropertyFilters } from "@/types/property";
+import { Contract, ContractFilters } from "@/types/api";
 
 /**
  * useAgentQueries
@@ -19,7 +13,7 @@ interface Filters {
  * @param filters - Filtros opcionales para búsqueda y status
  * @returns {Object} Propiedades, estado de carga y funciones de retry
  */
-export function useAgentQueries(filters?: Filters) {
+export function useAgentQueries(filters?: PropertyFilters) {
   // Query para la lista de propiedades (re-ejecuta si cambian los filtros)
   const {
     data,
@@ -92,7 +86,7 @@ export function usePropertyStats(): {
  * 
  * @param filters - Filtros de búsqueda (dirección, nombres, status)
  */
-export function useAgentContracts(filters?: unknown) {
+export function useAgentContracts(filters?: ContractFilters) {
   const {
     data,
     isLoading,

@@ -1,40 +1,15 @@
 import { apiClient } from "@/lib/api/client";
 import { API_ENDPOINTS } from "@/lib/api/endpoints";
 import type { Provincia, Localidad, Calle } from "@/types/location";
-import type { PropertyStats } from "@/types/property";
-
-// Definir interfaces aquí o importar de un archivo de tipos
-export interface CreatePropertyDto {
-  title: string;
-  description?: string;
-  propertyType: string; // 'casa', 'departamento', etc.
-  listingType: "venta" | "alquiler";
-  price: number;
-  bedrooms: number;
-  rooms: number;
-  bathrooms: number;
-  area: number;
-  yearBuilt?: number | null;
-  streetNumber?: string;
-  apartment?: string;
-  calleId?: string;
-  localidadId?: string;
-  provinciaId?: string;
-  location?: string;
-  ownerId?: string;
-  agentId?: string;
-  status?: "activa" | "pausada" | "archivada";
-  features?: string[];
-  images?: string[];
-}
-
-export interface UploadUrlResponse {
-  uploadUrl: string;
-  path: string;
-  token: string;
-  order: number;
-  filename: string;
-}
+import type {
+  PropertyStats,
+  CreatePropertyDto,
+  UpdatePropertyDto,
+  UploadUrlResponse,
+  PropertyFilters,
+  Property,
+} from "@/types/property";
+import type { PaginatedResponse } from "@/types/api";
 
 /**
  * Service for property-related operations, including location data.
@@ -83,16 +58,14 @@ export const propertiesService = {
   /**
    * Create a new property
    */
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  async create(data: CreatePropertyDto): Promise<any> {
+  async create(data: CreatePropertyDto): Promise<Property> {
     return apiClient.post("/propiedades", data);
   },
 
   /**
    * Get all properties
    */
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  async findAll(query?: any): Promise<any> {
+  async findAll(query?: PropertyFilters): Promise<PaginatedResponse<Property>> {
     const params = new URLSearchParams();
     if (query) {
       Object.entries(query).forEach(([key, value]) => {
@@ -102,31 +75,24 @@ export const propertiesService = {
       });
     }
     const queryString = params.toString() ? "?" + params.toString() : "";
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    return apiClient.get<any>(`/propiedades${queryString}`);
+    return apiClient.get<PaginatedResponse<Property>>(`/propiedades${queryString}`);
   },
 
   /**
    * Get one property by ID
    */
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  async findOne(id: string): Promise<any> {
+  async findOne(id: string): Promise<Property> {
     return apiClient.get(`/propiedades/${id}`);
   },
 
-  /**
-   * Update a property
-   */
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  async update(id: string, data: Partial<CreatePropertyDto>): Promise<any> {
+  async update(id: string, data: UpdatePropertyDto): Promise<Property> {
     return apiClient.patch(`/propiedades/${id}`, data);
   },
 
   /**
    * Delete a property
    */
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  async remove(id: string): Promise<any> {
+  async remove(id: string): Promise<void> {
     return apiClient.delete(`/propiedades/${id}`);
   },
 

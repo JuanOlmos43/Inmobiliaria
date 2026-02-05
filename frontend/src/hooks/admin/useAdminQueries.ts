@@ -1,17 +1,12 @@
 import { useQuery } from "@tanstack/react-query";
 import { usersService } from "@/lib/api/services/users";
-import { UserRole } from "@/types/api";
-
-interface Filters {
-  role?: UserRole;
-  email?: string;
-}
+import { UserFilters } from "@/types/api";
 
 /**
  * useAdminQueries
  * Maneja la obtención de datos (usuarios y estadísticas) del servidor.
  */
-export function useAdminQueries(filters?: Filters) {
+export function useAdminQueries(filters?: UserFilters) {
   // Query para la lista de usuarios (re-ejecuta si cambian los filtros)
   const {
     data: users = [],

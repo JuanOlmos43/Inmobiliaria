@@ -87,6 +87,46 @@ export enum ContractStatus {
   TERMINATED = "terminated",
 }
 
+export interface PaginatedResponse<T> {
+  data: T[];
+  meta: {
+    total: number;
+    page: number;
+    lastPage: number;
+    limit: number;
+  };
+}
+
+export interface ContractStats {
+  monthly: {
+    new: number;
+    expiring: number;
+  };
+  status: {
+    active: number;
+    expired: number;
+  };
+}
+
+export interface ContractFilters {
+  status?: ContractStatus;
+  propertyId?: string;
+  tenantId?: string;
+  landlordId?: string;
+  agentId?: string;
+  tenantName?: string;
+  landlordName?: string;
+  propertyLocation?: string;
+  page?: number;
+  limit?: number;
+}
+
+export interface UserFilters {
+  role?: UserRole;
+  email?: string;
+  search?: string;
+}
+
 /**
  * DTO para la creación de un contrato de alquiler (Coincide con el Backend)
  */
@@ -102,6 +142,8 @@ export interface CreateRentalDto {
   endDate: string;
   status?: ContractStatus;
 }
+
+export type UpdateRentalDto = Partial<CreateRentalDto>;
 
 /**
  * Datos del formulario local (UI)

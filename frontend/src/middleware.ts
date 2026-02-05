@@ -6,6 +6,7 @@ import {
   canAccessRoute,
   getDefaultRouteForRole,
 } from "@/lib/route-config";
+import { UserProfile, UserRole } from "@/types/api";
 
 /**
  * ✅ Helper: aplica cookies del backend (Set-Cookie) a la respuesta de Next
@@ -15,10 +16,10 @@ import {
 function applySetCookies(from: Response, to: NextResponse) {
   // En algunos runtimes (Node/Undici), existe getSetCookie()
   // En Edge puede no estar disponible.
-  const anyHeaders = from.headers as any;
+  const headers = from.headers as Headers & { getSetCookie?: () => string[] };
 
-  if (typeof anyHeaders.getSetCookie === "function") {
-    const cookies: string[] = anyHeaders.getSetCookie();
+  if (typeof headers.getSetCookie === "function") {
+    const cookies: string[] = headers.getSetCookie();
     for (const c of cookies) {
       to.headers.append("set-cookie", c);
     }
@@ -70,7 +71,7 @@ export async function middleware(request: NextRequest) {
   const validateSession = async (): Promise<
     | null
     | {
-        user: any;
+        user: UserProfile | { role: UserRole | string };
         refreshResponse?: Response;
       }
   > => {
@@ -109,7 +110,7 @@ export async function middleware(request: NextRequest) {
        * - (Recomendado) cambiar Nest para que lo devuelva
        * - (Fallback) reintentar /auth/me pero SIN parse manual (difícil en Edge)
        */
-      let data: any = null;
+      let data: { user?: UserProfile } | null = null;
       try {
         data = await refreshResponse.clone().json();
       } catch {

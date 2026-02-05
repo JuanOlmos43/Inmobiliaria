@@ -5,38 +5,18 @@ import Modal from "@/components/UI/Modal";
 import FormInput from "@/components/UI/FormInput";
 import FormSelect from "@/components/UI/FormSelect";
 import {
-  UserRole,
   UserProfile,
   UserStatus,
   RentalFormData,
   CreateRentalDto,
   ContractStatus,
+  UserRole,
 } from "@/types/api";
 import { usersService } from "@/lib/api/services/users";
-
 import { Property } from "@/types/property";
 
-interface SystemUser {
-  id: string;
-  email: string;
-  name?: string;
-  phone?: string;
-  role: UserRole;
-  status: "active" | "inactive";
-}
-
-// Extend Property type to include owner from backend
-interface PropertyWithOwner extends Property {
-  owner?: {
-    id: string;
-    name: string;
-    email: string;
-    phone: string | null;
-  };
-}
-
 interface RentalModalProps {
-  property: PropertyWithOwner;
+  property: Property;
   onClose: () => void;
   onSave: (data: CreateRentalDto) => void;
 }
@@ -60,31 +40,23 @@ export default function RentalModal({
   const [tenantSearch, setTenantSearch] = useState("");
   const debouncedTenantSearch = useDebounce(tenantSearch, 500);
 
-  // Use TanStack Query instead of manual fetch/effect
   const { data: tenants = [] } = useQuery({
     queryKey: ["users", "tenants", debouncedTenantSearch],
-    queryFn: async (): Promise<SystemUser[]> => {
+    queryFn: async (): Promise<UserProfile[]> => {
       const users = await usersService.getUsers({
         role: UserRole.Inquilino,
         search: debouncedTenantSearch,
       });
 
-      return users
-        .filter((u: UserProfile) => u.status === UserStatus.ACTIVE)
-        .map((u: UserProfile) => ({
-          id: u.id,
-          email: u.email,
-          name: u.name,
-          phone: u.phone || undefined,
-          role: u.role,
-          status: u.status === UserStatus.ACTIVE ? "active" : "inactive",
-        }));
+      return users.filter((u: UserProfile) => u.status === UserStatus.ACTIVE);
     },
   });
   const [showTenantDropdown, setShowTenantDropdown] = useState(false);
-  const [selectedTenant, setSelectedTenant] = useState<SystemUser | null>(null);
+  const [selectedTenant, setSelectedTenant] = useState<UserProfile | null>(
+    null,
+  );
 
-  const handleTenantSelect = (tenant: SystemUser) => {
+  const handleTenantSelect = (tenant: UserProfile) => {
     setSelectedTenant(tenant);
     setFormData({
       ...formData,
@@ -207,7 +179,7 @@ export default function RentalModal({
           {showTenantDropdown && tenantSearch && (
             <div className="absolute z-10 w-full mt-1 bg-white border border-(--border) rounded-lg shadow-lg max-h-60 overflow-y-auto">
               {tenants.length > 0 ? (
-                tenants.map((tenant: SystemUser) => (
+                tenants.map((tenant: UserProfile) => (
                   <button
                     key={tenant.email}
                     type="button"
