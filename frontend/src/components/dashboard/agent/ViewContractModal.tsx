@@ -171,7 +171,7 @@ export default function ViewContractModal({
           </button>
           <button
             onClick={() => onRevoke?.(contract.id)}
-            className="flex-1 px-4 py-2.5 bg-red-50 text-red-600 border border-red-200 rounded-lg font-medium hover:bg-red-600 hover:text-white hover:border-red-600 transition-all active:scale-95 flex items-center justify-center gap-2"
+            className="flex-1 px-4 py-2.5 bg-orange-50 text-amber-600 border border-amber-200 rounded-lg font-medium hover:bg-amber-600 hover:text-white hover:border-amber-600 transition-all active:scale-95 flex items-center justify-center gap-2"
           >
             <Icon name="trash" className="w-4 h-4" />
             Revocar Contrato

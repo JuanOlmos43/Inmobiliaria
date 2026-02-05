@@ -61,6 +61,14 @@ export function useAgentProperties() {
     viewingContract,
     openViewContractModal,
     closeViewContractModal,
+    confirmDelete,
+    initiateDeleteProperty,
+    closeConfirmDelete,
+    setDeleteLoading,
+    confirmRevoke,
+    initiateRevokeContract,
+    closeConfirmRevoke,
+    setRevokeLoading,
   } = useAgentUI();
 
   // 3. Capa de Datos (Queries)
@@ -131,6 +139,55 @@ export function useAgentProperties() {
     }
   };
 
+  /**
+   * Cierra el modal de alquiler
+   */
+  const closeRentalModalHandler = () => {
+    closeRentalModal();
+  };
+
+  /**
+   * Inicia el proceso de eliminación de una propiedad (abre confirmación)
+   */
+  const handleDeletePropertyHandler = (id: string) => {
+    initiateDeleteProperty(id);
+  };
+
+  /**
+   * Ejecuta la eliminación real de la propiedad
+   */
+  const executeDeleteProperty = async () => {
+    if (confirmDelete.propertyId) {
+      setDeleteLoading(true);
+      await handleDeleteProperty(confirmDelete.propertyId);
+      setDeleteLoading(false);
+      closeConfirmDelete();
+    }
+  };
+
+  /**
+   * Inicia el proceso de revocación de un contrato (abre confirmación)
+   */
+  const handleDeleteContractHandler = async (id: string) => {
+    initiateRevokeContract(id);
+    return false; // Retornamos false para que el modal de Ver Contrato no se cierre prematuramente si dependiera del valor de retorno
+  };
+
+  /**
+   * Ejecuta la revocación real del contrato
+   */
+  const executeRevokeContract = async () => {
+    if (confirmRevoke.contractId) {
+      setRevokeLoading(true);
+      const success = await handleDeleteContract(confirmRevoke.contractId);
+      setRevokeLoading(false);
+      if (success) {
+        closeConfirmRevoke();
+        closeViewContractModal();
+      }
+    }
+  };
+
   // Retornamos todo lo que la Page necesita
   return {
     // Datos
@@ -175,17 +232,26 @@ export function useAgentProperties() {
     // Acciones
     handleAddProperty,
     handleEditProperty,
-    handleDeleteProperty,
+    handleDeleteProperty: handleDeletePropertyHandler,
+    executeDeleteProperty,
     handleSave,
     handleRentProperty,
     handleSaveRental,
-    handleDeleteContract,
+    handleDeleteContract: handleDeleteContractHandler,
+    executeRevokeContract,
     closePropertyModal,
-    closeRentalModal,
+    closeRentalModal: closeRentalModalHandler,
     isViewContractModalOpen,
     viewingContract,
     openViewContractModal,
     closeViewContractModal,
+
+    // Estados de Confirmación
+    confirmDelete,
+    closeConfirmDelete,
+    confirmRevoke,
+    closeConfirmRevoke,
+
     refetch,
   };
 }

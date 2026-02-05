@@ -5,7 +5,7 @@ import { Contract } from "@/types/api";
 
 // Components
 import AgentStatsGrid from "@/components/dashboard/agent/AgentStatsGrid";
-import { Icon, Toast, TabNavigation } from "@/components/UI";
+import { Icon, Toast, TabNavigation, ConfirmModal } from "@/components/UI";
 import AgentPropertyCard from "@/components/dashboard/agent/AgentPropertyCard";
 import PropertyModal from "@/components/dashboard/agent/PropertyModal";
 import RentalModal from "@/components/dashboard/agent/RentalModal";
@@ -73,12 +73,20 @@ export default function AgentDashboardPage() {
     handleRentProperty,
     handleSaveRental,
     handleDeleteContract,
+    executeRevokeContract,
+    executeDeleteProperty,
     closePropertyModal,
     closeRentalModal,
     isViewContractModalOpen,
     viewingContract,
     openViewContractModal,
     closeViewContractModal,
+
+    // Confirm Modals
+    confirmDelete,
+    closeConfirmDelete,
+    confirmRevoke,
+    closeConfirmRevoke,
   } = useAgentProperties();
 
   const rentedProperties = contracts;
@@ -284,6 +292,29 @@ export default function AgentDashboardPage() {
         type={toast.type}
         isVisible={toast.isVisible}
         onClose={hideToast}
+      />
+
+      {/* MODALES DE CONFIRMACIÓN */}
+      <ConfirmModal
+        isOpen={confirmDelete.isOpen}
+        onClose={closeConfirmDelete}
+        onConfirm={executeDeleteProperty}
+        title="Eliminar Propiedad"
+        message="¿Estás seguro de que deseas eliminar esta propiedad? Esta acción no se puede deshacer."
+        confirmText="Eliminar"
+        isLoading={confirmDelete.isLoading}
+        variant="danger"
+      />
+
+      <ConfirmModal
+        isOpen={confirmRevoke.isOpen}
+        onClose={closeConfirmRevoke}
+        onConfirm={executeRevokeContract}
+        title="Revocar Contrato"
+        message="¿Estás seguro de que deseas revocar este contrato? La propiedad volverá a estar disponible (Activa)."
+        confirmText="Revocar"
+        isLoading={confirmRevoke.isLoading}
+        variant="warning"
       />
     </div>
   );

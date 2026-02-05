@@ -141,21 +141,19 @@ export function useAgentMutations({
   // ============================================
 
   /**
-   * Elimina una propiedad después de confirmación
+   * Elimina una propiedad
    */
   const handleDeleteProperty = async (id: string) => {
-    if (confirm("¿Estás seguro de que deseas eliminar esta propiedad?")) {
-      try {
-        await propertiesService.remove(id);
-        
-        // Invalidar queries
-        await refreshData();
-        
-        showToast("Propiedad eliminada exitosamente", "success");
-      } catch (error) {
-        console.error("Error deleting property:", error);
-        showToast("Error al eliminar la propiedad", "error");
-      }
+    try {
+      await propertiesService.remove(id);
+      
+      // Invalidar queries
+      await refreshData();
+      
+      showToast("Propiedad eliminada exitosamente", "success");
+    } catch (error) {
+      console.error("Error deleting property:", error);
+      showToast("Error al eliminar la propiedad", "error");
     }
   };
 
@@ -222,23 +220,20 @@ export function useAgentMutations({
    * Elimina un contrato de alquiler
    */
   const handleDeleteContract = async (id: string) => {
-    if (confirm("¿Estás seguro de que deseas revocar este contrato? Esta acción volverá a poner la propiedad como activa.")) {
-      try {
-        await contratosService.remove(id);
-        
-        // Invalidar queries
-        await refreshData();
-        await queryClient.invalidateQueries({ queryKey: ["contracts"] });
-        
-        showToast("Contrato revocado exitosamente", "success");
-        return true;
-      } catch (error) {
-        console.error("Error deleting contract:", error);
-        showToast("Error al revocar el contrato", "error");
-        return false;
-      }
+    try {
+      await contratosService.remove(id);
+      
+      // Invalidar queries
+      await refreshData();
+      await queryClient.invalidateQueries({ queryKey: ["contracts"] });
+      
+      showToast("Contrato revocado exitosamente", "success");
+      return true;
+    } catch (error) {
+      console.error("Error deleting contract:", error);
+      showToast("Error al revocar el contrato", "error");
+      return false;
     }
-    return false;
   };
 
   return {

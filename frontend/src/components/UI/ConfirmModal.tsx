@@ -1,8 +1,7 @@
 "use client";
 
-import { ReactNode } from "react";
 import { Modal } from "./Modal";
-import { Icon } from "./Icon";
+import { Icon, IconName } from "./Icon";
 
 interface ConfirmModalProps {
   isOpen: boolean;
@@ -41,12 +40,14 @@ export function ConfirmModal({
     info: "bg-blue-600 hover:bg-blue-700",
   };
 
-  const iconName = {
-    danger: "pause",
-    warning: "key",
-    success: "check",
-    info: "home",
-  }[variant] as any;
+  const iconName: IconName = (
+    {
+      danger: "pause",
+      warning: "key",
+      success: "check",
+      info: "home",
+    } as const
+  )[variant];
 
   const modalHeader = (
     <div className="flex items-center gap-4">
