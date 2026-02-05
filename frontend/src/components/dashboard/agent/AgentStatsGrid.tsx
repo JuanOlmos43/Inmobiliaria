@@ -86,7 +86,7 @@ export default function AgentStatsGrid({
             <div className="grid grid-cols-2 sm:grid-cols-3 gap-6 sm:gap-12">
               <div className="flex flex-col gap-1">
                 <div className="flex items-center gap-2">
-                  <div className="w-2 h-2 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]" />
+                  <div className="w-2 h-2 rounded-full bg-emerald-500" />
                   <span className="text-xs font-semibold text-slate-400 uppercase">
                     Activas
                   </span>
@@ -96,7 +96,7 @@ export default function AgentStatsGrid({
 
               <div className="flex flex-col gap-1">
                 <div className="flex items-center gap-2">
-                  <div className="w-2 h-2 rounded-full bg-blue-500 shadow-[0_0_8px_rgba(59,130,246,0.5)]" />
+                  <div className="w-2 h-2 rounded-full bg-blue-500" />
                   <span className="text-xs font-semibold text-slate-400 uppercase">
                     Alquiladas
                   </span>
@@ -106,7 +106,7 @@ export default function AgentStatsGrid({
 
               <div className="flex flex-col gap-1">
                 <div className="flex items-center gap-2">
-                  <div className="w-2 h-2 rounded-full bg-amber-500 shadow-[0_0_8px_rgba(245,158,11,0.5)]" />
+                  <div className="w-2 h-2 rounded-full bg-amber-500" />
                   <span className="text-xs font-semibold text-slate-400 uppercase">
                     Pausadas
                   </span>

@@ -9,11 +9,11 @@ interface UsersTableProps {
 }
 
 const roleColors: Record<string, string> = {
-  [UserRole.Inquilino]: "from-blue-500 to-blue-600",
-  [UserRole.Propietario]: "from-green-500 to-green-600",
-  [UserRole.Agente]: "from-purple-500 to-purple-600",
-  [UserRole.Gerencia]: "from-amber-500 to-amber-600",
-  [UserRole.Administrador]: "from-(--primary) to-(--primary-light)",
+  [UserRole.Inquilino]: "bg-blue-600",
+  [UserRole.Propietario]: "bg-green-600",
+  [UserRole.Agente]: "bg-purple-600",
+  [UserRole.Gerencia]: "bg-amber-600",
+  [UserRole.Administrador]: "bg-(--primary)",
 };
 
 export default function UsersTable({
@@ -198,7 +198,7 @@ export default function UsersTable({
                       </select>
                     ) : (
                       <span
-                        className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium text-white bg-linear-to-r ${roleColors[user.role]}`}
+                        className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium text-white ${roleColors[user.role]}`}
                       >
                         {user.role}
                       </span>
@@ -243,7 +243,7 @@ export default function UsersTable({
                         >
                           {editFormData.status === UserStatus.ACTIVE
                             ? "Activo"
-                            : "Inactivo"}
+                            : "Pausado"}
                         </span>
                       </div>
                     ) : (
@@ -251,12 +251,12 @@ export default function UsersTable({
                         className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium ${
                           user.status === UserStatus.ACTIVE
                             ? "bg-green-100 text-green-800"
-                            : "bg-red-100 text-red-800"
+                            : "bg-orange-100 text-orange-800"
                         }`}
                       >
                         {user.status === UserStatus.ACTIVE
                           ? "Activo"
-                          : "Inactivo"}
+                          : "Pausado"}
                       </span>
                     )}
                   </td>
@@ -274,7 +274,7 @@ export default function UsersTable({
                           <button
                             onClick={saveEditing}
                             disabled={isSaving}
-                            className="p-1.5 text-green-600 hover:bg-green-50 rounded-lg transition-colors border border-green-200"
+                            className="p-1.5 text-green-600 hover:bg-green-200 rounded-lg transition-colors border border-green-200"
                             title="Guardar"
                           >
                             {isSaving ? (
@@ -287,7 +287,7 @@ export default function UsersTable({
                           <button
                             onClick={handleCancelEdit}
                             disabled={isSaving}
-                            className="p-1.5 text-gray-500 hover:bg-gray-100 rounded-lg transition-colors border border-gray-200"
+                            className="p-1.5 text-red-500 hover:bg-red-200 rounded-lg transition-colors border border-red-200"
                             title="Cancelar"
                           >
                             <Icon name="close" className="w-5 h-5" />

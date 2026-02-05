@@ -54,13 +54,13 @@ export default function BasePropertyCard({
     switch (status) {
       case "Activa":
       case "Activo":
-        return "bg-green-500 text-white shadow-green-200";
+        return "bg-green-500 text-white";
       case "Vencido":
-        return "bg-amber-500 text-white shadow-amber-200";
+        return "bg-amber-500 text-white";
       case "Terminado":
-        return "bg-red-500 text-white shadow-red-200";
+        return "bg-red-500 text-white";
       default:
-        return "bg-yellow-500 text-white shadow-yellow-200";
+        return "bg-yellow-500 text-white";
     }
   };
 
@@ -105,7 +105,7 @@ export default function BasePropertyCard({
           {/* Type Badge (Venta/Alquiler) */}
           {showTypeBadge && type && (
             <span
-              className={`px-4 py-2 rounded-full text-sm font-bold shadow-lg backdrop-blur-sm ${getTypeBadgeStyles()}`}
+              className={`px-4 py-2 rounded-full text-sm font-bold backdrop-blur-sm ${getTypeBadgeStyles()}`}
             >
               {type}
             </span>
@@ -114,7 +114,7 @@ export default function BasePropertyCard({
           {/* Status Badge (Activa/Pausada) */}
           {showStatusBadge && status && (
             <span
-              className={`px-4 py-2 rounded-full text-sm font-bold shadow-lg backdrop-blur-sm ${getStatusBadgeStyles()}`}
+              className={`px-4 py-2 rounded-full text-sm font-bold backdrop-blur-sm ${getStatusBadgeStyles()}`}
             >
               {status}
             </span>
