@@ -21,15 +21,26 @@ import { CreateRentalDto } from "@/types/api";
 export function useAgentProperties() {
   // 1. Capa de Filtros
   const {
+    activeTab,
+    setActiveTab,
+    // Propiedades
     searchTerm,
     setSearchTerm,
     filterStatus,
     setFilterStatus,
     filterListingType,
     setFilterListingType,
-    activeTab,
-    setActiveTab,
     activeFilters,
+    // Contratos
+    searchAddress,
+    setSearchAddress,
+    searchOwner,
+    setSearchOwner,
+    searchTenant,
+    setSearchTenant,
+    contractStatus,
+    setContractStatus,
+    activeContractFilters,
   } = useAgentFilters();
 
   // 2. Capa de UI (Modales, Toasts)
@@ -59,8 +70,8 @@ export function useAgentProperties() {
   // Query de estadísticas
   const { stats, isLoading: isLoadingStats } = usePropertyStats();
 
-  // Query de contratos
-  const { contracts, isLoading: isLoadingContracts } = useAgentContracts();
+  // Query de contratos (Pasamos los filtros activos)
+  const { contracts, isLoading: isLoadingContracts } = useAgentContracts(activeContractFilters);
 
   // 4. Capa de Acciones (Mutations)
   const {
@@ -140,6 +151,14 @@ export function useAgentProperties() {
     setFilterStatus,
     filterListingType,
     setFilterListingType,
+    searchAddress,
+    setSearchAddress,
+    searchOwner,
+    setSearchOwner,
+    searchTenant,
+    setSearchTenant,
+    contractStatus,
+    setContractStatus,
     activeTab,
     setActiveTab,
 

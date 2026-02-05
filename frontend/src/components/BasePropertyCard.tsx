@@ -51,10 +51,17 @@ export default function BasePropertyCard({
   className = "",
 }: BasePropertyCardProps) {
   const getStatusBadgeStyles = () => {
-    if (status === "Activa") {
-      return "bg-green-500 text-white";
+    switch (status) {
+      case "Activa":
+      case "Activo":
+        return "bg-green-500 text-white shadow-green-200";
+      case "Vencido":
+        return "bg-amber-500 text-white shadow-amber-200";
+      case "Terminado":
+        return "bg-red-500 text-white shadow-red-200";
+      default:
+        return "bg-yellow-500 text-white shadow-yellow-200";
     }
-    return "bg-yellow-500 text-white";
   };
 
   const getTypeBadgeStyles = () => {

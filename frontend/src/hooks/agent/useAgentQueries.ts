@@ -88,7 +88,9 @@ export function usePropertyStats(): {
 /**
  * useAgentContracts
  * 
- * Obtiene la lista de contratos de alquiler.
+ * Obtiene la lista de contratos de alquiler con filtros opcionales.
+ * 
+ * @param filters - Filtros de búsqueda (dirección, nombres, status)
  */
 export function useAgentContracts(filters?: unknown) {
   const {
@@ -101,6 +103,8 @@ export function useAgentContracts(filters?: unknown) {
     queryFn: async () => {
       return await contratosService.findAll(filters);
     },
+    // Mantener los datos anteriores mientras se carga el filtro mejora la UX
+    placeholderData: (previousData) => previousData,
   });
 
   const contracts: Contract[] = data?.data || [];

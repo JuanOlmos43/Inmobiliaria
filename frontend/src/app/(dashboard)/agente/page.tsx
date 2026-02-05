@@ -1,6 +1,5 @@
 "use client";
 
-import { useState } from "react";
 import { useAgentProperties } from "@/hooks/useAgentProperties";
 import { Contract } from "@/types/api";
 
@@ -35,7 +34,6 @@ export default function AgentDashboardPage() {
     properties,
     contracts,
     isLoading,
-    // isLoadingContracts,
 
     // Estadísticas
     stats,
@@ -48,6 +46,14 @@ export default function AgentDashboardPage() {
     setFilterStatus,
     filterListingType,
     setFilterListingType,
+    searchAddress,
+    setSearchAddress,
+    searchOwner,
+    setSearchOwner,
+    searchTenant,
+    setSearchTenant,
+    contractStatus,
+    setContractStatus,
     activeTab,
     setActiveTab,
 
@@ -76,12 +82,6 @@ export default function AgentDashboardPage() {
     openViewContractModal,
     closeViewContractModal,
   } = useAgentProperties();
-
-  // Estado para filtros de contratos
-  const [searchAddress, setSearchAddress] = useState("");
-  const [searchOwner, setSearchOwner] = useState("");
-  const [searchTenant, setSearchTenant] = useState("");
-  const [contractStatus, setContractStatus] = useState("all");
 
   const rentedProperties = contracts;
 
@@ -222,10 +222,14 @@ export default function AgentDashboardPage() {
                       bathrooms={undefined}
                       area={undefined}
                       showTypeBadge={false}
-                      showStatusBadge={false}
+                      showStatusBadge={true}
                       showDetails={false}
                       status={
-                        contract.status === "active" ? "Activa" : "Pausada"
+                        contract.status === "active"
+                          ? "Activo"
+                          : contract.status === "expired"
+                            ? "Vencido"
+                            : "Terminado"
                       }
                       footerSlot={
                         <button

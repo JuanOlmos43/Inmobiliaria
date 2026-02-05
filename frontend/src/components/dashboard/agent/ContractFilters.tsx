@@ -60,7 +60,6 @@ export default function ContractFilters({
         maxLength={100}
         icon="user"
       />
-
       {/* Estado del contrato */}
       <FormSelect
         label="Estado del contrato"
