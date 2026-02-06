@@ -59,6 +59,12 @@ export default function BasePropertyCard({
         return "bg-amber-500 text-white";
       case "Terminado":
         return "bg-red-500 text-white";
+      case "Archivada":
+      case "Archivado":
+        return "bg-gray-500 text-white";
+      case "Alquilada":
+      case "Alquilado":
+        return "bg-blue-500 text-white";
       default:
         return "bg-yellow-500 text-white";
     }
@@ -110,12 +116,16 @@ export default function BasePropertyCard({
           {/* Right Side (Badges) */}
           <div className="flex flex-col items-end gap-2 shrink-0">
             {showTypeBadge && type && (
-              <span className={`px-4 py-2 rounded-full text-sm font-bold backdrop-blur-sm shadow-sm ${getTypeBadgeStyles()}`}>
+              <span
+                className={`px-4 py-2 rounded-full text-sm font-bold backdrop-blur-sm shadow-sm ${getTypeBadgeStyles()}`}
+              >
                 {type}
               </span>
             )}
             {showStatusBadge && status && (
-              <span className={`px-4 py-2 rounded-full text-sm font-bold backdrop-blur-sm shadow-sm ${getStatusBadgeStyles()}`}>
+              <span
+                className={`px-4 py-2 rounded-full text-sm font-bold backdrop-blur-sm shadow-sm ${getStatusBadgeStyles()}`}
+              >
                 {status}
               </span>
             )}

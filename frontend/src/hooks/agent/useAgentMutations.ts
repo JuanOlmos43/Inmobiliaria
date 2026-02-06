@@ -4,7 +4,7 @@ import {
   propertiesService,
 } from "@/lib/api/services/properties";
 import { Property, CreatePropertyDto } from "@/types/property";
-import { CreateRentalDto } from "@/types/api";
+import { CreateRentalDto, Contract } from "@/types/api";
 import { contratosService } from "@/lib/api/services/contratos";
 
 interface UseAgentMutationsProps {
@@ -183,15 +183,15 @@ export function useAgentMutations({
   };
 
   // ============================================
-  // CREAR CONTRATO DE ALQUILER
+  // GUARDAR CONTRATO DE ALQUILER (CREAR/EDITAR)
   // ============================================
 
   /**
-   * Crea un contrato de alquiler
+   * Guarda un contrato de alquiler (crear o actualizar)
    */
-  const handleCreateRental = async (
-    property: Property,
-    rentalData: CreateRentalDto
+  const handleSaveRental = async (
+    rentalData: CreateRentalDto,
+    editingContract: Contract | null = null
   ) => {
     try {
       // Incluir el ID del agente (usuario actual)
@@ -200,7 +200,15 @@ export function useAgentMutations({
         agentId: user?.id,
       };
 
-      await contratosService.create(finalRentalData);
+      if (editingContract) {
+        // ACTUALIZAR contrato existente
+        await contratosService.update(editingContract.id, finalRentalData);
+        showToast("Contrato de alquiler actualizado exitosamente", "success");
+      } else {
+        // CREAR nuevo contrato
+        await contratosService.create(finalRentalData);
+        showToast("Contrato de alquiler creado exitosamente", "success");
+      }
 
       // Invalidar queries para refrescar datos
       await refreshData();
@@ -208,11 +216,9 @@ export function useAgentMutations({
 
       // Callback de éxito
       onRentalSaved?.();
-
-      showToast("Contrato de alquiler creado exitosamente", "success");
     } catch (error) {
-      console.error("Error creating rental:", error);
-      showToast("Error al crear el contrato de alquiler", "error");
+      console.error("Error saving rental:", error);
+      showToast("Error al guardar el contrato de alquiler", "error");
     }
   };
 
@@ -240,7 +246,7 @@ export function useAgentMutations({
     handleSaveProperty,
     handleDeleteProperty,
     handleToggleStatus,
-    handleCreateRental,
+    handleSaveRental,
     handleDeleteContract,
   };
 }

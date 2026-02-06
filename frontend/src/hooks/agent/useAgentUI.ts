@@ -16,6 +16,7 @@ export function useAgentUI() {
   // Estado de Modal de Alquiler
   const [isRentalModalOpen, setIsRentalModalOpen] = useState(false);
   const [rentingProperty, setRentingProperty] = useState<Property | null>(null);
+  const [editingContract, setEditingContract] = useState<Contract | null>(null);
 
   // Estado de Modal de Ver Contrato
   const [isViewContractModalOpen, setIsViewContractModalOpen] = useState(false);
@@ -102,6 +103,17 @@ export function useAgentUI() {
    */
   const openRentalModal = useCallback((property: Property) => {
     setRentingProperty(property);
+    setEditingContract(null);
+    setIsRentalModalOpen(true);
+  }, []);
+
+  /**
+   * Abre el modal de alquiler en modo edición
+   */
+  const openEditContractModal = useCallback((contract: Contract) => {
+    setEditingContract(contract);
+    // Para editar necesitamos la propiedad, el contrato ya la incluye
+    setRentingProperty(contract.property as unknown as Property);
     setIsRentalModalOpen(true);
   }, []);
 
@@ -111,6 +123,7 @@ export function useAgentUI() {
   const closeRentalModal = useCallback(() => {
     setIsRentalModalOpen(false);
     setRentingProperty(null);
+    setEditingContract(null);
   }, []);
 
   // ============================================
@@ -172,7 +185,9 @@ export function useAgentUI() {
     // Estados de Modal de Alquiler
     isRentalModalOpen,
     rentingProperty,
+    editingContract,
     openRentalModal,
+    openEditContractModal,
     closeRentalModal,
 
     // Estados de Modal de Ver Contrato

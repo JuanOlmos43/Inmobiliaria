@@ -55,6 +55,8 @@ export function useAgentProperties() {
     viewingContract,
     openViewContractModal,
     closeViewContractModal,
+    editingContract,
+    openEditContractModal,
     confirmDelete,
     initiateDeleteProperty,
     closeConfirmDelete,
@@ -75,7 +77,7 @@ export function useAgentProperties() {
   const {
     handleSaveProperty,
     handleDeleteProperty,
-    handleCreateRental,
+    handleSaveRental,
     handleDeleteContract,
   } = useAgentMutations({
     showToast,
@@ -90,8 +92,8 @@ export function useAgentProperties() {
     await handleSaveProperty(data, files, editingProperty);
   };
   const handleRentProperty = (p: Property) => openRentalModal(p);
-  const handleSaveRental = async (data: CreateRentalDto) => {
-    if (rentingProperty) await handleCreateRental(rentingProperty, data);
+  const handleSaveRentalHandler = async (data: CreateRentalDto) => {
+    await handleSaveRental(data, editingContract);
   };
   const handleDeletePropertyHandler = (id: string) => initiateDeleteProperty(id);
   const executeDeleteProperty = async () => {
@@ -157,7 +159,7 @@ export function useAgentProperties() {
     executeDeleteProperty,
     handleSave,
     handleRentProperty,
-    handleSaveRental,
+    handleSaveRental: handleSaveRentalHandler,
     handleDeleteContract: handleDeleteContractHandler,
     executeRevokeContract,
     closePropertyModal,
@@ -166,6 +168,8 @@ export function useAgentProperties() {
     viewingContract,
     openViewContractModal,
     closeViewContractModal,
+    editingContract,
+    openEditContractModal,
     confirmDelete,
     closeConfirmDelete,
     confirmRevoke,

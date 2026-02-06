@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useDebounce } from "@/hooks/useDebounce";
 import { Modal, FormInput, FormSelect } from "@/components/UI";
@@ -9,38 +9,66 @@ import {
   CreateRentalDto,
   ContractStatus,
   UserRole,
+  Contract,
 } from "@/types/api";
 import { usersService } from "@/lib/api/services/users";
 import { Property } from "@/types/property";
 
 interface RentalModalProps {
   property: Property;
+  contract?: Contract | null;
   onClose: () => void;
   onSave: (data: CreateRentalDto) => void;
 }
 
 export default function RentalModal({
   property,
+  contract,
   onClose,
   onSave,
 }: RentalModalProps) {
-  const [formData, setFormData] = useState<RentalFormData>({
-    tenantId: "",
-    tenantEmail: "",
-    tenantName: "",
-    startDate: new Date().toISOString().split("T")[0],
-    endDate: "",
-    adjustmentFrequency: 1, // Mensual por defecto
-    deposit: 0,
-    status: ContractStatus.ACTIVE,
+  const isEditing = !!contract;
+
+  // Inicializar estado usando una función de fábrica para evitar el lint de useEffect
+  const [formData, setFormData] = useState<RentalFormData>(() => {
+    if (contract) {
+      return {
+        tenantId: contract.tenantId,
+        tenantEmail: contract.tenant.email,
+        tenantName: contract.tenant.name,
+        startDate: contract.startDate.split("T")[0],
+        endDate: contract.endDate.split("T")[0],
+        adjustmentFrequency: contract.adjustmentFrequency || 1,
+        deposit: contract.deposit || 0,
+        status: contract.status,
+      };
+    }
+    return {
+      tenantId: "",
+      tenantEmail: "",
+      tenantName: "",
+      startDate: new Date().toISOString().split("T")[0],
+      endDate: "",
+      adjustmentFrequency: 1,
+      deposit: 0,
+      status: ContractStatus.ACTIVE,
+    };
   });
 
-  const [tenantSearch, setTenantSearch] = useState("");
+  const [tenantSearch, setTenantSearch] = useState(() =>
+    contract ? contract.tenant.name || contract.tenant.email : "",
+  );
+
+  const [selectedTenant, setSelectedTenant] = useState<UserProfile | null>(
+    () => (contract ? (contract.tenant as unknown as UserProfile) : null),
+  );
+
   const debouncedTenantSearch = useDebounce(tenantSearch, 500);
 
   const { data: tenants = [] } = useQuery({
     queryKey: ["users", "tenants", debouncedTenantSearch],
     queryFn: async (): Promise<UserProfile[]> => {
+      if (isEditing) return [];
       const users = await usersService.getUsers({
         role: UserRole.Inquilino,
         search: debouncedTenantSearch,
@@ -48,11 +76,11 @@ export default function RentalModal({
 
       return users.filter((u: UserProfile) => u.status === UserStatus.ACTIVE);
     },
+    enabled:
+      !isEditing && !!debouncedTenantSearch && debouncedTenantSearch.length > 2,
   });
+
   const [showTenantDropdown, setShowTenantDropdown] = useState(false);
-  const [selectedTenant, setSelectedTenant] = useState<UserProfile | null>(
-    null,
-  );
 
   const handleTenantSelect = (tenant: UserProfile) => {
     setSelectedTenant(tenant);
@@ -67,6 +95,7 @@ export default function RentalModal({
   };
 
   const handleTenantSearchChange = (value: string) => {
+    if (isEditing) return;
     setTenantSearch(value);
     setShowTenantDropdown(true);
     if (!value) {
@@ -83,20 +112,21 @@ export default function RentalModal({
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!selectedTenant) {
+    if (!selectedTenant && !isEditing) {
       alert("Por favor seleccione un inquilino");
       return;
     }
 
-    if (!property.owner?.id) {
-      alert("La propiedad no tiene un propietario asignado");
+    const landlordId = property.owner?.id || contract?.landlordId;
+    if (!landlordId) {
+      alert("No se pudo identificar al propietario");
       return;
     }
 
     onSave({
       propertyId: property.id!,
-      tenantId: selectedTenant.id,
-      landlordId: property.owner.id,
+      tenantId: selectedTenant?.id || contract!.tenantId,
+      landlordId: landlordId,
       monthlyRent: property.price,
       deposit: formData.deposit,
       adjustmentFrequency: formData.adjustmentFrequency,
@@ -110,7 +140,9 @@ export default function RentalModal({
     <Modal
       isOpen={true}
       onClose={onClose}
-      title="Crear Contrato de Alquiler"
+      title={
+        isEditing ? "Editar Contrato de Alquiler" : "Crear Contrato de Alquiler"
+      }
       maxWidth="lg"
     >
       <form onSubmit={handleSubmit} className="space-y-6">
@@ -141,18 +173,16 @@ export default function RentalModal({
             <div className="space-y-1">
               <p className="text-gray-700">
                 <span className="font-medium">Nombre: </span>
-                {property.owner?.name || "No especificado"}
-              </p>
-              <p className="text-gray-700">
-                <span className="font-medium">Teléfono: </span>
-                <span className="font-mono">
-                  {property.owner?.phone || "No especificado"}
-                </span>
+                {property.owner?.name ||
+                  contract?.landlord.name ||
+                  "No especificado"}
               </p>
               <p className="text-gray-700">
                 <span className="font-medium">Email: </span>
                 <span className="font-mono">
-                  {property.owner?.email || "No especificado"}
+                  {property.owner?.email ||
+                    contract?.landlord.email ||
+                    "No especificado"}
                 </span>
               </p>
             </div>
@@ -167,14 +197,16 @@ export default function RentalModal({
               type="text"
               value={tenantSearch}
               onChange={(e) => handleTenantSearchChange(e.target.value)}
-              onFocus={() => setShowTenantDropdown(true)}
+              onFocus={() => !isEditing && setShowTenantDropdown(true)}
               maxLength={100}
               icon="user"
+              readOnly={isEditing}
+              className={isEditing ? "bg-gray-100 cursor-not-allowed" : ""}
             />
           </div>
 
           {/* Dropdown de resultados */}
-          {showTenantDropdown && tenantSearch && (
+          {!isEditing && showTenantDropdown && tenantSearch && (
             <div className="absolute z-10 w-full mt-1 bg-white border border-(--border) rounded-lg shadow-lg max-h-60 overflow-y-auto">
               {tenants.length > 0 ? (
                 tenants.map((tenant: UserProfile) => (
@@ -188,11 +220,6 @@ export default function RentalModal({
                       {tenant.name || tenant.email}
                     </div>
                     <div className="text-sm text-gray-500">{tenant.email}</div>
-                    {tenant.phone && (
-                      <div className="text-xs text-gray-400">
-                        {tenant.phone}
-                      </div>
-                    )}
                   </button>
                 ))
               ) : (
@@ -203,50 +230,43 @@ export default function RentalModal({
             </div>
           )}
 
-          {tenants.length === 0 && (
-            <p className="text-sm text-amber-600 mt-1">
-              No hay inquilinos disponibles. El administrador debe crear
-              usuarios con rol: Inquilino.
+          {isEditing && (
+            <p className="text-xs text-blue-600 mt-1">
+              El inquilino no se puede cambiar en un contrato establecido.
             </p>
           )}
 
-          {selectedTenant && (
-            <div className="mt-2 p-3 bg-blue-50 border border-blue-200 rounded-lg">
-              <div className="flex items-start gap-2">
-                <svg
-                  className="w-5 h-5 text-blue-600 mt-0.5"
-                  fill="currentColor"
-                  viewBox="0 0 20 20"
-                >
-                  <path
-                    fillRule="evenodd"
-                    d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                    clipRule="evenodd"
-                  />
-                </svg>
-                <div className="flex-1">
-                  <p className="text-sm font-medium text-blue-900">
-                    Inquilino seleccionado
-                  </p>
-                  <p className="text-xs text-blue-700 mt-1">
-                    <span className="font-medium">Nombre:</span>{" "}
-                    {selectedTenant.name || selectedTenant.email}
-                  </p>
-                  <p className="text-xs text-blue-700">
-                    <span className="font-medium">Email:</span>{" "}
-                    {selectedTenant.email}
-                  </p>
-                  {selectedTenant.phone && (
-                    <p className="text-xs text-blue-700">
-                      <span className="font-medium">Teléfono:</span>{" "}
-                      {selectedTenant.phone}
-                    </p>
-                  )}
-                </div>
-              </div>
-            </div>
+          {!isEditing && tenants.length === 0 && tenantSearch.length > 2 && (
+            <p className="text-sm text-amber-600 mt-1">
+              No se encontraron inquilinos. Verifique el nombre o email.
+            </p>
           )}
         </div>
+
+        {/* Estado del Contrato (Solo edición) */}
+        {isEditing && (
+          <div>
+            <h3 className="text-lg font-semibold text-(--primary) mb-3">
+              Estado del Contrato
+            </h3>
+            <FormSelect
+              label="Estado"
+              value={formData.status}
+              onChange={(e) =>
+                setFormData({
+                  ...formData,
+                  status: e.target.value as ContractStatus,
+                })
+              }
+            >
+              <option value={ContractStatus.ACTIVE}>Activo</option>
+              <option value={ContractStatus.EXPIRED}>Vencido (Manual)</option>
+              <option value={ContractStatus.TERMINATED}>
+                Finalizado / Rescindido
+              </option>
+            </FormSelect>
+          </div>
+        )}
 
         {/* Fechas del Contrato */}
         <div>
@@ -334,7 +354,7 @@ export default function RentalModal({
             type="submit"
             className="flex-1 px-4 py-2.5 bg-(--accent) text-white rounded-lg font-medium hover:bg-(--accent-hover) transition-all shadow-md hover:shadow-lg disabled:opacity-50 flex justify-center items-center gap-2"
           >
-            Crear Contrato
+            {isEditing ? "Guardar Cambios" : "Crear Contrato"}
           </button>
         </div>
       </form>

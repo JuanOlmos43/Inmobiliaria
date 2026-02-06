@@ -3,8 +3,8 @@ import { FormInput, FormSelect } from "@/components/UI";
 interface AgentPropertiesFiltersProps {
   searchTerm: string;
   setSearchTerm: (val: string) => void;
-  filterStatus: "all" | "activa" | "pausada";
-  setFilterStatus: (val: "all" | "activa" | "pausada") => void;
+  filterStatus: "all" | "activa" | "pausada" | "alquilada";
+  setFilterStatus: (val: "all" | "activa" | "pausada" | "alquilada") => void;
   filterListingType: "all" | "venta" | "alquiler";
   setFilterListingType: (val: "all" | "venta" | "alquiler") => void;
 }
@@ -34,27 +34,32 @@ export default function AgentPropertiesFilters({
       />
 
       <FormSelect
-        label="Filtrar por estado"
-        value={filterStatus}
-        onChange={(e) =>
-          setFilterStatus(e.target.value as "all" | "activa" | "pausada")
-        }
-      >
-        <option value="all">Todos los estados</option>
-        <option value="activa">Activas</option>
-        <option value="pausada">Pausadas</option>
-      </FormSelect>
-
-      <FormSelect
         label="Tipo de negocio"
         value={filterListingType}
         onChange={(e) =>
           setFilterListingType(e.target.value as "all" | "venta" | "alquiler")
         }
       >
-        <option value="all">Venta y Alquiler</option>
+        <option value="all">Todos</option>
         <option value="venta">Venta</option>
         <option value="alquiler">Alquiler</option>
+      </FormSelect>
+
+      <FormSelect
+        label="Filtrar por estado"
+        value={filterStatus}
+        onChange={(e) =>
+          setFilterStatus(
+            e.target.value as "all" | "activa" | "pausada" | "alquilada",
+          )
+        }
+      >
+        <option value="all">Todos los estados</option>
+        <option value="activa">Activas</option>
+        <option value="pausada">Pausadas</option>
+        {filterListingType === "alquiler" && (
+          <option value="alquilada">Alquiladas</option>
+        )}
       </FormSelect>
     </div>
   );

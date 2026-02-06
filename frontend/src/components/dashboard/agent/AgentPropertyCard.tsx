@@ -99,7 +99,14 @@ export default function AgentPropertyCard({
       currency={property.currency}
       location={property.location}
       type={property.listingType === "venta" ? "Venta" : "Alquiler"}
-      status={property.status === "activa" ? "Activa" : "Pausada"}
+      status={
+        {
+          activa: "Activa",
+          pausada: "Pausada",
+          alquilada: "Alquilada",
+          archivada: "Archivada",
+        }[property.status]
+      }
       bedrooms={property.bedrooms}
       bathrooms={property.bathrooms}
       area={property.area}

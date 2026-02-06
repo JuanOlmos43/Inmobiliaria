@@ -16,7 +16,7 @@ export function useAgentFilters() {
 
   // --- Estados de Filtros (Propiedades) ---
   const [searchTerm, setSearchTerm] = useState("");
-  const [filterStatus, setFilterStatus] = useState<"all" | "activa" | "pausada">("all");
+  const [filterStatus, setFilterStatus] = useState<"all" | "activa" | "pausada" | "alquilada">("all");
   const [filterListingType, setFilterListingType] = useState<"all" | "venta" | "alquiler">("all");
 
   // --- Estados de Filtros (Contratos) ---
@@ -42,7 +42,7 @@ export function useAgentFilters() {
   const activeFilters = useMemo(() => {
     const filters: { 
       search?: string; 
-      status?: "activa" | "pausada";
+      status?: "activa" | "pausada" | "alquilada";
       listingType?: "venta" | "alquiler";
     } = {};
     
@@ -78,7 +78,12 @@ export function useAgentFilters() {
     filterStatus,
     setFilterStatus,
     filterListingType,
-    setFilterListingType,
+    setFilterListingType: (v: "all" | "venta" | "alquiler") => {
+      setFilterListingType(v);
+      if (v !== "alquiler" && filterStatus === "alquilada") {
+        setFilterStatus("all");
+      }
+    },
     activeFilters,
 
     // Filtros Contratos
