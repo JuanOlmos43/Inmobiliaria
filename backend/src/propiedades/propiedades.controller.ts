@@ -24,6 +24,8 @@ import { RolesGuard } from '../auth/guards/roles.guard';
 import { Roles } from '../auth/decorators/roles.decorator';
 import { UserRole } from '@prisma/client';
 
+import { Public } from '../auth/decorators/public.decorator';
+
 @Controller('propiedades')
 @UseGuards(JwtAuthGuard, RolesGuard)
 @UsePipes(new ValidationPipe({ transform: true, whitelist: true }))
@@ -41,9 +43,15 @@ export class PropiedadesController {
     return this.propiedadesService.getStats();
   }
 
+  @Get('public')
+  @Public()
+  findPublic(@Query() query: QueryPropiedadesDto) {
+    return this.propiedadesService.findAll(query, true);
+  }
+
   @Get()
   findAll(@Query() query: QueryPropiedadesDto) {
-    return this.propiedadesService.findAll(query);
+    return this.propiedadesService.findAll(query, false);
   }
 
   @Get(':id')

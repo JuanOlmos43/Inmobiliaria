@@ -90,7 +90,7 @@ export class PropiedadesService {
     return this.addCurrency(property);
   }
 
-  async findAll(query: QueryPropiedadesDto) {
+  async findAll(query: QueryPropiedadesDto, isPublic: boolean = false) {
     const {
       propertyType,
       listingType,
@@ -112,18 +112,27 @@ export class PropiedadesService {
 
     if (propertyType) where.propertyType = propertyType;
     if (listingType) where.listingType = listingType;
-    if (status) where.status = status;
     if (localidadId) where.localidadId = localidadId;
-    if (ownerId) where.ownerId = ownerId;
 
-    // contractStatus: 'active', 'expired', 'terminated'
-    // Filter properties that have AT LEAST ONE contract with this status
-    if (contractStatus) {
-      where.rentalContracts = {
-        some: {
-          status: contractStatus as any,
-        },
-      };
+    if (isPublic) {
+      // En modo público, forzamos status activa y no permitimos filtrar por owner/contratos de forma directa si no es deseado
+      where.status = 'activa';
+      // Si se quiere filtrar por ownerId en público, se podría permitir, pero generalmente es para propietarios logueados.
+      // Dejamos ownerId permitido si se quiere ver propiedades de X agente/dueño, pero status siempre activa.
+      if (ownerId) where.ownerId = ownerId;
+    } else {
+      // Modo interno: permite filtrar por cualquier status
+      if (status) where.status = status;
+      if (ownerId) where.ownerId = ownerId;
+
+      // contractStatus solo relevante para gestión interna
+      if (contractStatus) {
+        where.rentalContracts = {
+          some: {
+            status: contractStatus as any,
+          },
+        };
+      }
     }
 
     if (minPrice !== undefined || maxPrice !== undefined) {
@@ -154,6 +163,20 @@ export class PropiedadesService {
     // Calcular paginación
     const skip = (page - 1) * limit;
 
+    // Definir includes según visibilidad
+    const ownerSelect = isPublic
+      ? {
+        id: true,
+        name: true,
+        // No email/phone for public
+      }
+      : {
+        id: true,
+        name: true,
+        email: true,
+        phone: true,
+      };
+
     // Ejecutar query con paginación
     const [properties, total] = await Promise.all([
       this.prisma.property.findMany({
@@ -168,12 +191,7 @@ export class PropiedadesService {
           },
           calle: true,
           owner: {
-            select: {
-              id: true,
-              name: true,
-              email: true,
-              phone: true,
-            },
+            select: ownerSelect,
           },
           agent: {
             select: {
@@ -183,21 +201,24 @@ export class PropiedadesService {
               phone: true,
             },
           },
-          rentalContracts: {
-            select: {
-              id: true,
-              startDate: true,
-              endDate: true,
-              tenant: {
-                select: {
-                  name: true,
+          // Rental contracts usually not needed for public listing
+          rentalContracts: !isPublic
+            ? {
+              select: {
+                id: true,
+                startDate: true,
+                endDate: true,
+                tenant: {
+                  select: {
+                    name: true,
+                  },
                 },
               },
-            },
-            orderBy: {
-              endDate: 'desc',
-            },
-          },
+              orderBy: {
+                endDate: 'desc',
+              },
+            }
+            : undefined,
         },
         orderBy: {
           createdAt: 'desc',

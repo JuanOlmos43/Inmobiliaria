@@ -78,6 +78,19 @@ export const propertiesService = {
     return apiClient.get<PaginatedResponse<Property>>(`/propiedades${queryString}`);
   },
 
+  async getPublicProperties(query?: PropertyFilters): Promise<PaginatedResponse<Property>> {
+    const params = new URLSearchParams();
+    if (query) {
+      Object.entries(query).forEach(([key, value]) => {
+        if (value !== undefined && value !== null) {
+          params.append(key, String(value));
+        }
+      });
+    }
+    const queryString = params.toString() ? "?" + params.toString() : "";
+    return apiClient.get<PaginatedResponse<Property>>(`/propiedades/public${queryString}`);
+  },
+
   /**
    * Get one property by ID
    */

@@ -9,7 +9,8 @@ import PropertyFilters, {
 } from "@/components/PropertyFilters";
 import { EmptyState, Pagination } from "@/components/UI";
 import HeroSection from "@/components/HeroSection";
-import { allProperties } from "@/data/properties";
+import { propertiesService } from "@/lib/api/services/properties";
+import type { Property, PropertyFilters as PropertyFiltersType } from "@/types/property";
 
 function PropiedadesContent() {
   const searchParams = useSearchParams();
@@ -23,6 +24,11 @@ function PropiedadesContent() {
     minPrice: "",
     maxPrice: "",
   });
+
+  const [properties, setProperties] = useState<Property[]>([]);
+  const [totalPages, setTotalPages] = useState(0);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 6;
@@ -65,58 +71,47 @@ function PropiedadesContent() {
     window.scrollTo({ top: 0, behavior: "smooth" });
   }, [currentPage]);
 
-  // Filtrar propiedades con los filtros aplicados
-  const filteredProperties = allProperties.filter((property) => {
-    // Filtro por tipo de operación (venta/alquiler)
-    if (
-      appliedFilters.operationType !== "todos" &&
-      property.type !== appliedFilters.operationType
-    )
-      return false;
+  // Fetch properties from backend
+  useEffect(() => {
+    const fetchProperties = async () => {
+      setIsLoading(true);
+      setError(null);
+      try {
+        const filters: PropertyFiltersType = {
+          page: currentPage,
+          limit: itemsPerPage,
+          listingType:
+            appliedFilters.operationType === "todos"
+              ? undefined
+              : (appliedFilters.operationType as "venta" | "alquiler"),
+          propertyType: appliedFilters.propertyType || undefined,
+          minBedrooms: appliedFilters.bedrooms
+            ? parseInt(appliedFilters.bedrooms)
+            : undefined,
+          minBathrooms: appliedFilters.bathrooms
+            ? parseInt(appliedFilters.bathrooms)
+            : undefined,
+          minPrice: appliedFilters.minPrice
+            ? parseInt(appliedFilters.minPrice)
+            : undefined,
+          maxPrice: appliedFilters.maxPrice
+            ? parseInt(appliedFilters.maxPrice)
+            : undefined,
+        };
 
-    // Filtro por tipo de propiedad (casa/departamento/etc)
-    if (
-      appliedFilters.propertyType &&
-      property.propertyType !== appliedFilters.propertyType
-    )
-      return false;
+        const response = await propertiesService.getPublicProperties(filters);
+        setProperties(response.data);
+        setTotalPages(response.meta.totalPages);
+      } catch (err) {
+        console.error("Error fetching properties:", err);
+        setError("Error al cargar propiedades. Por favor intenta nuevamente.");
+      } finally {
+        setIsLoading(false);
+      }
+    };
 
-    // Filtro por dormitorios (exacto)
-    if (
-      appliedFilters.bedrooms &&
-      property.bedrooms !== parseInt(appliedFilters.bedrooms)
-    )
-      return false;
-
-    // Filtro por baños (exacto)
-    if (
-      appliedFilters.bathrooms &&
-      property.bathrooms !== parseInt(appliedFilters.bathrooms)
-    )
-      return false;
-
-    // Filtro por precio mínimo
-    if (
-      appliedFilters.minPrice &&
-      property.price < parseFloat(appliedFilters.minPrice)
-    )
-      return false;
-
-    // Filtro por precio máximo
-    if (
-      appliedFilters.maxPrice &&
-      property.price > parseFloat(appliedFilters.maxPrice)
-    )
-      return false;
-
-    return true;
-  });
-
-  // Paginación
-  const totalPages = Math.ceil(filteredProperties.length / itemsPerPage);
-  const startIndex = (currentPage - 1) * itemsPerPage;
-  const endIndex = startIndex + itemsPerPage;
-  const currentProperties = filteredProperties.slice(startIndex, endIndex);
+    fetchProperties();
+  }, [appliedFilters, currentPage]);
 
   // Aplicar los filtros
   const handleSearch = (filters: PropertyFiltersState) => {
@@ -135,12 +130,32 @@ function PropiedadesContent() {
     setCurrentPage(1);
   };
 
+  if (error) {
+    return (
+      <main className="grow bg-(--background) flex items-center justify-center">
+        <div className="text-center">
+          <p className="text-red-500 mb-4">{error}</p>
+          <button
+            onClick={() => window.location.reload()}
+            className="px-4 py-2 bg-primary text-white rounded hover:bg-primary/90"
+          >
+            Reintentar
+          </button>
+        </div>
+      </main>
+    );
+  }
+
   return (
     <main className="grow bg-(--background)">
       {/* Header */}
       <HeroSection
         title="Propiedades"
-        subtitle={`Encontramos ${filteredProperties.length} propiedades disponibles`}
+        subtitle={
+          isLoading
+            ? "Buscando propiedades..."
+            : `Encontramos ${properties.length} propiedades disponibles`
+        }
       />
 
       {/* Content */}
@@ -156,10 +171,19 @@ function PropiedadesContent() {
 
           {/* Main Content - Grid de propiedades */}
           <div className="flex-1">
-            {currentProperties.length > 0 ? (
+            {isLoading ? (
+              <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 mb-8">
+                {[1, 2, 3, 4, 5, 6].map((i) => (
+                  <div
+                    key={i}
+                    className="h-[400px] bg-gray-100 rounded-lg animate-pulse"
+                  />
+                ))}
+              </div>
+            ) : properties.length > 0 ? (
               <>
                 <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 mb-8">
-                  {currentProperties.map((property) => (
+                  {properties.map((property) => (
                     <Link
                       key={property.id}
                       href={`/propiedades/${property.id}`}
@@ -169,12 +193,21 @@ function PropiedadesContent() {
                         title={property.title}
                         price={property.price}
                         currency={property.currency}
-                        location={property.location}
+                        location={
+                          property.location ||
+                          (property.localidad
+                            ? `${property.localidad.nombre}, ${property.localidad.provincia?.nombre}`
+                            : "Ubicación no disponible")
+                        }
                         bedrooms={property.bedrooms}
                         bathrooms={property.bathrooms}
                         area={property.area}
-                        type={property.type === "venta" ? "Venta" : "Alquiler"}
-                        image={property.image}
+                        type={
+                          property.listingType === "venta"
+                            ? "Venta"
+                            : "Alquiler"
+                        }
+                        image={property.mainImage}
                         showTypeBadge={true}
                         showDetails={true}
                         className="cursor-pointer"

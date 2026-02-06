@@ -116,9 +116,13 @@ export interface PropertyFilters {
   propertyType?: string;
   minPrice?: number;
   maxPrice?: number;
-  bedrooms?: number;
+  bedrooms?: number; // Keep for backward compatibility if needed, or remove if unused
+  minBedrooms?: number;
+  minBathrooms?: number;
   ownerId?: string;
   contractStatus?: string;
+  page?: number;
+  limit?: number;
 }
 
 export interface PropertyStats {
