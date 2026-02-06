@@ -14,7 +14,7 @@ export class PropiedadesService {
   constructor(
     private prisma: PrismaService,
     private storageService: StorageService,
-  ) {}
+  ) { }
 
   /**
    * Helper function to add calculated currency field based on listingType
@@ -96,6 +96,8 @@ export class PropiedadesService {
       listingType,
       status,
       localidadId,
+      ownerId,
+      contractStatus,
       minPrice,
       maxPrice,
       minBedrooms,
@@ -112,6 +114,17 @@ export class PropiedadesService {
     if (listingType) where.listingType = listingType;
     if (status) where.status = status;
     if (localidadId) where.localidadId = localidadId;
+    if (ownerId) where.ownerId = ownerId;
+
+    // contractStatus: 'active', 'expired', 'terminated'
+    // Filter properties that have AT LEAST ONE contract with this status
+    if (contractStatus) {
+      where.rentalContracts = {
+        some: {
+          status: contractStatus as any,
+        },
+      };
+    }
 
     if (minPrice !== undefined || maxPrice !== undefined) {
       where.price = {};
@@ -168,6 +181,21 @@ export class PropiedadesService {
               name: true,
               email: true,
               phone: true,
+            },
+          },
+          rentalContracts: {
+            select: {
+              id: true,
+              startDate: true,
+              endDate: true,
+              tenant: {
+                select: {
+                  name: true,
+                },
+              },
+            },
+            orderBy: {
+              endDate: 'desc',
             },
           },
         },

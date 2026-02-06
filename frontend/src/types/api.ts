@@ -171,11 +171,14 @@ export interface Contract {
   startDate: string;
   endDate: string;
   nextAdjustmentDate?: string;
+  adjustmentScheduledDates?: string[]; // Date ISO strings
   status: ContractStatus;
   property: {
+    id: string; // Add id
     title: string;
     location: string;
     mainImage?: string;
+    images?: { url: string; order: number }[]; // Add images array
     currency?: string;
     bedrooms: number;
     bathrooms: number;

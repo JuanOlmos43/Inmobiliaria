@@ -19,6 +19,8 @@ import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { RolesGuard } from '../auth/guards/roles.guard';
 import { Roles } from '../auth/decorators/roles.decorator';
 import { UserRole } from '@prisma/client';
+import type { User } from '@prisma/client';
+import { CurrentUser } from '../auth/decorators/current-user.decorator';
 
 @Controller('contratos')
 @UseGuards(JwtAuthGuard, RolesGuard)
@@ -29,6 +31,12 @@ export class ContratosController {
   @Get('stats')
   getStats() {
     return this.contratosService.getStats();
+  }
+
+  @Get('landlord/rented')
+  @Roles(UserRole.Propietario)
+  getLandlordRentedProperties(@CurrentUser() user: User) {
+    return this.contratosService.findLandlordRentedProperties(user.id);
   }
 
   @Get('dashboard/expirations')

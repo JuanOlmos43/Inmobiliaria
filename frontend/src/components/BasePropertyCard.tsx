@@ -100,31 +100,27 @@ export default function BasePropertyCard({
           </div>
         )}
 
-        {/* Badges - Top Right */}
-        <div className="absolute top-4 right-4 flex flex-col gap-2">
-          {/* Type Badge (Venta/Alquiler) */}
-          {showTypeBadge && type && (
-            <span
-              className={`px-4 py-2 rounded-full text-sm font-bold backdrop-blur-sm ${getTypeBadgeStyles()}`}
-            >
-              {type}
-            </span>
-          )}
+        {/* Overlay Content Container */}
+        <div className="absolute inset-x-0 top-0 p-4 flex justify-between items-start gap-2 z-10">
+          {/* Left Side (Header Slot) */}
+          <div className="flex-1 min-w-0 flex flex-col items-start gap-2">
+            {headerSlot}
+          </div>
 
-          {/* Status Badge (Activa/Pausada) */}
-          {showStatusBadge && status && (
-            <span
-              className={`px-4 py-2 rounded-full text-sm font-bold backdrop-blur-sm ${getStatusBadgeStyles()}`}
-            >
-              {status}
-            </span>
-          )}
+          {/* Right Side (Badges) */}
+          <div className="flex flex-col items-end gap-2 shrink-0">
+            {showTypeBadge && type && (
+              <span className={`px-4 py-2 rounded-full text-sm font-bold backdrop-blur-sm shadow-sm ${getTypeBadgeStyles()}`}>
+                {type}
+              </span>
+            )}
+            {showStatusBadge && status && (
+              <span className={`px-4 py-2 rounded-full text-sm font-bold backdrop-blur-sm shadow-sm ${getStatusBadgeStyles()}`}>
+                {status}
+              </span>
+            )}
+          </div>
         </div>
-
-        {/* Header Slot (e.g. Warning Badge) - Top Left */}
-        {headerSlot && (
-          <div className="absolute top-4 left-4">{headerSlot}</div>
-        )}
       </div>
 
       {/* Content Section */}

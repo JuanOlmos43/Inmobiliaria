@@ -447,9 +447,67 @@ export class ContratosService {
     });
   }
 
+  async findLandlordRentedProperties(landlordId: string) {
+    const contracts = await this.prisma.rentalContract.findMany({
+      where: {
+        landlordId,
+        status: 'active',
+      },
+      include: {
+        property: {
+          include: {
+            localidad: true,
+            calle: true,
+            images: {
+              orderBy: {
+                order: 'asc',
+              },
+              take: 1,
+            },
+          },
+        },
+        tenant: {
+          select: {
+            id: true,
+            name: true,
+            email: true,
+            phone: true,
+          },
+        },
+      },
+      orderBy: {
+        createdAt: 'desc',
+      },
+    });
+
+    return contracts.map((contract) => {
+      const adjustmentScheduledDates: Date[] = [];
+      if (
+        contract.adjustmentFrequency &&
+        contract.startDate &&
+        contract.endDate
+      ) {
+        const end = new Date(contract.endDate);
+        const next = new Date(contract.startDate);
+        // First adjustment is after frequency months
+        next.setMonth(next.getMonth() + contract.adjustmentFrequency);
+
+        while (next <= end) {
+          adjustmentScheduledDates.push(new Date(next));
+          next.setMonth(next.getMonth() + contract.adjustmentFrequency);
+        }
+      }
+
+      return {
+        ...contract,
+        adjustmentScheduledDates,
+      };
+    });
+  }
+
   async remove(id: string) {
     const contract = await this.findOne(id);
-    
+
     return this.prisma.$transaction(async (tx) => {
       // 1. Eliminar el contrato
       const deleted = await tx.rentalContract.delete({

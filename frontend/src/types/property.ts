@@ -57,6 +57,15 @@ export interface Property {
   landlordName?: string;
   landlordEmail?: string;
   landlordPhone?: string;
+
+  rentalContracts?: {
+    id: string;
+    startDate: string;
+    endDate: string;
+    tenant: {
+      name: string;
+    };
+  }[];
 }
 
 export interface CreatePropertyDto {
@@ -108,20 +117,22 @@ export interface PropertyFilters {
   minPrice?: number;
   maxPrice?: number;
   bedrooms?: number;
+  ownerId?: string;
+  contractStatus?: string;
 }
 
 export interface PropertyStats {
-    total: number;
-    status: {
-        activa: number;
-        pausada: number;
-        alquilada: number;
-    };
-    monthly: {
-        new: number;
-    };
-    listingType: {
-        venta: number;
-        alquiler: number;
-    };
+  total: number;
+  status: {
+    activa: number;
+    pausada: number;
+    alquilada: number;
+  };
+  monthly: {
+    new: number;
+  };
+  listingType: {
+    venta: number;
+    alquiler: number;
+  };
 }

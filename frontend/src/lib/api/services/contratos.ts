@@ -82,4 +82,7 @@ export const contratosService = {
       `/contratos/dashboard/expirations${queryString}`,
     );
   },
+  async getLandlordRentedProperties(): Promise<Contract[]> {
+    return apiClient.get<Contract[]>("/contratos/landlord/rented");
+  },
 };

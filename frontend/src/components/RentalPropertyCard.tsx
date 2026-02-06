@@ -24,6 +24,8 @@ export interface RentalPropertyData {
   startDate?: string;
   endDate?: string;
   nextAdjustmentDate?: string;
+  adjustmentScheduledDates?: string[]; // Fechas pre-calculadas desde backend
+  adjustmentFrequency?: number;
   landlordName?: string;
   landlordPhone?: string;
   landlordEmail?: string;
@@ -296,7 +298,7 @@ export default function RentalPropertyCard({
                     {property.location}
                   </p>
                   <p className="text-gray-700">
-                    <span className="font-medium">Renta Mensual:</span>{" "}
+                    <span className="font-medium">Renta Mensual Inicial:</span>{" "}
                     {property.currency || "USD"}{" "}
                     {property.price.toLocaleString()}
                   </p>
@@ -326,39 +328,47 @@ export default function RentalPropertyCard({
                       timeZone: "UTC",
                     })}
                   </p>
-                  {property.nextAdjustmentDate && (
-                    <div className="flex items-start gap-2">
-                      <span className="text-gray-700 font-medium whitespace-nowrap">
-                        Meses de Ajuste:
-                      </span>
-                      <div className="flex flex-wrap gap-2">
-                        {(() => {
-                          const start = new Date(property.startDate!);
-                          const end = new Date(property.endDate!);
-                          const adjustmentMonths = [];
-                          const current = new Date(start);
-                          current.setFullYear(current.getFullYear() + 1);
+                  {property.adjustmentFrequency && (
+                    <p className="text-gray-700">
+                      <span className="font-medium">Frecuencia de Ajuste:</span>{" "}
+                      Cada {property.adjustmentFrequency} meses
+                    </p>
+                  )}
+                  {(() => {
+                    const adjustmentDates = property.adjustmentScheduledDates || [];
 
-                          while (current <= end) {
-                            adjustmentMonths.push(new Date(current));
-                            current.setFullYear(current.getFullYear() + 1);
-                          }
+                    if (adjustmentDates.length === 0) {
+                      return (
+                        <div className="flex items-center gap-2">
+                          <span className="text-gray-700 font-medium whitespace-nowrap">
+                            Meses de Ajuste:
+                          </span>
+                          <span className="text-gray-500 italic">Ninguno</span>
+                        </div>
+                      );
+                    }
 
-                          return adjustmentMonths.map((date, index) => (
+                    return (
+                      <div className="flex items-start gap-2">
+                        <span className="text-gray-700 font-medium whitespace-nowrap">
+                          Meses de Ajuste:
+                        </span>
+                        <div className="flex flex-wrap gap-2">
+                          {adjustmentDates.map((dateStr, index) => (
                             <span
                               key={index}
                               className="px-3 py-1 bg-(--accent) text-white rounded-full text-xs font-medium"
                             >
-                              {date.toLocaleDateString("es-ES", {
+                              {new Date(dateStr).toLocaleDateString("es-ES", {
                                 month: "long",
                                 year: "numeric",
                               })}
                             </span>
-                          ));
-                        })()}
+                          ))}
+                        </div>
                       </div>
-                    </div>
-                  )}
+                    );
+                  })()}
                 </div>
               </div>
 

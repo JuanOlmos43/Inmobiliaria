@@ -29,6 +29,10 @@ export class QueryPropiedadesDto {
   status?: PropertyStatus;
 
   @IsOptional()
+  @IsString()
+  contractStatus?: string;
+
+  @IsOptional()
   @IsUUID()
   localidadId?: string;
 
@@ -65,6 +69,10 @@ export class QueryPropiedadesDto {
   @IsNumber()
   @Min(0)
   minArea?: number;
+
+  @IsOptional()
+  @IsUUID()
+  ownerId?: string;
 
   // Paginación
   @IsOptional()
