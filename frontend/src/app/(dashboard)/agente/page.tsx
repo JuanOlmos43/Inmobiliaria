@@ -5,7 +5,13 @@ import { Contract } from "@/types/api";
 
 // Components
 import AgentStatsGrid from "@/components/dashboard/agent/AgentStatsGrid";
-import { Icon, Toast, TabNavigation, ConfirmModal } from "@/components/UI";
+import {
+  Icon,
+  Toast,
+  TabNavigation,
+  ConfirmModal,
+  Pagination,
+} from "@/components/UI";
 import AgentPropertyCard from "@/components/dashboard/agent/AgentPropertyCard";
 import PropertyModal from "@/components/dashboard/agent/PropertyModal";
 import RentalModal from "@/components/dashboard/agent/RentalModal";
@@ -35,6 +41,7 @@ export default function AgentDashboardPage() {
 
     // Estadísticas
     stats,
+    contractStats,
     isLoadingStats,
 
     // Filtros
@@ -52,6 +59,8 @@ export default function AgentDashboardPage() {
     setSearchTenant,
     contractStatus,
     setContractStatus,
+    contractPage,
+    setContractPage,
     activeTab,
     setActiveTab,
 
@@ -87,6 +96,9 @@ export default function AgentDashboardPage() {
     closeConfirmDelete,
     confirmRevoke,
     closeConfirmRevoke,
+
+    // Paginación
+    meta,
   } = useAgentProperties();
 
   const rentedProperties = contracts;
@@ -95,7 +107,11 @@ export default function AgentDashboardPage() {
     <div className="min-h-screen bg-(--background)">
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* SECCIÓN: ESTADÍSTICAS */}
-        <AgentStatsGrid stats={stats} isLoading={isLoadingStats} />
+        <AgentStatsGrid
+          stats={stats}
+          contractStats={contractStats}
+          isLoading={isLoadingStats}
+        />
 
         {/* SECCIÓN: PESTAÑAS */}
         <TabNavigation
@@ -214,41 +230,54 @@ export default function AgentDashboardPage() {
                   </p>
                 </div>
               ) : (
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                  {rentedProperties.map((contract: Contract) => (
-                    <BasePropertyCard
-                      key={contract.id}
-                      title={contract.property.title}
-                      price={contract.monthlyRent}
-                      currency={contract.property.currency || "ARS"}
-                      location={contract.property.location}
-                      image={contract.property.mainImage}
-                      type="Alquiler"
-                      bedrooms={undefined}
-                      bathrooms={undefined}
-                      area={undefined}
-                      showTypeBadge={false}
-                      showStatusBadge={true}
-                      showDetails={false}
-                      status={
-                        contract.status === "active"
-                          ? "Activo"
-                          : contract.status === "expired"
-                            ? "Vencido"
-                            : "Terminado"
-                      }
-                      footerSlot={
-                        <button
-                          className="w-full px-4 py-3 bg-(--accent) text-white rounded-lg hover:bg-(--accent-hover) transition-all shadow-md hover:shadow-lg flex items-center justify-center gap-2 font-semibold"
-                          onClick={() => openViewContractModal(contract)}
-                        >
-                          <Icon name="document" className="w-5 h-5" />
-                          Ver Contrato
-                        </button>
-                      }
-                    />
-                  ))}
-                </div>
+                <>
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {rentedProperties.map((contract: Contract) => (
+                      <BasePropertyCard
+                        key={contract.id}
+                        title={contract.property.title}
+                        price={contract.monthlyRent}
+                        currency={contract.property.currency || "ARS"}
+                        location={contract.property.location}
+                        image={contract.property.mainImage}
+                        type="Alquiler"
+                        bedrooms={undefined}
+                        bathrooms={undefined}
+                        area={undefined}
+                        showTypeBadge={false}
+                        showStatusBadge={true}
+                        showDetails={false}
+                        status={
+                          contract.status === "active"
+                            ? "Activo"
+                            : contract.status === "expired"
+                              ? "Vencido"
+                              : "Terminado"
+                        }
+                        footerSlot={
+                          <button
+                            className="w-full px-4 py-3 bg-(--accent) text-white rounded-lg hover:bg-(--accent-hover) transition-all shadow-md hover:shadow-lg flex items-center justify-center gap-2 font-semibold"
+                            onClick={() => openViewContractModal(contract)}
+                          >
+                            <Icon name="document" className="w-5 h-5" />
+                            Ver Contrato
+                          </button>
+                        }
+                      />
+                    ))}
+                  </div>
+
+                  {/* PAGINACIÓN DE CONTRATOS */}
+                  {meta && meta.lastPage > 1 && (
+                    <div className="mt-8 flex justify-center">
+                      <Pagination
+                        currentPage={contractPage}
+                        totalPages={meta.lastPage}
+                        onPageChange={setContractPage}
+                      />
+                    </div>
+                  )}
+                </>
               )}
             </>
           )}
