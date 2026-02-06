@@ -102,11 +102,32 @@ export function useAgentContracts(filters?: ContractFilters) {
   });
 
   const contracts: Contract[] = data?.data || [];
+  const meta = data?.meta;
 
   return {
     contracts,
+    meta,
     isLoading,
     error: error ? "Error al cargar los contratos" : null,
+    refetch,
+  };
+}
+
+/**
+ * useContractStats
+ * 
+ * Obtiene estadísticas específicas de contratos (activos, vencimientos del mes, etc)
+ */
+export function useContractStats() {
+  const { data: contractStats, isLoading, error, refetch } = useQuery({
+    queryKey: ["contract-stats"],
+    queryFn: () => contratosService.getStats(),
+  });
+
+  return {
+    contractStats,
+    isLoading,
+    error: error ? "Error al cargar estadísticas de contratos" : null,
     refetch,
   };
 }
