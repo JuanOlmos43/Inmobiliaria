@@ -243,30 +243,7 @@ export default function RentalModal({
           )}
         </div>
 
-        {/* Estado del Contrato (Solo edición) */}
-        {isEditing && (
-          <div>
-            <h3 className="text-lg font-semibold text-(--primary) mb-3">
-              Estado del Contrato
-            </h3>
-            <FormSelect
-              label="Estado"
-              value={formData.status}
-              onChange={(e) =>
-                setFormData({
-                  ...formData,
-                  status: e.target.value as ContractStatus,
-                })
-              }
-            >
-              <option value={ContractStatus.ACTIVE}>Activo</option>
-              <option value={ContractStatus.EXPIRED}>Vencido (Manual)</option>
-              <option value={ContractStatus.TERMINATED}>
-                Finalizado / Rescindido
-              </option>
-            </FormSelect>
-          </div>
-        )}
+
 
         {/* Fechas del Contrato */}
         <div>
