@@ -32,26 +32,33 @@ export function useAgentFilters() {
   const debouncedOwner = useDebounce(searchOwner, 500);
   const debouncedTenant = useDebounce(searchTenant, 500);
 
-  // Resetear página cuando cambian los filtros de búsqueda
-  const handleFilterChange = <T,>(setter: (v: T) => void, value: T) => {
+  const [propertyPage, setPropertyPage] = useState(1);
+
+  // Resetear página de propiedades cuando cambian los filtros
+  const handlePropertyFilterChange = <T,>(setter: (v: T) => void, value: T) => {
     setter(value);
-    setContractPage(1);
+    setPropertyPage(1);
   };
 
   // Filtros procesados para Propiedades
   const activeFilters = useMemo(() => {
-    const filters: { 
-      search?: string; 
+    const filters: {
+      search?: string;
       status?: "activa" | "pausada" | "alquilada";
       listingType?: "venta" | "alquiler";
-    } = {};
-    
+      page?: number;
+      limit?: number;
+    } = {
+      page: propertyPage,
+      limit: 12, // 12 por página para mantener consistencia con el grid
+    };
+
     if (debouncedSearch.trim()) filters.search = debouncedSearch.trim();
     if (filterStatus !== "all") filters.status = filterStatus;
     if (filterListingType !== "all") filters.listingType = filterListingType;
-    
-    return Object.keys(filters).length > 0 ? filters : undefined;
-  }, [debouncedSearch, filterStatus, filterListingType]);
+
+    return filters;
+  }, [debouncedSearch, filterStatus, filterListingType, propertyPage]);
 
   const activeContractFilters = useMemo(() => {
     const filters: ContractFilters = {
@@ -67,19 +74,28 @@ export function useAgentFilters() {
     return filters;
   }, [debouncedAddress, debouncedOwner, debouncedTenant, contractStatus, contractPage]);
 
+  // Resetear página de contratos cuando cambian los filtros
+  const handleContractFilterChange = <T,>(setter: (v: T) => void, value: T) => {
+    setter(value);
+    setContractPage(1);
+  };
+
   return {
     // Estados navegación
     activeTab,
     setActiveTab,
-    
+
+    propertyPage,
+    setPropertyPage,
+
     // Filtros Propiedades
     searchTerm,
-    setSearchTerm,
+    setSearchTerm: (v: string) => handlePropertyFilterChange(setSearchTerm, v),
     filterStatus,
-    setFilterStatus,
+    setFilterStatus: (v: "all" | "activa" | "pausada" | "alquilada") => handlePropertyFilterChange(setFilterStatus, v),
     filterListingType,
     setFilterListingType: (v: "all" | "venta" | "alquiler") => {
-      setFilterListingType(v);
+      handlePropertyFilterChange(setFilterListingType, v);
       if (v !== "alquiler" && filterStatus === "alquilada") {
         setFilterStatus("all");
       }
@@ -88,13 +104,13 @@ export function useAgentFilters() {
 
     // Filtros Contratos
     searchAddress,
-    setSearchAddress: (v: string) => handleFilterChange(setSearchAddress, v),
+    setSearchAddress: (v: string) => handleContractFilterChange(setSearchAddress, v),
     searchOwner,
-    setSearchOwner: (v: string) => handleFilterChange(setSearchOwner, v),
+    setSearchOwner: (v: string) => handleContractFilterChange(setSearchOwner, v),
     searchTenant,
-    setSearchTenant: (v: string) => handleFilterChange(setSearchTenant, v),
+    setSearchTenant: (v: string) => handleContractFilterChange(setSearchTenant, v),
     contractStatus,
-    setContractStatus: (v: string) => handleFilterChange(setContractStatus, v),
+    setContractStatus: (v: string) => handleContractFilterChange(setContractStatus, v),
     contractPage,
     setContractPage,
     activeContractFilters,

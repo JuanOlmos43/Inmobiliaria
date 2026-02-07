@@ -35,6 +35,8 @@ export function useAgentProperties() {
     contractPage,
     setContractPage,
     activeContractFilters,
+    propertyPage,
+    setPropertyPage,
   } = useAgentFilters();
 
   // 2. Capa de UI (Modales, Toasts)
@@ -68,9 +70,9 @@ export function useAgentProperties() {
   } = useAgentUI();
 
   // 3. Capa de Datos (Queries)
-  const { properties, isLoading, error, refetch } = useAgentQueries(activeFilters);
+  const { properties, isLoading, error, refetch, meta: propertyMeta } = useAgentQueries(activeFilters);
   const { stats, isLoading: isLoadingStats } = usePropertyStats();
-  const { contracts, isLoading: isLoadingContracts, meta } = useAgentContracts(activeContractFilters);
+  const { contracts, isLoading: isLoadingContracts, meta: contractMeta } = useAgentContracts(activeContractFilters);
   const { contractStats } = useContractStats();
 
   // 4. Capa de Acciones (Mutations)
@@ -145,6 +147,8 @@ export function useAgentProperties() {
     setContractStatus,
     contractPage,
     setContractPage,
+    propertyPage,
+    setPropertyPage,
     activeTab,
     setActiveTab,
     isModalOpen,
@@ -175,6 +179,7 @@ export function useAgentProperties() {
     confirmRevoke,
     closeConfirmRevoke,
     refetch,
-    meta,
+    contractMeta,
+    propertyMeta,
   };
 }

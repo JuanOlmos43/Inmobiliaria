@@ -233,7 +233,7 @@ export class PropiedadesService {
         total,
         page,
         limit,
-        totalPages: Math.ceil(total / limit),
+        lastPage: Math.ceil(total / limit),
       },
     };
   }

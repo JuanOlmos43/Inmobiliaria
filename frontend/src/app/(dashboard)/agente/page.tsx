@@ -102,7 +102,10 @@ export default function AgentDashboardPage() {
     openEditContractModal,
 
     // Paginación
-    meta,
+    contractMeta,
+    propertyMeta,
+    propertyPage,
+    setPropertyPage,
   } = useAgentProperties();
 
   const rentedProperties = contracts;
@@ -181,17 +184,30 @@ export default function AgentDashboardPage() {
                   </h3>
                 </div>
               ) : (
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                  {properties.map((property) => (
-                    <AgentPropertyCard
-                      key={property.id}
-                      property={property}
-                      onEdit={handleEditProperty}
-                      onDelete={handleDeleteProperty}
-                      onRent={handleRentProperty}
-                    />
-                  ))}
-                </div>
+                <>
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {properties.map((property) => (
+                      <AgentPropertyCard
+                        key={property.id}
+                        property={property}
+                        onEdit={handleEditProperty}
+                        onDelete={handleDeleteProperty}
+                        onRent={handleRentProperty}
+                      />
+                    ))}
+                  </div>
+
+                  {/* PAGINACIÓN DE PROPIEDADES */}
+                  {propertyMeta && (propertyMeta.lastPage ?? 0) > 1 && (
+                    <div className="mt-8 flex justify-center">
+                      <Pagination
+                        currentPage={propertyPage}
+                        totalPages={propertyMeta.lastPage ?? 0}
+                        onPageChange={setPropertyPage}
+                      />
+                    </div>
+                  )}
+                </>
               )}
             </>
           ) : (
@@ -294,11 +310,11 @@ export default function AgentDashboardPage() {
                   </div>
 
                   {/* PAGINACIÓN DE CONTRATOS */}
-                  {meta && (meta.lastPage ?? 0) > 1 && (
+                  {contractMeta && (contractMeta.lastPage ?? 0) > 1 && (
                     <div className="mt-8 flex justify-center">
                       <Pagination
                         currentPage={contractPage}
-                        totalPages={meta.lastPage ?? 0}
+                        totalPages={contractMeta.lastPage ?? 0}
                         onPageChange={setContractPage}
                       />
                     </div>

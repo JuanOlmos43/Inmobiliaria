@@ -23,11 +23,7 @@ export function useAgentQueries(filters?: PropertyFilters) {
   } = useQuery({
     queryKey: ["properties", filters],
     queryFn: async () => {
-      const response = await propertiesService.findAll({
-        search: filters?.search,
-        status: filters?.status,
-        listingType: filters?.listingType,
-      });
+      const response = await propertiesService.findAll(filters);
 
       // Ya no necesitamos transformar datos, Property ahora coincide con el backend
       return response;
@@ -36,9 +32,11 @@ export function useAgentQueries(filters?: PropertyFilters) {
 
   // Extraer las propiedades del response
   const properties: Property[] = data?.data || [];
+  const meta = data?.meta;
 
   return {
     properties,
+    meta,
     isLoading,
     error: error ? "Error al cargar las propiedades" : null,
     refetch,
