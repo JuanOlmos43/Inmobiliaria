@@ -267,24 +267,26 @@ export default function AgentDashboardPage() {
                               <Icon name="search" className="w-4 h-4" />
                               Ver Detalle
                             </button>
-                            <div className="flex gap-2">
-                              <button
-                                className="flex-1 px-4 py-2 bg-amber-50 text-amber-600 border border-amber-100 rounded-lg hover:bg-amber-100 transition-all flex items-center justify-center gap-2 font-medium"
-                                onClick={() => openEditContractModal(contract)}
-                              >
-                                <Icon name="edit" className="w-4 h-4" />
-                                Editar
-                              </button>
-                              <button
-                                className="flex-1 px-4 py-2 bg-red-50 text-red-600 border border-red-100 rounded-lg hover:bg-red-100 transition-all flex items-center justify-center gap-2 font-medium"
-                                onClick={() =>
-                                  handleDeleteContract(contract.id)
-                                }
-                              >
-                                <Icon name="trash" className="w-4 h-4" />
-                                Revocar
-                              </button>
-                            </div>
+                            {contract.status !== "terminated" && (
+                              <div className="flex gap-2">
+                                <button
+                                  className="flex-1 px-4 py-2 bg-amber-50 text-amber-600 border border-amber-100 rounded-lg hover:bg-amber-100 transition-all flex items-center justify-center gap-2 font-medium"
+                                  onClick={() => openEditContractModal(contract)}
+                                >
+                                  <Icon name="edit" className="w-4 h-4" />
+                                  Editar
+                                </button>
+                                <button
+                                  className="flex-1 px-4 py-2 bg-red-50 text-red-600 border border-red-100 rounded-lg hover:bg-red-100 transition-all flex items-center justify-center gap-2 font-medium"
+                                  onClick={() =>
+                                    handleDeleteContract(contract.id)
+                                  }
+                                >
+                                  <Icon name="trash" className="w-4 h-4" />
+                                  Revocar
+                                </button>
+                              </div>
+                            )}
                           </div>
                         }
                       />
