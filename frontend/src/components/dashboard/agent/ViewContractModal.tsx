@@ -170,7 +170,7 @@ export default function ViewContractModal({
             Cerrar
           </button>
 
-          {contract.status !== "terminated" && (
+          {contract.status !== "terminated" && contract.status !== "expired" && (
             <button
               onClick={() => onRevoke?.(contract.id)}
               className="flex-1 px-4 py-2.5 bg-orange-50 text-amber-600 border border-amber-200 rounded-lg font-medium hover:bg-amber-600 hover:text-white hover:border-amber-600 transition-all active:scale-95 flex items-center justify-center gap-2"

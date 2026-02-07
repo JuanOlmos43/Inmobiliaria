@@ -426,6 +426,19 @@ export class ContratosService {
       nextAdjustmentDate = this.calculateNextAdjustmentDate(startDate, endDate, frequency);
     }
 
+    let status = updateContratoDto.status ?? currentContract.status;
+
+    // Recalcular estado para evitar inconsistencias de fechas
+    const now = new Date();
+    // Si la fecha de fin es anterior a hoy, debe estar vencido (salvo que sea terminated)
+    if (endDate < now && status !== 'terminated') {
+      status = 'expired';
+    }
+    // Si la fecha de fin es futura y estaba vencido, pasa a activo
+    else if (endDate >= now && status === 'expired') {
+      status = 'active';
+    }
+
     return this.prisma.rentalContract.update({
       where: { id },
       data: {
@@ -433,6 +446,7 @@ export class ContratosService {
         startDate,
         endDate,
         nextAdjustmentDate,
+        status,
       },
       include: {
         property: true,
