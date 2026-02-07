@@ -40,11 +40,16 @@ export class ContratosService {
 
     this.validateDates(startDate, endDate);
 
-    const nextAdjustmentDate = this.calculateNextAdjustmentDate(
+    let nextAdjustmentDate = this.calculateNextAdjustmentDate(
       startDate,
       endDate,
       createContratoDto.adjustmentFrequency,
     );
+
+    // Si el estado inicial no es activo, no debe tener fecha de ajuste
+    if (createContratoDto.status && createContratoDto.status !== 'active') {
+      nextAdjustmentDate = null;
+    }
 
     return this.prisma.$transaction(async (tx) => {
       const contract = await tx.rentalContract.create({
@@ -437,6 +442,11 @@ export class ContratosService {
     // Si la fecha de fin es futura y estaba vencido, pasa a activo
     else if (endDate >= now && status === 'expired') {
       status = 'active';
+    }
+
+    // SI el estado final es terminado o vencido, no debe tener proximo ajuste
+    if (status === 'terminated' || status === 'expired') {
+      nextAdjustmentDate = null;
     }
 
     return this.prisma.rentalContract.update({

@@ -147,16 +147,17 @@ export default function ViewContractModal({
             <span className="font-semibold text-gray-700">Ajuste:</span>{" "}
             <span className="text-gray-600">
               Cada {contract.adjustmentFrequency} meses
-              {contract.nextAdjustmentDate && (
-                <span className="text-amber-700 font-medium ml-1">
-                  (próximo ajuste en{" "}
-                  {new Date(contract.nextAdjustmentDate).toLocaleDateString(
-                    "es-AR",
-                    { month: "long" },
-                  )}
-                  )
-                </span>
-              )}
+              {contract.nextAdjustmentDate &&
+                contract.status === "active" && (
+                  <span className="text-amber-700 font-medium ml-1">
+                    (próximo ajuste en{" "}
+                    {new Date(contract.nextAdjustmentDate).toLocaleDateString(
+                      "es-AR",
+                      { month: "long" },
+                    )}
+                    )
+                  </span>
+                )}
             </span>
           </div>
         </div>
