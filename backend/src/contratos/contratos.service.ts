@@ -430,6 +430,8 @@ export class ContratosService {
       where: { id },
       data: {
         ...updateContratoDto,
+        startDate,
+        endDate,
         nextAdjustmentDate,
       },
       include: {
@@ -509,9 +511,13 @@ export class ContratosService {
     const contract = await this.findOne(id);
 
     return this.prisma.$transaction(async (tx) => {
-      // 1. Eliminar el contrato
-      const deleted = await tx.rentalContract.delete({
+      // 1. Terminar el contrato (soft delete)
+      const terminated = await tx.rentalContract.update({
         where: { id },
+        data: {
+          status: 'terminated',
+          actualEndDate: new Date(),
+        },
       });
 
       // 2. Volver a poner la propiedad como activa
@@ -520,7 +526,7 @@ export class ContratosService {
         data: { status: 'activa' },
       });
 
-      return deleted;
+      return terminated;
     });
   }
 }

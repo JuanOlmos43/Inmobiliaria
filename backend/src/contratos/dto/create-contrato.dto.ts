@@ -7,6 +7,7 @@ import {
     Min,
     Max,
 } from 'class-validator';
+import { Type } from 'class-transformer';
 import { ContractStatus } from '@prisma/client';
 
 export class CreateContratoDto {
@@ -25,15 +26,20 @@ export class CreateContratoDto {
 
     @IsNumber()
     @Min(0)
+    @Type(() => Number)
     monthlyRent: number;
 
+    @IsOptional()
+    @IsNumber()
     @Min(0)
+    @Type(() => Number)
     deposit?: number;
 
     @IsOptional()
     @IsNumber()
     @Min(1)
     @Max(12)
+    @Type(() => Number)
     adjustmentFrequency?: number;
 
     @IsDateString()
