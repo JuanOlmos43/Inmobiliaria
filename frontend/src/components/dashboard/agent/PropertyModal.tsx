@@ -24,7 +24,9 @@ export default function PropertyModal({
     title: property?.title || "",
     listingType: property?.listingType || "venta",
     price: property?.price || 1,
-    currency: property?.currency || "USD", // Solo para mostrar, no se envía al backend
+    currency:
+      property?.currency ||
+      (property?.listingType === "alquiler" ? "ARS" : "USD"), // Solo para mostrar, no se envía al backend
     location: property?.location || "",
     bedrooms: property?.bedrooms || 1,
     rooms: property?.rooms || 1,

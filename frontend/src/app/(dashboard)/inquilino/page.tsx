@@ -1,10 +1,12 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
 
 import RentalPropertyCard from "@/components/RentalPropertyCard";
 import { useAuth } from "@/hooks/useAuth";
+import ViewContractModal from "@/components/dashboard/common/ViewContractModal";
+import { Icon } from "@/components/UI";
+import { Contract, ContractStatus } from "@/types/api";
 
 // Tipos
 interface Rental {
@@ -29,15 +31,10 @@ interface Rental {
 }
 
 export default function TenantDashboardPage() {
-  const router = useRouter();
   const { user } = useAuth(); // Usar hook de auth
   const [rentals, setRentals] = useState<Rental[]>([]);
-
-  // Cargar datos al montar el componente
-  useEffect(() => {
-    loadRentals();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  const [viewingContract, setViewingContract] = useState<Contract | null>(null);
+  const [isViewModalOpen, setIsViewModalOpen] = useState(false);
 
   const loadRentals = () => {
     // Datos de ejemplo - en producción vendrían de una API
@@ -86,6 +83,56 @@ export default function TenantDashboardPage() {
     setRentals(sampleRentals);
   };
 
+  const openViewContractModal = (rental: Rental) => {
+    // Map Rental mock data to Contract interface
+    const mappedContract: Contract = {
+      id: rental.id,
+      propertyId: rental.id,
+      landlordId: "mock-landlord",
+      tenantId: user?.id || "mock-tenant",
+      monthlyRent: rental.monthlyRent,
+      startDate: rental.startDate,
+      endDate: rental.endDate,
+      nextAdjustmentDate: rental.nextAdjustmentDate,
+      status:
+        rental.status === "expired"
+          ? ContractStatus.EXPIRED
+          : ContractStatus.ACTIVE,
+      property: {
+        id: rental.id,
+        title: rental.propertyName,
+        location: rental.address,
+        bedrooms: rental.bedrooms || 0,
+        bathrooms: rental.bathrooms || 0,
+        area: rental.area || 0,
+      },
+      landlord: {
+        id: "mock-landlord",
+        name: rental.landlordName,
+        email: rental.landlordEmail,
+        phone: rental.landlordPhone,
+      },
+      tenant: {
+        id: user?.id || "mock-tenant",
+        name: user?.name || "Inquilino",
+        email: user?.email || "",
+      },
+      agent: {
+        id: "mock-agent",
+        name: rental.agentName,
+        email: rental.agentEmail,
+        phone: rental.agentPhone,
+      },
+    };
+    setViewingContract(mappedContract);
+    setIsViewModalOpen(true);
+  };
+
+  // Cargar datos al montar el componente
+  useEffect(() => {
+    loadRentals();
+  }, []);
+
   const getDaysUntilExpiration = (endDate: string) => {
     const today = new Date();
     const expiration = new Date(endDate);
@@ -100,14 +147,6 @@ export default function TenantDashboardPage() {
     const diffTime = adjustment.getTime() - today.getTime();
     const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
     return diffDays;
-  };
-
-  // Estadísticas
-  const stats = {
-    totalRentals: rentals.length,
-    activeRentals: rentals.filter((r) => r.status === "active").length,
-    totalMonthlyRent: rentals.reduce((sum, r) => sum + r.monthlyRent, 0),
-    expiringRentals: rentals.filter((r) => r.status === "expiring").length,
   };
 
   return (
@@ -151,100 +190,22 @@ export default function TenantDashboardPage() {
                   daysUntilAdjustment={getDaysUntilAdjustment(
                     rental.nextAdjustmentDate,
                   )}
+                  onViewDetails={openViewContractModal}
                 />
               ))}
             </div>
           )}
         </div>
       </main>
-    </div>
-  );
-}
 
-// Stats Card Component
-function StatsCard({
-  title,
-  value,
-  color,
-  icon,
-}: {
-  title: string;
-  value: string | number;
-  color: string;
-  icon: string;
-}) {
-  const icons = {
-    home: (
-      <svg
-        className="w-8 h-8"
-        fill="none"
-        viewBox="0 0 24 24"
-        stroke="currentColor"
-      >
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          strokeWidth={2}
-          d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"
+      {isViewModalOpen && viewingContract && (
+        <ViewContractModal
+          isOpen={isViewModalOpen}
+          onClose={() => setIsViewModalOpen(false)}
+          contract={viewingContract}
+          viewerRole="tenant"
         />
-      </svg>
-    ),
-    check: (
-      <svg
-        className="w-8 h-8"
-        fill="none"
-        viewBox="0 0 24 24"
-        stroke="currentColor"
-      >
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          strokeWidth={2}
-          d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
-        />
-      </svg>
-    ),
-    dollar: (
-      <svg
-        className="w-8 h-8"
-        fill="none"
-        viewBox="0 0 24 24"
-        stroke="currentColor"
-      >
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          strokeWidth={2}
-          d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-        />
-      </svg>
-    ),
-    alert: (
-      <svg
-        className="w-8 h-8"
-        fill="none"
-        viewBox="0 0 24 24"
-        stroke="currentColor"
-      >
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          strokeWidth={2}
-          d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
-        />
-      </svg>
-    ),
-  };
-
-  return (
-    <div
-      className={`bg-linear-to-br ${color} rounded-xl shadow-lg p-6 text-white transform hover:scale-105 transition-transform duration-300`}
-    >
-      <div className="flex items-start justify-end mb-3">
-        <div className="opacity-80">{icons[icon as keyof typeof icons]}</div>
-      </div>
-      <p className="text-sm opacity-90 mb-1">{title}</p>
-      <p className="text-3xl font-bold">{value}</p>
+      )}
     </div>
   );
 }
@@ -254,10 +215,12 @@ function RentalCardWrapper({
   rental,
   daysUntilExpiration,
   daysUntilAdjustment,
+  onViewDetails,
 }: {
   rental: Rental;
   daysUntilExpiration: number;
   daysUntilAdjustment: number;
+  onViewDetails: (rental: Rental) => void;
 }) {
   return (
     <RentalPropertyCard
@@ -280,13 +243,21 @@ function RentalCardWrapper({
         agentPhone: rental.agentPhone,
         agentEmail: rental.agentEmail,
       }}
-      viewerRole="tenant"
       showPropertyDetails={true}
       warningBadge={{
         daysUntilExpiration,
         daysUntilAdjustment,
         showWarning: true,
       }}
+      actions={[
+        {
+          label: "Ver Contrato",
+          onClick: () => onViewDetails(rental),
+          variant: "secondary",
+          icon: <Icon name="document" className="w-5 h-5" />,
+          show: true,
+        },
+      ]}
     />
   );
 }

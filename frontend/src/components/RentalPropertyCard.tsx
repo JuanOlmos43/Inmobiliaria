@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import Link from "next/link";
 import BasePropertyCard from "@/components/BasePropertyCard";
 
@@ -68,9 +68,6 @@ interface RentalPropertyCardProps {
 
   // Configuración visual
   showPropertyDetails?: boolean;
-
-  // Modal de rentas
-  viewerRole?: "tenant" | "landlord" | "agent";
 }
 
 export default function RentalPropertyCard({
@@ -82,10 +79,7 @@ export default function RentalPropertyCard({
   warningBadge,
   actions = [],
   showPropertyDetails = true,
-  viewerRole,
 }: RentalPropertyCardProps) {
-  const [showModal, setShowModal] = useState(false);
-
   const getActionStyles = (
     actionVariant: PropertyAction["variant"] = "primary",
   ) => {
@@ -143,71 +137,31 @@ export default function RentalPropertyCard({
     return null;
   };
 
-  const handleCardClick = () => {
-    if (viewerRole) {
-      setShowModal(true);
-    } else if (onClick) {
-      onClick();
-    }
-  };
-
   // Preparar contenido de acciones (Footer Slot)
   const renderActionsSlot = () => {
     const hasActions = actions.length > 0;
-    const hasViewDetailsBtn = viewerRole && actions.length === 0;
 
-    if (!hasActions && !hasViewDetailsBtn) return null;
+    if (!hasActions) return null;
 
     return (
-      <div
-        className={
-          hasActions ? "flex gap-2 pt-4 border-t border-gray-200" : "mt-4"
-        }
-      >
-        {hasActions &&
-          actions.map((action, index) => {
-            if (action.show === false) return null;
-            return (
-              <button
-                key={index}
-                onClick={(e) => {
-                  e.preventDefault();
-                  e.stopPropagation();
-                  action.onClick();
-                }}
-                className={`flex-1 px-3 py-2 rounded-lg transition-all duration-300 shadow-md hover:shadow-lg text-sm font-semibold flex items-center justify-center gap-2 ${getActionStyles(action.variant)}`}
-              >
-                {action.icon}
-                {action.label}
-              </button>
-            );
-          })}
-
-        {hasViewDetailsBtn && (
-          <button
-            onClick={(e) => {
-              e.preventDefault();
-              e.stopPropagation();
-              handleCardClick();
-            }}
-            className="w-full px-4 py-3 bg-(--accent) text-white font-semibold rounded-lg hover:bg-(--accent-hover) transition-all duration-300 shadow-md hover:shadow-lg flex items-center justify-center gap-2"
-          >
-            <svg
-              className="w-5 h-5"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
+      <div className="flex gap-2 pt-4 border-t border-gray-200">
+        {actions.map((action, index) => {
+          if (action.show === false) return null;
+          return (
+            <button
+              key={index}
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                action.onClick();
+              }}
+              className={`flex-1 px-3 py-2 rounded-lg transition-all duration-300 shadow-md hover:shadow-lg text-sm font-semibold flex items-center justify-center gap-2 ${getActionStyles(action.variant)}`}
             >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-              />
-            </svg>
-            Ver Detalles Completos
-          </button>
-        )}
+              {action.icon}
+              {action.label}
+            </button>
+          );
+        })}
       </div>
     );
   };
@@ -230,8 +184,8 @@ export default function RentalPropertyCard({
       showDetails={showPropertyDetails}
       headerSlot={renderWarningBadge()}
       footerSlot={renderActionsSlot()}
-      onClick={!href && !viewerRole && onClick ? onClick : undefined}
-      className={!href && !viewerRole && onClick ? "cursor-pointer" : ""}
+      onClick={!href && onClick ? onClick : undefined}
+      className={!href && onClick ? "cursor-pointer" : ""}
     />
   );
 
@@ -243,253 +197,6 @@ export default function RentalPropertyCard({
         </Link>
       ) : (
         <div className="block group">{BaseCard}</div>
-      )}
-
-      {/* Modal de Detalles de Renta */}
-      {showModal && viewerRole && property.startDate && property.endDate && (
-        <div
-          className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4"
-          onClick={() => setShowModal(false)}
-        >
-          <div
-            className="bg-white rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto animate-scale-in"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <div className="sticky top-0 bg-white border-b border-gray-200 px-6 py-4 flex justify-between items-center">
-              <div className="flex-1"></div>
-              <h2 className="text-2xl font-bold text-(--primary)">
-                Detalles de la Renta
-              </h2>
-              <div className="flex-1 flex justify-end">
-                <button
-                  onClick={() => setShowModal(false)}
-                  className="text-gray-400 hover:text-gray-600 transition-colors"
-                >
-                  <svg
-                    className="w-6 h-6"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M6 18L18 6M6 6l12 12"
-                    />
-                  </svg>
-                </button>
-              </div>
-            </div>
-
-            <div className="p-6 space-y-6">
-              {/* Información de la Propiedad */}
-              <div>
-                <h3 className="text-lg font-semibold text-(--primary) mb-3">
-                  Propiedad
-                </h3>
-                <div className="bg-gray-50 rounded-lg p-4 space-y-2">
-                  <p className="text-gray-700">
-                    <span className="font-medium">Nombre:</span>{" "}
-                    {property.title}
-                  </p>
-                  <p className="text-gray-700">
-                    <span className="font-medium">Dirección:</span>{" "}
-                    {property.location}
-                  </p>
-                  <p className="text-gray-700">
-                    <span className="font-medium">Renta Mensual Inicial:</span>{" "}
-                    {property.currency || "USD"}{" "}
-                    {property.price.toLocaleString()}
-                  </p>
-                </div>
-              </div>
-
-              {/* Información del Contrato */}
-              <div>
-                <h3 className="text-lg font-semibold text-(--primary) mb-3">
-                  Contrato
-                </h3>
-                <div className="bg-gray-50 rounded-lg p-4 space-y-2">
-                  <p className="text-gray-700">
-                    <span className="font-medium">Inicio:</span>{" "}
-                    {new Date(property.startDate).toLocaleDateString("es-ES", {
-                      day: "numeric",
-                      month: "long",
-                      year: "numeric",
-                    })}
-                  </p>
-                  <p className="text-gray-700">
-                    <span className="font-medium">Vencimiento:</span>{" "}
-                    {new Date(property.endDate).toLocaleDateString("es-ES", {
-                      day: "numeric",
-                      month: "long",
-                      year: "numeric",
-                      timeZone: "UTC",
-                    })}
-                  </p>
-                  {property.adjustmentFrequency && (
-                    <p className="text-gray-700">
-                      <span className="font-medium">Frecuencia de Ajuste:</span>{" "}
-                      Cada {property.adjustmentFrequency} meses
-                    </p>
-                  )}
-                  {(() => {
-                    const adjustmentDates = property.adjustmentScheduledDates || [];
-
-                    if (adjustmentDates.length === 0) {
-                      return (
-                        <div className="flex items-center gap-2">
-                          <span className="text-gray-700 font-medium whitespace-nowrap">
-                            Meses de Ajuste:
-                          </span>
-                          <span className="text-gray-500 italic">Ninguno</span>
-                        </div>
-                      );
-                    }
-
-                    return (
-                      <div className="flex items-start gap-2">
-                        <span className="text-gray-700 font-medium whitespace-nowrap">
-                          Meses de Ajuste:
-                        </span>
-                        <div className="flex flex-wrap gap-2">
-                          {adjustmentDates.map((dateStr, index) => (
-                            <span
-                              key={index}
-                              className="px-3 py-1 bg-(--accent) text-white rounded-full text-xs font-medium"
-                            >
-                              {new Date(dateStr).toLocaleDateString("es-ES", {
-                                month: "long",
-                                year: "numeric",
-                              })}
-                            </span>
-                          ))}
-                        </div>
-                      </div>
-                    );
-                  })()}
-                </div>
-              </div>
-
-              {/* Contactos según el rol */}
-              {viewerRole === "agent" ? (
-                // Para agentes: mostrar ambos contactos
-                <>
-                  {/* Contacto del Propietario */}
-                  {property.landlordName && (
-                    <div>
-                      <h3 className="text-lg font-semibold text-(--primary) mb-3">
-                        Contacto del Propietario
-                      </h3>
-                      <div className="bg-gray-50 rounded-lg p-4 space-y-2">
-                        <p className="text-gray-700">
-                          <span className="font-medium">Nombre:</span>{" "}
-                          {property.landlordName}
-                        </p>
-                        <p className="text-gray-700">
-                          <span className="font-medium">Teléfono:</span>{" "}
-                          <span className="font-mono">
-                            {property.landlordPhone}
-                          </span>
-                        </p>
-                        <p className="text-gray-700">
-                          <span className="font-medium">Email:</span>{" "}
-                          <span className="font-mono">
-                            {property.landlordEmail}
-                          </span>
-                        </p>
-                      </div>
-                    </div>
-                  )}
-
-                  {/* Contacto del Inquilino */}
-                  {property.tenantName && (
-                    <div>
-                      <h3 className="text-lg font-semibold text-(--primary) mb-3">
-                        Contacto del Inquilino
-                      </h3>
-                      <div className="bg-gray-50 rounded-lg p-4 space-y-2">
-                        <p className="text-gray-700">
-                          <span className="font-medium">Nombre:</span>{" "}
-                          {property.tenantName}
-                        </p>
-                        <p className="text-gray-700">
-                          <span className="font-medium">Teléfono:</span>{" "}
-                          <span className="font-mono">
-                            {property.tenantPhone}
-                          </span>
-                        </p>
-                        <p className="text-gray-700">
-                          <span className="font-medium">Email:</span>{" "}
-                          <span className="font-mono">
-                            {property.tenantEmail}
-                          </span>
-                        </p>
-                      </div>
-                    </div>
-                  )}
-                </>
-              ) : (
-                // Para inquilinos y propietarios: mostrar solo un contacto
-                <div>
-                  <h3 className="text-lg font-semibold text-(--primary) mb-3">
-                    {viewerRole === "tenant"
-                      ? "Contacto del Propietario"
-                      : "Contacto del Inquilino"}
-                  </h3>
-                  <div className="bg-gray-50 rounded-lg p-4 space-y-2">
-                    <p className="text-gray-700">
-                      <span className="font-medium">Nombre:</span>{" "}
-                      {viewerRole === "tenant"
-                        ? property.landlordName
-                        : property.tenantName || property.landlordName}
-                    </p>
-                    <p className="text-gray-700">
-                      <span className="font-medium">Teléfono:</span>{" "}
-                      <span className="font-mono">
-                        {viewerRole === "tenant"
-                          ? property.landlordPhone
-                          : property.tenantPhone || property.landlordPhone}
-                      </span>
-                    </p>
-                    <p className="text-gray-700">
-                      <span className="font-medium">Email:</span>{" "}
-                      <span className="font-mono">
-                        {viewerRole === "tenant"
-                          ? property.landlordEmail
-                          : property.tenantEmail || property.landlordEmail}
-                      </span>
-                    </p>
-                  </div>
-                </div>
-              )}
-
-              {/* Información del Agente - Siempre mostrar si está disponible */}
-              {property.agentName && (
-                <div>
-                  <h3 className="text-lg font-semibold text-(--primary) mb-3">
-                    Contacto del Agente
-                  </h3>
-                  <div className="bg-gray-50 rounded-lg p-4 space-y-2">
-                    <p className="text-gray-700">
-                      <span className="font-medium">Nombre:</span>{" "}
-                      {property.agentName}
-                    </p>
-                    <p className="text-gray-700">
-                      <span className="font-medium">Teléfono:</span>{" "}
-                      <span className="font-mono">{property.agentPhone}</span>
-                    </p>
-                    <p className="text-gray-700">
-                      <span className="font-medium">Email:</span>{" "}
-                      <span className="font-mono">{property.agentEmail}</span>
-                    </p>
-                  </div>
-                </div>
-              )}
-            </div>
-          </div>
-        </div>
       )}
     </>
   );

@@ -15,7 +15,7 @@ import {
 import AgentPropertyCard from "@/components/dashboard/agent/AgentPropertyCard";
 import PropertyModal from "@/components/dashboard/agent/PropertyModal";
 import RentalModal from "@/components/dashboard/agent/RentalModal";
-import ViewContractModal from "@/components/dashboard/agent/ViewContractModal";
+import ViewContractModal from "@/components/dashboard/common/ViewContractModal";
 import UpcomingExpirations from "@/components/dashboard/agent/UpcomingExpirations";
 import AgentPropertiesFilters from "@/components/dashboard/agent/AgentPropertiesFilters";
 import ContractFilters from "@/components/dashboard/agent/ContractFilters";
@@ -277,32 +277,38 @@ export default function AgentDashboardPage() {
                         footerSlot={
                           <div className="flex flex-col gap-2 w-full mt-2">
                             <button
-                              className="w-full px-4 py-2 bg-blue-50 text-(--accent) border border-blue-100 rounded-lg hover:bg-blue-100 transition-all flex items-center justify-center gap-2 font-medium"
+                              className="w-full px-4 py-3 bg-(--accent) text-white rounded-lg hover:bg-(--accent-hover) transition-all shadow-md hover:shadow-lg flex items-center justify-center gap-2 font-semibold group/btn"
                               onClick={() => openViewContractModal(contract)}
                             >
-                              <Icon name="search" className="w-4 h-4" />
+                              <Icon
+                                name="document"
+                                className="w-5 h-5 transition-transform group-hover/btn:scale-110"
+                              />
                               Ver Detalle
                             </button>
-                            {contract.status !== "terminated" && contract.status !== "expired" && (
-                              <div className="flex gap-2">
-                                <button
-                                  className="flex-1 px-4 py-2 bg-amber-50 text-amber-600 border border-amber-100 rounded-lg hover:bg-amber-100 transition-all flex items-center justify-center gap-2 font-medium"
-                                  onClick={() => openEditContractModal(contract)}
-                                >
-                                  <Icon name="edit" className="w-4 h-4" />
-                                  Editar
-                                </button>
-                                <button
-                                  className="flex-1 px-4 py-2 bg-red-50 text-red-600 border border-red-100 rounded-lg hover:bg-red-100 transition-all flex items-center justify-center gap-2 font-medium"
-                                  onClick={() =>
-                                    handleDeleteContract(contract.id)
-                                  }
-                                >
-                                  <Icon name="trash" className="w-4 h-4" />
-                                  Revocar
-                                </button>
-                              </div>
-                            )}
+                            {contract.status !== "terminated" &&
+                              contract.status !== "expired" && (
+                                <div className="flex gap-2">
+                                  <button
+                                    className="flex-1 px-4 py-2 bg-(--primary) text-white rounded-lg hover:bg-(--primary-light) transition-all flex items-center justify-center gap-2 font-medium shadow-md hover:shadow-lg"
+                                    onClick={() =>
+                                      openEditContractModal(contract)
+                                    }
+                                  >
+                                    <Icon name="edit" className="w-4 h-4" />
+                                    Editar
+                                  </button>
+                                  <button
+                                    className="flex-1 px-4 py-2 bg-amber-600 text-white rounded-lg hover:bg-amber-700 transition-all flex items-center justify-center gap-2 font-medium shadow-md hover:shadow-lg"
+                                    onClick={() =>
+                                      handleDeleteContract(contract.id)
+                                    }
+                                  >
+                                    <Icon name="trash" className="w-4 h-4" />
+                                    Revocar
+                                  </button>
+                                </div>
+                              )}
                           </div>
                         }
                       />
@@ -350,12 +356,6 @@ export default function AgentDashboardPage() {
           isOpen={isViewContractModalOpen}
           onClose={closeViewContractModal}
           contract={viewingContract}
-          onRevoke={async (id) => {
-            const success = await handleDeleteContract(id);
-            if (success) {
-              closeViewContractModal();
-            }
-          }}
         />
       )}
 

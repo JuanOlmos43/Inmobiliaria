@@ -4,6 +4,8 @@ import { useQuery } from "@tanstack/react-query";
 import { TabNavigation } from "@/components/UI";
 import RentalPropertyCard from "@/components/RentalPropertyCard";
 import BasePropertyCard from "@/components/BasePropertyCard";
+import ViewContractModal from "@/components/dashboard/common/ViewContractModal";
+import { Icon } from "@/components/UI";
 import { propertiesService } from "@/lib/api/services/properties";
 import { contratosService } from "@/lib/api/services/contratos";
 import { Contract } from "@/types/api";
@@ -31,11 +33,36 @@ import { authService } from "@/lib/api/services/auth";
 import { UserProfile } from "@/types/api";
 
 export default function LandlordDashboardPage() {
-  const [activeTab, setActiveTab] = useState<"rentals" | "properties">("rentals");
+  const [activeTab, setActiveTab] = useState<"rentals" | "properties">(
+    "rentals",
+  );
 
   // Filters
-  const [listingType, setListingType] = useState<"venta" | "alquiler" | "all">("all");
+  const [listingType, setListingType] = useState<"venta" | "alquiler" | "all">(
+    "all",
+  );
   const [status, setStatus] = useState<string>("all");
+  const [viewingContract, setViewingContract] = useState<Contract | null>(null);
+  const [isViewModalOpen, setIsViewModalOpen] = useState(false);
+
+  const openViewContractModal = (contract: Contract) => {
+    // Si el contrato no trae la info del landlord (común en este endpoint), la inyectamos del usuario logueado
+    if (!contract.landlord && user) {
+      contract.landlord = {
+        id: user.id,
+        name: user.name,
+        email: user.email,
+        phone: user.phone || undefined,
+      };
+    }
+    setViewingContract(contract);
+    setIsViewModalOpen(true);
+  };
+
+  const closeViewContractModal = () => {
+    setViewingContract(null);
+    setIsViewModalOpen(false);
+  };
 
   // 1. Get User ID from "me" cache
   const { data: user } = useQuery<UserProfile>({
@@ -55,15 +82,16 @@ export default function LandlordDashboardPage() {
     queryKey: ["landlord-properties", user?.id, listingType, status],
     queryFn: () => {
       // Logic to determine if we are filtering by Property Status or Contract Status
-      const isContractStatus = status === 'expired' || status === 'terminated';
-      const propertyStatus = !isContractStatus && status !== "all" ? status : undefined;
+      const isContractStatus = status === "expired" || status === "terminated";
+      const propertyStatus =
+        !isContractStatus && status !== "all" ? status : undefined;
       const contractStatus = isContractStatus ? status : undefined;
 
       return propertiesService.findAll({
         ownerId: user?.id,
         listingType: listingType !== "all" ? listingType : undefined,
         status: propertyStatus as any,
-        contractStatus: contractStatus
+        contractStatus: contractStatus,
       });
     },
     enabled: !!user?.id, // Only run if we have the user ID
@@ -75,7 +103,9 @@ export default function LandlordDashboardPage() {
     <div className="min-h-screen bg-(--background)">
       {/* Main Content */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <h1 className="text-2xl font-bold text-gray-900 mb-6">Panel de Propietario</h1>
+        <h1 className="text-2xl font-bold text-gray-900 mb-6">
+          Panel de Propietario
+        </h1>
 
         {/* Tabs */}
         <TabNavigation
@@ -107,7 +137,10 @@ export default function LandlordDashboardPage() {
                     key={rental.id}
                     rental={rental}
                     daysUntilExpiration={getDaysUntilExpiration(rental.endDate)}
-                    daysUntilAdjustment={getDaysUntilAdjustment(rental.nextAdjustmentDate)}
+                    daysUntilAdjustment={getDaysUntilAdjustment(
+                      rental.nextAdjustmentDate,
+                    )}
+                    onViewDetails={openViewContractModal}
                   />
                 ))}
               </div>
@@ -118,11 +151,12 @@ export default function LandlordDashboardPage() {
         {/* Properties Tab */}
         {activeTab === "properties" && (
           <div className="mb-8">
-
             {/* Filters Bar */}
             <div className="flex flex-wrap gap-4 mb-6 bg-white p-4 rounded-xl shadow-sm border border-gray-100 items-center">
               <div className="flex flex-col gap-1">
-                <label className="text-sm font-medium text-gray-700">Operación</label>
+                <label className="text-sm font-medium text-gray-700">
+                  Operación
+                </label>
                 <select
                   value={listingType}
                   onChange={(e) => setListingType(e.target.value as any)}
@@ -135,7 +169,9 @@ export default function LandlordDashboardPage() {
               </div>
 
               <div className="flex flex-col gap-1">
-                <label className="text-sm font-medium text-gray-700">Estado</label>
+                <label className="text-sm font-medium text-gray-700">
+                  Estado
+                </label>
                 <select
                   value={status}
                   onChange={(e) => setStatus(e.target.value)}
@@ -156,7 +192,10 @@ export default function LandlordDashboardPage() {
 
               {(listingType !== "all" || status !== "all") && (
                 <button
-                  onClick={() => { setListingType("all"); setStatus("all"); }}
+                  onClick={() => {
+                    setListingType("all");
+                    setStatus("all");
+                  }}
                   className="mt-6 text-sm text-(--primary) hover:underline font-medium"
                 >
                   Limpiar filtros
@@ -182,6 +221,15 @@ export default function LandlordDashboardPage() {
           </div>
         )}
       </main>
+
+      {isViewModalOpen && viewingContract && (
+        <ViewContractModal
+          isOpen={isViewModalOpen}
+          onClose={closeViewContractModal}
+          contract={viewingContract}
+          viewerRole="landlord"
+        />
+      )}
     </div>
   );
 }
@@ -232,9 +280,7 @@ function EmptyPropertiesState() {
       <h3 className="text-xl font-semibold text-gray-700 mb-2">
         No tienes propiedades publicadas
       </h3>
-      <p className="text-gray-500">
-        Comienza publicando tu primera propiedad
-      </p>
+      <p className="text-gray-500">Comienza publicando tu primera propiedad</p>
     </>
   );
 }
@@ -243,10 +289,12 @@ function RentalCardWrapper({
   rental,
   daysUntilExpiration,
   daysUntilAdjustment,
+  onViewDetails,
 }: {
   rental: Contract;
   daysUntilExpiration: number;
   daysUntilAdjustment: number;
+  onViewDetails: (rental: Contract) => void;
 }) {
   return (
     <RentalPropertyCard
@@ -254,6 +302,7 @@ function RentalCardWrapper({
         id: rental.property.id,
         title: rental.property.title || "Propiedad", // Fallback if title is missing
         price: rental.monthlyRent,
+        currency: "ARS",
         location: rental.property.location || "Ubicación desconocida",
         type: "Alquiler",
         bedrooms: rental.property.bedrooms,
@@ -272,15 +321,26 @@ function RentalCardWrapper({
         agentName: rental.agent?.name || "",
         agentPhone: rental.agent?.phone || "",
         agentEmail: rental.agent?.email || "",
-        image: rental.property.images?.[0]?.url || rental.property.mainImage || undefined,
+        image:
+          rental.property.images?.[0]?.url ||
+          rental.property.mainImage ||
+          undefined,
       }}
-      viewerRole="landlord"
       showPropertyDetails={true}
       warningBadge={{
         daysUntilExpiration,
         daysUntilAdjustment,
         showWarning: true,
       }}
+      actions={[
+        {
+          label: "Ver Contrato",
+          onClick: () => onViewDetails(rental),
+          variant: "secondary",
+          icon: <Icon name="document" className="w-5 h-5" />,
+          show: true,
+        },
+      ]}
     />
   );
 }
@@ -288,7 +348,11 @@ function RentalCardWrapper({
 // Property Card Component - Using shared component
 function PropertyCardWrapper({ property }: { property: Property }) {
   const publishedDate = property.createdAt
-    ? new Date(property.createdAt).toLocaleDateString("es-ES", { day: 'numeric', month: 'short', year: 'numeric' })
+    ? new Date(property.createdAt).toLocaleDateString("es-ES", {
+        day: "numeric",
+        month: "short",
+        year: "numeric",
+      })
     : null;
 
   const renderHistory = () => (
@@ -302,15 +366,23 @@ function PropertyCardWrapper({ property }: { property: Property }) {
 
       {property.rentalContracts && property.rentalContracts.length > 0 && (
         <div className="mt-2">
-          <h4 className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Historial de Alquileres</h4>
+          <h4 className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">
+            Historial de Alquileres
+          </h4>
           <div className="space-y-2">
-            {property.rentalContracts.slice(0, 2).map(contract => (
+            {property.rentalContracts.slice(0, 2).map((contract) => (
               <div key={contract.id} className="bg-gray-50 p-2 rounded text-xs">
-                <div className="font-medium text-gray-700">{contract.tenant?.name || "Inquilino"}</div>
+                <div className="font-medium text-gray-700">
+                  {contract.tenant?.name || "Inquilino"}
+                </div>
                 <div className="text-gray-500 flex justify-between mt-1">
-                  <span>{new Date(contract.startDate).toLocaleDateString("es-ES")}</span>
+                  <span>
+                    {new Date(contract.startDate).toLocaleDateString("es-ES")}
+                  </span>
                   <span>-</span>
-                  <span>{new Date(contract.endDate).toLocaleDateString("es-ES")}</span>
+                  <span>
+                    {new Date(contract.endDate).toLocaleDateString("es-ES")}
+                  </span>
                 </div>
               </div>
             ))}
@@ -329,6 +401,7 @@ function PropertyCardWrapper({ property }: { property: Property }) {
     <BasePropertyCard
       title={property.title}
       price={property.price}
+      currency={property.currency}
       location={property.location}
       type={property.listingType === "venta" ? "Venta" : "Alquiler"}
       bedrooms={property.bedrooms}

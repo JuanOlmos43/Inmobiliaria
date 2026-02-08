@@ -51,23 +51,64 @@ export default function BasePropertyCard({
   className = "",
 }: BasePropertyCardProps) {
   const getStatusBadgeStyles = () => {
-    switch (status) {
-      case "Activa":
-      case "Activo":
+    const normalizedStatus = status?.toLowerCase();
+    switch (normalizedStatus) {
+      case "activa":
+      case "activo":
+      case "active":
         return "bg-green-500 text-white";
-      case "Vencido":
+      case "vencido":
+      case "vencida":
+      case "expired":
         return "bg-amber-500 text-white";
-      case "Terminado":
+      case "terminado":
+      case "terminada":
+      case "terminated":
+      case "revocado":
         return "bg-red-500 text-white";
-      case "Archivada":
-      case "Archivado":
+      case "archivada":
+      case "archivado":
         return "bg-gray-500 text-white";
-      case "Alquilada":
-      case "Alquilado":
+      case "alquilada":
+      case "alquilado":
+      case "rented":
         return "bg-blue-500 text-white";
+      case "pausada":
+      case "pausado":
+      case "paused":
+        return "bg-yellow-500 text-white";
       default:
         return "bg-yellow-500 text-white";
     }
+  };
+
+  const getStatusText = () => {
+    if (!status) return "";
+    const normalizedStatus = status.toLowerCase();
+    const statusMap: Record<string, string> = {
+      activa: "Activa",
+      activo: "Activo",
+      active: "Activo",
+      vencido: "Vencido",
+      vencida: "Vencida",
+      expired: "Vencido",
+      terminado: "Terminado",
+      terminada: "Terminada",
+      terminated: "Terminado",
+      revocado: "Revocado",
+      archivada: "Archivada",
+      archivado: "Archivado",
+      alquilada: "Alquilada",
+      alquilado: "Alquilado",
+      rented: "Alquilado",
+      pausada: "Pausada",
+      pausado: "Pausado",
+      paused: "Pausado",
+    };
+    return (
+      statusMap[normalizedStatus] ||
+      status.charAt(0).toUpperCase() + status.slice(1)
+    );
   };
 
   const getTypeBadgeStyles = () => {
@@ -126,7 +167,7 @@ export default function BasePropertyCard({
               <span
                 className={`px-4 py-2 rounded-full text-sm font-bold backdrop-blur-sm shadow-sm ${getStatusBadgeStyles()}`}
               >
-                {status}
+                {getStatusText()}
               </span>
             )}
           </div>

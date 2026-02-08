@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useDebounce } from "@/hooks/useDebounce";
 import { Modal, FormInput, FormSelect } from "@/components/UI";
@@ -76,8 +76,7 @@ export default function RentalModal({
 
       return users.filter((u: UserProfile) => u.status === UserStatus.ACTIVE);
     },
-    enabled:
-      !isEditing && !!debouncedTenantSearch && debouncedTenantSearch.length > 2,
+    enabled: !isEditing && !!debouncedTenantSearch,
   });
 
   const [showTenantDropdown, setShowTenantDropdown] = useState(false);
@@ -236,14 +235,12 @@ export default function RentalModal({
             </p>
           )}
 
-          {!isEditing && tenants.length === 0 && tenantSearch.length > 2 && (
+          {!isEditing && tenants.length === 0 && tenantSearch.length > 0 && (
             <p className="text-sm text-amber-600 mt-1">
               No se encontraron inquilinos. Verifique el nombre o email.
             </p>
           )}
         </div>
-
-
 
         {/* Fechas del Contrato */}
         <div>
