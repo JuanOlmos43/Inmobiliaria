@@ -1,5 +1,5 @@
 import { Navbar, Footer } from "@/components/layout";
-import { ScrollToTop } from "@/components/UI";
+import { ScrollToTop } from "@/components/ui";
 
 export default function GroupNFLayout({
   children,
@@ -16,3 +16,4 @@ export default function GroupNFLayout({
     </div>
   );
 }
+

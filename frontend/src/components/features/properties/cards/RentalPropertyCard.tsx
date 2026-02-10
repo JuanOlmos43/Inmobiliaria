@@ -1,6 +1,6 @@
 import React from "react";
 import Link from "next/link";
-import BasePropertyCard from "@/components/BasePropertyCard";
+import { BasePropertyCard } from "@/components/features/properties/cards";
 
 // Tipos
 export interface RentalPropertyData {
@@ -201,3 +201,4 @@ export default function RentalPropertyCard({
     </>
   );
 }
+

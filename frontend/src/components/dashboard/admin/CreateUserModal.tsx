@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Modal, FormInput, FormSelect, Toast } from "@/components/UI";
+import { Modal, FormInput, FormSelect, Toast } from "@/components/ui";
 import { authService } from "@/lib/api/services/auth";
 import { UserRole } from "@/types/api";
 
@@ -195,3 +195,4 @@ export default function CreateUserModal({
     </>
   );
 }
+

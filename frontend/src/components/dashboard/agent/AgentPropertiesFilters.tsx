@@ -1,4 +1,4 @@
-import { FormInput, FormSelect } from "@/components/UI";
+import { FormInput, FormSelect } from "@/components/ui";
 
 interface AgentPropertiesFiltersProps {
   searchTerm: string;
@@ -64,3 +64,4 @@ export default function AgentPropertiesFilters({
     </div>
   );
 }
+

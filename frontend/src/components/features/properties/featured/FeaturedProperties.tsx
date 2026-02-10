@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import BasePropertyCard from "@/components/BasePropertyCard";
+import { BasePropertyCard } from "@/components/features/properties/cards";
 import { propertiesService } from "@/lib/api/services/properties";
 import type { Property } from "@/types/property";
 
@@ -233,3 +233,4 @@ export default function FeaturedProperties() {
     </section>
   );
 }
+

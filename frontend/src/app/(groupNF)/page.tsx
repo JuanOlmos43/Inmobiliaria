@@ -1,5 +1,5 @@
-import SearchBlock from "@/components/SearchBlock";
-import FeaturedProperties from "@/components/FeaturedProperties";
+import { SearchBlock } from "@/components/features/properties/search";
+import { FeaturedProperties } from "@/components/features/properties/featured";
 
 export default function Home() {
   return (

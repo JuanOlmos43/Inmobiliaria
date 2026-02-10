@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Icon } from "@/components/UI";
+import { Icon } from "@/components/ui";
 import { UserProfile, UserRole, UserStatus } from "@/types/api";
 
 interface UsersTableProps {
@@ -327,3 +327,4 @@ export default function UsersTable({
     </div>
   );
 }
+

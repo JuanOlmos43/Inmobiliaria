@@ -2,10 +2,10 @@
 
 import { useState, useEffect } from "react";
 
-import RentalPropertyCard from "@/components/RentalPropertyCard";
+import { RentalPropertyCard } from "@/components/features/properties/cards";
 import { useAuth } from "@/hooks/useAuth";
 import ViewContractModal from "@/components/dashboard/common/ViewContractModal";
-import { Icon } from "@/components/UI";
+import { Icon } from "@/components/ui";
 import { Contract, ContractStatus } from "@/types/api";
 
 // Tipos
@@ -261,3 +261,4 @@ function RentalCardWrapper({
     />
   );
 }
+

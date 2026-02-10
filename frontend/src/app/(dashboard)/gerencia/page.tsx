@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { Icon } from "@/components/UI";
+import { Icon } from "@/components/ui";
 
 import { useAuth } from "@/hooks/useAuth";
 
@@ -120,3 +120,4 @@ function StatsCard({
     </div>
   );
 }
+

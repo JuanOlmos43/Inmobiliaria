@@ -1,4 +1,4 @@
-import { FormInput, FormSelect, EmptyState, Pagination } from "@/components/UI";
+import { FormInput, FormSelect, EmptyState, Pagination } from "@/components/ui";
 
 interface ContractFiltersProps {
   searchAddress: string;
@@ -73,3 +73,4 @@ export default function ContractFilters({
     </div>
   );
 }
+

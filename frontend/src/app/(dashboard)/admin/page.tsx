@@ -1,6 +1,6 @@
 "use client";
 
-import { ConfirmModal, Toast, Icon } from "@/components/UI";
+import { ConfirmModal, Toast, Icon } from "@/components/ui";
 import CreateUserModal from "@/components/dashboard/admin/CreateUserModal";
 import UsersTable from "@/components/dashboard/admin/UsersTable";
 import AdminStatsGrid from "@/components/dashboard/admin/AdminStatsGrid";
@@ -132,3 +132,4 @@ export default function AdminDashboardPage() {
     </div>
   );
 }
+

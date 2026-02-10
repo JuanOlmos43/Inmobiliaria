@@ -3,10 +3,10 @@
 import { useState, useEffect, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
-import BasePropertyCard from "@/components/BasePropertyCard";
-import PropertyFilters from "@/components/PropertyFilters";
-import { EmptyState, Pagination } from "@/components/UI";
-import HeroSection from "@/components/HeroSection";
+import { BasePropertyCard } from "@/components/features/properties/cards";
+import { PropertyFilters } from "@/components/features/properties/filters";
+import { EmptyState, Pagination } from "@/components/ui";
+import { HeroSection } from "@/components/features/home";
 import { propertiesService } from "@/lib/api/services/properties";
 import type {
   Property,
@@ -270,3 +270,4 @@ export default function PropiedadesPage() {
     </Suspense>
   );
 }
+

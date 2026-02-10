@@ -1,6 +1,6 @@
 "use client";
 
-import { Icon, IconName } from "@/components/UI";
+import { Icon, IconName } from "@/components/ui";
 import { UserRole } from "@/types/api";
 
 interface DashboardHeaderProps {
@@ -67,3 +67,4 @@ export function DashboardHeader({
     </header>
   );
 }
+

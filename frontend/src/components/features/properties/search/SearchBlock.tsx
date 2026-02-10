@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { FormSelect, FormInput, Icon } from "@/components/UI";
+import { FormSelect, FormInput, Icon } from "@/components/ui";
 
 export default function SearchBlock() {
   const router = useRouter();
@@ -196,3 +196,4 @@ export default function SearchBlock() {
     </section>
   );
 }
+

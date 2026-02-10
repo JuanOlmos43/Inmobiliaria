@@ -1,7 +1,7 @@
 "use client";
 
-import { Modal } from "./Modal";
-import { Icon, IconName } from "./Icon";
+import { Modal } from "../modals/Modal";
+import { Icon, IconName } from "../icons/Icon";
 
 interface ConfirmModalProps {
   isOpen: boolean;

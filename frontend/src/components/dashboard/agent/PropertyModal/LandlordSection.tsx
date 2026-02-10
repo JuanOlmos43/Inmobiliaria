@@ -2,7 +2,7 @@ import { Dispatch, SetStateAction, useEffect } from "react";
 import { useLandlordSearch } from "@/hooks/useLandlordSearch";
 import { type UserProfile } from "@/types/api";
 import { Property } from "@/types/property";
-import { Icon } from "@/components/UI";
+import { Icon } from "@/components/ui";
 
 interface LandlordSectionProps {
   formData: Omit<Property, "id">;
@@ -112,3 +112,4 @@ export default function LandlordSection({
     </div>
   );
 }
+

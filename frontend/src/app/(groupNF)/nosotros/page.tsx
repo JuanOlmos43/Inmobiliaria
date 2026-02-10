@@ -1,5 +1,5 @@
-import HeroSection from "@/components/HeroSection";
-import { Icon, ValueCard } from "@/components/UI";
+import { HeroSection } from "@/components/features/home";
+import { Icon, ValueCard } from "@/components/ui";
 
 export default function NosotrosPage() {
   return (
@@ -227,3 +227,4 @@ export default function NosotrosPage() {
     </div>
   );
 }
+

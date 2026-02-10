@@ -1,6 +1,6 @@
 import React from "react";
 import Image from "next/image";
-import { Icon } from "@/components/UI";
+import { Icon } from "@/components/ui";
 
 export interface BasePropertyCardProps {
   // Datos principales
@@ -239,3 +239,4 @@ export default function BasePropertyCard({
     </div>
   );
 }
+

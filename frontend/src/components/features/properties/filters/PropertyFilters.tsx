@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { FormSelect, FormInput, Icon } from "@/components/UI";
+import { FormSelect, FormInput, Icon } from "@/components/ui";
 import type { PropertyFilters } from "@/types/property";
 
 interface PropertyFiltersProps {
@@ -253,3 +253,4 @@ export default function PropertyFilters({
     </aside>
   );
 }
+

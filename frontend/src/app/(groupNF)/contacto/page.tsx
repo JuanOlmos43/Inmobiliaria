@@ -1,14 +1,14 @@
 "use client";
 
 import { useState } from "react";
-import HeroSection from "@/components/HeroSection";
+import { HeroSection } from "@/components/features/home";
 import {
   ContactInfoCard,
   FormInput,
   FormTextarea,
   FormSelect,
   Icon,
-} from "@/components/UI";
+} from "@/components/ui";
 
 export default function ContactoPage() {
   const [formData, setFormData] = useState({
@@ -307,3 +307,4 @@ export default function ContactoPage() {
     </div>
   );
 }
+

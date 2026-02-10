@@ -1,5 +1,5 @@
-import BasePropertyCard from "@/components/BasePropertyCard";
-import { Icon } from "@/components/UI";
+import { BasePropertyCard } from "@/components/features/properties/cards";
+import { Icon } from "@/components/ui";
 import { Property } from "@/types/property";
 
 interface AgentPropertyCardProps {
@@ -118,3 +118,4 @@ export default function AgentPropertyCard({
     />
   );
 }
+

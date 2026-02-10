@@ -1,263 +1,367 @@
-# Componentes
+# 📁 Estructura de Componentes - Inmobiliaria Frontend
 
-Documentación de los componentes principales del proyecto InmoHogar.
+Esta documentación describe la organización de componentes del proyecto, siguiendo las mejores prácticas de **Feature-First Architecture** y **Atomic Design**.
 
-## 📁 Estructura
+## 🎯 Filosofía de Organización
+
+La estructura está diseñada para:
+
+- ✅ **Escalabilidad**: Fácil agregar nuevas features sin afectar otras
+- ✅ **Mantenibilidad**: Los componentes están agrupados por funcionalidad
+- ✅ **Colocation**: Componentes relacionados están juntos
+- ✅ **Reutilización**: Componentes UI base separados de lógica de negocio
+- ✅ **Claridad**: Imports descriptivos y fáciles de entender
+
+## 📂 Estructura General
 
 ```
 components/
-├── UI/                          # Componentes UI reutilizables (ver UI/README.md)
-├── Navbar.tsx                   # Barra de navegación
-├── Footer.tsx                   # Pie de página
-├── HeroSection.tsx              # Sección hero para páginas
-├── SearchBlock.tsx              # Búsqueda de propiedades (home)
-├── PropertyFilters.tsx          # Filtros de propiedades
-├── FeaturedProperties.tsx       # Propiedades destacadas
-├── UniversalPropertyCard.tsx    # Tarjeta universal de propiedad
-├── DashboardHeader.tsx          # Header para dashboards
-└── LoginPage.tsx                # Página de login
+├── ui/                          # Componentes base reutilizables (Design System)
+├── features/                    # Componentes organizados por funcionalidad
+├── dashboard/                   # Componentes específicos de dashboards
+└── layout/                      # Componentes de estructura/layout
 ```
 
-## 📚 Componentes
+---
 
-### UniversalPropertyCard
+## 🎨 `/ui` - Design System
 
-Componente unificado para mostrar propiedades en toda la aplicación (páginas públicas y dashboards).
+Componentes base reutilizables sin lógica de negocio. Organizados por categoría.
 
-**Props principales:**
+### Estructura:
+
+```
+ui/
+├── forms/                       # Componentes de formularios
+│   ├── FormInput.tsx
+│   ├── FormSelect.tsx
+│   └── FormTextarea.tsx
+│
+├── feedback/                    # Componentes de retroalimentación
+│   ├── ConfirmModal.tsx
+│   ├── EmptyState.tsx
+│   └── Toast.tsx
+│
+├── modals/                      # Componentes de modales base
+│   └── Modal.tsx
+│
+├── cards/                       # Componentes de tarjetas
+│   ├── ContactInfoCard.tsx
+│   ├── StatsCard.tsx
+│   └── ValueCard.tsx
+│
+├── navigation/                  # Componentes de navegación
+│   ├── Pagination.tsx
+│   ├── ScrollToTop.tsx
+│   └── TabNavigation.tsx
+│
+├── icons/                       # Sistema de iconos
+│   └── Icon.tsx
+│
+└── index.ts                     # Barrel export
+```
+
+### Uso:
 
 ```typescript
-interface UniversalPropertyCardProps {
-  property: UniversalPropertyData;
-  href?: string; // Para links (páginas públicas)
-  onClick?: () => void; // Para cards clickeables
-  showTypeBadge?: boolean; // Badge Venta/Alquiler
-  showStatusBadge?: boolean; // Badge Activa/Pausada
-  warningBadge?: {
-    // Advertencias
-    type: "expiration" | "adjustment";
-    message: string;
-    variant?: "red" | "amber";
-  };
-  actions?: PropertyAction[]; // Botones de acción (dashboards)
-  showPropertyDetails?: boolean; // Mostrar hab/baños/área
-}
+import { FormInput, FormSelect, Icon, Toast } from "@/components/ui";
 ```
 
-**Ejemplos:**
+### Principios:
 
-```tsx
-// Página pública con link
-<UniversalPropertyCard
-  property={property}
-  href={`/propiedades/${property.id}`}
-/>
+- ✅ **Sin lógica de negocio**: Solo presentación y comportamiento UI
+- ✅ **Altamente reutilizables**: Usados en múltiples features
+- ✅ **Props bien definidas**: TypeScript interfaces claras
+- ✅ **Accesibilidad**: ARIA labels y semántica HTML
 
-// Dashboard con acciones
-<UniversalPropertyCard
-  property={property}
-  showStatusBadge={true}
-  actions={[
-    { label: 'Editar', onClick: handleEdit, variant: 'primary' },
-    { label: 'Eliminar', onClick: handleDelete, variant: 'danger' }
-  ]}
-/>
+---
 
-// Con advertencia
-<UniversalPropertyCard
-  property={property}
-  warningBadge={{
-    type: 'expiration',
-    message: 'Vence en 30 días',
-    variant: 'red'
-  }}
-/>
+## 🚀 `/features` - Componentes por Funcionalidad
+
+Componentes organizados por dominio de negocio.
+
+### Estructura:
+
+```
+features/
+├── auth/                        # Autenticación
+│   ├── LoginPage.tsx
+│   └── index.ts
+│
+├── home/                        # Página principal
+│   ├── HeroSection.tsx
+│   └── index.ts
+│
+└── properties/                  # Funcionalidad de propiedades
+    ├── cards/                   # Tarjetas de propiedades
+    │   ├── BasePropertyCard.tsx
+    │   ├── RentalPropertyCard.tsx
+    │   └── index.ts
+    │
+    ├── filters/                 # Filtros de propiedades
+    │   ├── PropertyFilters.tsx
+    │   └── index.ts
+    │
+    ├── search/                  # Búsqueda de propiedades
+    │   ├── SearchBlock.tsx
+    │   └── index.ts
+    │
+    ├── featured/                # Propiedades destacadas
+    │   ├── FeaturedProperties.tsx
+    │   └── index.ts
+    │
+    └── index.ts                 # Barrel export principal
 ```
 
-**Variantes de acciones:**
+### Uso:
 
-- `primary` - Oscuro (Editar, Ver)
-- `secondary` - Teal (Alquilar, Publicar)
-- `danger` - Rojo (Eliminar)
-- `success` - Verde (Activar)
-- `warning` - Ámbar (Pausar)
-- `info` - Azul (Info)
+```typescript
+// Opción 1: Import directo desde subcarpeta
+import { BasePropertyCard } from "@/components/features/properties/cards";
+import { PropertyFilters } from "@/components/features/properties/filters";
 
----
+// Opción 2: Import desde el barrel principal (si está configurado)
+import {
+  BasePropertyCard,
+  PropertyFilters,
+} from "@/components/features/properties";
 
-### PropertyFilters
-
-Sidebar de filtros para búsqueda de propiedades con estados temporales vs aplicados.
-
-```tsx
-<PropertyFilters
-  initialFilters={appliedFilters}
-  onSearch={setAppliedFilters}
-  onReset={() => setAppliedFilters(defaultFilters)}
-  appliedOperationType={appliedFilters.operationType}
-/>
+// Opción 3: Import de feature completa
+import { LoginPage } from "@/components/features/auth";
+import { HeroSection } from "@/components/features/home";
 ```
 
-**Filtros disponibles:**
+### Principios:
 
-- Tipo de operación (Venta/Alquiler/Todos)
-- Tipo de inmueble (Casa, Departamento, etc.)
-- Dormitorios (1, 2, 3, 4+)
-- Baños (1, 2, 3)
-- Rango de precio (ARS para alquiler, USD para venta)
-
-**Usado en:** `/propiedades`
+- ✅ **Separación por dominio**: Cada feature es independiente
+- ✅ **Lógica de negocio**: Pueden contener hooks, servicios, etc.
+- ✅ **Composición**: Usan componentes de `/ui`
+- ✅ **Barrel exports**: Facilitan imports limpios
 
 ---
 
-### SearchBlock
+## 📊 `/dashboard` - Componentes de Dashboards
 
-Bloque de búsqueda principal del home con tabs Alquilar/Venta y formulario completo.
+Componentes específicos para las diferentes vistas de dashboard.
 
-```tsx
-<SearchBlock />
+### Estructura:
+
+```
+dashboard/
+├── admin/                       # Dashboard de administrador
+│   ├── AdminStatsGrid.tsx
+│   ├── AdminUsersFilters.tsx
+│   ├── CreateUserModal.tsx
+│   ├── UsersTable.tsx
+│   └── README.md
+│
+├── agent/                       # Dashboard de agente
+│   ├── stats/
+│   │   └── AgentStatsGrid.tsx
+│   ├── properties/
+│   │   ├── AgentPropertyCard.tsx
+│   │   ├── AgentPropertiesFilters.tsx
+│   │   └── PropertyModal/
+│   │       ├── PropertyModal.tsx
+│   │       ├── ImageSection.tsx
+│   │       ├── LandlordSection.tsx
+│   │       └── LocationSection.tsx
+│   ├── contracts/
+│   │   ├── ContractFilters.tsx
+│   │   ├── RentalModal.tsx
+│   │   └── ViewContractModal.tsx
+│   └── UpcomingExpirations.tsx
+│
+└── common/                      # Compartidos entre dashboards
+    └── ViewContractModal.tsx
 ```
 
-**Características:**
+### Uso:
 
-- Tabs para Alquilar/Venta
-- Filtros: tipo, localidad, dormitorios, baños, barrio, precio
-- Validación de rango de precios
-- Redirige a `/propiedades` con query params
-
-**Usado en:** Home (`/`)
-
----
-
-### DashboardHeader
-
-Header consistente para todos los dashboards con título, icono, email y logout.
-
-```tsx
-<DashboardHeader
-  title="Agente"
-  userEmail={userEmail}
-  icon="briefcase"
-  onLogout={handleLogout}
-/>
+```typescript
+import AdminStatsGrid from "@/components/dashboard/admin/AdminStatsGrid";
+import AgentPropertyCard from "@/components/dashboard/agent/AgentPropertyCard";
 ```
 
-**Características:**
+### Principios:
 
-- Sticky header (se mantiene visible al scroll)
-- Gradiente oscuro consistente
-- Icono personalizable por rol
-- Botón de logout con hover effect
-
-**Usado en:** `/admin`, `/agente`, `/inquilino`, `/propietario`, `/gerencia`
+- ✅ **Separación por rol**: Admin, Agent, Owner, Tenant
+- ✅ **Componentes compartidos**: En `/common`
+- ✅ **Lógica específica**: Hooks y servicios del dashboard
 
 ---
 
-### HeroSection
+## 🏗️ `/layout` - Componentes de Layout
 
-Banner hero para páginas con título destacado y efectos decorativos.
+Componentes estructurales de la aplicación.
 
-```tsx
-<HeroSection
-  title="Contáctanos"
-  highlightedText="Contáctanos" // Parte con gradiente aqua
-  subtitle="Estamos aquí para ayudarte a encontrar tu hogar ideal"
-/>
+### Estructura:
+
+```
+layout/
+├── DashboardHeader.tsx          # Header de dashboards
+├── Navbar.tsx                   # Navegación principal
+├── Footer.tsx                   # Footer del sitio
+└── index.ts                     # Barrel export
 ```
 
-**Usado en:** `/contacto`, `/nosotros`
+### Uso:
 
----
-
-### Navbar
-
-Barra de navegación principal con logo, links y botón de login.
-
-**Características:**
-
-- Responsive con menú hamburguesa en móvil
-- Links: Inicio, Propiedades, Nosotros, Contacto
-- Botón "Iniciar Sesión"
-- Sticky con fondo oscuro
-
-**Usado en:** Todas las páginas públicas (layout `(groupNF)`)
-
----
-
-### Footer
-
-Pie de página con información de la empresa, links y redes sociales.
-
-**Características:**
-
-- 3 columnas: Empresa, Enlaces Rápidos, Contacto
-- Logo e información de contacto
-- Links a páginas principales
-- Redes sociales
-
-**Usado en:** Todas las páginas públicas (layout `(groupNF)`)
-
----
-
-### FeaturedProperties
-
-Sección de propiedades destacadas para el home.
-
-```tsx
-<FeaturedProperties />
+```typescript
+import { Navbar, Footer, DashboardHeader } from "@/components/layout";
 ```
 
-Muestra un grid de propiedades destacadas usando `UniversalPropertyCard`.
+### Principios:
 
-**Usado en:** Home (`/`)
+- ✅ **Estructura global**: Usados en layouts de Next.js
+- ✅ **Consistencia**: Mantienen la estructura visual
+- ✅ **Responsive**: Adaptados a diferentes tamaños
 
 ---
 
-### LoginPage
+## 📝 Guías de Uso
 
-Página completa de login con formulario de email/password.
+### ¿Dónde crear un nuevo componente?
 
-```tsx
-<LoginPage />
+#### 1. **Componente UI reutilizable** (sin lógica de negocio)
+
+→ `/ui/[categoría]/ComponentName.tsx`
+
+**Ejemplo**: Un nuevo componente de botón
+
+```
+ui/buttons/Button.tsx
 ```
 
-**Características:**
+#### 2. **Componente de feature** (con lógica de negocio)
 
-- Formulario con validación
-- Integración con server actions
-- Redirección según rol de usuario
-- Diseño con gradiente y efectos
+→ `/features/[dominio]/ComponentName.tsx`
 
-**Usado en:** `/login`
+**Ejemplo**: Un componente de mapa de propiedades
 
----
+```
+features/properties/map/PropertyMap.tsx
+```
 
-## 🎨 Convenciones de Diseño
+#### 3. **Componente de dashboard**
 
-Todos los componentes siguen estas convenciones:
+→ `/dashboard/[rol]/ComponentName.tsx`
 
-- **Color primario**: `#14b8a6` (aqua/teal)
-- **Color oscuro**: `#0f172a` (slate-900)
-- **Bordes**: `rounded-lg` o `rounded-2xl`
-- **Transiciones**: `transition-all duration-300`
-- **Gradientes**:
-  - Aqua: `from-[#14b8a6] to-[#0d9488]`
-  - Oscuro: `from-[#0f172a] to-[#334155]`
+**Ejemplo**: Un widget de estadísticas del propietario
 
-## 🔍 ¿Dónde Poner un Nuevo Componente?
+```
+dashboard/owner/OwnerStatsWidget.tsx
+```
 
-**Ponlo en `/UI` si:**
+#### 4. **Componente de layout**
 
-- ✅ Es genérico y reutilizable (botones, inputs, modales, etc.)
-- ✅ No tiene lógica de negocio específica
-- ✅ Podría usarse en cualquier tipo de aplicación
+→ `/layout/ComponentName.tsx`
 
-**Ponlo en `/components` (raíz) si:**
+**Ejemplo**: Un sidebar
 
-- ✅ Es específico del dominio inmobiliario
-- ✅ Tiene lógica de negocio
-- ✅ Es un componente de layout o página completa
+```
+layout/Sidebar.tsx
+```
 
 ---
 
-**Ver también:** [UI/README.md](./UI/README.md) para componentes UI reutilizables
+## 🔄 Migración desde estructura antigua
+
+### Mapeo de rutas:
+
+| Antigua Ruta                      | Nueva Ruta                                  |
+| --------------------------------- | ------------------------------------------- |
+| `@/components/UI`                 | `@/components/ui`                           |
+| `@/components/LoginPage`          | `@/components/features/auth`                |
+| `@/components/BasePropertyCard`   | `@/components/features/properties/cards`    |
+| `@/components/PropertyFilters`    | `@/components/features/properties/filters`  |
+| `@/components/SearchBlock`        | `@/components/features/properties/search`   |
+| `@/components/FeaturedProperties` | `@/components/features/properties/featured` |
+| `@/components/HeroSection`        | `@/components/features/home`                |
+
+### Cambio de imports:
+
+**Antes:**
+
+```typescript
+import LoginPage from "@/components/LoginPage";
+import BasePropertyCard from "@/components/BasePropertyCard";
+import { Icon } from "@/components/UI";
+```
+
+**Después:**
+
+```typescript
+import { LoginPage } from "@/components/features/auth";
+import { BasePropertyCard } from "@/components/features/properties/cards";
+import { Icon } from "@/components/ui";
+```
+
+---
+
+## 🎯 Mejores Prácticas
+
+### 1. **Barrel Exports**
+
+Cada carpeta debe tener un `index.ts` para facilitar imports:
+
+```typescript
+// features/properties/cards/index.ts
+export { default as BasePropertyCard } from "./BasePropertyCard";
+export { default as RentalPropertyCard } from "./RentalPropertyCard";
+```
+
+### 2. **Naming Conventions**
+
+- **Componentes**: PascalCase (`BasePropertyCard.tsx`)
+- **Carpetas**: camelCase (`features/properties/cards/`)
+- **Archivos de tipos**: PascalCase con `.types.ts` (`Property.types.ts`)
+
+### 3. **Imports**
+
+Preferir named exports sobre default exports para mejor tree-shaking:
+
+```typescript
+// ✅ Bueno
+export function MyComponent() { ... }
+
+// ❌ Evitar (excepto en páginas de Next.js)
+export default function MyComponent() { ... }
+```
+
+### 4. **Colocation**
+
+Mantener archivos relacionados juntos:
+
+```
+PropertyModal/
+├── PropertyModal.tsx           # Componente principal
+├── ImageSection.tsx            # Subcomponente
+├── LandlordSection.tsx         # Subcomponente
+└── LocationSection.tsx         # Subcomponente
+```
+
+---
+
+## 📚 Recursos Adicionales
+
+- [Atomic Design](https://bradfrost.com/blog/post/atomic-web-design/)
+- [Feature-First Architecture](https://feature-sliced.design/)
+- [Next.js Project Structure](https://nextjs.org/docs/app/building-your-application/routing/colocation)
+
+---
+
+## 🔧 Mantenimiento
+
+Esta estructura debe evolucionar con el proyecto. Al agregar nuevas features:
+
+1. ✅ Evaluar si pertenece a una carpeta existente
+2. ✅ Crear nuevas carpetas si es necesario
+3. ✅ Actualizar este README
+4. ✅ Mantener barrel exports actualizados
+5. ✅ Documentar decisiones importantes
+
+---
+
+**Última actualización**: 2026-02-10
+**Versión**: 2.0.0 (Reorganización Feature-First)

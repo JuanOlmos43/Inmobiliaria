@@ -11,7 +11,7 @@ import {
   TabNavigation,
   ConfirmModal,
   Pagination,
-} from "@/components/UI";
+} from "@/components/ui";
 import AgentPropertyCard from "@/components/dashboard/agent/AgentPropertyCard";
 import PropertyModal from "@/components/dashboard/agent/PropertyModal";
 import RentalModal from "@/components/dashboard/agent/RentalModal";
@@ -19,7 +19,7 @@ import ViewContractModal from "@/components/dashboard/common/ViewContractModal";
 import UpcomingExpirations from "@/components/dashboard/agent/UpcomingExpirations";
 import AgentPropertiesFilters from "@/components/dashboard/agent/AgentPropertiesFilters";
 import ContractFilters from "@/components/dashboard/agent/ContractFilters";
-import BasePropertyCard from "@/components/BasePropertyCard";
+import { BasePropertyCard } from "@/components/features/properties/cards";
 
 /**
  * AgentDashboardPage
@@ -391,3 +391,4 @@ export default function AgentDashboardPage() {
     </div>
   );
 }
+

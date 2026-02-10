@@ -1,4 +1,4 @@
-import { StatsCard, Icon } from "@/components/UI";
+import { StatsCard, Icon } from "@/components/ui";
 import { PropertyStats } from "@/types/property";
 import { ContractStats } from "@/types/api";
 
@@ -173,3 +173,4 @@ export default function AgentStatsGrid({
     </div>
   );
 }
+

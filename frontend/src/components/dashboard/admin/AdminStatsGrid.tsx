@@ -1,4 +1,4 @@
-import { StatsCard } from "@/components/UI";
+import { StatsCard } from "@/components/ui";
 import { UserStats } from "@/types/api";
 
 interface AdminStatsGridProps {
@@ -162,3 +162,4 @@ export default function AdminStatsGrid({ stats }: AdminStatsGridProps) {
     </div>
   );
 }
+

@@ -3,7 +3,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { useState } from "react";
-import { Icon } from "@/components/UI";
+import { Icon } from "@/components/ui";
 
 export function Navbar() {
   // Estado para controlar el menú móvil
@@ -156,3 +156,5 @@ export function Navbar() {
     </nav>
   );
 }
+
+

@@ -1,7 +1,7 @@
 "use client";
 
 import { ReactNode } from "react";
-import { Icon } from "./Icon";
+import { Icon } from "../icons/Icon";
 
 interface EmptyStateProps {
   icon?: ReactNode;

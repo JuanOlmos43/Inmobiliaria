@@ -1,5 +1,5 @@
-import { Icon } from "@/components/UI";
-import BasePropertyCard from "@/components/BasePropertyCard";
+import { Icon } from "@/components/ui";
+import { BasePropertyCard } from "@/components/features/properties/cards";
 import { useContractExpirations } from "@/hooks/agent/useContractExpirations";
 import { ContractActivity, Contract } from "@/types/api";
 
@@ -111,3 +111,4 @@ export default function UpcomingExpirations({
     </div>
   );
 }
+

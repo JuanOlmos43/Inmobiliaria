@@ -1,5 +1,5 @@
 import { Dispatch, SetStateAction } from "react";
-import { FormInput, FormSelect } from "@/components/UI";
+import { FormInput, FormSelect } from "@/components/ui";
 import { useLocationLogic } from "@/hooks/useLocationLogic";
 import { Property } from "@/types/property";
 import { Provincia, Localidad, Calle } from "@/types/location";
@@ -227,3 +227,4 @@ export default function LocationSection({
     </div>
   );
 }
+

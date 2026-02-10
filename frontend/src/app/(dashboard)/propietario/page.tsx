@@ -1,11 +1,11 @@
 "use client";
 import React, { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { TabNavigation } from "@/components/UI";
-import RentalPropertyCard from "@/components/RentalPropertyCard";
-import BasePropertyCard from "@/components/BasePropertyCard";
+import { TabNavigation } from "@/components/ui";
+import { RentalPropertyCard } from "@/components/features/properties/cards";
+import { BasePropertyCard } from "@/components/features/properties/cards";
 import ViewContractModal from "@/components/dashboard/common/ViewContractModal";
-import { Icon } from "@/components/UI";
+import { Icon } from "@/components/ui";
 import { propertiesService } from "@/lib/api/services/properties";
 import { contratosService } from "@/lib/api/services/contratos";
 import { Contract } from "@/types/api";
@@ -416,3 +416,4 @@ function PropertyCardWrapper({ property }: { property: Property }) {
     />
   );
 }
+

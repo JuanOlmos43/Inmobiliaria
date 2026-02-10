@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { Modal, FormInput, FormTextarea, FormSelect } from "@/components/UI";
+import { Modal, FormInput, FormTextarea, FormSelect } from "@/components/ui";
 import { propertiesService } from "@/lib/api/services/properties";
 import { Property } from "@/types/property";
 
@@ -471,3 +471,4 @@ export default function PropertyModal({
     </Modal>
   );
 }
+

@@ -1,5 +1,5 @@
 import { UserRole } from "@/types/api";
-import { FormInput, FormSelect } from "@/components/UI";
+import { FormInput, FormSelect } from "@/components/ui";
 
 interface AdminUsersFiltersProps {
   searchEmail: string;
@@ -45,3 +45,4 @@ export default function AdminUsersFilters({
     </div>
   );
 }
+

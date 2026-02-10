@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useDebounce } from "@/hooks/useDebounce";
-import { Modal, FormInput, FormSelect } from "@/components/UI";
+import { Modal, FormInput, FormSelect } from "@/components/ui";
 import {
   UserProfile,
   UserStatus,
@@ -335,3 +335,4 @@ export default function RentalModal({
     </Modal>
   );
 }
+

@@ -1,5 +1,5 @@
-import { Icon } from "./Icon";
-import type { IconName } from "./Icon";
+import { Icon } from "../icons/Icon";
+import type { IconName } from "../icons/Icon";
 
 interface StatsCardProps {
   title: string;

@@ -1,8 +1,8 @@
 "use client";
 
 import { InputHTMLAttributes } from "react";
-import { Icon } from "./Icon";
-import type { IconName } from "./Icon";
+import { Icon } from "../icons/Icon";
+import type { IconName } from "../icons/Icon";
 
 interface FormInputProps extends InputHTMLAttributes<HTMLInputElement> {
   label: string;

@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { Icon } from "@/components/UI";
+import { Icon } from "@/components/ui";
 
 export function Footer() {
   return (
@@ -98,3 +98,4 @@ export function Footer() {
     </footer>
   );
 }
+

@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
-import { Icon } from "./Icon";
+import { Icon } from "../icons/Icon";
 
 interface ToastProps {
   message: string;

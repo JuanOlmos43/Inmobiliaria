@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { FormInput } from "@/components/UI";
+import { FormInput } from "@/components/ui";
 import { authService } from "@/lib/api/services/auth";
 
 export default function LoginPage() {
@@ -187,3 +187,4 @@ export default function LoginPage() {
     </div>
   );
 }
+
