@@ -15,8 +15,8 @@ export interface Property {
   streetNumber?: string;
   apartment?: string;
   mainImage?: string;
-  images?: string[];
-  features?: string[];
+  images?: string[] | Array<{ id: string; url: string; order: number }>;
+  features?: string[] | Array<{ id: string; name: string }>;
   status: "activa" | "pausada" | "alquilada" | "archivada";
   createdAt?: string;
   updatedAt?: string;

@@ -55,6 +55,12 @@ export class PropiedadesController {
     return this.propiedadesService.findAll(query, true);
   }
 
+  @Get('public/:id')
+  @Public()
+  findOnePublic(@Param('id') id: string) {
+    return this.propiedadesService.findOne(id);
+  }
+
   @Get()
   findAll(@Query() query: QueryPropiedadesDto) {
     return this.propiedadesService.findAll(query, false);

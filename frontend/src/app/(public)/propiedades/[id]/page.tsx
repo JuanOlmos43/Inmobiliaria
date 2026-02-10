@@ -1,20 +1,59 @@
 "use client";
 
 import { useParams } from "next/navigation";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { allProperties } from "@/data/properties";
+import { propertiesService } from "@/lib/api/services/properties";
+import type { Property } from "@/types/property";
 import { Icon } from "@/components/ui";
 
 export default function PropertyDetailPage() {
   const params = useParams();
-  const propertyId = parseInt(params.id as string);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
-  const property = allProperties.find((p) => p.id === propertyId);
+  // Estados para datos del backend
+  const [property, setProperty] = useState<Property | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  if (!property) {
+  // Fetch property from backend
+  useEffect(() => {
+    const fetchProperty = async () => {
+      try {
+        setIsLoading(true);
+        setError(null);
+        const data = await propertiesService.getPublicProperty(
+          params.id as string,
+        );
+        setProperty(data);
+      } catch (err) {
+        console.error("Error fetching property:", err);
+        setError("Error al cargar la propiedad");
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    if (params.id) {
+      fetchProperty();
+    }
+  }, [params.id]);
+
+  // Loading state
+  if (isLoading) {
+    return (
+      <main className="grow bg-(--background) flex items-center justify-center min-h-screen">
+        <div className="flex flex-col items-center gap-4">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-(--accent)"></div>
+          <p className="text-gray-500 font-medium">Cargando propiedad...</p>
+        </div>
+      </main>
+    );
+  }
+
+  // Error state
+  if (error || !property) {
     return (
       <main className="grow bg-(--background) flex items-center justify-center">
         <div className="text-center">
@@ -32,11 +71,13 @@ export default function PropertyDetailPage() {
     );
   }
 
-  // Use images array if available, otherwise fallback to single image
+  // Extract image URLs from PropertyImage objects
   const propertyImages =
     property.images && property.images.length > 0
-      ? property.images
-      : [property.image];
+      ? property.images.map((img) => (typeof img === "string" ? img : img.url))
+      : property.mainImage
+        ? [property.mainImage]
+        : [];
 
   const nextImage = () => {
     setCurrentImageIndex((prev) => (prev + 1) % propertyImages.length);
@@ -57,15 +98,23 @@ export default function PropertyDetailPage() {
           <div className="lg:col-span-2">
             {/* Image Carousel */}
             <div className="relative h-96 bg-gray-200 rounded-lg overflow-hidden mb-6 group">
-              <Image
-                src={propertyImages[currentImageIndex]}
-                alt={`${property.title} - Imagen ${currentImageIndex + 1}`}
-                fill
-                className="object-cover transition-opacity duration-300"
-              />
+              {propertyImages.length > 0 ? (
+                <Image
+                  src={propertyImages[currentImageIndex]}
+                  alt={`${property.title} - Imagen ${currentImageIndex + 1}`}
+                  fill
+                  className="object-cover transition-opacity duration-300"
+                />
+              ) : (
+                <div className="flex items-center justify-center h-full bg-gray-300">
+                  <p className="text-gray-500 text-lg">
+                    Sin imágenes disponibles
+                  </p>
+                </div>
+              )}
               <div className="absolute top-4 right-4 z-10">
                 <span className="bg-(--accent) text-white px-4 py-2 rounded-lg text-sm font-semibold">
-                  {property.type === "venta" ? "Venta" : "Alquiler"}
+                  {property.listingType === "venta" ? "Venta" : "Alquiler"}
                 </span>
               </div>
 
@@ -236,7 +285,9 @@ export default function PropertyDetailPage() {
                         clipRule="evenodd"
                       />
                     </svg>
-                    <span className="text-gray-700">{feature}</span>
+                    <span className="text-gray-700">
+                      {typeof feature === "string" ? feature : feature.name}
+                    </span>
                   </div>
                 ))}
               </div>
@@ -252,7 +303,7 @@ export default function PropertyDetailPage() {
                 <p className="text-4xl font-bold text-(--primary)">
                   {property.currency} {property.price.toLocaleString("es-AR")}
                 </p>
-                {property.type === "alquiler" && (
+                {property.listingType === "alquiler" && (
                   <p className="text-(--primary) text-sm mt-1">por mes</p>
                 )}
               </div>

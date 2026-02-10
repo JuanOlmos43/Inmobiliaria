@@ -115,7 +115,28 @@ export const propertiesService = {
   },
 
   /**
-   * Get one property by ID
+   * Get one property by ID (PUBLIC - no auth required)
+   * Uses fetch directly to avoid authentication redirects on public pages
+   */
+  async getPublicProperty(id: string): Promise<Property> {
+    const baseUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
+    const response = await fetch(`${baseUrl}/propiedades/public/${id}`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      cache: "no-store",
+    });
+    
+    if (!response.ok) {
+      throw new Error(`Failed to fetch property: ${response.status}`);
+    }
+    
+    return response.json();
+  },
+
+  /**
+   * Get one property by ID (PROTECTED - requires auth)
    */
   async findOne(id: string): Promise<Property> {
     return apiClient.get(`/propiedades/${id}`);
