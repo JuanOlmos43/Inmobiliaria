@@ -3,13 +3,34 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import BasePropertyCard from "@/components/BasePropertyCard";
-import { featuredProperties } from "@/data/properties";
+import { propertiesService } from "@/lib/api/services/properties";
+import type { Property } from "@/types/property";
 
 export default function FeaturedProperties() {
+  const [properties, setProperties] = useState<Property[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
   const itemsPerPage = 3; // Mostrar 3 propiedades a la vez
-  const maxIndex = Math.max(0, featuredProperties.length - itemsPerPage);
+
+  // Fetch featured properties from API
+  useEffect(() => {
+    const fetchFeaturedProperties = async () => {
+      try {
+        const data = await propertiesService.getFeaturedProperties();
+        setProperties(data);
+      } catch (error) {
+        console.error("Error fetching featured properties:", error);
+        // No hacer nada más - la sección se ocultará
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchFeaturedProperties();
+  }, []);
+
+  const maxIndex = Math.max(0, properties.length - itemsPerPage);
 
   const handlePrev = () => {
     setCurrentIndex((prev) => (prev === 0 ? maxIndex : prev - 1));
@@ -21,14 +42,54 @@ export default function FeaturedProperties() {
 
   // Auto-play: avanzar automáticamente cada 5 segundos
   useEffect(() => {
-    if (!isPaused) {
+    if (!isPaused && properties.length > itemsPerPage) {
       const interval = setInterval(() => {
         setCurrentIndex((prev) => (prev >= maxIndex ? 0 : prev + 1));
       }, 5000); // Cambia cada 5 segundos
 
       return () => clearInterval(interval);
     }
-  }, [isPaused, maxIndex]);
+  }, [isPaused, maxIndex, properties.length, itemsPerPage]);
+
+  // Loading state
+  if (isLoading) {
+    return (
+      <section className="pb-12 bg-linear-to-b from-(--primary) via-(--primary) to-(--primary-light)">
+        {/* Header */}
+        <div className="pt-8 pb-8">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <h2 className="text-white text-3xl md:text-4xl font-bold text-left animate-slide-in-right">
+              Propiedades Destacadas
+            </h2>
+          </div>
+        </div>
+
+        {/* Loading Skeleton */}
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-8">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            {[1, 2, 3].map((i) => (
+              <div
+                key={i}
+                className="bg-white rounded-2xl shadow-lg overflow-hidden animate-pulse"
+              >
+                <div className="h-64 bg-gray-300"></div>
+                <div className="p-6 space-y-4">
+                  <div className="h-6 bg-gray-300 rounded w-3/4"></div>
+                  <div className="h-4 bg-gray-300 rounded w-1/2"></div>
+                  <div className="h-4 bg-gray-300 rounded w-full"></div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+    );
+  }
+
+  // Si no hay propiedades, ocultar la sección completamente
+  if (properties.length === 0) {
+    return null;
+  }
 
   return (
     <section className="pb-12 bg-linear-to-b from-(--primary) via-(--primary) to-(--primary-light)">
@@ -48,8 +109,8 @@ export default function FeaturedProperties() {
           onMouseEnter={() => setIsPaused(true)}
           onMouseLeave={() => setIsPaused(false)}
         >
-          {/* Navigation Arrows */}
-          {featuredProperties.length > itemsPerPage && (
+          {/* Navigation Arrows - Solo mostrar si hay más de 3 propiedades */}
+          {properties.length > itemsPerPage && (
             <>
               <button
                 onClick={handlePrev}
@@ -101,7 +162,7 @@ export default function FeaturedProperties() {
                 transform: `translateX(calc(-${currentIndex * 100}% - ${currentIndex * 1.5}rem))`,
               }}
             >
-              {featuredProperties.map((property) => (
+              {properties.map((property) => (
                 <div
                   key={property.id}
                   className="shrink-0 w-full lg:w-[calc(33.333%-1rem)]"
@@ -114,12 +175,19 @@ export default function FeaturedProperties() {
                       title={property.title}
                       price={property.price}
                       currency={property.currency}
-                      location={property.location}
+                      location={
+                        property.location ||
+                        (property.localidad
+                          ? `${property.localidad.nombre}, ${property.localidad.provincia?.nombre}`
+                          : "Ubicación no disponible")
+                      }
                       bedrooms={property.bedrooms}
                       bathrooms={property.bathrooms}
                       area={property.area}
-                      type={property.type === "venta" ? "Venta" : "Alquiler"}
-                      image={property.image}
+                      type={
+                        property.listingType === "venta" ? "Venta" : "Alquiler"
+                      }
+                      image={property.mainImage}
                       showTypeBadge={true}
                       showDetails={true}
                       className="cursor-pointer"
@@ -131,21 +199,23 @@ export default function FeaturedProperties() {
           </div>
         </div>
 
-        {/* Mobile Navigation Dots */}
-        <div className="flex justify-center gap-2 mt-6 lg:hidden">
-          {featuredProperties.map((_, index) => (
-            <button
-              key={index}
-              onClick={() => setCurrentIndex(index)}
-              className={`w-3 h-3 rounded-full transition-all duration-300 ${
-                index === currentIndex
-                  ? "bg-linear-to-r from-(--accent) to-(--accent-hover) w-8"
-                  : "bg-gray-300"
-              }`}
-              aria-label={`Ir a propiedad ${index + 1}`}
-            />
-          ))}
-        </div>
+        {/* Mobile Navigation Dots - Solo mostrar si hay más de 1 propiedad */}
+        {properties.length > 1 && (
+          <div className="flex justify-center gap-2 mt-6 lg:hidden">
+            {properties.map((_, index) => (
+              <button
+                key={index}
+                onClick={() => setCurrentIndex(index)}
+                className={`w-3 h-3 rounded-full transition-all duration-300 ${
+                  index === currentIndex
+                    ? "bg-linear-to-r from-(--accent) to-(--accent-hover) w-8"
+                    : "bg-gray-300"
+                }`}
+                aria-label={`Ir a propiedad ${index + 1}`}
+              />
+            ))}
+          </div>
+        )}
       </div>
     </section>
   );

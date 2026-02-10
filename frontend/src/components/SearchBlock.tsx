@@ -75,7 +75,7 @@ export default function SearchBlock() {
               onClick={() => setActiveTab("venta")}
               className={`flex-1 py-5 px-6 text-center font-bold transition-all duration-300 ${
                 activeTab === "venta"
-                  ? "bg-(--accent) text-white shadow-lg"
+                  ? "bg-(--primary) text-white shadow-lg"
                   : "bg-gray-50 text-gray-700 hover:bg-gray-100"
               }`}
             >

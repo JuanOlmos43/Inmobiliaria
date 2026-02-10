@@ -134,7 +134,7 @@ export default function PropertyFilters({
               onClick={() => setTempOperationType("venta")}
               className={`flex-1 py-2 px-4 rounded-lg font-medium transition-all duration-200 ${
                 tempOperationType === "venta"
-                  ? "bg-(--accent) text-white shadow-md"
+                  ? "bg-(--primary) text-white shadow-md"
                   : "bg-gray-100 text-gray-700 hover:bg-gray-200"
               }`}
             >

@@ -92,6 +92,29 @@ export const propertiesService = {
   },
 
   /**
+   * Get featured properties for homepage
+   * Returns up to 6 properties (3 venta + 3 alquiler)
+   * Only active properties with images
+   * NOTE: Uses fetch directly to avoid authentication redirects on public pages
+   */
+  async getFeaturedProperties(): Promise<Property[]> {
+    const baseUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
+    const response = await fetch(`${baseUrl}/propiedades/featured`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      cache: "no-store",
+    });
+    
+    if (!response.ok) {
+      throw new Error(`Failed to fetch featured properties: ${response.status}`);
+    }
+    
+    return response.json();
+  },
+
+  /**
    * Get one property by ID
    */
   async findOne(id: string): Promise<Property> {

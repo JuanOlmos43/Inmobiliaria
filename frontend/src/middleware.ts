@@ -151,6 +151,7 @@ export async function middleware(request: NextRequest) {
       }
     }
 
+    // Para todas las demás rutas públicas, permitir acceso sin autenticación
     return NextResponse.next();
   }
 
