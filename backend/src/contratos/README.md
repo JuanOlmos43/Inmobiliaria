@@ -3,6 +3,7 @@
 Documentación de los endpoints disponibles en el módulo de Contratos de Alquiler.
 
 ## Base URL
+
 `/contratos`
 
 Todas las peticiones requieren autenticación (Bearer Token) y permisos de Agente para operaciones de escritura.
@@ -10,6 +11,7 @@ Todas las peticiones requieren autenticación (Bearer Token) y permisos de Agent
 ---
 
 ## 1. Listar Contratos (Paginado)
+
 Obtiene el listado de contratos con filtros avanzados.
 
 **Endpoint:** `GET /contratos`
@@ -27,13 +29,14 @@ Obtiene el listado de contratos con filtros avanzados.
 | `tenantId` | UUID | Filtrar por inquilino específico | |
 
 **Respuesta:**
+
 ```json
 {
   "data": [ ...contracts... ],
   "meta": {
     "total": 50,
     "page": 1,
-    "lastPage": 5,
+    "totalPages": 5,
     "limit": 10
   }
 }
@@ -42,6 +45,7 @@ Obtiene el listado de contratos con filtros avanzados.
 ---
 
 ## 2. Estadísticas Generales
+
 Métricas rápidas para tarjetas de resumen.
 
 **Endpoint:** `GET /contratos/stats`
@@ -49,15 +53,16 @@ Métricas rápidas para tarjetas de resumen.
 **Query Params:** Ninguno.
 
 **Respuesta:**
+
 ```json
 {
   "monthly": {
-    "new": 8,            // Iniciados este mes
-    "expiring": 3        // Finalizan este mes
+    "new": 8, // Iniciados este mes
+    "expiring": 3 // Finalizan este mes
   },
   "status": {
-    "active": 45,        // Total activos
-    "expired": 120       // Total históricos vencidos
+    "active": 45, // Total activos
+    "expired": 120 // Total históricos vencidos
   }
 }
 ```
@@ -65,6 +70,7 @@ Métricas rápidas para tarjetas de resumen.
 ---
 
 ## 3. Dashboard Mensual (Vencimientos y Ajustes)
+
 Obtiene contratos que requieren atención en el mes actual (Vencimientos o Ajustes de precio).
 Incluye lógica de auto-corrección para fechas de ajuste pasadas.
 
@@ -79,6 +85,7 @@ Incluye lógica de auto-corrección para fechas de ajuste pasadas.
 
 **Respuesta:**
 Lista plana de contratos con campo extra `eventType`.
+
 ```json
 [
   {
@@ -95,14 +102,17 @@ Lista plana de contratos con campo extra `eventType`.
 ---
 
 ## 4. Crear Contrato
+
 Crea un nuevo contrato.
-*   Valida que `startDate` < `endDate`.
-*   Calcula automáticamente `nextAdjustmentDate` basado en la frecuencia.
-*   **Automáticamente actualiza el estado de la propiedad asociada a `alquilada`.**
+
+- Valida que `startDate` < `endDate`.
+- Calcula automáticamente `nextAdjustmentDate` basado en la frecuencia.
+- **Automáticamente actualiza el estado de la propiedad asociada a `alquilada`.**
 
 **Endpoint:** `POST /contratos`
 
 **Body:**
+
 ```json
 {
   "propertyId": "uuid...",
@@ -120,11 +130,13 @@ Crea un nuevo contrato.
 ---
 
 ## 5. Actualizar Contrato
+
 Modifica un contrato existente. Recalcula automáticamente fechas de ajuste si cambian las fechas base.
 
 **Endpoint:** `PATCH /contratos/:id`
 
 **Body:** (Campos opcionales)
+
 ```json
 {
   "monthlyRent": 600000,
@@ -135,7 +147,9 @@ Modifica un contrato existente. Recalcula automáticamente fechas de ajuste si c
 ---
 
 ## 6. Obtener Detalle
+
 **Endpoint:** `GET /contratos/:id`
 
 ## 7. Eliminar Contrato
+
 **Endpoint:** `DELETE /contratos/:id`

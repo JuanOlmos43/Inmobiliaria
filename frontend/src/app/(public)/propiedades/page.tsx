@@ -30,11 +30,12 @@ function PropiedadesContent() {
 
   const [properties, setProperties] = useState<Property[]>([]);
   const [totalPages, setTotalPages] = useState(0);
+  const [totalProperties, setTotalProperties] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 6;
+  const itemsPerPage = 12;
 
   // Leer parámetros de URL al cargar la página
   useEffect(() => {
@@ -105,6 +106,7 @@ function PropiedadesContent() {
           await propertiesService.getPublicProperties(cleanFilters);
         setProperties(response.data);
         setTotalPages(response.meta.totalPages);
+        setTotalProperties(response.meta.total);
       } catch (err) {
         console.error("Error fetching properties:", err);
         setError("Error al cargar propiedades. Por favor intenta nuevamente.");
@@ -159,7 +161,7 @@ function PropiedadesContent() {
         subtitle={
           isLoading
             ? "Buscando propiedades..."
-            : `Encontramos ${properties.length} propiedades disponibles`
+            : `Encontramos ${totalProperties} ${totalProperties === 1 ? "propiedad disponible" : "propiedades disponibles"}`
         }
       />
 
@@ -177,7 +179,7 @@ function PropiedadesContent() {
           <div className="flex-1">
             {isLoading ? (
               <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 mb-8">
-                {[1, 2, 3, 4, 5, 6].map((i) => (
+                {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].map((i) => (
                   <div
                     key={i}
                     className="h-[400px] bg-gray-100 rounded-lg animate-pulse"
@@ -270,4 +272,3 @@ export default function PropiedadesPage() {
     </Suspense>
   );
 }
-

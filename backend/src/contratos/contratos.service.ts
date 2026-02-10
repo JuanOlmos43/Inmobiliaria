@@ -172,7 +172,7 @@ export class ContratosService {
       meta: {
         total,
         page,
-        lastPage: Math.ceil(total / limit),
+        totalPages: Math.ceil(total / limit),
         limit,
       },
     };
