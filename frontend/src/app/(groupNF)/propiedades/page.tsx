@@ -4,25 +4,28 @@ import { useState, useEffect, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import BasePropertyCard from "@/components/BasePropertyCard";
-import PropertyFilters, {
-  PropertyFiltersState,
-} from "@/components/PropertyFilters";
+import PropertyFilters from "@/components/PropertyFilters";
 import { EmptyState, Pagination } from "@/components/UI";
 import HeroSection from "@/components/HeroSection";
 import { propertiesService } from "@/lib/api/services/properties";
-import type { Property, PropertyFilters as PropertyFiltersType } from "@/types/property";
+import type {
+  Property,
+  PropertyFilters as PropertyFiltersType,
+} from "@/types/property";
 
 function PropiedadesContent() {
   const searchParams = useSearchParams();
 
   // Estados para los filtros aplicados (los que realmente filtran)
-  const [appliedFilters, setAppliedFilters] = useState<PropertyFiltersState>({
-    operationType: "todos",
+  const [appliedFilters, setAppliedFilters] = useState<PropertyFiltersType>({
+    operationType: "alquiler",
     propertyType: "",
-    bedrooms: "",
-    bathrooms: "",
-    minPrice: "",
-    maxPrice: "",
+    province: "",
+    city: "",
+    minBedrooms: undefined,
+    minBathrooms: undefined,
+    minPrice: undefined,
+    maxPrice: undefined,
   });
 
   const [properties, setProperties] = useState<Property[]>([]);
@@ -37,6 +40,8 @@ function PropiedadesContent() {
   useEffect(() => {
     const urlOperationType = searchParams.get("operationType");
     const urlPropertyType = searchParams.get("propertyType");
+    const urlProvince = searchParams.get("province");
+    const urlCity = searchParams.get("city");
     const urlBedrooms = searchParams.get("bedrooms");
     const urlBathrooms = searchParams.get("bathrooms");
     const urlMinPrice = searchParams.get("minPrice");
@@ -45,19 +50,21 @@ function PropiedadesContent() {
     // Validar que el tipo de operación sea válido
     const isValidOperationType = (
       value: string | null,
-    ): value is "todos" | "venta" | "alquiler" => {
-      return value === "todos" || value === "venta" || value === "alquiler";
+    ): value is "venta" | "alquiler" => {
+      return value === "venta" || value === "alquiler";
     };
 
     setAppliedFilters({
       operationType: isValidOperationType(urlOperationType)
         ? urlOperationType
-        : "todos",
+        : "alquiler",
       propertyType: urlPropertyType || "",
-      bedrooms: urlBedrooms || "",
-      bathrooms: urlBathrooms || "",
-      minPrice: urlMinPrice || "",
-      maxPrice: urlMaxPrice || "",
+      province: urlProvince || "",
+      city: urlCity || "",
+      minBedrooms: urlBedrooms ? parseInt(urlBedrooms) : undefined,
+      minBathrooms: urlBathrooms ? parseInt(urlBathrooms) : undefined,
+      minPrice: urlMinPrice ? parseFloat(urlMinPrice) : undefined,
+      maxPrice: urlMaxPrice ? parseFloat(urlMaxPrice) : undefined,
     });
   }, [searchParams]);
 
@@ -77,29 +84,25 @@ function PropiedadesContent() {
       setIsLoading(true);
       setError(null);
       try {
+        // Los filtros ya vienen en el formato correcto desde PropertyFilters
         const filters: PropertyFiltersType = {
+          ...appliedFilters,
           page: currentPage,
           limit: itemsPerPage,
-          listingType:
-            appliedFilters.operationType === "todos"
-              ? undefined
-              : (appliedFilters.operationType as "venta" | "alquiler"),
-          propertyType: appliedFilters.propertyType || undefined,
-          minBedrooms: appliedFilters.bedrooms
-            ? parseInt(appliedFilters.bedrooms)
-            : undefined,
-          minBathrooms: appliedFilters.bathrooms
-            ? parseInt(appliedFilters.bathrooms)
-            : undefined,
-          minPrice: appliedFilters.minPrice
-            ? parseInt(appliedFilters.minPrice)
-            : undefined,
-          maxPrice: appliedFilters.maxPrice
-            ? parseInt(appliedFilters.maxPrice)
-            : undefined,
         };
 
-        const response = await propertiesService.getPublicProperties(filters);
+        // Limpiar campos vacíos antes de enviar al backend
+        const cleanFilters = Object.fromEntries(
+          Object.entries(filters).filter(([_, value]) => {
+            // Mantener valores que no sean undefined, null, o strings vacíos
+            return value !== undefined && value !== null && value !== "";
+          }),
+        ) as PropertyFiltersType;
+
+        console.log("Filters being sent to backend:", cleanFilters);
+
+        const response =
+          await propertiesService.getPublicProperties(cleanFilters);
         setProperties(response.data);
         setTotalPages(response.meta.totalPages);
       } catch (err) {
@@ -114,18 +117,20 @@ function PropiedadesContent() {
   }, [appliedFilters, currentPage]);
 
   // Aplicar los filtros
-  const handleSearch = (filters: PropertyFiltersState) => {
+  const handleSearch = (filters: PropertyFiltersType) => {
     setAppliedFilters(filters);
   };
 
   const handleReset = () => {
     setAppliedFilters({
-      operationType: "todos",
+      operationType: "alquiler",
       propertyType: "",
-      bedrooms: "",
-      bathrooms: "",
-      minPrice: "",
-      maxPrice: "",
+      province: "",
+      city: "",
+      minBedrooms: undefined,
+      minBathrooms: undefined,
+      minPrice: undefined,
+      maxPrice: undefined,
     });
     setCurrentPage(1);
   };
@@ -137,7 +142,7 @@ function PropiedadesContent() {
           <p className="text-red-500 mb-4">{error}</p>
           <button
             onClick={() => window.location.reload()}
-            className="px-4 py-2 bg-primary text-white rounded hover:bg-primary/90"
+            className="px-4 py-2 bg-(--primary) text-white rounded hover:bg-(--primary-light) transition-colors"
           >
             Reintentar
           </button>
@@ -166,7 +171,6 @@ function PropiedadesContent() {
             initialFilters={appliedFilters}
             onSearch={handleSearch}
             onReset={handleReset}
-            appliedOperationType={appliedFilters.operationType}
           />
 
           {/* Main Content - Grid de propiedades */}

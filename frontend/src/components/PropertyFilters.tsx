@@ -1,49 +1,43 @@
 import { useState, useEffect } from "react";
 import { FormSelect, FormInput, Icon } from "@/components/UI";
-
-export interface PropertyFiltersState {
-  operationType: "todos" | "venta" | "alquiler";
-  propertyType: string;
-  bedrooms: string;
-  bathrooms: string;
-  minPrice: string;
-  maxPrice: string;
-}
+import type { PropertyFilters } from "@/types/property";
 
 interface PropertyFiltersProps {
-  initialFilters?: Partial<PropertyFiltersState>;
-  onSearch: (filters: PropertyFiltersState) => void;
+  initialFilters?: Partial<PropertyFilters>;
+  onSearch: (filters: PropertyFilters) => void;
   onReset: () => void;
-  appliedOperationType?: "todos" | "venta" | "alquiler";
 }
 
 export default function PropertyFilters({
   initialFilters = {},
   onSearch,
   onReset,
-  appliedOperationType = "todos",
 }: PropertyFiltersProps) {
-  // Estados temporales para los inputs (los que el usuario está editando)
+  // Estados temporales para los inputs (strings para los form inputs)
   const [tempOperationType, setTempOperationType] = useState<
-    "todos" | "venta" | "alquiler"
-  >(initialFilters.operationType || "todos");
+    "venta" | "alquiler"
+  >(initialFilters.operationType || "alquiler");
   const [tempPropertyType, setTempPropertyType] = useState(
     initialFilters.propertyType || "",
   );
+  const [tempProvince, setTempProvince] = useState(
+    initialFilters.province || "",
+  );
+  const [tempCity, setTempCity] = useState(initialFilters.city || "");
   const [tempBedrooms, setTempBedrooms] = useState(
-    initialFilters.bedrooms || "",
+    initialFilters.minBedrooms?.toString() || "",
   );
   const [tempBathrooms, setTempBathrooms] = useState(
-    initialFilters.bathrooms || "",
+    initialFilters.minBathrooms?.toString() || "",
   );
   const [tempMinPrice, setTempMinPrice] = useState(
-    initialFilters.minPrice || "",
+    initialFilters.minPrice?.toString() || "",
   );
   const [tempMaxPrice, setTempMaxPrice] = useState(
-    initialFilters.maxPrice || "",
+    initialFilters.maxPrice?.toString() || "",
   );
 
-  // Actualizar estados cuando cambien los filtros iniciales (evitando cascading renders)
+  // Actualizar estados cuando cambien los filtros iniciales
   useEffect(() => {
     if (
       initialFilters.operationType !== undefined &&
@@ -56,41 +50,56 @@ export default function PropertyFilters({
     )
       setTempPropertyType(initialFilters.propertyType);
     if (
-      initialFilters.bedrooms !== undefined &&
-      initialFilters.bedrooms !== tempBedrooms
+      initialFilters.province !== undefined &&
+      initialFilters.province !== tempProvince
     )
-      setTempBedrooms(initialFilters.bedrooms);
+      setTempProvince(initialFilters.province);
+    if (initialFilters.city !== undefined && initialFilters.city !== tempCity)
+      setTempCity(initialFilters.city);
     if (
-      initialFilters.bathrooms !== undefined &&
-      initialFilters.bathrooms !== tempBathrooms
+      initialFilters.minBedrooms !== undefined &&
+      initialFilters.minBedrooms.toString() !== tempBedrooms
     )
-      setTempBathrooms(initialFilters.bathrooms);
+      setTempBedrooms(initialFilters.minBedrooms.toString());
+    if (
+      initialFilters.minBathrooms !== undefined &&
+      initialFilters.minBathrooms.toString() !== tempBathrooms
+    )
+      setTempBathrooms(initialFilters.minBathrooms.toString());
     if (
       initialFilters.minPrice !== undefined &&
-      initialFilters.minPrice !== tempMinPrice
+      initialFilters.minPrice.toString() !== tempMinPrice
     )
-      setTempMinPrice(initialFilters.minPrice);
+      setTempMinPrice(initialFilters.minPrice.toString());
     if (
       initialFilters.maxPrice !== undefined &&
-      initialFilters.maxPrice !== tempMaxPrice
+      initialFilters.maxPrice.toString() !== tempMaxPrice
     )
-      setTempMaxPrice(initialFilters.maxPrice);
+      setTempMaxPrice(initialFilters.maxPrice.toString());
   }, [initialFilters]);
 
   const handleSearch = () => {
-    onSearch({
+    // Convertir strings a números donde sea necesario
+    const filters: PropertyFilters = {
       operationType: tempOperationType,
-      propertyType: tempPropertyType,
-      bedrooms: tempBedrooms,
-      bathrooms: tempBathrooms,
-      minPrice: tempMinPrice,
-      maxPrice: tempMaxPrice,
-    });
+      listingType: tempOperationType,
+      propertyType: tempPropertyType || undefined,
+      province: tempProvince || undefined,
+      city: tempCity || undefined,
+      minBedrooms: tempBedrooms ? parseInt(tempBedrooms) : undefined,
+      minBathrooms: tempBathrooms ? parseInt(tempBathrooms) : undefined,
+      minPrice: tempMinPrice ? parseFloat(tempMinPrice) : undefined,
+      maxPrice: tempMaxPrice ? parseFloat(tempMaxPrice) : undefined,
+    };
+
+    onSearch(filters);
   };
 
   const handleReset = () => {
-    setTempOperationType("todos");
+    setTempOperationType("alquiler");
     setTempPropertyType("");
+    setTempProvince("");
+    setTempCity("");
     setTempBedrooms("");
     setTempBathrooms("");
     setTempMinPrice("");
@@ -103,20 +112,36 @@ export default function PropertyFilters({
       <div className="bg-white rounded-2xl shadow-lg p-6 sticky top-20 border-l-4 border-(--accent)">
         <h2 className="text-xl font-bold text-(--primary) mb-6">Filtros</h2>
 
-        {/* Tipo de operación */}
-        <FormSelect
-          label="Tipo de operación"
-          value={tempOperationType}
-          onChange={(e) =>
-            setTempOperationType(
-              e.target.value as "todos" | "venta" | "alquiler",
-            )
-          }
-        >
-          <option value="todos">Todos</option>
-          <option value="venta">Venta</option>
-          <option value="alquiler">Alquiler</option>
-        </FormSelect>
+        {/* Tipo de operación - Tabs */}
+        <div className="mb-6">
+          <label className="block text-sm font-medium text-gray-700 mb-2">
+            Tipo de operación
+          </label>
+          <div className="flex gap-2">
+            <button
+              type="button"
+              onClick={() => setTempOperationType("alquiler")}
+              className={`flex-1 py-2 px-4 rounded-lg font-medium transition-all duration-200 ${
+                tempOperationType === "alquiler"
+                  ? "bg-(--accent) text-white shadow-md"
+                  : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+              }`}
+            >
+              Alquiler
+            </button>
+            <button
+              type="button"
+              onClick={() => setTempOperationType("venta")}
+              className={`flex-1 py-2 px-4 rounded-lg font-medium transition-all duration-200 ${
+                tempOperationType === "venta"
+                  ? "bg-(--accent) text-white shadow-md"
+                  : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+              }`}
+            >
+              Venta
+            </button>
+          </div>
+        </div>
 
         {/* Tipo de inmueble */}
         <FormSelect
@@ -131,6 +156,26 @@ export default function PropertyFilters({
           <option value="terreno">Terreno</option>
           <option value="monoambiente">Monoambiente</option>
         </FormSelect>
+
+        {/* Provincia */}
+        <FormInput
+          label="Provincia"
+          type="text"
+          placeholder="Ej: Entre Ríos"
+          value={tempProvince}
+          onChange={(e) => setTempProvince(e.target.value)}
+          maxLength={100}
+        />
+
+        {/* Localidad */}
+        <FormInput
+          label="Localidad"
+          type="text"
+          placeholder="Ej: Oro Verde"
+          value={tempCity}
+          onChange={(e) => setTempCity(e.target.value)}
+          maxLength={100}
+        />
 
         {/* Dormitorios */}
         <FormSelect
@@ -161,9 +206,9 @@ export default function PropertyFilters({
         <div className="mb-6">
           <label className="block text-sm font-medium text-gray-700 mb-2">
             Precio{" "}
-            {appliedOperationType === "alquiler"
+            {tempOperationType === "alquiler"
               ? "(ARS)"
-              : appliedOperationType === "venta"
+              : tempOperationType === "venta"
                 ? "(USD)"
                 : ""}
           </label>

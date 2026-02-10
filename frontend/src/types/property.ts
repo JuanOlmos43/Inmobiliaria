@@ -113,7 +113,10 @@ export interface PropertyFilters {
   search?: string;
   status?: "activa" | "pausada" | "alquilada" | "archivada";
   listingType?: "venta" | "alquiler";
+  operationType?: "venta" | "alquiler"; // UI-friendly, optional (undefined = all)
   propertyType?: string;
+  province?: string;
+  city?: string;
   minPrice?: number;
   maxPrice?: number;
   bedrooms?: number; // Keep for backward compatibility if needed, or remove if unused
