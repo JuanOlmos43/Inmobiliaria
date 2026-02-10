@@ -30,7 +30,9 @@ export default function FeaturedProperties() {
     fetchFeaturedProperties();
   }, []);
 
-  const maxIndex = Math.max(0, properties.length - itemsPerPage);
+  // Calcular el número de páginas (grupos de 3 propiedades)
+  const totalPages = Math.ceil(properties.length / itemsPerPage);
+  const maxIndex = Math.max(0, totalPages - 1);
 
   const handlePrev = () => {
     setCurrentIndex((prev) => (prev === 0 ? maxIndex : prev - 1));
@@ -157,52 +159,63 @@ export default function FeaturedProperties() {
           {/* Cards Grid con animación de deslizamiento */}
           <div className="overflow-hidden pt-3 pb-1 -mt-3 -mb-1">
             <div
-              className="flex gap-6 transition-transform duration-700 ease-in-out"
+              className="flex transition-transform duration-700 ease-in-out"
               style={{
-                transform: `translateX(calc(-${currentIndex * 100}% - ${currentIndex * 1.5}rem))`,
+                transform: `translateX(-${currentIndex * 100}%)`,
               }}
             >
-              {properties.map((property) => (
+              {/* Agrupar propiedades en páginas de 3 */}
+              {Array.from({ length: totalPages }).map((_, pageIndex) => (
                 <div
-                  key={property.id}
-                  className="shrink-0 w-full lg:w-[calc(33.333%-1rem)]"
+                  key={pageIndex}
+                  className="shrink-0 w-full grid grid-cols-1 lg:grid-cols-3 gap-6"
                 >
-                  <Link
-                    href={`/propiedades/${property.id}`}
-                    className="block group"
-                  >
-                    <BasePropertyCard
-                      title={property.title}
-                      price={property.price}
-                      currency={property.currency}
-                      location={
-                        property.location ||
-                        (property.localidad
-                          ? `${property.localidad.nombre}, ${property.localidad.provincia?.nombre}`
-                          : "Ubicación no disponible")
-                      }
-                      bedrooms={property.bedrooms}
-                      bathrooms={property.bathrooms}
-                      area={property.area}
-                      type={
-                        property.listingType === "venta" ? "Venta" : "Alquiler"
-                      }
-                      image={property.mainImage}
-                      showTypeBadge={true}
-                      showDetails={true}
-                      className="cursor-pointer"
-                    />
-                  </Link>
+                  {properties
+                    .slice(
+                      pageIndex * itemsPerPage,
+                      (pageIndex + 1) * itemsPerPage,
+                    )
+                    .map((property) => (
+                      <Link
+                        key={property.id}
+                        href={`/propiedades/${property.id}`}
+                        className="block group"
+                      >
+                        <BasePropertyCard
+                          title={property.title}
+                          price={property.price}
+                          currency={property.currency}
+                          location={
+                            property.location ||
+                            (property.localidad
+                              ? `${property.localidad.nombre}, ${property.localidad.provincia?.nombre}`
+                              : "Ubicación no disponible")
+                          }
+                          bedrooms={property.bedrooms}
+                          bathrooms={property.bathrooms}
+                          area={property.area}
+                          type={
+                            property.listingType === "venta"
+                              ? "Venta"
+                              : "Alquiler"
+                          }
+                          image={property.mainImage}
+                          showTypeBadge={true}
+                          showDetails={true}
+                          className="cursor-pointer"
+                        />
+                      </Link>
+                    ))}
                 </div>
               ))}
             </div>
           </div>
         </div>
 
-        {/* Mobile Navigation Dots - Solo mostrar si hay más de 1 propiedad */}
-        {properties.length > 1 && (
+        {/* Mobile Navigation Dots - Solo mostrar si hay más de 1 página */}
+        {totalPages > 1 && (
           <div className="flex justify-center gap-2 mt-6 lg:hidden">
-            {properties.map((_, index) => (
+            {Array.from({ length: totalPages }).map((_, index) => (
               <button
                 key={index}
                 onClick={() => setCurrentIndex(index)}
@@ -211,7 +224,7 @@ export default function FeaturedProperties() {
                     ? "bg-linear-to-r from-(--accent) to-(--accent-hover) w-8"
                     : "bg-gray-300"
                 }`}
-                aria-label={`Ir a propiedad ${index + 1}`}
+                aria-label={`Ir a página ${index + 1}`}
               />
             ))}
           </div>
