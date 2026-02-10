@@ -30,7 +30,7 @@ import { Public } from '../auth/decorators/public.decorator';
 @UseGuards(JwtAuthGuard, RolesGuard)
 @UsePipes(new ValidationPipe({ transform: true, whitelist: true }))
 export class PropiedadesController {
-  constructor(private readonly propiedadesService: PropiedadesService) { }
+  constructor(private readonly propiedadesService: PropiedadesService) {}
 
   @Post()
   @Roles(UserRole.Agente)
@@ -41,6 +41,12 @@ export class PropiedadesController {
   @Get('stats')
   getStats() {
     return this.propiedadesService.getStats();
+  }
+
+  @Get('featured')
+  @Public()
+  getFeaturedProperties() {
+    return this.propiedadesService.getFeaturedProperties();
   }
 
   @Get('public')

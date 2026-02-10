@@ -483,6 +483,69 @@ export class PropiedadesService {
   }
 
   /**
+   * Obtiene propiedades destacadas para la página principal
+   * Retorna hasta 6 propiedades (3 de venta + 3 de alquiler)
+   * Solo propiedades activas con imagen principal
+   * Ordenadas por fecha de creación (más recientes primero)
+   * 
+   * @returns Array de propiedades destacadas
+   */
+  async getFeaturedProperties() {
+    // Criterios base: solo propiedades activas con imagen
+    const baseWhere: Prisma.PropertyWhereInput = {
+      status: 'activa',
+      mainImage: {
+        not: null, // Solo propiedades que tengan imagen principal
+      },
+    };
+
+    // Buscar 3 propiedades de VENTA más recientes
+    const ventaProperties = await this.prisma.property.findMany({
+      where: {
+        ...baseWhere,
+        listingType: 'venta',
+      },
+      take: 3, // Límite de 3 propiedades
+      orderBy: {
+        createdAt: 'desc', // Más recientes primero
+      },
+      include: {
+        localidad: {
+          include: {
+            provincia: true,
+          },
+        },
+      },
+    });
+
+    // Buscar 3 propiedades de ALQUILER más recientes
+    const alquilerProperties = await this.prisma.property.findMany({
+      where: {
+        ...baseWhere,
+        listingType: 'alquiler',
+      },
+      take: 3, // Límite de 3 propiedades
+      orderBy: {
+        createdAt: 'desc', // Más recientes primero
+      },
+      include: {
+        localidad: {
+          include: {
+            provincia: true,
+          },
+        },
+      },
+    });
+
+    // Combinar ambos arrays (venta + alquiler)
+    const allFeatured = [...ventaProperties, ...alquilerProperties];
+
+    // Agregar el campo "currency" a cada propiedad
+    // (USD para venta, ARS para alquiler)
+    return this.addCurrencyToMany(allFeatured);
+  }
+
+  /**
    * Obtiene estadísticas generales del inventario de propiedades.
    * 
    * @returns Objeto con métricas de propiedades.
