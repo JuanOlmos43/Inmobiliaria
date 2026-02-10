@@ -92,7 +92,6 @@ export interface PaginatedResponse<T> {
   meta: {
     total: number;
     page: number;
-    lastPage?: number; // Optional or deprecated if we use totalPages
     totalPages: number;
     limit: number;
   };
