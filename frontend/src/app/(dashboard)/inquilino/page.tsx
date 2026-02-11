@@ -173,6 +173,15 @@ function RentalCardWrapper({
         daysUntilAdjustment,
         showWarning: rental.status === "active",
       }}
+      // Mostrar badge de estado si no es activo (para diferenciar Vencido de Terminado)
+      statusBadge={
+        rental.status !== "active"
+          ? {
+            text: rental.status === "terminated" ? "Revocado" : "Vencido",
+            variant: rental.status === "terminated" ? "danger" : "default",
+          }
+          : undefined
+      }
       actions={[
         {
           label: "Ver Contrato",
