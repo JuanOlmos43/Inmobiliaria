@@ -79,7 +79,7 @@ export default function UpcomingExpirations({
                 <Icon name="calendar" className="w-6 h-6 text-(--danger)" />
               </div>
               Vencimientos del Mes
-              <span className="px-3 py-1 bg-red-100 text-red-600 rounded-full text-sm">
+              <span className="px-3 py-1 bg-(--danger)/10 text-(--danger) rounded-full text-sm">
                 {expiringContracts.length}
               </span>
             </h3>

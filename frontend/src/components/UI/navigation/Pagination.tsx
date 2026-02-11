@@ -74,7 +74,7 @@ export function Pagination({
       <button
         onClick={() => onPageChange(Math.max(1, currentPage - 1))}
         disabled={currentPage === 1}
-        className="px-4 py-2 bg-white border border-gray-300 rounded-lg hover:bg-(--accent) hover:text-white disabled:opacity-50 disabled:cursor-not-allowed transition-colors font-medium text-gray-700"
+        className="px-4 py-2 bg-white border border-gray-300 rounded-lg hover:bg-(--accent) hover:text-white disabled:opacity-50 disabled:cursor-not-allowed transition-colors font-medium text-gray-700 hover:border-(--accent)"
         aria-label="Página anterior"
       >
         Anterior
@@ -113,7 +113,7 @@ export function Pagination({
       <button
         onClick={() => onPageChange(Math.min(totalPages, currentPage + 1))}
         disabled={currentPage === totalPages}
-        className="px-4 py-2 bg-white border border-gray-300 rounded-lg hover:bg-(--accent) hover:text-white disabled:opacity-50 disabled:cursor-not-allowed transition-colors font-medium text-gray-700"
+        className="px-4 py-2 bg-white border border-gray-300 rounded-lg hover:bg-(--accent) hover:text-white disabled:opacity-50 disabled:cursor-not-allowed transition-colors font-medium text-gray-700 hover:border-(--accent)"
         aria-label="Página siguiente"
       >
         Siguiente

@@ -28,12 +28,33 @@ inmobiliaria/
 - **Backend**: Nest.js + TypeScript
 - **Base de Datos**: PostgreSQL (Supabase)
 - **ORM**: Prisma 7
-- **Node.js**: v24.11.1
+- **Node.js**: v20.18.0
+
+## 📚 Documentación de Módulos
+
+El proyecto cuenta con documentación detallada para diferentes módulos implementados:
+
+### 🏠 Propiedades Destacadas
+
+- **Documentation**: [PROPIEDADES_DESTACADAS_README.md](./PROPIEDADES_DESTACADAS_README.md)
+- **Frontend**: Componente `FeaturedProperties` con carrusel interactivo
+- **Backend**: Endpoint `/api/propiedades/featured` con lógica de selección automática
+
+### 🔍 Filtros y Búsqueda (En proceso)
+
+- **Status**: Frontend listo, Backend en integración
+- **Docs**: [FILTER_INTEGRATION_DOCS.md](./FILTER_INTEGRATION_DOCS.md)
+- **Checklist**: [BACKEND_INTEGRATION_CHECKLIST.md](./BACKEND_INTEGRATION_CHECKLIST.md)
+
+### 🎨 Diseño y UI
+
+- **Estilos**: Tailwind CSS con variables CSS personalizadas
+- **Componentes**: Arquitectura Feature-First
 
 ## 📋 Prerequisitos
 
-- ✅ Node.js v24.11.1 (instalado)
-- ✅ npm 11.6.2 (instalado)
+- ✅ Node.js v20.18.0 (recomendado)
+- ✅ npm 10.8.2
 - ⏳ Cuenta en Supabase (https://supabase.com)
 
 ## ⚙️ Configuración Inicial
@@ -43,7 +64,7 @@ inmobiliaria/
 Este proyecto es un **monorepo sin workspaces**, por lo que las dependencias deben instalarse en cada carpeta.
 Desde la raíz del proyecto:
 
-```bash
+````bash
 npm run install:all
 
 Este comando:
@@ -71,7 +92,7 @@ DIRECT_URL="postgresql://..."
 PORT=3001
 FRONTEND_URL=http://localhost:3000
 NODE_ENV=development
-```
+````
 
 **Frontend** - Crea `frontend/.env.local`:
 
@@ -217,13 +238,14 @@ FRONTEND_URL=https://tu-dominio.com
 
 #### Comportamiento automático según entorno:
 
-| Configuración | Desarrollo | Producción |
-|---------------|------------|------------|
-| `sameSite` | `lax` (permite cross-origin) | `strict` (máxima seguridad) |
-| `secure` | `false` (HTTP permitido) | `true` (solo HTTPS) |
+| Configuración | Desarrollo                   | Producción                  |
+| ------------- | ---------------------------- | --------------------------- |
+| `sameSite`    | `lax` (permite cross-origin) | `strict` (máxima seguridad) |
+| `secure`      | `false` (HTTP permitido)     | `true` (solo HTTPS)         |
 
-> **⚠️ CRÍTICO**: En producción, el código automáticamente cambia a `sameSite: 'strict'` y `secure: true`. 
+> **⚠️ CRÍTICO**: En producción, el código automáticamente cambia a `sameSite: 'strict'` y `secure: true`.
 > Esto requiere que:
+>
 > 1. El frontend y backend estén en el **mismo dominio** (ej: `app.tudominio.com` y `api.tudominio.com`)
 > 2. O uses un **proxy reverso** (ej: Nginx) para servir ambos desde el mismo origen
 > 3. Ambos usen **HTTPS**
@@ -231,20 +253,25 @@ FRONTEND_URL=https://tu-dominio.com
 ### Opciones de Despliegue Recomendadas
 
 #### Opción 1: Mismo Dominio con Subdominios
+
 ```
 Frontend: https://app.inmobiliaria.com
 Backend:  https://api.inmobiliaria.com
 ```
+
 Configurar CORS para permitir `https://app.inmobiliaria.com`
 
 #### Opción 2: Proxy Reverso (Nginx/Vercel)
+
 ```
 https://inmobiliaria.com/          → Frontend
 https://inmobiliaria.com/api/      → Backend (proxy)
 ```
+
 Las cookies funcionarán sin problemas porque ambos están en el mismo origen.
 
 #### Opción 3: Plataformas Serverless
+
 - **Frontend**: Vercel / Netlify
 - **Backend**: Railway / Render / Fly.io
 - Usar proxy reverso o configurar dominio compartido
