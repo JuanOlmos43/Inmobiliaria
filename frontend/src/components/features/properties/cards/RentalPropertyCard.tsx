@@ -86,9 +86,9 @@ export default function RentalPropertyCard({
     const styles = {
       primary: "bg-(--primary) text-white hover:bg-(--primary-light)",
       secondary: "bg-(--accent) text-white hover:bg-(--accent-hover)",
-      danger: "bg-red-500 text-white hover:bg-red-600",
-      success: "bg-green-500 text-white hover:bg-green-600",
-      warning: "bg-amber-500 text-white hover:bg-amber-600",
+      danger: "bg-(--danger) text-white hover:bg-red-600",
+      success: "bg-(--success) text-white hover:bg-green-600",
+      warning: "bg-(--warning) text-white hover:bg-amber-600",
       info: "bg-blue-500 text-white hover:bg-blue-600",
     };
     return styles[actionVariant];
@@ -119,7 +119,7 @@ export default function RentalPropertyCard({
     if (daysUntilEvent !== undefined && daysUntilEvent < 60) {
       return (
         <span
-          className={`px-3 py-1 ${nextEvent === "adjustment" ? "bg-amber-500" : "bg-red-500"} text-white rounded-full text-xs font-semibold flex items-center gap-1`}
+          className={`px-3 py-1 ${nextEvent === "adjustment" ? "bg-(--warning)" : "bg-(--danger)"} text-white rounded-full text-xs font-semibold flex items-center gap-1`}
         >
           <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
             <path
@@ -201,4 +201,3 @@ export default function RentalPropertyCard({
     </>
   );
 }
-

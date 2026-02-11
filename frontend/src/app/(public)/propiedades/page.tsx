@@ -141,7 +141,7 @@ function PropiedadesContent() {
     return (
       <main className="grow bg-(--background) flex items-center justify-center">
         <div className="text-center">
-          <p className="text-red-500 mb-4">{error}</p>
+          <p className="text-(--danger) mb-4">{error}</p>
           <button
             onClick={() => window.location.reload()}
             className="px-4 py-2 bg-(--primary) text-white rounded hover:bg-(--primary-light) transition-colors"

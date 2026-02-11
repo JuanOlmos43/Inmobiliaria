@@ -173,7 +173,7 @@ export default function SearchBlock() {
                 {minPrice &&
                   maxPrice &&
                   parseFloat(minPrice) > parseFloat(maxPrice) && (
-                    <p className="text-red-600 text-sm mt-1">
+                    <p className="text-(--danger) text-sm mt-1">
                       El precio mínimo no puede ser mayor al máximo
                     </p>
                   )}
@@ -196,4 +196,3 @@ export default function SearchBlock() {
     </section>
   );
 }
-

@@ -34,13 +34,13 @@ export function FormSelect({
         {label} {required && "*"}
       </label>
       <select
-        className={`${baseClasses} ${themeClasses} ${error ? "border-red-500" : ""} ${className}`}
+        className={`${baseClasses} ${themeClasses} ${error ? "border-(--danger)" : ""} ${className}`}
         required={required}
         {...props}
       >
         {children}
       </select>
-      {error && <p className="text-red-500 text-sm mt-1">{error}</p>}
+      {error && <p className="text-(--danger) text-sm mt-1">{error}</p>}
     </div>
   );
 }

@@ -56,16 +56,16 @@ export default function BasePropertyCard({
       case "activa":
       case "activo":
       case "active":
-        return "bg-green-500 text-white";
+        return "bg-(--success) text-white";
       case "vencido":
       case "vencida":
       case "expired":
-        return "bg-amber-500 text-white";
+        return "bg-(--warning) text-white";
       case "terminado":
       case "terminada":
       case "terminated":
       case "revocado":
-        return "bg-red-500 text-white";
+        return "bg-(--danger) text-white";
       case "archivada":
       case "archivado":
         return "bg-gray-500 text-white";
@@ -76,9 +76,9 @@ export default function BasePropertyCard({
       case "pausada":
       case "pausado":
       case "paused":
-        return "bg-yellow-500 text-white";
+        return "bg-(--warning) text-white";
       default:
-        return "bg-yellow-500 text-white";
+        return "bg-(--warning) text-white";
     }
   };
 
@@ -239,4 +239,3 @@ export default function BasePropertyCard({
     </div>
   );
 }
-

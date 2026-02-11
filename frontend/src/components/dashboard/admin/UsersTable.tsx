@@ -10,9 +10,9 @@ interface UsersTableProps {
 
 const roleColors: Record<string, string> = {
   [UserRole.Inquilino]: "bg-blue-600",
-  [UserRole.Propietario]: "bg-green-600",
+  [UserRole.Propietario]: "bg-(--success)",
   [UserRole.Agente]: "bg-purple-600",
-  [UserRole.Gerencia]: "bg-amber-600",
+  [UserRole.Gerencia]: "bg-(--warning)",
   [UserRole.Administrador]: "bg-(--primary)",
 };
 
@@ -222,7 +222,7 @@ export default function UsersTable({
                           }
                           className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-(--accent) focus:ring-offset-2 ${
                             editFormData.status === UserStatus.ACTIVE
-                              ? "bg-green-500"
+                              ? "bg-(--success)"
                               : "bg-gray-300"
                           }`}
                         >
@@ -287,7 +287,7 @@ export default function UsersTable({
                           <button
                             onClick={handleCancelEdit}
                             disabled={isSaving}
-                            className="p-1.5 text-red-500 hover:bg-red-200 rounded-lg transition-colors border border-red-200"
+                            className="p-1.5 text-(--danger) hover:bg-red-200 rounded-lg transition-colors border border-red-200"
                             title="Cancelar"
                           >
                             <Icon name="close" className="w-5 h-5" />
@@ -304,7 +304,7 @@ export default function UsersTable({
                           </button>
                           <button
                             onClick={() => onResetPassword(user.id)}
-                            className="p-1 text-amber-600 hover:text-amber-900 transition-colors"
+                            className="p-1 text-(--warning) hover:text-amber-900 transition-colors"
                             title="Restaurar contraseña"
                           >
                             <Icon name="key" className="w-5 h-5" />
@@ -327,4 +327,3 @@ export default function UsersTable({
     </div>
   );
 }
-

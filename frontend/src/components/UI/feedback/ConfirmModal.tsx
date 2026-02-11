@@ -34,9 +34,9 @@ export function ConfirmModal({
   };
 
   const buttonColors = {
-    danger: "bg-red-600 hover:bg-red-700",
-    warning: "bg-amber-600 hover:bg-amber-700",
-    success: "bg-green-600 hover:bg-green-700",
+    danger: "bg-(--danger) hover:bg-red-700",
+    warning: "bg-(--warning) hover:bg-amber-700",
+    success: "bg-(--success) hover:bg-green-700",
     info: "bg-blue-600 hover:bg-blue-700",
   };
 

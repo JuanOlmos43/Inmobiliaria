@@ -150,7 +150,7 @@ export default function ViewContractModal({
             <span className="text-gray-600">
               Cada {contract.adjustmentFrequency} meses
               {contract.nextAdjustmentDate && contract.status === "active" && (
-                <span className="text-amber-700 font-medium ml-1">
+                <span className="text-(--warning) font-medium ml-1">
                   (próximo ajuste en{" "}
                   {new Date(contract.nextAdjustmentDate).toLocaleDateString(
                     "es-AR",
@@ -167,7 +167,7 @@ export default function ViewContractModal({
         <div className="flex gap-3 pt-6">
           <button
             onClick={onClose}
-            className="w-full px-4 py-2.5 border border-gray-300 text-gray-700 rounded-lg font-medium hover:bg-red-600 hover:text-white hover:border-red-600 transition-all duration-200"
+            className="w-full px-4 py-2.5 border border-gray-300 text-gray-700 rounded-lg font-medium hover:bg-(--danger) hover:text-white hover:border-(--danger) transition-all duration-200"
           >
             Cerrar
           </button>
@@ -176,4 +176,3 @@ export default function ViewContractModal({
     </Modal>
   );
 }
-

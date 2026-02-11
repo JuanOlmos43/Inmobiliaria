@@ -154,7 +154,7 @@ export default function ContactoPage() {
               </h2>
 
               {submitStatus === "success" && (
-                <div className="mb-4 bg-green-100 border-l-4 border-green-500 text-green-700 p-3 rounded">
+                <div className="mb-4 bg-(--success)/20 border-l-4 border-(--success) text-(--success) p-3 rounded">
                   <p className="font-bold text-sm">
                     ¡Mensaje enviado con éxito!
                   </p>
@@ -294,7 +294,7 @@ export default function ContactoPage() {
                   href="https://wa.me/5493434123456"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center justify-center w-full bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-6 rounded-lg transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl gap-3"
+                  className="flex items-center justify-center w-full bg-(--success) hover:bg-(--success) text-white font-bold py-3 px-6 rounded-lg transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl gap-3"
                 >
                   <Icon name="whatsapp" className="w-6 h-6" />
                   <span className="text-lg">Consultar por WhatsApp</span>
@@ -307,4 +307,3 @@ export default function ContactoPage() {
     </div>
   );
 }
-
