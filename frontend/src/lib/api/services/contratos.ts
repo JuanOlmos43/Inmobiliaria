@@ -85,4 +85,8 @@ export const contratosService = {
   async getLandlordRentedProperties(): Promise<Contract[]> {
     return apiClient.get<Contract[]>("/contratos/landlord/rented");
   },
+
+  async getTenantRentals(): Promise<Contract[]> {
+    return apiClient.get<Contract[]>("/contratos/tenant/rented");
+  },
 };

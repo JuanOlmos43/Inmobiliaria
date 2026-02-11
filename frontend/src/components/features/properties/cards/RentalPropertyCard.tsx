@@ -115,8 +115,59 @@ export default function RentalPropertyCard({
         ? warningBadge.daysUntilAdjustment
         : warningBadge.daysUntilExpiration;
 
-    // Solo mostrar si el evento está dentro de 60 días
-    if (daysUntilEvent !== undefined && daysUntilEvent < 60) {
+    // Validar si el evento es en el mes actual o el próximo
+    const dateToCheck =
+      nextEvent === "adjustment" ? adjustmentDate : expirationDate;
+    const today = new Date();
+    const currentMonth = today.getMonth();
+    const currentYear = today.getFullYear();
+    const eventMonth = dateToCheck.getMonth();
+    const eventYear = dateToCheck.getFullYear();
+
+    // Diferencia en meses (contemplando cambio de año)
+    const monthDiff =
+      (eventYear - currentYear) * 12 + (eventMonth - currentMonth);
+
+    // Solo mostrar si es el mes actual (0) o el próximo (1) s
+    // Y asegurarnos que no sea un evento pasado (daysUntilEvent >= 0)
+    // Aunque si es mes actual pero día pasado, tal vez queramos mostrarlo como "Venció hace X días"?
+    // Por ahora asumimos lógica de "próximo" evento.
+    if (
+      daysUntilEvent !== undefined &&
+      daysUntilEvent >= 0 &&
+      monthDiff >= 0 &&
+      monthDiff <= 1
+    ) {
+      const monthValid = new Date(dateToCheck);
+      const monthName = new Intl.DateTimeFormat("es-ES", {
+        month: "long",
+      }).format(monthValid);
+      const capitalizedMonth =
+        monthName.charAt(0).toUpperCase() + monthName.slice(1);
+
+      let alertText = "";
+      // Si es el mes actual
+      if (monthDiff === 0) {
+        alertText =
+          nextEvent === "adjustment"
+            ? "Ajuste este mes"
+            : "Vence este mes";
+
+        // Si faltan pocos días, ser más específico
+        if (daysUntilEvent <= 30) {
+          alertText = nextEvent === "adjustment"
+            ? `Ajuste en ${daysUntilEvent} días`
+            : `Vence en ${daysUntilEvent} días`;
+        }
+      }
+      // Si es el próximo mes
+      else {
+        alertText =
+          nextEvent === "adjustment"
+            ? `Ajuste en ${capitalizedMonth}`
+            : `Vence en ${capitalizedMonth}`;
+      }
+
       return (
         <span
           className={`px-3 py-1 ${nextEvent === "adjustment" ? "bg-(--warning)" : "bg-(--danger)"} text-white rounded-full text-xs font-semibold flex items-center gap-1`}
@@ -128,9 +179,7 @@ export default function RentalPropertyCard({
               clipRule="evenodd"
             />
           </svg>
-          {nextEvent === "adjustment"
-            ? "Próximo mes: Ajuste de precio"
-            : "Próximo mes: Vence contrato"}
+          {alertText}
         </span>
       );
     }
