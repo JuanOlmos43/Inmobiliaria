@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react";
 import { FormSelect, FormInput, Icon } from "@/components/ui";
+import { useLocationLogic } from "@/hooks/useLocationLogic";
 import type { PropertyFilters } from "@/types/property";
+import type { Provincia, Localidad } from "@/types/location";
 
 interface PropertyFiltersProps {
   initialFilters?: Partial<PropertyFilters>;
@@ -36,6 +38,38 @@ export default function PropertyFilters({
   const [tempMaxPrice, setTempMaxPrice] = useState(
     initialFilters.maxPrice?.toString() || "",
   );
+
+  // Estados para manejo de lógica de ubicaciones (IDs necesarios para la API)
+  const [selectedProvinciaId, setSelectedProvinciaId] = useState<string>("");
+
+  // Hook personalizado para cargar datos de ubicación
+  const { provincias, localidades, isLoadingLocalidades } =
+    useLocationLogic(selectedProvinciaId);
+
+  // Sincronizar ID de provincia cuando cargan las provincias o cambia el filtro de nombre
+  useEffect(() => {
+    // Si tenemos un nombre de provincia seleccionado pero no su ID correspondiente
+    if (tempProvince && provincias.length > 0) {
+      const provinciaEncontrada = provincias.find(
+        (p) => p.nombre.toLowerCase() === tempProvince.toLowerCase(),
+      );
+
+      // Solo actualizamos si encontramos la provincia y el ID es diferente
+      if (
+        provinciaEncontrada &&
+        provinciaEncontrada.id !== selectedProvinciaId
+      ) {
+        setSelectedProvinciaId(provinciaEncontrada.id);
+      }
+    } else if (!tempProvince && selectedProvinciaId) {
+      // Si se limpió el nombre de la provincia, limpiamos el ID
+      setSelectedProvinciaId("");
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [
+    tempProvince,
+    provincias /* selectedProvinciaId excluido intencionalmente para evitar ciclos */,
+  ]);
 
   // Actualizar estados cuando cambien los filtros iniciales
   useEffect(() => {
@@ -158,24 +192,41 @@ export default function PropertyFilters({
         </FormSelect>
 
         {/* Provincia */}
-        <FormInput
+        <FormSelect
           label="Provincia"
-          type="text"
-          placeholder="Ej: Entre Ríos"
           value={tempProvince}
-          onChange={(e) => setTempProvince(e.target.value)}
-          maxLength={100}
-        />
+          onChange={(e) => {
+            const nombre = e.target.value;
+            setTempProvince(nombre);
+            // Buscar ID para cargar localidades
+            const prov = provincias.find((p) => p.nombre === nombre);
+            setSelectedProvinciaId(prov?.id || "");
+            // Limpiar localidad al cambiar provincia
+            setTempCity("");
+          }}
+        >
+          <option value="">Todas</option>
+          {provincias.map((prov: Provincia) => (
+            <option key={prov.id} value={prov.nombre}>
+              {prov.nombre}
+            </option>
+          ))}
+        </FormSelect>
 
         {/* Localidad */}
-        <FormInput
+        <FormSelect
           label="Localidad"
-          type="text"
-          placeholder="Ej: Oro Verde"
           value={tempCity}
           onChange={(e) => setTempCity(e.target.value)}
-          maxLength={100}
-        />
+          disabled={!tempProvince || isLoadingLocalidades}
+        >
+          <option value="">Todas</option>
+          {localidades.map((loc: Localidad) => (
+            <option key={loc.id} value={loc.nombre}>
+              {loc.nombre}
+            </option>
+          ))}
+        </FormSelect>
 
         {/* Dormitorios */}
         <FormSelect
@@ -253,4 +304,3 @@ export default function PropertyFilters({
     </aside>
   );
 }
-

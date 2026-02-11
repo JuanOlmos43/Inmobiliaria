@@ -23,6 +23,7 @@ import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { RolesGuard } from '../auth/guards/roles.guard';
 import { Roles } from '../auth/decorators/roles.decorator';
 import { UserRole } from '@prisma/client';
+import { Public } from '../auth/decorators/public.decorator';
 
 @Controller('ubicaciones')
 @UseGuards(JwtAuthGuard, RolesGuard)
@@ -41,11 +42,13 @@ export class UbicacionesController {
   }
 
   @Get('provincias')
+  @Public()
   getAllProvincias() {
     return this.ubicacionesService.getAllProvincias();
   }
 
   @Get('provincias/:id')
+  @Public()
   getProvinciaById(@Param('id') id: string) {
     return this.ubicacionesService.getProvinciaById(id);
   }
@@ -67,6 +70,7 @@ export class UbicacionesController {
 
   // Endpoint jerárquico: localidades de una provincia
   @Get('provincias/:provinciaId/localidades')
+  @Public()
   getLocalidadesByProvincia(@Param('provinciaId') provinciaId: string) {
     return this.ubicacionesService.getLocalidadesByProvincia(provinciaId);
   }
@@ -82,6 +86,7 @@ export class UbicacionesController {
   }
 
   @Get('localidades/:id')
+  @Public()
   getLocalidadById(@Param('id') id: string) {
     return this.ubicacionesService.getLocalidadById(id);
   }
@@ -103,6 +108,7 @@ export class UbicacionesController {
 
   // Endpoint jerárquico: calles de una localidad
   @Get('localidades/:localidadId/calles')
+  @Public()
   getCallesByLocalidad(@Param('localidadId') localidadId: string) {
     return this.ubicacionesService.getCallesByLocalidad(localidadId);
   }
@@ -118,6 +124,7 @@ export class UbicacionesController {
   }
 
   @Get('calles/:id')
+  @Public()
   getCalleById(@Param('id') id: string) {
     return this.ubicacionesService.getCalleById(id);
   }

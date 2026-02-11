@@ -1,8 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { FormSelect, FormInput, Icon } from "@/components/ui";
+import { FormSelect, Icon } from "@/components/ui";
+import { useLocationLogic } from "@/hooks/useLocationLogic";
+import type { Provincia, Localidad } from "@/types/location";
 
 export default function SearchBlock() {
   const router = useRouter();
@@ -10,6 +12,36 @@ export default function SearchBlock() {
   const [propertyType, setPropertyType] = useState<string>("");
   const [province, setProvince] = useState<string>("");
   const [city, setCity] = useState<string>("");
+  const [selectedProvinciaId, setSelectedProvinciaId] = useState<string>("");
+
+  // Hook personalizado para cargar datos de ubicación
+  const { provincias, localidades, isLoadingLocalidades } =
+    useLocationLogic(selectedProvinciaId);
+
+  // Sincronizar ID de provincia cuando cargan las provincias o cambia el filtro de nombre
+  useEffect(() => {
+    // Si tenemos un nombre de provincia seleccionado pero no su ID correspondiente
+    if (province && provincias.length > 0) {
+      const provinciaEncontrada = provincias.find(
+        (p) => p.nombre.toLowerCase() === province.toLowerCase(),
+      );
+
+      // Solo actualizamos si encontramos la provincia y el ID es diferente
+      if (
+        provinciaEncontrada &&
+        provinciaEncontrada.id !== selectedProvinciaId
+      ) {
+        setSelectedProvinciaId(provinciaEncontrada.id);
+      }
+    } else if (!province && selectedProvinciaId) {
+      // Si se limpió el nombre de la provincia, limpiamos el ID
+      setSelectedProvinciaId("");
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [
+    province,
+    provincias /* selectedProvinciaId excluido intencionalmente para evitar ciclos */,
+  ]);
   const [bedrooms, setBedrooms] = useState<string>("");
   const [bathrooms, setBathrooms] = useState<string>("");
   const [minPrice, setMinPrice] = useState<string>("");
@@ -100,24 +132,41 @@ export default function SearchBlock() {
               </FormSelect>
 
               {/* Provincia */}
-              <FormInput
+              <FormSelect
                 label="Provincia"
-                type="text"
-                placeholder="Ej: Entre Ríos"
                 value={province}
-                onChange={(e) => setProvince(e.target.value)}
-                maxLength={100}
-              />
+                onChange={(e) => {
+                  const nombre = e.target.value;
+                  setProvince(nombre);
+                  // Buscar ID para cargar localidades
+                  const prov = provincias.find((p) => p.nombre === nombre);
+                  setSelectedProvinciaId(prov?.id || "");
+                  // Limpiar localidad al cambiar provincia
+                  setCity("");
+                }}
+              >
+                <option value="">Todas</option>
+                {provincias.map((prov: Provincia) => (
+                  <option key={prov.id} value={prov.nombre}>
+                    {prov.nombre}
+                  </option>
+                ))}
+              </FormSelect>
 
               {/* Localidad */}
-              <FormInput
+              <FormSelect
                 label="Localidad"
-                type="text"
-                placeholder="Ej: Oro Verde"
                 value={city}
                 onChange={(e) => setCity(e.target.value)}
-                maxLength={100}
-              />
+                disabled={!province || isLoadingLocalidades}
+              >
+                <option value="">Todas</option>
+                {localidades.map((loc: Localidad) => (
+                  <option key={loc.id} value={loc.nombre}>
+                    {loc.nombre}
+                  </option>
+                ))}
+              </FormSelect>
 
               {/* Dormitorios */}
               <FormSelect

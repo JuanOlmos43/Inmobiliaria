@@ -105,14 +105,41 @@ export class PropiedadesService {
       minArea,
       page = 1,
       limit = 10,
+      province,
+      city,
+      operationType,
     } = query;
 
     // Construir filtros dinámicamente
     const where: Prisma.PropertyWhereInput = {};
 
     if (propertyType) where.propertyType = propertyType;
-    if (listingType) where.listingType = listingType;
+    
+    // Mapeo de listingType / operationType
+    const finalListingType = listingType || operationType;
+    if (finalListingType) where.listingType = finalListingType;
+
     if (localidadId) where.localidadId = localidadId;
+
+    // Filtros por nombre de ubicación (case insensitive)
+    if (city || province) {
+      where.localidad = {
+        ...(city && {
+          nombre: {
+            contains: city,
+            mode: 'insensitive',
+          },
+        }),
+        ...(province && {
+          provincia: {
+            nombre: {
+              contains: province,
+              mode: 'insensitive',
+            },
+          },
+        }),
+      };
+    }
 
     if (isPublic) {
       // En modo público, forzamos status activa y no permitimos filtrar por owner/contratos de forma directa si no es deseado

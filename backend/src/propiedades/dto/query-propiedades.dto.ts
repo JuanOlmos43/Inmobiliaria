@@ -40,6 +40,19 @@ export class QueryPropiedadesDto {
   @IsString()
   search?: string;
 
+  // Nuevos filtros para compatibilidad con Frontend
+  @IsOptional()
+  @IsString()
+  province?: string;
+
+  @IsOptional()
+  @IsString()
+  city?: string;
+
+  @IsOptional()
+  @IsEnum(PropertyListingType)
+  operationType?: PropertyListingType; // Alias para listingType
+
   @IsOptional()
   @Type(() => Number)
   @IsNumber()
