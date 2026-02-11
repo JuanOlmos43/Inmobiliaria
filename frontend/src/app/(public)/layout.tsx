@@ -1,5 +1,5 @@
 import { Navbar, Footer } from "@/components/layout";
-import { ScrollToTop } from "@/components/ui";
+import { ScrollToTop } from "@/components/ui/navigation/ScrollToTop";
 
 export default function GroupNFLayout({
   children,

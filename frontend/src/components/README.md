@@ -286,7 +286,7 @@ layout/Sidebar.tsx
 ```typescript
 import LoginPage from "@/components/LoginPage";
 import BasePropertyCard from "@/components/BasePropertyCard";
-import { Icon } from "@/components/UI";
+import { Icon } from "@/components/ui";
 ```
 
 **Después:**
