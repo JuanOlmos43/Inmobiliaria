@@ -23,8 +23,8 @@ export function FormSelect({
 
   const themeClasses =
     theme === "light"
-      ? "border-gray-300 bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#14b8a6] focus:border-transparent [color-scheme:light] disabled:bg-gray-100 disabled:text-gray-500"
-      : "bg-white/10 border-white/30 text-white focus:outline-none focus:ring-2 focus:ring-[#14b8a6] focus:border-transparent disabled:opacity-50";
+      ? "border-gray-300 bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-(--accent) focus:border-transparent [color-scheme:light] disabled:bg-gray-100 disabled:text-gray-500"
+      : "bg-white/10 border-white/30 text-white focus:outline-none focus:ring-2 focus:ring-(--accent) focus:border-transparent disabled:opacity-50";
 
   const labelClasses = theme === "light" ? "text-gray-700" : "text-gray-200";
 

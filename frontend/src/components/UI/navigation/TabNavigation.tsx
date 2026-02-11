@@ -32,13 +32,13 @@ export function TabNavigation({
               onClick={() => onTabChange(tab.id)}
               className={`pb-4 px-2 font-semibold transition-colors relative ${
                 activeTab === tab.id
-                  ? "text-[#14b8a6]"
-                  : "text-gray-500 hover:text-gray-700"
+                  ? "text-(--accent)"
+                  : "text-gray-500 hover:text-(--accent)"
               }`}
             >
               {tab.label}
               {activeTab === tab.id && (
-                <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#14b8a6]"></div>
+                <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-(--accent)"></div>
               )}
             </button>
           ))}

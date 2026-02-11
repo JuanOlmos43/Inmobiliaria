@@ -1,15 +1,16 @@
 "use client";
 import React, { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { TabNavigation } from "@/components/ui";
-import { RentalPropertyCard } from "@/components/features/properties/cards";
-import { BasePropertyCard } from "@/components/features/properties/cards";
+import { TabNavigation, FormSelect, Icon } from "@/components/ui";
+import {
+  RentalPropertyCard,
+  BasePropertyCard,
+} from "@/components/features/properties/cards";
 import ViewContractModal from "@/components/dashboard/common/ViewContractModal";
-import { Icon } from "@/components/ui";
 import { propertiesService } from "@/lib/api/services/properties";
 import { contratosService } from "@/lib/api/services/contratos";
 import { Contract } from "@/types/api";
-import { Property } from "@/types/property";
+import { Property, PropertyFilters } from "@/types/property";
 
 // Helper functions (moved outside or kept inside if no dependencies)
 const getDaysUntilExpiration = (endDate: string) => {
@@ -90,7 +91,7 @@ export default function LandlordDashboardPage() {
       return propertiesService.findAll({
         ownerId: user?.id,
         listingType: listingType !== "all" ? listingType : undefined,
-        status: propertyStatus as any,
+        status: propertyStatus as PropertyFilters["status"],
         contractStatus: contractStatus,
       });
     },
@@ -153,42 +154,36 @@ export default function LandlordDashboardPage() {
           <div className="mb-8">
             {/* Filters Bar */}
             <div className="flex flex-wrap gap-4 mb-6 bg-white p-4 rounded-xl shadow-sm border border-gray-100 items-center">
-              <div className="flex flex-col gap-1">
-                <label className="text-sm font-medium text-gray-700">
-                  Operación
-                </label>
-                <select
-                  value={listingType}
-                  onChange={(e) => setListingType(e.target.value as any)}
-                  className="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-(--primary) focus:border-transparent outline-none bg-white min-w-[150px]"
-                >
-                  <option value="all">Todas</option>
-                  <option value="venta">Venta</option>
-                  <option value="alquiler">Alquiler</option>
-                </select>
-              </div>
+              <FormSelect
+                label="Operación"
+                value={listingType}
+                onChange={(e) =>
+                  setListingType(e.target.value as "venta" | "alquiler" | "all")
+                }
+                className="min-w-[150px]"
+              >
+                <option value="all">Todas</option>
+                <option value="venta">Venta</option>
+                <option value="alquiler">Alquiler</option>
+              </FormSelect>
 
-              <div className="flex flex-col gap-1">
-                <label className="text-sm font-medium text-gray-700">
-                  Estado
-                </label>
-                <select
-                  value={status}
-                  onChange={(e) => setStatus(e.target.value)}
-                  className="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-(--primary) focus:border-transparent outline-none bg-white min-w-[150px]"
-                >
-                  <option value="all">Todos</option>
-                  <option value="activa">Activa</option>
-                  <option value="pausada">Pausada</option>
-                  {listingType === "alquiler" && (
-                    <>
-                      <option value="alquilada">Alquilada</option>
-                      <option value="expired">Con Contrato Vencido</option>
-                      <option value="terminated">Con Contrato Revocado</option>
-                    </>
-                  )}
-                </select>
-              </div>
+              <FormSelect
+                label="Estado"
+                value={status}
+                onChange={(e) => setStatus(e.target.value)}
+                className="min-w-[150px]"
+              >
+                <option value="all">Todos</option>
+                <option value="activa">Activa</option>
+                <option value="pausada">Pausada</option>
+                {listingType === "alquiler" && (
+                  <>
+                    <option value="alquilada">Alquilada</option>
+                    <option value="expired">Con Contrato Vencido</option>
+                    <option value="terminated">Con Contrato Revocado</option>
+                  </>
+                )}
+              </FormSelect>
 
               {(listingType !== "all" || status !== "all") && (
                 <button
@@ -416,4 +411,3 @@ function PropertyCardWrapper({ property }: { property: Property }) {
     />
   );
 }
-
