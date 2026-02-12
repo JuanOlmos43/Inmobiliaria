@@ -39,6 +39,12 @@ export class ContratosController {
     return this.contratosService.findLandlordRentedProperties(user.id);
   }
 
+  @Get('tenant/rented')
+  @Roles(UserRole.Inquilino)
+  getTenantRentals(@CurrentUser() user: User) {
+    return this.contratosService.findTenantRentals(user.id);
+  }
+
   @Get('dashboard/expirations')
   getMonthlyActivity(
     @Query('type') type?: 'all' | 'end_contract' | 'adjustment',

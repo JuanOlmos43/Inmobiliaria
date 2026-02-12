@@ -68,6 +68,10 @@ interface RentalPropertyCardProps {
 
   // Configuración visual
   showPropertyDetails?: boolean;
+  statusBadge?: {
+    text: string;
+    variant: "default" | "success" | "warning" | "danger";
+  };
 }
 
 export default function RentalPropertyCard({
@@ -77,6 +81,7 @@ export default function RentalPropertyCard({
   showTypeBadge = true,
   showStatusBadge = false,
   warningBadge,
+  statusBadge,
   actions = [],
   showPropertyDetails = true,
 }: RentalPropertyCardProps) {
@@ -96,44 +101,107 @@ export default function RentalPropertyCard({
 
   // Renderizar warning badge dinámicamente
   const renderWarningBadge = () => {
+    // 1. Intentar mostrar Warning Badge (si corresponde)
     if (
-      !warningBadge?.showWarning ||
-      !property.nextAdjustmentDate ||
-      !property.endDate
+      warningBadge?.showWarning &&
+      property.nextAdjustmentDate &&
+      property.endDate
     ) {
-      return null;
+      const adjustmentDate = new Date(property.nextAdjustmentDate);
+      const expirationDate = new Date(property.endDate);
+
+      // Determinar cuál evento ocurre primero
+      const nextEvent =
+        adjustmentDate < expirationDate ? "adjustment" : "expiration";
+      const daysUntilEvent =
+        nextEvent === "adjustment"
+          ? warningBadge.daysUntilAdjustment
+          : warningBadge.daysUntilExpiration;
+
+      // Validar si el evento es en el mes actual o el próximo
+      const dateToCheck =
+        nextEvent === "adjustment" ? adjustmentDate : expirationDate;
+      const today = new Date();
+      const currentMonth = today.getMonth();
+      const currentYear = today.getFullYear();
+      const eventMonth = dateToCheck.getMonth();
+      const eventYear = dateToCheck.getFullYear();
+
+      // Diferencia en meses (contemplando cambio de año)
+      const monthDiff =
+        (eventYear - currentYear) * 12 + (eventMonth - currentMonth);
+
+      // Solo mostrar si es el mes actual (0) o el próximo (1) y no es pasado
+      if (
+        daysUntilEvent !== undefined &&
+        daysUntilEvent >= 0 &&
+        monthDiff >= 0 &&
+        monthDiff <= 1
+      ) {
+        const monthValid = new Date(dateToCheck);
+        const monthName = new Intl.DateTimeFormat("es-ES", {
+          month: "long",
+        }).format(monthValid);
+        const capitalizedMonth =
+          monthName.charAt(0).toUpperCase() + monthName.slice(1);
+
+        let alertText = "";
+        // Si es el mes actual
+        if (monthDiff === 0) {
+          alertText =
+            nextEvent === "adjustment" ? "Ajuste este mes" : "Vence este mes";
+
+          // Si faltan pocos días, ser más específico
+          if (daysUntilEvent <= 30) {
+            alertText =
+              nextEvent === "adjustment"
+                ? `Ajuste en ${daysUntilEvent} días`
+                : `Vence en ${daysUntilEvent} días`;
+          }
+        }
+        // Si es el próximo mes
+        else {
+          alertText =
+            nextEvent === "adjustment"
+              ? `Ajuste en ${capitalizedMonth}`
+              : `Vence en ${capitalizedMonth}`;
+        }
+
+        return (
+          <span
+            className={`px-3 py-1 ${nextEvent === "adjustment" ? "bg-(--warning)" : "bg-(--danger)"} text-white rounded-full text-xs font-semibold flex items-center gap-1`}
+          >
+            <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
+              <path
+                fillRule="evenodd"
+                d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z"
+                clipRule="evenodd"
+              />
+            </svg>
+            {alertText}
+          </span>
+        );
+      }
     }
 
-    const adjustmentDate = new Date(property.nextAdjustmentDate);
-    const expirationDate = new Date(property.endDate);
+    // 2. Si no se mostró Warning, verificar si hay statusBadge explícito
+    if (statusBadge) {
+      const badgeColors = {
+        default: "bg-gray-500",
+        success: "bg-(--success)",
+        warning: "bg-(--warning)",
+        danger: "bg-(--danger)",
+      };
 
-    // Determinar cuál evento ocurre primero
-    const nextEvent =
-      adjustmentDate < expirationDate ? "adjustment" : "expiration";
-    const daysUntilEvent =
-      nextEvent === "adjustment"
-        ? warningBadge.daysUntilAdjustment
-        : warningBadge.daysUntilExpiration;
-
-    // Solo mostrar si el evento está dentro de 60 días
-    if (daysUntilEvent !== undefined && daysUntilEvent < 60) {
       return (
         <span
-          className={`px-3 py-1 ${nextEvent === "adjustment" ? "bg-(--warning)" : "bg-(--danger)"} text-white rounded-full text-xs font-semibold flex items-center gap-1`}
+          className={`px-3 py-1 ${badgeColors[statusBadge.variant]} text-white rounded-full text-xs font-semibold flex items-center gap-1`}
         >
-          <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
-            <path
-              fillRule="evenodd"
-              d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z"
-              clipRule="evenodd"
-            />
-          </svg>
-          {nextEvent === "adjustment"
-            ? "Próximo mes: Ajuste de precio"
-            : "Próximo mes: Vence contrato"}
+          {statusBadge.text}
         </span>
       );
     }
+
     return null;
   };
 
