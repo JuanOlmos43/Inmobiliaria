@@ -29,7 +29,7 @@ export function FormSelect({
   const labelClasses = theme === "light" ? "text-gray-700" : "text-gray-200";
 
   return (
-    <div>
+    <div className="mb-2">
       <label className={`block text-sm font-medium ${labelClasses} mb-2`}>
         {label} {required && "*"}
       </label>

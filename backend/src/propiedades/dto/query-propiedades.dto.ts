@@ -75,7 +75,19 @@ export class QueryPropiedadesDto {
   @Type(() => Number)
   @IsInt()
   @Min(0)
+  bedrooms?: number;
+
+  @IsOptional()
+  @Type(() => Number)
+  @IsInt()
+  @Min(0)
   minBathrooms?: number;
+
+  @IsOptional()
+  @Type(() => Number)
+  @IsInt()
+  @Min(0)
+  bathrooms?: number;
 
   @IsOptional()
   @Type(() => Number)

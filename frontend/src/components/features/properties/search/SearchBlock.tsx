@@ -73,8 +73,29 @@ export default function SearchBlock() {
     if (propertyType) params.append("propertyType", propertyType);
     if (province) params.append("province", province);
     if (city) params.append("city", city);
-    if (bedrooms) params.append("bedrooms", bedrooms);
-    if (bathrooms) params.append("bathrooms", bathrooms);
+
+    // Lógica para Dormitorios (Exacto vs Rango)
+    if (bedrooms) {
+      if (bedrooms.endsWith("+")) {
+        // Es un rango (ej: "5+")
+        params.append("minBedrooms", bedrooms.replace("+", ""));
+      } else {
+        // Es exacto
+        params.append("bedrooms", bedrooms);
+      }
+    }
+
+    // Lógica para Baños (Exacto vs Rango)
+    if (bathrooms) {
+      if (bathrooms.endsWith("+")) {
+        // Es un rango (ej: "4+")
+        params.append("minBathrooms", bathrooms.replace("+", ""));
+      } else {
+        // Es exacto
+        params.append("bathrooms", bathrooms);
+      }
+    }
+
     if (minPrice) params.append("minPrice", minPrice);
     if (maxPrice) params.append("maxPrice", maxPrice);
 
@@ -168,20 +189,21 @@ export default function SearchBlock() {
                 ))}
               </FormSelect>
 
-              {/* Dormitorios */}
+              {/* Dormitorios - Exactos */}
               <FormSelect
                 label="Dormitorios"
                 value={bedrooms}
                 onChange={(e) => setBedrooms(e.target.value)}
               >
                 <option value="">Todos</option>
+                <option value="0">0 (Monoambiente)</option>
                 <option value="1">1</option>
                 <option value="2">2</option>
                 <option value="3">3</option>
-                <option value="4">4+</option>
+                <option value="4+">4 o más</option>
               </FormSelect>
 
-              {/* Baños */}
+              {/* Baños - Exactos hasta 2, luego 3+ */}
               <FormSelect
                 label="Baños"
                 value={bathrooms}
@@ -190,8 +212,7 @@ export default function SearchBlock() {
                 <option value="">Todos</option>
                 <option value="1">1</option>
                 <option value="2">2</option>
-                <option value="3">3</option>
-                <option value="4">4+</option>
+                <option value="3+">3 o más</option>
               </FormSelect>
 
               {/* Precio */}

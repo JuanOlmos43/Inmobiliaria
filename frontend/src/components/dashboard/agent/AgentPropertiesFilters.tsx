@@ -22,16 +22,18 @@ export default function AgentPropertiesFilters({
   setFilterListingType,
 }: AgentPropertiesFiltersProps) {
   return (
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 bg-gray-50 p-4 rounded-xl border border-gray-100">
-      <FormInput
-        label="Buscar propiedades por dirección"
-        type="text"
-        value={searchTerm}
-        onChange={(e) => setSearchTerm(e.target.value)}
-        placeholder="ej: Av. Siempre Viva 742"
-        maxLength={200}
-        icon="location"
-      />
+    <div className="grid grid-cols-1 md:grid-cols-4 gap-4 bg-gray-50 p-4 rounded-xl border border-gray-100">
+      <div className="md:col-span-2">
+        <FormInput
+          label="Buscar propiedades por dirección"
+          type="text"
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          placeholder="ej: Av. Siempre Viva 742"
+          maxLength={200}
+          icon="location"
+        />
+      </div>
 
       <FormSelect
         label="Tipo de negocio"
@@ -64,4 +66,3 @@ export default function AgentPropertiesFilters({
     </div>
   );
 }
-

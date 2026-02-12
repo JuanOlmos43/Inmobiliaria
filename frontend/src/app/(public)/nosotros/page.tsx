@@ -3,7 +3,7 @@ import { Icon, ValueCard } from "@/components/ui";
 
 export default function NosotrosPage() {
   return (
-    <div className="grow bg-gray-50">
+    <div >
       {/* Hero Section */}
       <HeroSection
         title="Sobre Nosotros"
@@ -52,7 +52,7 @@ export default function NosotrosPage() {
       </section>
 
       {/* Nuestros Valores */}
-      <section className="py-16 bg-white">
+      <section className="py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <h2 className="text-4xl font-bold text-center text-(--primary) mb-12">
             Nuestros Valores

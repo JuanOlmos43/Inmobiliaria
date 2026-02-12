@@ -119,7 +119,8 @@ export interface PropertyFilters {
   city?: string;
   minPrice?: number;
   maxPrice?: number;
-  bedrooms?: number; // Keep for backward compatibility if needed, or remove if unused
+  bedrooms?: number; // Exact match
+  bathrooms?: number; // Exact match
   minBedrooms?: number;
   minBathrooms?: number;
   ownerId?: string;

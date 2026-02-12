@@ -168,11 +168,16 @@ export class PropiedadesService {
       if (maxPrice !== undefined) where.price.lte = maxPrice;
     }
 
-    if (minBedrooms !== undefined) {
+    // Priorizar búsqueda exacta si se especifica, sino usar mínimo (range)
+    if (query.bedrooms !== undefined) {
+      where.bedrooms = query.bedrooms;
+    } else if (minBedrooms !== undefined) {
       where.bedrooms = { gte: minBedrooms };
     }
 
-    if (minBathrooms !== undefined) {
+    if (query.bathrooms !== undefined) {
+      where.bathrooms = query.bathrooms;
+    } else if (minBathrooms !== undefined) {
       where.bathrooms = { gte: minBathrooms };
     }
 

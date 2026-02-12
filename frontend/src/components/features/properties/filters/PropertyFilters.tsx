@@ -92,14 +92,28 @@ export default function PropertyFilters({
       setTempCity(initialFilters.city);
     if (
       initialFilters.minBedrooms !== undefined &&
-      initialFilters.minBedrooms.toString() !== tempBedrooms
-    )
-      setTempBedrooms(initialFilters.minBedrooms.toString());
+      initialFilters.minBedrooms > 0
+    ) {
+      // Si viene minBedrooms, asumimos que es un rango (ej: 5+)
+      setTempBedrooms(`${initialFilters.minBedrooms}+`);
+    } else if (initialFilters.bedrooms !== undefined) {
+      // Si viene bedrooms, es exacto
+      setTempBedrooms(initialFilters.bedrooms.toString());
+    } else {
+      setTempBedrooms("");
+    }
+
     if (
       initialFilters.minBathrooms !== undefined &&
-      initialFilters.minBathrooms.toString() !== tempBathrooms
-    )
-      setTempBathrooms(initialFilters.minBathrooms.toString());
+      initialFilters.minBathrooms > 0
+    ) {
+      setTempBathrooms(`${initialFilters.minBathrooms}+`);
+    } else if (initialFilters.bathrooms !== undefined) {
+      setTempBathrooms(initialFilters.bathrooms.toString());
+    } else {
+      setTempBathrooms("");
+    }
+
     if (
       initialFilters.minPrice !== undefined &&
       initialFilters.minPrice.toString() !== tempMinPrice
@@ -110,21 +124,48 @@ export default function PropertyFilters({
       initialFilters.maxPrice.toString() !== tempMaxPrice
     )
       setTempMaxPrice(initialFilters.maxPrice.toString());
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [initialFilters]);
 
   const handleSearch = () => {
-    // Convertir strings a números donde sea necesario
+    // Definir objetos base
     const filters: PropertyFilters = {
       operationType: tempOperationType,
       listingType: tempOperationType,
       propertyType: tempPropertyType || undefined,
       province: tempProvince || undefined,
       city: tempCity || undefined,
-      minBedrooms: tempBedrooms ? parseInt(tempBedrooms) : undefined,
-      minBathrooms: tempBathrooms ? parseInt(tempBathrooms) : undefined,
       minPrice: tempMinPrice ? parseFloat(tempMinPrice) : undefined,
       maxPrice: tempMaxPrice ? parseFloat(tempMaxPrice) : undefined,
     };
+
+    // Lógica para Dormitorios
+    if (tempBedrooms) {
+      if (tempBedrooms.endsWith("+")) {
+        filters.minBedrooms = parseInt(tempBedrooms.replace("+", ""));
+        filters.bedrooms = undefined;
+      } else {
+        filters.bedrooms = parseInt(tempBedrooms);
+        filters.minBedrooms = undefined;
+      }
+    } else {
+      filters.bedrooms = undefined;
+      filters.minBedrooms = undefined;
+    }
+
+    // Lógica para Baños
+    if (tempBathrooms) {
+      if (tempBathrooms.endsWith("+")) {
+        filters.minBathrooms = parseInt(tempBathrooms.replace("+", ""));
+        filters.bathrooms = undefined;
+      } else {
+        filters.bathrooms = parseInt(tempBathrooms);
+        filters.minBathrooms = undefined;
+      }
+    } else {
+      filters.bathrooms = undefined;
+      filters.minBathrooms = undefined;
+    }
 
     onSearch(filters);
   };
@@ -235,10 +276,11 @@ export default function PropertyFilters({
           onChange={(e) => setTempBedrooms(e.target.value)}
         >
           <option value="">Todos</option>
+          <option value="0">0 (Monoambiente)</option>
           <option value="1">1</option>
           <option value="2">2</option>
           <option value="3">3</option>
-          <option value="4">4+</option>
+          <option value="4+">4 o más</option>
         </FormSelect>
 
         {/* Baños */}
@@ -250,7 +292,7 @@ export default function PropertyFilters({
           <option value="">Todos</option>
           <option value="1">1</option>
           <option value="2">2</option>
-          <option value="3">3</option>
+          <option value="3+">3 o más</option>
         </FormSelect>
 
         {/* Precio */}

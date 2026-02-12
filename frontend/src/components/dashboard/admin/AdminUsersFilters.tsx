@@ -19,7 +19,7 @@ export default function AdminUsersFilters({
   setFilterRole,
 }: AdminUsersFiltersProps) {
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8 bg-gray-50 p-4 rounded-xl border border-gray-100">
+    <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8 bg-gray-50 p-4 rounded-xl border border-gray-100">
       <FormInput
         label="Buscar por email"
         type="text"
@@ -30,19 +30,18 @@ export default function AdminUsersFilters({
         icon="user"
       />
 
-      <FormSelect
-        label="Filtrar por rol"
-        value={filterRole}
-        onChange={(e) => setFilterRole(e.target.value as UserRole | "all")}
-      >
-        <option value="all">Todos los roles</option>
-        <option value={UserRole.Inquilino}>Inquilino</option>
-        <option value={UserRole.Propietario}>Propietario</option>
-        <option value={UserRole.Agente}>Agente</option>
-        <option value={UserRole.Gerencia}>Gerencia</option>
-        <option value={UserRole.Administrador}>Administrador</option>
-      </FormSelect>
+        <FormSelect
+          label="Filtrar por rol"
+          value={filterRole}
+          onChange={(e) => setFilterRole(e.target.value as UserRole | "all")}
+        >
+          <option value="all">Todos los roles</option>
+          <option value={UserRole.Inquilino}>Inquilino</option>
+          <option value={UserRole.Propietario}>Propietario</option>
+          <option value={UserRole.Agente}>Agente</option>
+          <option value={UserRole.Gerencia}>Gerencia</option>
+          <option value={UserRole.Administrador}>Administrador</option>
+        </FormSelect>
     </div>
   );
 }
-

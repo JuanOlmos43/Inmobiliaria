@@ -7,7 +7,7 @@
 */
 :root {
 	/* Colores del fondo y texto base: El "lienzo" y la lectura principal de la app */
-	--background: #f8fafc;
+	--background: #e2e8f0; /* Slate 200: Contraste robusto. Asegura que el contenido blanco destaque en cualquier pantalla. */
 	/* Fondo claro de la app (Gris slate suave) */
 	--foreground: #0f172a;
 	/* Texto principal oscuro (Gris slate profundo) */

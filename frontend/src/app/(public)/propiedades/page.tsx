@@ -16,17 +16,50 @@ import type {
 function PropiedadesContent() {
   const searchParams = useSearchParams();
 
-  // Estados para los filtros aplicados (los que realmente filtran)
-  const [appliedFilters, setAppliedFilters] = useState<PropertyFiltersType>({
-    operationType: "alquiler",
-    propertyType: "",
-    province: "",
-    city: "",
-    minBedrooms: undefined,
-    minBathrooms: undefined,
-    minPrice: undefined,
-    maxPrice: undefined,
-  });
+  // Función auxiliar para parsear filtros desde URL
+  const getFiltersFromURL = (params: URLSearchParams): PropertyFiltersType => {
+    const urlOperationType = params.get("operationType");
+    const urlPropertyType = params.get("propertyType");
+    const urlProvince = params.get("province");
+    const urlCity = params.get("city");
+    const urlBedrooms = params.get("bedrooms");
+    const urlMinBedrooms = params.get("minBedrooms");
+    const urlBathrooms = params.get("bathrooms");
+    const urlMinBathrooms = params.get("minBathrooms");
+    const urlMinPrice = params.get("minPrice");
+    const urlMaxPrice = params.get("maxPrice");
+
+    const isValidOperationType = (
+      value: string | null,
+    ): value is "venta" | "alquiler" => {
+      return value === "venta" || value === "alquiler";
+    };
+
+    return {
+      operationType: isValidOperationType(urlOperationType)
+        ? urlOperationType
+        : "alquiler",
+      propertyType: urlPropertyType || "",
+      province: urlProvince || "",
+      city: urlCity || "",
+      bedrooms: urlBedrooms ? parseInt(urlBedrooms) : undefined,
+      minBedrooms: urlMinBedrooms ? parseInt(urlMinBedrooms) : undefined,
+      bathrooms: urlBathrooms ? parseInt(urlBathrooms) : undefined,
+      minBathrooms: urlMinBathrooms ? parseInt(urlMinBathrooms) : undefined,
+      minPrice: urlMinPrice ? parseFloat(urlMinPrice) : undefined,
+      maxPrice: urlMaxPrice ? parseFloat(urlMaxPrice) : undefined,
+    };
+  };
+
+  // Inicializar estado directamente desde URL para evitar doble render/fetch
+  const [appliedFilters, setAppliedFilters] = useState<PropertyFiltersType>(
+    () => {
+      // Nota: searchParams es ReadonlyURLSearchParams, compatible con URLSearchParams
+      // Convertimos a string para asegurar compatibilidad si es necesario o pasamos directo
+      const params = new URLSearchParams(searchParams.toString());
+      return getFiltersFromURL(params);
+    },
+  );
 
   const [properties, setProperties] = useState<Property[]>([]);
   const [totalPages, setTotalPages] = useState(0);
@@ -37,36 +70,15 @@ function PropiedadesContent() {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 12;
 
-  // Leer parámetros de URL al cargar la página
+  // Actualizar filtros si cambia la URL (navegación atrás/adelante o nueva búsqueda)
   useEffect(() => {
-    const urlOperationType = searchParams.get("operationType");
-    const urlPropertyType = searchParams.get("propertyType");
-    const urlProvince = searchParams.get("province");
-    const urlCity = searchParams.get("city");
-    const urlBedrooms = searchParams.get("bedrooms");
-    const urlBathrooms = searchParams.get("bathrooms");
-    const urlMinPrice = searchParams.get("minPrice");
-    const urlMaxPrice = searchParams.get("maxPrice");
-
-    // Validar que el tipo de operación sea válido
-    const isValidOperationType = (
-      value: string | null,
-    ): value is "venta" | "alquiler" => {
-      return value === "venta" || value === "alquiler";
-    };
-
-    setAppliedFilters({
-      operationType: isValidOperationType(urlOperationType)
-        ? urlOperationType
-        : "alquiler",
-      propertyType: urlPropertyType || "",
-      province: urlProvince || "",
-      city: urlCity || "",
-      minBedrooms: urlBedrooms ? parseInt(urlBedrooms) : undefined,
-      minBathrooms: urlBathrooms ? parseInt(urlBathrooms) : undefined,
-      minPrice: urlMinPrice ? parseFloat(urlMinPrice) : undefined,
-      maxPrice: urlMaxPrice ? parseFloat(urlMaxPrice) : undefined,
-    });
+    const params = new URLSearchParams(searchParams.toString());
+    const newFilters = getFiltersFromURL(params);
+    // Comparación simple para evitar loops si el objeto es "nuevo" pero idéntico
+    if (JSON.stringify(newFilters) !== JSON.stringify(appliedFilters)) {
+      setAppliedFilters(newFilters);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchParams]);
 
   // Resetear a página 1 cuando cambian los filtros aplicados
@@ -81,6 +93,8 @@ function PropiedadesContent() {
 
   // Fetch properties from backend
   useEffect(() => {
+    let isMounted = true; // Flag para cancelar efecto si el componente se desmonta o re-ejecuta
+
     const fetchProperties = async () => {
       setIsLoading(true);
       setError(null);
@@ -104,18 +118,33 @@ function PropiedadesContent() {
 
         const response =
           await propertiesService.getPublicProperties(cleanFilters);
-        setProperties(response.data);
-        setTotalPages(response.meta.totalPages);
-        setTotalProperties(response.meta.total);
+
+        // Solo actualizar estado si el efecto sigue activo (es la solicitud más reciente)
+        if (isMounted) {
+          setProperties(response.data);
+          setTotalPages(response.meta.totalPages);
+          setTotalProperties(response.meta.total);
+        }
       } catch (err) {
-        console.error("Error fetching properties:", err);
-        setError("Error al cargar propiedades. Por favor intenta nuevamente.");
+        if (isMounted) {
+          console.error("Error fetching properties:", err);
+          setError(
+            "Error al cargar propiedades. Por favor intenta nuevamente.",
+          );
+        }
       } finally {
-        setIsLoading(false);
+        if (isMounted) {
+          setIsLoading(false);
+        }
       }
     };
 
     fetchProperties();
+
+    // Cleanup: marcar como desmontado para ignorar resultados de esta ejecución
+    return () => {
+      isMounted = false;
+    };
   }, [appliedFilters, currentPage]);
 
   // Aplicar los filtros
