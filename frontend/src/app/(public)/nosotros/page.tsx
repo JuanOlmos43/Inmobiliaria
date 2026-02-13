@@ -3,7 +3,7 @@ import { Icon, ValueCard } from "@/components/ui";
 
 export default function NosotrosPage() {
   return (
-    <div >
+    <div>
       {/* Hero Section */}
       <HeroSection
         title="Sobre Nosotros"
@@ -218,7 +218,7 @@ export default function NosotrosPage() {
           </p>
           <a
             href="/contacto"
-            className="inline-block bg-white text-(--primary) px-10 py-4 rounded-full font-bold text-lg hover:bg-gray-100 transform hover:scale-105 transition-all duration-300 shadow-2xl hover:shadow-xl"
+            className="inline-block bg-white text-(--primary) px-10 py-4 rounded-full font-bold text-lg hover:bg-gray-100 transform hover:scale-95 transition-all duration-300 shadow-2xl hover:shadow-xl"
           >
             Contáctanos Ahora
           </a>
@@ -227,4 +227,3 @@ export default function NosotrosPage() {
     </div>
   );
 }
-

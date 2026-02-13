@@ -135,7 +135,7 @@ export default function LoginPage() {
             <button
               type="submit"
               disabled={isLoading}
-              className="w-full bg-(--accent) text-white font-bold py-3 px-6 rounded-full hover:bg-(--accent-hover) transition-all duration-300 shadow-xl hover:shadow-2xl transform hover:-translate-y-1 hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none flex items-center justify-center gap-2"
+              className="w-full bg-(--accent) text-white font-bold py-3 px-6 rounded-full transition-all duration-300 shadow-xl hover:shadow-2xl hover:bg-(--accent-hover) focus:bg-(--accent-hover) active:bg-(--accent-hover) transform hover:scale-95 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none flex items-center justify-center gap-2"
             >
               {isLoading ? (
                 "Iniciando sesión..."
@@ -164,7 +164,7 @@ export default function LoginPage() {
           <div className="mt-4 text-center">
             <Link
               href="/"
-              className="text-sm text-gray-300 hover:text-white transition-colors inline-flex items-center gap-2"
+              className="text-sm text-gray-300 hover:text-(--accent) transition-colors inline-flex items-center gap-2"
             >
               <svg
                 className="w-4 h-4"
@@ -187,4 +187,3 @@ export default function LoginPage() {
     </div>
   );
 }
-

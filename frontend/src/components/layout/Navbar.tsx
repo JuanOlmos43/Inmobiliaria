@@ -74,7 +74,7 @@ export function Navbar() {
             {/* Login Button */}
             <Link
               href="/login"
-              className="ml-6 px-8 py-3 bg-(--accent) text-white font-bold rounded-full hover:bg-(--accent-hover) transition-all duration-300 shadow-lg hover:shadow-2xl transform hover:-translate-y-1 hover:scale-105"
+              className="ml-6 px-8 py-3 bg-(--accent) text-white font-bold rounded-full hover:bg-(--accent-hover) transition-all duration-300 shadow-lg hover:shadow-2xl transform hover:scale-95"
             >
               Iniciar Sesión
             </Link>
@@ -147,7 +147,7 @@ export function Navbar() {
           <Link
             href="/login"
             onClick={closeMenu}
-            className="block mt-4 px-6 py-3 bg-(--accent) text-white font-bold rounded-full hover:bg-(--accent-hover) transition-all duration-300 shadow-lg text-center"
+            className="block mt-4 px-6 py-3 bg-(--accent) text-white font-bold rounded-full transition-all duration-300 shadow-lg text-center"
           >
             Iniciar Sesión
           </Link>
@@ -156,5 +156,3 @@ export function Navbar() {
     </nav>
   );
 }
-
-

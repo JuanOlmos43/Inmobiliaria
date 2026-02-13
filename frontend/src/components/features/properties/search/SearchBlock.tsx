@@ -118,8 +118,8 @@ export default function SearchBlock() {
               onClick={() => setActiveTab("alquilar")}
               className={`flex-1 py-5 px-6 text-center font-bold transition-all duration-300 ${
                 activeTab === "alquilar"
-                  ? "bg-(--accent) text-white shadow-lg"
-                  : "bg-gray-50 text-gray-700 hover:bg-gray-100"
+                  ? "text-white bg-(--accent) shadow-lg"
+                  : "text-gray-700 bg-gray-50 hover:bg-(--accent) hover:text-white"
               }`}
             >
               Alquilar
@@ -128,8 +128,8 @@ export default function SearchBlock() {
               onClick={() => setActiveTab("venta")}
               className={`flex-1 py-5 px-6 text-center font-bold transition-all duration-300 ${
                 activeTab === "venta"
-                  ? "bg-(--primary) text-white shadow-lg"
-                  : "bg-gray-50 text-gray-700 hover:bg-gray-100"
+                  ? "text-white bg-(--primary) shadow-lg"
+                  : "text-gray-700 bg-gray-50 hover:bg-(--primary) hover:text-white"
               }`}
             >
               Venta
@@ -254,7 +254,7 @@ export default function SearchBlock() {
             <div className="flex justify-center">
               <button
                 onClick={handleSearch}
-                className="bg-(--primary) hover:bg-(--primary-light) text-white font-bold px-16 py-4 rounded-full transition-all duration-300 shadow-xl hover:shadow-2xl transform hover:-translate-y-1 hover:scale-105 flex items-center justify-center gap-2"
+                className="bg-(--primary)/95 hover:bg-(--primary)  text-white font-bold px-16 py-4 rounded-full transition-all duration-300 shadow-xl hover:shadow-2xl transform hover:scale-95 flex items-center justify-center gap-2"
               >
                 <Icon name="search" className="w-5 h-5" />
                 Realizar búsqueda

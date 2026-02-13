@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { FormSelect, FormInput, Icon } from "@/components/ui";
+import { scrollToTop } from "@/components/ui/navigation/ScrollToTop";
 import { useLocationLogic } from "@/hooks/useLocationLogic";
 import type { PropertyFilters } from "@/types/property";
 import type { Provincia, Localidad } from "@/types/location";
@@ -168,6 +169,7 @@ export default function PropertyFilters({
     }
 
     onSearch(filters);
+    scrollToTop();
   };
 
   const handleReset = () => {
@@ -180,6 +182,7 @@ export default function PropertyFilters({
     setTempMinPrice("");
     setTempMaxPrice("");
     onReset();
+    scrollToTop();
   };
 
   return (
@@ -199,7 +202,7 @@ export default function PropertyFilters({
               className={`flex-1 py-2 px-4 rounded-lg font-medium transition-all duration-200 ${
                 tempOperationType === "alquiler"
                   ? "bg-(--accent) text-white shadow-md"
-                  : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                  : "bg-gray-300 text-gray-700 hover:bg-(--accent) hover:text-white"
               }`}
             >
               Alquiler
@@ -210,7 +213,7 @@ export default function PropertyFilters({
               className={`flex-1 py-2 px-4 rounded-lg font-medium transition-all duration-200 ${
                 tempOperationType === "venta"
                   ? "bg-(--primary) text-white shadow-md"
-                  : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                  : "bg-gray-300 text-gray-700 hover:bg-(--primary) hover:text-white"
               }`}
             >
               Venta
@@ -328,7 +331,7 @@ export default function PropertyFilters({
         {/* Botón Buscar */}
         <button
           onClick={handleSearch}
-          className="w-full bg-(--primary) hover:bg-(--primary-light) text-white font-bold py-3 px-4 rounded-lg transition-all duration-300 mb-3 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 flex items-center justify-center gap-2"
+          className="w-full bg-(--primary)/95 hover:bg-(--primary) text-white font-bold py-3 px-4 rounded-full transition-all duration-300 mb-3 shadow-lg hover:shadow-xl transform hover:scale-95 flex items-center justify-center gap-2"
         >
           <Icon name="search" className="w-5 h-5" />
           Buscar
@@ -337,7 +340,7 @@ export default function PropertyFilters({
         {/* Botón Limpiar filtros */}
         <button
           onClick={handleReset}
-          className="w-full bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold py-3 px-4 rounded-lg transition-all duration-300 shadow-md hover:shadow-lg flex items-center justify-center gap-2"
+          className="w-full text-gray-700 bg-gray-300 hover:bg-(--danger) hover:text-white  font-bold py-1 px-2 rounded-lg transition-all duration-300 shadow-md hover:shadow-lg flex items-center justify-center gap-2"
         >
           <Icon name="close" className="w-5 h-5" />
           Limpiar filtros

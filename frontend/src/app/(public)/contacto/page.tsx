@@ -239,10 +239,8 @@ export default function ContactoPage() {
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className={`w-full bg-(--primary) text-white py-3 rounded-lg font-bold text-base transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl flex items-center justify-center gap-2 ${
-                    isSubmitting
-                      ? "opacity-50 cursor-not-allowed"
-                      : "hover:bg-(--primary-light)"
+                  className={`w-full bg-(--primary)/95 hover:bg-(--primary) text-white py-3 rounded-lg font-bold text-base transition-all duration-300 transform hover:scale-95 shadow-lg hover:shadow-xl flex items-center justify-center gap-2 ${
+                    isSubmitting ? "opacity-50 cursor-not-allowed" : ""
                   }`}
                 >
                   {isSubmitting ? (
@@ -294,7 +292,7 @@ export default function ContactoPage() {
                   href="https://wa.me/5493434123456"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center justify-center w-full bg-(--success) hover:bg-(--success) text-white font-bold py-3 px-6 rounded-lg transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl gap-3"
+                  className="flex items-center justify-center w-full bg-(--success)/95 hover:bg-(--success)  text-white font-bold py-3 px-6 rounded-lg transition-all duration-300 transform hover:scale-95 shadow-lg hover:shadow-xl gap-3"
                 >
                   <Icon name="whatsapp" className="w-6 h-6" />
                   <span className="text-lg">Consultar por WhatsApp</span>

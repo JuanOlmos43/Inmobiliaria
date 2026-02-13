@@ -58,7 +58,7 @@ export default function AdminDashboardPage() {
             {/*BOTON CREAR USUARIO */}
             <button
               onClick={() => setShowModal(true)}
-              className="px-6 py-3 bg-(--accent) text-white rounded-lg hover:bg-(--accent-hover) transition-all shadow-md hover:shadow-lg flex items-center gap-2 transform hover:scale-105"
+              className="px-6 py-3 bg-(--accent) text-white rounded-full hover:bg-(--accent-hover) transition-all shadow-md hover:shadow-lg flex items-center gap-2 transform hover:scale-95"
             >
               <Icon name="plus" className="w-5 h-5" />
               Crear usuario

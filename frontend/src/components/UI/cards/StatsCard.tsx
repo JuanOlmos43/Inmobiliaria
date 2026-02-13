@@ -21,7 +21,7 @@ export function StatsCard({
 }: StatsCardProps) {
   return (
     <div
-      className={`bg-linear-to-br ${color} rounded-xl shadow-lg p-5 text-white transform hover:scale-105 transition-transform duration-300 flex flex-col justify-between whitespace-nowrap`}
+      className={`bg-linear-to-br ${color} rounded-xl shadow-lg p-5 text-white transform  flex flex-col justify-between whitespace-nowrap`}
     >
       <div className="flex flex-col gap-3">
         <p className="text-xs opacity-80 uppercase tracking-wider font-semibold">

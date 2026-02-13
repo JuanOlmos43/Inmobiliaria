@@ -116,7 +116,7 @@ export default function FeaturedProperties() {
             <>
               <button
                 onClick={handlePrev}
-                className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-4 z-10 bg-linear-to-r from-(--primary) to-(--primary-light) hover:from-(--accent) hover:to-(--accent-hover) text-white p-4 rounded-full shadow-xl transition-all duration-300 hidden lg:block transform hover:scale-110"
+                className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-4 z-10 bg-(--accent) hover:brightness-90 text-white p-4 rounded-full shadow-xl transition-all duration-300 hidden lg:block transform hover:scale-95"
                 aria-label="Anterior"
               >
                 <svg
@@ -136,7 +136,7 @@ export default function FeaturedProperties() {
 
               <button
                 onClick={handleNext}
-                className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-4 z-10 bg-linear-to-r from-(--primary) to-(--primary-light) hover:from-(--accent) hover:to-(--accent-hover) text-white p-4 rounded-full shadow-xl transition-all duration-300 hidden lg:block transform hover:scale-110"
+                className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-4 z-10 bg-(--accent) hover:brightness-90 text-white p-4 rounded-full shadow-xl transition-all duration-300 hidden lg:block transform hover:scale-95"
                 aria-label="Siguiente"
               >
                 <svg
@@ -233,4 +233,3 @@ export default function FeaturedProperties() {
     </section>
   );
 }
-

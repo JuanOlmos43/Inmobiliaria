@@ -3,16 +3,19 @@
 import { useEffect } from "react";
 import { usePathname } from "next/navigation";
 
+export const scrollToTop = () => {
+  if (typeof window !== "undefined") {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+    document.body.style.overflow = "";
+    document.body.style.paddingRight = "";
+  }
+};
+
 export function ScrollToTop() {
   const pathname = usePathname();
 
   useEffect(() => {
-    // Scroll al tope cuando cambia la ruta
-    window.scrollTo(0, 0);
-
-    // También asegurar que el body no tenga overflow hidden
-    document.body.style.overflow = "";
-    document.body.style.paddingRight = "";
+    scrollToTop();
   }, [pathname]);
 
   return null;

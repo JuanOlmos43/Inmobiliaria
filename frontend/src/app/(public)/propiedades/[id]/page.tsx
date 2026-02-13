@@ -93,11 +93,11 @@ export default function PropertyDetailPage() {
     <main className="grow bg-(--background)">
       {/* Property Details */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
           {/* Main Content */}
-          <div className="lg:col-span-2">
+          <div className="lg:col-span-3">
             {/* Image Carousel */}
-            <div className="relative h-96 bg-gray-200 rounded-lg overflow-hidden mb-6 group">
+            <div className="relative w-full aspect-video bg-gray-200 rounded-2xl overflow-hidden mb-6 group shadow-xl">
               {propertyImages.length > 0 ? (
                 <Image
                   src={propertyImages[currentImageIndex]}
@@ -113,7 +113,13 @@ export default function PropertyDetailPage() {
                 </div>
               )}
               <div className="absolute top-4 right-4 z-10">
-                <span className="bg-(--accent) text-white px-4 py-2 rounded-lg text-sm font-semibold">
+                <span
+                  className={`px-4 py-2 rounded-full text-sm font-bold backdrop-blur-sm shadow-sm ${
+                    property.listingType === "venta"
+                      ? "bg-(--primary) text-white"
+                      : "bg-(--accent) text-white"
+                  }`}
+                >
                   {property.listingType === "venta" ? "Venta" : "Alquiler"}
                 </span>
               </div>
@@ -180,7 +186,7 @@ export default function PropertyDetailPage() {
             </div>
 
             {/* Title and Location */}
-            <div className="bg-white rounded-lg shadow-lg p-6 mb-6">
+            <div className="bg-white rounded-2xl shadow-xl p-8 mb-6 border border-gray-100">
               <h1 className="text-3xl font-bold text-(--primary) mb-3">
                 {property.title}
               </h1>
@@ -257,7 +263,7 @@ export default function PropertyDetailPage() {
             </div>
 
             {/* Description */}
-            <div className="bg-white rounded-lg shadow-lg p-6 mb-6">
+            <div className="bg-white rounded-2xl shadow-xl p-8 mb-6 border border-gray-100">
               <h2 className="text-2xl font-bold text-(--primary) mb-4">
                 Descripción
               </h2>
@@ -267,7 +273,7 @@ export default function PropertyDetailPage() {
             </div>
 
             {/* Features */}
-            <div className="bg-white rounded-lg shadow-lg p-6">
+            <div className="bg-white rounded-2xl shadow-xl p-8 border border-gray-100">
               <h2 className="text-2xl font-bold text-(--primary) mb-4">
                 Características
               </h2>
@@ -297,7 +303,7 @@ export default function PropertyDetailPage() {
           {/* Sidebar */}
           <div className="lg:col-span-1">
             {/* Price Card */}
-            <div className="bg-white rounded-lg shadow-lg p-6 sticky top-20 mb-6">
+            <div className="bg-white rounded-2xl shadow-xl p-8 sticky top-20 mb-6 border border-gray-100">
               <div className="mb-6">
                 <p className="text-gray-600 text-sm mb-2">Precio</p>
                 <p className="text-4xl font-bold text-(--primary)">
@@ -309,12 +315,14 @@ export default function PropertyDetailPage() {
               </div>
 
               {/* Contact Button */}
-              <Link
-                href="/contacto"
-                className="block w-full bg-(--accent) hover:bg-(--accent-hover) text-white font-semibold py-3 px-4 rounded-lg transition-colors text-center"
-              >
-                Contactar
-              </Link>
+              <div className="flex justify-center">
+                <Link
+                  href="/contacto"
+                  className="inline-block bg-(--accent) text-white px-8 py-3 rounded-full font-bold text-lg hover:bg-(--accent-hover) transform hover:scale-95 transition-all duration-300 shadow-2xl hover:shadow-xl"
+                >
+                  Contactar
+                </Link>
+              </div>
             </div>
           </div>
         </div>
