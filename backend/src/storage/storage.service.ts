@@ -198,9 +198,7 @@ export class StorageService implements OnModuleInit {
       .remove(paths);
 
     if (deleteError) {
-      this.logger.error(
-        `Error deleting files: ${deleteError.message}`,
-      );
+      this.logger.error(`Error deleting files: ${deleteError.message}`);
       throw deleteError;
     }
   }

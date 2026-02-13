@@ -14,7 +14,7 @@ export class PropiedadesService {
   constructor(
     private prisma: PrismaService,
     private storageService: StorageService,
-  ) { }
+  ) {}
 
   /**
    * Helper function to add calculated currency field based on listingType
@@ -60,8 +60,8 @@ export class PropiedadesService {
         features:
           features && features.length > 0
             ? {
-              create: features.map((name) => ({ name })),
-            }
+                create: features.map((name) => ({ name })),
+              }
             : undefined,
       },
       include: {
@@ -114,7 +114,7 @@ export class PropiedadesService {
     const where: Prisma.PropertyWhereInput = {};
 
     if (propertyType) where.propertyType = propertyType;
-    
+
     // Mapeo de listingType / operationType
     const finalListingType = listingType || operationType;
     if (finalListingType) where.listingType = finalListingType;
@@ -198,16 +198,16 @@ export class PropiedadesService {
     // Definir includes según visibilidad
     const ownerSelect = isPublic
       ? {
-        id: true,
-        name: true,
-        // No email/phone for public
-      }
+          id: true,
+          name: true,
+          // No email/phone for public
+        }
       : {
-        id: true,
-        name: true,
-        email: true,
-        phone: true,
-      };
+          id: true,
+          name: true,
+          email: true,
+          phone: true,
+        };
 
     // Ejecutar query con paginación
     const [properties, total] = await Promise.all([
@@ -236,20 +236,20 @@ export class PropiedadesService {
           // Rental contracts usually not needed for public listing
           rentalContracts: !isPublic
             ? {
-              select: {
-                id: true,
-                startDate: true,
-                endDate: true,
-                tenant: {
-                  select: {
-                    name: true,
+                select: {
+                  id: true,
+                  startDate: true,
+                  endDate: true,
+                  tenant: {
+                    select: {
+                      name: true,
+                    },
                   },
                 },
-              },
-              orderBy: {
-                endDate: 'desc',
-              },
-            }
+                orderBy: {
+                  endDate: 'desc',
+                },
+              }
             : undefined,
         },
         orderBy: {
@@ -519,7 +519,7 @@ export class PropiedadesService {
    * Retorna hasta 6 propiedades (3 de venta + 3 de alquiler)
    * Solo propiedades activas con imagen principal
    * Ordenadas por fecha de creación (más recientes primero)
-   * 
+   *
    * @returns Array de propiedades destacadas
    */
   async getFeaturedProperties() {
@@ -579,7 +579,7 @@ export class PropiedadesService {
 
   /**
    * Obtiene estadísticas generales del inventario de propiedades.
-   * 
+   *
    * @returns Objeto con métricas de propiedades.
    * @example
    * {
@@ -602,7 +602,7 @@ export class PropiedadesService {
       alquilada,
       createdThisMonth,
       venta,
-      alquiler
+      alquiler,
     ] = await Promise.all([
       this.prisma.property.count(),
       this.prisma.property.count({ where: { status: 'activa' } }),
@@ -613,8 +613,8 @@ export class PropiedadesService {
           createdAt: {
             gte: startOfMonth,
             lte: endOfMonth,
-          }
-        }
+          },
+        },
       }),
       this.prisma.property.count({ where: { listingType: 'venta' } }),
       this.prisma.property.count({ where: { listingType: 'alquiler' } }),
@@ -628,7 +628,7 @@ export class PropiedadesService {
         alquilada,
       },
       monthly: {
-        new: createdThisMonth
+        new: createdThisMonth,
       },
       listingType: {
         venta,

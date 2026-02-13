@@ -34,7 +34,8 @@ JWT_EXPIRATION="15m"
 JWT_REFRESH_EXPIRATION="7d"
 ```
 
-> **Importante**: 
+> **Importante**:
+>
 > - `DATABASE_URL` usa el puerto 6543 (pooler de Supabase) para queries
 > - `DIRECT_URL` usa el puerto 5432 (conexión directa) para migraciones
 
@@ -50,7 +51,7 @@ export default {
       directUrl: process.env.DIRECT_URL,
     },
   },
-}
+};
 ```
 
 ## Ejecutar el Proyecto
@@ -85,7 +86,7 @@ export default {
       directUrl: process.env.DIRECT_URL, // ← CRÍTICO para migraciones
     },
   },
-}
+};
 ```
 
 #### 2️⃣ Modificar el Schema
@@ -110,11 +111,13 @@ npx prisma migrate dev --name nombre_descriptivo_del_cambio
 ```
 
 Esto hará automáticamente:
+
 - ✅ Crear el archivo de migración SQL
 - ✅ Aplicar la migración a la base de datos
 - ✅ Regenerar el Prisma Client
 
 **Ejemplo de nombres descriptivos:**
+
 - `add_manager_role`
 - `add_property_images_table`
 - `add_user_phone_field`
@@ -178,6 +181,7 @@ npx prisma format
 **Problema**: El schema de Prisma no coincide con la base de datos.
 
 **Solución**:
+
 ```bash
 # Opción 1: Resetear la base de datos (desarrollo)
 npx prisma migrate reset --force
@@ -191,6 +195,7 @@ npx prisma migrate dev --name fix_drift
 **Problema**: Falta la configuración de `DIRECT_URL` en `prisma.config.ts`.
 
 **Solución**:
+
 1. Agregar `directUrl: process.env.DIRECT_URL` en `prisma.config.ts`
 2. Verificar que `.env` tenga `DIRECT_URL` configurado
 3. Reintentar la migración
@@ -200,6 +205,7 @@ npx prisma migrate dev --name fix_drift
 **Problema**: El cliente de Prisma no está actualizado después de cambios en el schema.
 
 **Solución**:
+
 ```bash
 npx prisma generate
 ```
@@ -209,6 +215,7 @@ npx prisma generate
 **Problema**: El Prisma Client no se regeneró después de agregar nuevos campos/enums.
 
 **Solución**:
+
 ```bash
 # 1. Regenerar el cliente
 npx prisma generate
@@ -235,13 +242,13 @@ Usa este checklist cada vez que hagas cambios en la base de datos:
 
 Después de ejecutar el seed, estarán disponibles estos usuarios:
 
-| Email | Rol | Contraseña |
-|-------|-----|------------|
-| admin@inmobiliaria.com | admin | admin123 |
-| agent@inmobiliaria.com | agent | admin123 |
-| landlord@inmobiliaria.com | landlord | admin123 |
-| tenant@inmobiliaria.com | tenant | admin123 |
-| manager@inmobiliaria.com | manager | admin123 |
+| Email                     | Rol      | Contraseña |
+| ------------------------- | -------- | ---------- |
+| admin@inmobiliaria.com    | admin    | admin123   |
+| agent@inmobiliaria.com    | agent    | admin123   |
+| landlord@inmobiliaria.com | landlord | admin123   |
+| tenant@inmobiliaria.com   | tenant   | admin123   |
+| manager@inmobiliaria.com  | manager  | admin123   |
 
 ## Estructura del Proyecto
 

@@ -26,7 +26,7 @@ import { CurrentUser } from '../auth/decorators/current-user.decorator';
 @UseGuards(JwtAuthGuard, RolesGuard)
 @UsePipes(new ValidationPipe({ transform: true, whitelist: true }))
 export class ContratosController {
-  constructor(private readonly contratosService: ContratosService) { }
+  constructor(private readonly contratosService: ContratosService) {}
 
   @Get('stats')
   getStats() {

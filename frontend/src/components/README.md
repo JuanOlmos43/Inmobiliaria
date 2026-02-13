@@ -343,6 +343,15 @@ PropertyModal/
 
 ---
 
+### 5. **Estilos y Clases (Tailwind)**
+
+El proyecto utiliza **Prettier** para ordenar automáticamente las clases.
+
+- 🤖 **Deja que la herramienta trabaje**: No pierdas tiempo ordenando clases manualmente.
+- 💾 **Guardar para ordenar**: Simplemente guarda el archivo (`Ctrl+S`) y Prettier agrupará las clases lógicamente (Layout → Box Model → Visual → etc).
+
+---
+
 ## 📚 Recursos Adicionales
 
 - [Atomic Design](https://bradfrost.com/blog/post/atomic-web-design/)
@@ -363,5 +372,5 @@ Esta estructura debe evolucionar con el proyecto. Al agregar nuevas features:
 
 ---
 
-**Última actualización**: 2026-02-10
-**Versión**: 2.0.0 (Reorganización Feature-First)
+**Última actualización**: 2026-02-13
+**Versión**: 2.1.0 (Actualización de Estándares de Estilo)

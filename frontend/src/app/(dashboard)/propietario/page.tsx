@@ -1,7 +1,7 @@
 "use client";
 import React, { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { TabNavigation, FormSelect, Icon } from "@/components/ui";
+import { TabNavigation, FormSelect, Icon, EmptyState } from "@/components/ui";
 import {
   RentalPropertyCard,
   BasePropertyCard,
@@ -128,9 +128,10 @@ export default function LandlordDashboardPage() {
                 <div className="h-12 w-12 animate-spin rounded-full border-b-2 border-gray-900"></div>
               </div>
             ) : rentals.length === 0 ? (
-              <div className="rounded-xl bg-white p-12 text-center shadow-md">
-                <EmptyRentalsState />
-              </div>
+              <EmptyState
+                title="No tienes rentas activas"
+                description="No estás alquilando ninguna propiedad actualmente"
+              />
             ) : (
               <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
                 {rentals.map((rental) => (
@@ -203,9 +204,10 @@ export default function LandlordDashboardPage() {
                 <div className="h-12 w-12 animate-spin rounded-full border-b-2 border-gray-900"></div>
               </div>
             ) : properties.length === 0 ? (
-              <div className="rounded-xl bg-white p-12 text-center shadow-md">
-                <EmptyPropertiesState />
-              </div>
+              <EmptyState
+                title="No tienes propiedades publicadas"
+                description="Comienza publicando tu primera propiedad"
+              />
             ) : (
               <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
                 {properties.map((property) => (
@@ -226,57 +228,6 @@ export default function LandlordDashboardPage() {
         />
       )}
     </div>
-  );
-}
-
-// Sub-components for cleaner render
-function EmptyRentalsState() {
-  return (
-    <>
-      <svg
-        className="mx-auto mb-4 h-24 w-24 text-gray-300"
-        fill="none"
-        viewBox="0 0 24 24"
-        stroke="currentColor"
-      >
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          strokeWidth={2}
-          d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"
-        />
-      </svg>
-      <h3 className="mb-2 text-xl font-semibold text-gray-700">
-        No tienes rentas activas
-      </h3>
-      <p className="text-gray-500">
-        No estás alquilando ninguna propiedad actualmente
-      </p>
-    </>
-  );
-}
-
-function EmptyPropertiesState() {
-  return (
-    <>
-      <svg
-        className="mx-auto mb-4 h-24 w-24 text-gray-300"
-        fill="none"
-        viewBox="0 0 24 24"
-        stroke="currentColor"
-      >
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          strokeWidth={2}
-          d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"
-        />
-      </svg>
-      <h3 className="mb-2 text-xl font-semibold text-gray-700">
-        No tienes propiedades publicadas
-      </h3>
-      <p className="text-gray-500">Comienza publicando tu primera propiedad</p>
-    </>
   );
 }
 

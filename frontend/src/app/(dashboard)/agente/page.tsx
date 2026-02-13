@@ -11,6 +11,7 @@ import {
   TabNavigation,
   ConfirmModal,
   Pagination,
+  EmptyState,
 } from "@/components/ui";
 import AgentPropertyCard from "@/components/dashboard/agent/AgentPropertyCard";
 import PropertyModal from "@/components/dashboard/agent/PropertyModal";
@@ -172,17 +173,10 @@ export default function AgentDashboardPage() {
                   <div className="border-primary-600 h-12 w-12 animate-spin rounded-full border-b-2"></div>
                 </div>
               ) : properties.length === 0 ? (
-                <div className="rounded-xl border border-gray-100 bg-white p-12 text-center shadow-md">
-                  <div className="mb-6 inline-flex h-20 w-20 items-center justify-center rounded-full bg-blue-50">
-                    <Icon
-                      name="building"
-                      className="h-10 w-10 text-(--accent)"
-                    />
-                  </div>
-                  <h3 className="mb-2 text-xl font-bold text-(--primary)">
-                    No se encontraron propiedades
-                  </h3>
-                </div>
+                <EmptyState
+                  title="No se encontraron propiedades"
+                  description="Intenta ajustar los filtros de búsqueda o agrega una nueva propiedad."
+                />
               ) : (
                 <>
                   <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
@@ -235,20 +229,11 @@ export default function AgentDashboardPage() {
 
               {/* GRID DE CONTRATOS */}
               {rentedProperties.length === 0 ? (
-                <div className="rounded-xl border border-gray-100 bg-white p-12 text-center shadow-md">
-                  <div className="mb-6 inline-flex h-20 w-20 items-center justify-center rounded-full bg-blue-50">
-                    <Icon
-                      name="document"
-                      className="h-10 w-10 text-(--accent)"
-                    />
-                  </div>
-                  <h3 className="mb-2 text-xl font-bold text-(--primary)">
-                    No se encontraron contratos
-                  </h3>
-                  <p className="text-gray-600">
-                    Los contratos de alquiler aparecerán aquí
-                  </p>
-                </div>
+                <EmptyState
+                  icon={<Icon name="document" className="h-15 w-15" />}
+                  title="No se encontraron contratos"
+                  description="Los contratos de alquiler aparecerán aquí"
+                />
               ) : (
                 <>
                   <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">

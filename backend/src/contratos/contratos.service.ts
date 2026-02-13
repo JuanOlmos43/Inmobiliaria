@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  BadRequestException,
+} from '@nestjs/common';
 import { CreateContratoDto } from './dto/create-contrato.dto';
 import { UpdateContratoDto } from './dto/update-contrato.dto';
 import { PrismaService } from '../prisma/prisma.service';
@@ -6,7 +10,7 @@ import { QueryContratosDto } from './dto/query-contratos.dto';
 
 @Injectable()
 export class ContratosService {
-  constructor(private prisma: PrismaService) { }
+  constructor(private prisma: PrismaService) {}
 
   private addMonths(date: Date, months: number): Date {
     const d = new Date(date);
@@ -16,11 +20,17 @@ export class ContratosService {
 
   private validateDates(start: Date, end: Date) {
     if (start >= end) {
-      throw new BadRequestException('La fecha de inicio debe ser anterior a la fecha de fin');
+      throw new BadRequestException(
+        'La fecha de inicio debe ser anterior a la fecha de fin',
+      );
     }
   }
 
-  private calculateNextAdjustmentDate(startDate: Date, endDate: Date, frequencyMonths?: number | null): Date | null {
+  private calculateNextAdjustmentDate(
+    startDate: Date,
+    endDate: Date,
+    frequencyMonths?: number | null,
+  ): Date | null {
     if (!frequencyMonths) return null;
 
     const nextDate = this.addMonths(startDate, frequencyMonths);
@@ -183,7 +193,11 @@ export class ContratosService {
   private async updateOverdueAdjustments() {
     const today = new Date();
     // Primer día del mes actual
-    const startOfCurrentMonth = new Date(today.getFullYear(), today.getMonth(), 1);
+    const startOfCurrentMonth = new Date(
+      today.getFullYear(),
+      today.getMonth(),
+      1,
+    );
 
     // Buscar contratos con próxima fecha de ajuste anterior a este mes (vencida)
     const contractsToUpdate = await this.prisma.rentalContract.findMany({
@@ -197,7 +211,8 @@ export class ContratosService {
 
     // Actualizar cada contrato
     for (const contract of contractsToUpdate) {
-      if (!contract.adjustmentFrequency || !contract.nextAdjustmentDate) continue;
+      if (!contract.adjustmentFrequency || !contract.nextAdjustmentDate)
+        continue;
 
       let nextDate = new Date(contract.nextAdjustmentDate);
       const endDate = new Date(contract.endDate);
@@ -221,7 +236,7 @@ export class ContratosService {
   async getMonthlyActivity(
     type: 'all' | 'end_contract' | 'adjustment' = 'all',
     search?: string,
-    role?: 'tenant' | 'landlord'
+    role?: 'tenant' | 'landlord',
   ) {
     // 1. Recalcular fechas desactualizadas primero
     await this.updateOverdueAdjustments();
@@ -269,7 +284,7 @@ export class ContratosService {
       if (!role || role === 'tenant') {
         searchFilters.push(
           { tenant: { name: { contains: search, mode: 'insensitive' } } },
-          { tenant: { email: { contains: search, mode: 'insensitive' } } }
+          { tenant: { email: { contains: search, mode: 'insensitive' } } },
         );
       }
 
@@ -277,7 +292,7 @@ export class ContratosService {
       if (!role || role === 'landlord') {
         searchFilters.push(
           { landlord: { name: { contains: search, mode: 'insensitive' } } },
-          { landlord: { email: { contains: search, mode: 'insensitive' } } }
+          { landlord: { email: { contains: search, mode: 'insensitive' } } },
         );
       }
 
@@ -285,9 +300,7 @@ export class ContratosService {
       if (searchFilters.length > 0) {
         // Necesitamos asegurar que cumpla con el criterio de fecha (AND)
         // Y además coincida con alguno de los criterios de búsqueda (AND ( ... OR ...))
-        where.AND = [
-          { OR: searchFilters }
-        ];
+        where.AND = [{ OR: searchFilters }];
       }
     }
 
@@ -313,20 +326,28 @@ export class ContratosService {
     });
 
     // Mapear respuesta para indicar qué evento ocurre (Vencimiento o Ajuste)
-    return contracts.map(c => {
+    return contracts.map((c) => {
       const isEnding = c.endDate >= startOfMonth && c.endDate <= endOfMonth;
-      const isAdjusting = c.nextAdjustmentDate && c.nextAdjustmentDate >= startOfMonth && c.nextAdjustmentDate <= endOfMonth;
+      const isAdjusting =
+        c.nextAdjustmentDate &&
+        c.nextAdjustmentDate >= startOfMonth &&
+        c.nextAdjustmentDate <= endOfMonth;
 
       return {
         ...c,
-        eventType: isEnding && isAdjusting ? 'both' : (isEnding ? 'end_contract' : 'adjustment'),
+        eventType:
+          isEnding && isAdjusting
+            ? 'both'
+            : isEnding
+              ? 'end_contract'
+              : 'adjustment',
       };
     });
   }
 
   /**
    * Obtiene estadísticas de la operación de alquileres.
-   * 
+   *
    * @returns Objeto con métricas de contratos.
    * @example
    * {
@@ -340,45 +361,41 @@ export class ContratosService {
     const endOfMonth = new Date(today.getFullYear(), today.getMonth() + 1, 0);
     endOfMonth.setHours(23, 59, 59, 999);
 
-    const [
-      newThisMonth,
-      active,
-      expired,
-      expiringThisMonth
-    ] = await Promise.all([
-      // Contratos de alquiler nuevos este mes (por fecha de inicio)
-      this.prisma.rentalContract.count({
-        where: {
-          startDate: {
-            gte: startOfMonth,
-            lte: endOfMonth,
-          }
-        }
-      }),
-      // Activos totales
-      this.prisma.rentalContract.count({ where: { status: 'active' } }),
-      // Expirados totales
-      this.prisma.rentalContract.count({ where: { status: 'expired' } }),
-      // Vencen este mes
-      this.prisma.rentalContract.count({
-        where: {
-          endDate: {
-            gte: startOfMonth,
-            lte: endOfMonth,
-          }
-        }
-      })
-    ]);
+    const [newThisMonth, active, expired, expiringThisMonth] =
+      await Promise.all([
+        // Contratos de alquiler nuevos este mes (por fecha de inicio)
+        this.prisma.rentalContract.count({
+          where: {
+            startDate: {
+              gte: startOfMonth,
+              lte: endOfMonth,
+            },
+          },
+        }),
+        // Activos totales
+        this.prisma.rentalContract.count({ where: { status: 'active' } }),
+        // Expirados totales
+        this.prisma.rentalContract.count({ where: { status: 'expired' } }),
+        // Vencen este mes
+        this.prisma.rentalContract.count({
+          where: {
+            endDate: {
+              gte: startOfMonth,
+              lte: endOfMonth,
+            },
+          },
+        }),
+      ]);
 
     return {
       monthly: {
         new: newThisMonth,
-        expiring: expiringThisMonth
+        expiring: expiringThisMonth,
       },
       status: {
         active,
-        expired
-      }
+        expired,
+      },
     };
   }
 
@@ -409,11 +426,14 @@ export class ContratosService {
 
     // Preparar fechas para validación y cálculo
     // Usamos las nuevas si vienen en el DTO, si no las que ya existen
-    const startDateStr = updateContratoDto.startDate ?? currentContract.startDate.toISOString();
-    const endDateStr = updateContratoDto.endDate ?? currentContract.endDate.toISOString();
-    const frequency = updateContratoDto.adjustmentFrequency !== undefined
-      ? updateContratoDto.adjustmentFrequency
-      : currentContract.adjustmentFrequency;
+    const startDateStr =
+      updateContratoDto.startDate ?? currentContract.startDate.toISOString();
+    const endDateStr =
+      updateContratoDto.endDate ?? currentContract.endDate.toISOString();
+    const frequency =
+      updateContratoDto.adjustmentFrequency !== undefined
+        ? updateContratoDto.adjustmentFrequency
+        : currentContract.adjustmentFrequency;
 
     const startDate = new Date(startDateStr);
     const endDate = new Date(endDateStr);
@@ -428,7 +448,11 @@ export class ContratosService {
     // Recalcular nextAdjustmentDate si cambia start date o la frecuencia
     // OJO: Si cambia el startDate, por regla de negocio debemos actualizar el nextAdjustmentDate inicial
     if (updateContratoDto.startDate || updateContratoDto.adjustmentFrequency) {
-      nextAdjustmentDate = this.calculateNextAdjustmentDate(startDate, endDate, frequency);
+      nextAdjustmentDate = this.calculateNextAdjustmentDate(
+        startDate,
+        endDate,
+        frequency,
+      );
     }
 
     let status = updateContratoDto.status ?? currentContract.status;

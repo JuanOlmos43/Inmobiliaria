@@ -1,7 +1,7 @@
 "use client";
 import React, { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { TabNavigation, Icon } from "@/components/ui";
+import { TabNavigation, Icon, EmptyState } from "@/components/ui";
 import { RentalPropertyCard } from "@/components/features/properties/cards";
 import ViewContractModal from "@/components/dashboard/common/ViewContractModal";
 import { contratosService } from "@/lib/api/services/contratos";
@@ -66,9 +66,18 @@ export default function TenantDashboardPage() {
               <div className="h-12 w-12 animate-spin rounded-full border-b-2 border-gray-900"></div>
             </div>
           ) : currentRentals.length === 0 ? (
-            <div className="rounded-xl bg-white p-12 text-center shadow-md">
-              <EmptyState type={activeTab} />
-            </div>
+            <EmptyState
+              title={
+                activeTab === "active"
+                  ? "No tienes alquileres activos"
+                  : "No tienes historial de alquileres"
+              }
+              description={
+                activeTab === "active"
+                  ? "Tus contratos activos aparecerán aquí"
+                  : "Tus contratos finalizados aparecerán aquí"
+              }
+            />
           ) : (
             <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
               {currentRentals.map((rental) => (
@@ -96,36 +105,6 @@ export default function TenantDashboardPage() {
         />
       )}
     </div>
-  );
-}
-
-function EmptyState({ type }: { type: "active" | "history" }) {
-  return (
-    <>
-      <svg
-        className="mx-auto mb-4 h-24 w-24 text-gray-300"
-        fill="none"
-        viewBox="0 0 24 24"
-        stroke="currentColor"
-      >
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          strokeWidth={2}
-          d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"
-        />
-      </svg>
-      <h3 className="mb-2 text-xl font-semibold text-gray-700">
-        {type === "active"
-          ? "No tienes alquileres activos"
-          : "No tienes historial de alquileres"}
-      </h3>
-      <p className="text-gray-500">
-        {type === "active"
-          ? "Tus contratos activos aparecerán aquí"
-          : "Tus contratos finalizados aparecerán aquí"}
-      </p>
-    </>
   );
 }
 
