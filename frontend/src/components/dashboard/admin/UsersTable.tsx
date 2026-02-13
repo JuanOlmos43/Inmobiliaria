@@ -103,12 +103,12 @@ export default function UsersTable({
                   key={user.id}
                   className={`transition-all duration-300 ${
                     isEditing
-                      ? "bg-(--accent)/5 shadow-md relative z-10 border-l-4 border-(--accent)"
-                      : "hover:bg-gray-50 border-l-4 border-transparent"
+                      ? "relative z-10 border-l-4 border-(--accent) bg-(--accent)/5 shadow-md"
+                      : "border-l-4 border-transparent hover:bg-gray-50"
                   }`}
                 >
                   {/* Celda Email */}
-                  <td className="px-6 py-4 text-sm text-gray-900 font-mono">
+                  <td className="px-6 py-4 font-mono text-sm text-gray-900">
                     {isEditing ? (
                       <input
                         type="email"
@@ -120,7 +120,7 @@ export default function UsersTable({
                           })
                         }
                         maxLength={255}
-                        className="w-full px-3 py-1.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-(--accent) focus:border-transparent transition-all text-sm"
+                        className="w-full rounded-lg border border-gray-300 px-3 py-1.5 text-sm transition-all focus:border-transparent focus:ring-2 focus:ring-(--accent) focus:outline-none"
                       />
                     ) : (
                       user.email
@@ -140,7 +140,7 @@ export default function UsersTable({
                           })
                         }
                         maxLength={100}
-                        className="w-full px-3 py-1.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-(--accent) focus:border-transparent transition-all text-sm"
+                        className="w-full rounded-lg border border-gray-300 px-3 py-1.5 text-sm transition-all focus:border-transparent focus:ring-2 focus:ring-(--accent) focus:outline-none"
                       />
                     ) : (
                       user.name || (
@@ -162,7 +162,7 @@ export default function UsersTable({
                           })
                         }
                         maxLength={20}
-                        className="w-full px-3 py-1.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-(--accent) focus:border-transparent transition-all text-sm"
+                        className="w-full rounded-lg border border-gray-300 px-3 py-1.5 text-sm transition-all focus:border-transparent focus:ring-2 focus:ring-(--accent) focus:outline-none"
                       />
                     ) : (
                       user.phone || (
@@ -184,7 +184,7 @@ export default function UsersTable({
                             role: e.target.value as UserRole,
                           })
                         }
-                        className="w-full px-3 py-1.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-(--accent) focus:border-transparent transition-all text-sm bg-white"
+                        className="w-full rounded-lg border border-gray-300 bg-white px-3 py-1.5 text-sm transition-all focus:border-transparent focus:ring-2 focus:ring-(--accent) focus:outline-none"
                       >
                         <option value={UserRole.Inquilino}>Inquilino</option>
                         <option value={UserRole.Propietario}>
@@ -198,7 +198,7 @@ export default function UsersTable({
                       </select>
                     ) : (
                       <span
-                        className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium text-white ${roleColors[user.role]}`}
+                        className={`inline-flex items-center rounded-full px-3 py-1 text-xs font-medium text-white ${roleColors[user.role]}`}
                       >
                         {user.role}
                       </span>
@@ -220,7 +220,7 @@ export default function UsersTable({
                                   : UserStatus.ACTIVE,
                             })
                           }
-                          className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-(--accent) focus:ring-offset-2 ${
+                          className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors duration-200 focus:ring-2 focus:ring-(--accent) focus:ring-offset-2 focus:outline-none ${
                             editFormData.status === UserStatus.ACTIVE
                               ? "bg-(--success)"
                               : "bg-gray-300"
@@ -248,7 +248,7 @@ export default function UsersTable({
                       </div>
                     ) : (
                       <span
-                        className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium ${
+                        className={`inline-flex items-center rounded-full px-3 py-1 text-xs font-medium ${
                           user.status === UserStatus.ACTIVE
                             ? "bg-green-100 text-green-800"
                             : "bg-orange-100 text-orange-800"
@@ -274,40 +274,40 @@ export default function UsersTable({
                           <button
                             onClick={saveEditing}
                             disabled={isSaving}
-                            className="p-1.5 text-green-600 hover:bg-green-200 rounded-lg transition-colors border border-green-200"
+                            className="rounded-lg border border-green-200 p-1.5 text-green-600 transition-colors hover:bg-green-200"
                             title="Guardar"
                           >
                             {isSaving ? (
-                              <div className="w-5 h-5 border-2 border-green-600 border-t-transparent rounded-full animate-spin" />
+                              <div className="h-5 w-5 animate-spin rounded-full border-2 border-green-600 border-t-transparent" />
                             ) : (
-                              <Icon name="check" className="w-5 h-5" />
+                              <Icon name="check" className="h-5 w-5" />
                             )}
                           </button>
 
                           <button
                             onClick={handleCancelEdit}
                             disabled={isSaving}
-                            className="p-1.5 text-(--danger) hover:bg-red-200 rounded-lg transition-colors border border-red-200"
+                            className="rounded-lg border border-red-200 p-1.5 text-(--danger) transition-colors hover:bg-red-200"
                             title="Cancelar"
                           >
-                            <Icon name="close" className="w-5 h-5" />
+                            <Icon name="close" className="h-5 w-5" />
                           </button>
                         </>
                       ) : (
                         <div className="flex gap-1">
                           <button
                             onClick={() => startEditing(user)}
-                            className="p-1 text-blue-600 hover:text-blue-900 transition-colors"
+                            className="p-1 text-blue-600 transition-colors hover:text-blue-900"
                             title="Editar"
                           >
-                            <Icon name="edit" className="w-5 h-5" />
+                            <Icon name="edit" className="h-5 w-5" />
                           </button>
                           <button
                             onClick={() => onResetPassword(user.id)}
-                            className="p-1 text-(--warning) hover:text-amber-900 transition-colors"
+                            className="p-1 text-(--warning) transition-colors hover:text-amber-900"
                             title="Restaurar contraseña"
                           >
-                            <Icon name="key" className="w-5 h-5" />
+                            <Icon name="key" className="h-5 w-5" />
                           </button>
                         </div>
                       )}
@@ -319,7 +319,7 @@ export default function UsersTable({
           </tbody>
         </table>
         {users.length === 0 && (
-          <div className="text-center py-12 text-gray-500">
+          <div className="py-12 text-center text-gray-500">
             No se encontraron usuarios
           </div>
         )}

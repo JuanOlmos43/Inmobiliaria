@@ -220,7 +220,7 @@ export function Icon({
 }: IconProps) {
   // Estos iconos usan fill en lugar de stroke por naturaleza de su SVG
   const usesFillOnly = ["location", "bed", "bath", "mail", "whatsapp"].includes(
-    name,
+    name
   );
 
   // Determinar viewBox por defecto según el icono

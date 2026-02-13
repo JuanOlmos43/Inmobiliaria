@@ -22,7 +22,7 @@ export default function AgentPropertiesFilters({
   setFilterListingType,
 }: AgentPropertiesFiltersProps) {
   return (
-    <div className="grid grid-cols-1 md:grid-cols-4 gap-4 bg-gray-50 p-4 rounded-xl border border-gray-100">
+    <div className="grid grid-cols-1 gap-4 rounded-xl border border-gray-100 bg-gray-50 p-4 md:grid-cols-4">
       <div className="md:col-span-2">
         <FormInput
           label="Buscar propiedades por dirección"
@@ -52,7 +52,7 @@ export default function AgentPropertiesFilters({
         value={filterStatus}
         onChange={(e) =>
           setFilterStatus(
-            e.target.value as "all" | "activa" | "pausada" | "alquilada",
+            e.target.value as "all" | "activa" | "pausada" | "alquilada"
           )
         }
       >

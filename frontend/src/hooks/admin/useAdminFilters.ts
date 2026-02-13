@@ -9,7 +9,7 @@ import { useDebounce } from "@/hooks/useDebounce";
 export function useAdminFilters() {
   const [searchEmail, setSearchEmail] = useState("");
   const [filterRole, setFilterRole] = useState<UserRole | "all">("all");
-  
+
   // Aplicamos debounce para no saturar la API en cada pulsación
   const debouncedSearch = useDebounce(searchEmail, 500);
 

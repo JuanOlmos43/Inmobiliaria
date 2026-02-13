@@ -34,13 +34,13 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen bg-linear-to-br from-(--primary) via-(--primary) to-(--primary-light) flex items-center justify-center px-4 py-12">
-      <div className="max-w-md w-full">
+    <div className="flex min-h-screen items-center justify-center bg-linear-to-br from-(--primary) via-(--primary) to-(--primary-light) px-4 py-12">
+      <div className="w-full max-w-md">
         {/* Card Container */}
-        <div className="bg-white/10 backdrop-blur-lg rounded-2xl shadow-2xl p-8 border border-white/20 animate-scale-in">
+        <div className="animate-scale-in rounded-2xl border border-white/20 bg-white/10 p-8 shadow-2xl backdrop-blur-lg">
           {/* Header */}
-          <div className="text-center mb-8">
-            <h1 className="text-3xl font-bold text-white mb-2">
+          <div className="mb-8 text-center">
+            <h1 className="mb-2 text-3xl font-bold text-white">
               Iniciar Sesión
             </h1>
             <p className="text-gray-200">Accede a tu cuenta de InmoHogar</p>
@@ -63,7 +63,7 @@ export default function LoginPage() {
 
             {/* Password Input con botón de mostrar/ocultar */}
             <div>
-              <label className="block text-sm font-medium text-gray-200 mb-2">
+              <label className="mb-2 block text-sm font-medium text-gray-200">
                 Contraseña *
               </label>
               <div className="relative">
@@ -76,19 +76,19 @@ export default function LoginPage() {
                   placeholder="••••••••"
                   autoComplete="new-password"
                   maxLength={100}
-                  className="w-full px-4 py-2 pr-12 border rounded-lg transition-all duration-300 bg-white/10 border-white/30 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-(--accent) focus:border-transparent [&::-ms-reveal]:hidden [&::-ms-clear]:hidden [&::-webkit-credentials-auto-fill-button]:hidden [&::-webkit-contacts-auto-fill-button]:hidden"
+                  className="w-full rounded-lg border border-white/30 bg-white/10 px-4 py-2 pr-12 text-white placeholder-gray-400 transition-all duration-300 focus:border-transparent focus:ring-2 focus:ring-(--accent) focus:outline-none [&::-ms-clear]:hidden [&::-ms-reveal]:hidden [&::-webkit-contacts-auto-fill-button]:hidden [&::-webkit-credentials-auto-fill-button]:hidden"
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white transition-colors"
+                  className="absolute top-1/2 right-3 -translate-y-1/2 text-gray-400 transition-colors hover:text-white"
                   aria-label={
                     showPassword ? "Ocultar contraseña" : "Mostrar contraseña"
                   }
                 >
                   {showPassword ? (
                     <svg
-                      className="w-5 h-5 text-gray-400"
+                      className="h-5 w-5 text-gray-400"
                       fill="none"
                       viewBox="0 0 24 24"
                       stroke="currentColor"
@@ -102,7 +102,7 @@ export default function LoginPage() {
                     </svg>
                   ) : (
                     <svg
-                      className="w-5 h-5 text-gray-400"
+                      className="h-5 w-5 text-gray-400"
                       fill="none"
                       viewBox="0 0 24 24"
                       stroke="currentColor"
@@ -126,7 +126,7 @@ export default function LoginPage() {
 
             {/* Error Message */}
             {error && (
-              <div className="bg-red-500/20 border border-red-500/50 rounded-lg p-3 text-red-200 text-sm">
+              <div className="rounded-lg border border-red-500/50 bg-red-500/20 p-3 text-sm text-red-200">
                 {error}
               </div>
             )}
@@ -135,14 +135,14 @@ export default function LoginPage() {
             <button
               type="submit"
               disabled={isLoading}
-              className="w-full bg-(--accent) text-white font-bold py-3 px-6 rounded-full transition-all duration-300 shadow-xl hover:shadow-2xl hover:bg-(--accent-hover) focus:bg-(--accent-hover) active:bg-(--accent-hover) transform hover:scale-95 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none flex items-center justify-center gap-2"
+              className="flex w-full transform items-center justify-center gap-2 rounded-full bg-(--accent) px-6 py-3 font-bold text-white shadow-xl transition-all duration-300 hover:scale-95 hover:bg-(--accent-hover) hover:shadow-2xl focus:bg-(--accent-hover) active:bg-(--accent-hover) disabled:transform-none disabled:cursor-not-allowed disabled:opacity-50"
             >
               {isLoading ? (
                 "Iniciando sesión..."
               ) : (
                 <>
                   <svg
-                    className="w-5 h-5 text-white/80"
+                    className="h-5 w-5 text-white/80"
                     fill="none"
                     viewBox="0 0 24 24"
                     stroke="currentColor"
@@ -164,10 +164,10 @@ export default function LoginPage() {
           <div className="mt-4 text-center">
             <Link
               href="/"
-              className="text-sm text-gray-300 hover:text-(--accent) transition-colors inline-flex items-center gap-2"
+              className="inline-flex items-center gap-2 text-sm text-gray-300 transition-colors hover:text-(--accent)"
             >
               <svg
-                className="w-4 h-4"
+                className="h-4 w-4"
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"

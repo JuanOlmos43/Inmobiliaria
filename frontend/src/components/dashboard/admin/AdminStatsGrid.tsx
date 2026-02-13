@@ -12,19 +12,19 @@ interface AdminStatsGridProps {
 export default function AdminStatsGrid({ stats }: AdminStatsGridProps) {
   return (
     <div className="mb-8">
-      <h2 className="text-2xl font-bold text-(--primary) mb-6">
+      <h2 className="mb-6 text-2xl font-bold text-(--primary)">
         Estadísticas del Sistema
       </h2>
 
       <div className="space-y-8">
         {/* Bloque Unificado de Resumen */}
-        <div className="bg-linear-to-br from-slate-800 to-slate-900 rounded-2xl shadow-xl overflow-hidden text-white border border-white/10">
-          <div className="p-6 sm:p-8 flex flex-col lg:flex-row lg:items-center justify-between gap-8">
+        <div className="overflow-hidden rounded-2xl border border-white/10 bg-linear-to-br from-slate-800 to-slate-900 text-white shadow-xl">
+          <div className="flex flex-col justify-between gap-8 p-6 sm:p-8 lg:flex-row lg:items-center">
             {/* Lado Izquierdo: Total y Crecimiento */}
             <div className="flex items-center gap-6">
-              <div className="p-4 bg-white/10 rounded-2xl border border-white/20">
+              <div className="rounded-2xl border border-white/20 bg-white/10 p-4">
                 <svg
-                  className="w-10 h-10 text-white"
+                  className="h-10 w-10 text-white"
                   fill="none"
                   viewBox="0 0 24 24"
                   stroke="currentColor"
@@ -41,30 +41,30 @@ export default function AdminStatsGrid({ stats }: AdminStatsGridProps) {
                 <div className="flex items-start gap-10">
                   {/* Columna Total */}
                   <div className="flex flex-col">
-                    <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">
+                    <p className="mb-1 text-xs font-semibold tracking-wider text-slate-400 uppercase">
                       Total Usuarios
                     </p>
-                    <h3 className="text-5xl font-black tracking-tight leading-none">
+                    <h3 className="text-5xl leading-none font-black tracking-tight">
                       {stats?.summary.total ?? 0}
                     </h3>
                   </div>
 
                   {/* Columna Hoy */}
                   <div className="flex flex-col pt-1">
-                    <span className="text-[10px] font-semibold text-slate-500 uppercase tracking-widest mb-2">
+                    <span className="mb-2 text-[10px] font-semibold tracking-widest text-slate-500 uppercase">
                       Hoy
                     </span>
-                    <span className="text-xl font-bold text-emerald-400 leading-none">
+                    <span className="text-xl leading-none font-bold text-emerald-400">
                       +{stats?.growth.registrationsToday ?? 0}
                     </span>
                   </div>
 
                   {/* Columna Mes */}
                   <div className="flex flex-col pt-1">
-                    <span className="text-[10px] font-semibold text-slate-500 uppercase tracking-widest mb-2">
+                    <span className="mb-2 text-[10px] font-semibold tracking-widest text-slate-500 uppercase">
                       Mes
                     </span>
-                    <span className="text-xl font-bold text-emerald-400 leading-none">
+                    <span className="text-xl leading-none font-bold text-emerald-400">
                       +{stats?.growth.newThisMonth ?? 0}
                     </span>
                   </div>
@@ -73,13 +73,13 @@ export default function AdminStatsGrid({ stats }: AdminStatsGridProps) {
             </div>
 
             {/* Divisor Vertical (solo en LG) */}
-            <div className="hidden lg:block h-16 w-px bg-white/10" />
+            <div className="hidden h-16 w-px bg-white/10 lg:block" />
 
             {/* Lado Derecho: Desglose de Estados */}
             <div className="grid grid-cols-3 gap-6 sm:gap-12">
               <div className="flex flex-col gap-1">
                 <div className="flex items-center gap-2">
-                  <div className="w-2 h-2 rounded-full bg-emerald-500" />
+                  <div className="h-2 w-2 rounded-full bg-emerald-500" />
                   <span className="text-xs font-semibold text-slate-400 uppercase">
                     Activos
                   </span>
@@ -91,7 +91,7 @@ export default function AdminStatsGrid({ stats }: AdminStatsGridProps) {
 
               <div className="flex flex-col gap-1">
                 <div className="flex items-center gap-2">
-                  <div className="w-2 h-2 rounded-full bg-amber-500" />
+                  <div className="h-2 w-2 rounded-full bg-amber-500" />
                   <span className="text-xs font-semibold text-slate-400 uppercase">
                     Pausados
                   </span>
@@ -103,7 +103,7 @@ export default function AdminStatsGrid({ stats }: AdminStatsGridProps) {
 
               <div className="flex flex-col gap-1">
                 <div className="flex items-center gap-2">
-                  <div className="w-2 h-2 rounded-full bg-rose-500" />
+                  <div className="h-2 w-2 rounded-full bg-rose-500" />
                   <span className="text-xs font-semibold text-slate-400 uppercase">
                     Suspendidos
                   </span>
@@ -118,10 +118,10 @@ export default function AdminStatsGrid({ stats }: AdminStatsGridProps) {
 
         {/* Fila 2: Roles del Sistema */}
         <div>
-          <h3 className="text-sm font-medium text-slate-500 mb-4 uppercase tracking-wider">
+          <h3 className="mb-4 text-sm font-medium tracking-wider text-slate-500 uppercase">
             Distribución por Roles
           </h3>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6">
+          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-5">
             <StatsCard
               title="Administradores"
               value={stats?.roles.administrador ?? 0}
@@ -162,4 +162,3 @@ export default function AdminStatsGrid({ stats }: AdminStatsGridProps) {
     </div>
   );
 }
-

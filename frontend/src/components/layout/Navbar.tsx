@@ -20,14 +20,14 @@ export function Navbar() {
   };
 
   return (
-    <nav className="bg-(--primary) shadow-xl sticky top-0 z-50 backdrop-blur-sm bg-opacity-95">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center h-20">
+    <nav className="bg-opacity-95 sticky top-0 z-50 bg-(--primary) shadow-xl backdrop-blur-sm">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className="flex h-20 items-center justify-between">
           {/* Logo */}
           <div className="shrink-0">
             <Link
               href="/"
-              className="flex items-center gap-3 text-3xl font-bold text-(--accent) hover:text-(--accent-hover) transition-all duration-300 transform hover:scale-105"
+              className="flex transform items-center gap-3 text-3xl font-bold text-(--accent) transition-all duration-300 hover:scale-105 hover:text-(--accent-hover)"
             >
               <Image
                 src="/icon.png"
@@ -41,40 +41,40 @@ export function Navbar() {
           </div>
 
           {/* Navigation Links */}
-          <div className="hidden md:flex space-x-1 items-center">
+          <div className="hidden items-center space-x-1 md:flex">
             <Link
               href="/"
-              className="relative px-4 py-2 text-white hover:text-(--accent) transition-colors font-medium group"
+              className="group relative px-4 py-2 font-medium text-white transition-colors hover:text-(--accent)"
             >
               Inicio
-              <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-(--accent) group-hover:w-full transition-all duration-300"></span>
+              <span className="absolute bottom-0 left-0 h-0.5 w-0 bg-(--accent) transition-all duration-300 group-hover:w-full"></span>
             </Link>
             <Link
               href="/propiedades"
-              className="relative px-4 py-2 text-white hover:text-(--accent) transition-colors font-medium group"
+              className="group relative px-4 py-2 font-medium text-white transition-colors hover:text-(--accent)"
             >
               Propiedades
-              <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-(--accent) group-hover:w-full transition-all duration-300"></span>
+              <span className="absolute bottom-0 left-0 h-0.5 w-0 bg-(--accent) transition-all duration-300 group-hover:w-full"></span>
             </Link>
             <Link
               href="/nosotros"
-              className="relative px-4 py-2 text-white hover:text-(--accent) transition-colors font-medium group"
+              className="group relative px-4 py-2 font-medium text-white transition-colors hover:text-(--accent)"
             >
               Nosotros
-              <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-(--accent) group-hover:w-full transition-all duration-300"></span>
+              <span className="absolute bottom-0 left-0 h-0.5 w-0 bg-(--accent) transition-all duration-300 group-hover:w-full"></span>
             </Link>
             <Link
               href="/contacto"
-              className="relative px-4 py-2 text-white hover:text-(--accent) transition-colors font-medium group"
+              className="group relative px-4 py-2 font-medium text-white transition-colors hover:text-(--accent)"
             >
               Contacto
-              <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-(--accent) group-hover:w-full transition-all duration-300"></span>
+              <span className="absolute bottom-0 left-0 h-0.5 w-0 bg-(--accent) transition-all duration-300 group-hover:w-full"></span>
             </Link>
 
             {/* Login Button */}
             <Link
               href="/login"
-              className="ml-6 px-8 py-3 bg-(--accent) text-white font-bold rounded-full hover:bg-(--accent-hover) transition-all duration-300 shadow-lg hover:shadow-2xl transform hover:scale-95"
+              className="ml-6 transform rounded-full bg-(--accent) px-8 py-3 font-bold text-white shadow-lg transition-all duration-300 hover:scale-95 hover:bg-(--accent-hover) hover:shadow-2xl"
             >
               Iniciar Sesión
             </Link>
@@ -84,7 +84,7 @@ export function Navbar() {
           <div className="md:hidden">
             <button
               onClick={toggleMenu}
-              className="text-white hover:text-(--accent) focus:outline-none transition-colors"
+              className="text-white transition-colors hover:text-(--accent) focus:outline-none"
               aria-label="Toggle menu"
             >
               {isMenuOpen ? (
@@ -111,43 +111,43 @@ export function Navbar() {
 
       {/* Mobile menu panel */}
       <div
-        className={`md:hidden overflow-hidden transition-all duration-300 ease-in-out ${
+        className={`overflow-hidden transition-all duration-300 ease-in-out md:hidden ${
           isMenuOpen ? "max-h-96 opacity-100" : "max-h-0 opacity-0"
         }`}
       >
-        <div className="px-4 pt-2 pb-6 space-y-2 bg-(--primary)">
+        <div className="space-y-2 bg-(--primary) px-4 pt-2 pb-6">
           <Link
             href="/"
             onClick={closeMenu}
-            className="block px-4 py-3 text-white hover:text-(--accent) hover:bg-(--primary-light) rounded-lg transition-all duration-200 font-medium"
+            className="block rounded-lg px-4 py-3 font-medium text-white transition-all duration-200 hover:bg-(--primary-light) hover:text-(--accent)"
           >
             Inicio
           </Link>
           <Link
             href="/propiedades"
             onClick={closeMenu}
-            className="block px-4 py-3 text-white hover:text-(--accent) hover:bg-(--primary-light) rounded-lg transition-all duration-200 font-medium"
+            className="block rounded-lg px-4 py-3 font-medium text-white transition-all duration-200 hover:bg-(--primary-light) hover:text-(--accent)"
           >
             Propiedades
           </Link>
           <Link
             href="/nosotros"
             onClick={closeMenu}
-            className="block px-4 py-3 text-white hover:text-(--accent) hover:bg-(--primary-light) rounded-lg transition-all duration-200 font-medium"
+            className="block rounded-lg px-4 py-3 font-medium text-white transition-all duration-200 hover:bg-(--primary-light) hover:text-(--accent)"
           >
             Nosotros
           </Link>
           <Link
             href="/contacto"
             onClick={closeMenu}
-            className="block px-4 py-3 text-white hover:text-(--accent) hover:bg-(--primary-light) rounded-lg transition-all duration-200 font-medium"
+            className="block rounded-lg px-4 py-3 font-medium text-white transition-all duration-200 hover:bg-(--primary-light) hover:text-(--accent)"
           >
             Contacto
           </Link>
           <Link
             href="/login"
             onClick={closeMenu}
-            className="block mt-4 px-6 py-3 bg-(--accent) text-white font-bold rounded-full transition-all duration-300 shadow-lg text-center"
+            className="mt-4 block rounded-full bg-(--accent) px-6 py-3 text-center font-bold text-white shadow-lg transition-all duration-300"
           >
             Iniciar Sesión
           </Link>

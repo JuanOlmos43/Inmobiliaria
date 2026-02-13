@@ -22,11 +22,11 @@ export default function AgentStatsGrid({
   if (isLoading) {
     return (
       <div className="mb-8">
-        <h2 className="text-2xl font-bold text-(--primary) mb-6">
+        <h2 className="mb-6 text-2xl font-bold text-(--primary)">
           Resumen de Gestión
         </h2>
         <div className="flex justify-center py-12">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600"></div>
+          <div className="border-primary-600 h-12 w-12 animate-spin rounded-full border-b-2"></div>
         </div>
       </div>
     );
@@ -47,34 +47,34 @@ export default function AgentStatsGrid({
 
   return (
     <div className="mb-8">
-      <h2 className="text-2xl font-bold text-(--primary) mb-6">
+      <h2 className="mb-6 text-2xl font-bold text-(--primary)">
         Resumen General
       </h2>
 
       <div className="space-y-8">
         {/* Bloque Unificado de Resumen de Propiedades (Superior) */}
-        <div className="bg-linear-to-br from-slate-800 to-slate-900 rounded-2xl shadow-xl overflow-hidden text-white border border-white/10">
-          <div className="p-6 sm:p-8 flex flex-col lg:flex-row lg:items-center justify-between gap-8">
+        <div className="overflow-hidden rounded-2xl border border-white/10 bg-linear-to-br from-slate-800 to-slate-900 text-white shadow-xl">
+          <div className="flex flex-col justify-between gap-8 p-6 sm:p-8 lg:flex-row lg:items-center">
             {/* Lado Izquierdo: Total y Crecimiento */}
             <div className="flex items-center gap-6">
-              <div className="p-4 bg-white/10 rounded-2xl border border-white/20">
-                <Icon name="building" className="w-10 h-10 text-white" />
+              <div className="rounded-2xl border border-white/20 bg-white/10 p-4">
+                <Icon name="building" className="h-10 w-10 text-white" />
               </div>
               <div className="flex flex-col gap-1">
                 <div className="flex items-start gap-10">
                   <div className="flex flex-col">
-                    <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">
+                    <p className="mb-1 text-xs font-semibold tracking-wider text-slate-400 uppercase">
                       Total Propiedades
                     </p>
-                    <h3 className="text-5xl font-black tracking-tight leading-none">
+                    <h3 className="text-5xl leading-none font-black tracking-tight">
                       {total}
                     </h3>
                   </div>
                   <div className="flex flex-col pt-1">
-                    <span className="text-[10px] font-semibold text-slate-500 uppercase tracking-widest mb-2 text-(--accent)">
+                    <span className="mb-2 text-[10px] font-semibold tracking-widest text-(--accent) text-slate-500 uppercase">
                       Nuevas Mes
                     </span>
-                    <span className="text-xl font-bold text-(--accent) leading-none">
+                    <span className="text-xl leading-none font-bold text-(--accent)">
                       +{newThisMonth}
                     </span>
                   </div>
@@ -82,14 +82,14 @@ export default function AgentStatsGrid({
               </div>
             </div>
 
-            <div className="hidden lg:block h-16 w-px bg-white/10" />
+            <div className="hidden h-16 w-px bg-white/10 lg:block" />
 
             {/* Lado Derecho: Desglose de Estados de Propiedades */}
             <div className="grid grid-cols-2 gap-6 sm:gap-12">
               <div className="flex flex-col gap-1">
                 <div className="flex items-center gap-2">
-                  <div className="w-2 h-2 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]" />
-                  <span className="text-xs font-semibold text-slate-400 uppercase tracking-wide">
+                  <div className="h-2 w-2 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]" />
+                  <span className="text-xs font-semibold tracking-wide text-slate-400 uppercase">
                     Activas
                   </span>
                 </div>
@@ -98,8 +98,8 @@ export default function AgentStatsGrid({
 
               <div className="flex flex-col gap-1">
                 <div className="flex items-center gap-2">
-                  <div className="w-2 h-2 rounded-full bg-amber-500 shadow-[0_0_8px_rgba(245,158,11,0.5)]" />
-                  <span className="text-xs font-semibold text-slate-400 uppercase tracking-wide">
+                  <div className="h-2 w-2 rounded-full bg-amber-500 shadow-[0_0_8px_rgba(245,158,11,0.5)]" />
+                  <span className="text-xs font-semibold tracking-wide text-slate-400 uppercase">
                     Pausadas
                   </span>
                 </div>
@@ -110,7 +110,7 @@ export default function AgentStatsGrid({
         </div>
 
         {/* Fila Inferior: Venta y Bloque Expandido de Alquiler/Contratos */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
           {/* Card Simple: En Venta */}
           <div className="lg:col-span-1">
             <StatsCard
@@ -122,14 +122,14 @@ export default function AgentStatsGrid({
           </div>
 
           {/* Bloque Expandido: En Alquiler + Gestión de Contratos (Todo en Accent Gradient) */}
-          <div className="lg:col-span-2 bg-linear-to-br from-(--accent) to-(--accent-hover) rounded-2xl shadow-xl border border-white/20 overflow-hidden text-white flex flex-col sm:flex-row">
+          <div className="flex flex-col overflow-hidden rounded-2xl border border-white/20 bg-linear-to-br from-(--accent) to-(--accent-hover) text-white shadow-xl sm:flex-row lg:col-span-2">
             {/* Lado A: Propiedades en Alquiler */}
-            <div className="flex-1 p-6 flex items-center gap-4">
-              <div className="p-3 bg-white/20 rounded-xl backdrop-blur-sm border border-white/30">
-                <Icon name="key" className="w-8 h-8 text-white" />
+            <div className="flex flex-1 items-center gap-4 p-6">
+              <div className="rounded-xl border border-white/30 bg-white/20 p-3 backdrop-blur-sm">
+                <Icon name="key" className="h-8 w-8 text-white" />
               </div>
               <div>
-                <p className="text-sm font-semibold text-white/80 uppercase tracking-wider">
+                <p className="text-sm font-semibold tracking-wider text-white/80 uppercase">
                   En Alquiler
                 </p>
                 <h4 className="text-3xl font-black">{forRent}</h4>
@@ -137,20 +137,20 @@ export default function AgentStatsGrid({
             </div>
 
             {/* Divisor Vertical */}
-            <div className="hidden sm:block w-px bg-white/20 my-6" />
-            <div className="block sm:hidden h-px bg-white/20 mx-6" />
+            <div className="my-6 hidden w-px bg-white/20 sm:block" />
+            <div className="mx-6 block h-px bg-white/20 sm:hidden" />
 
             {/* Lado B: Métricas de Contratos */}
-            <div className="flex-2 p-6 flex flex-col justify-center bg-black/5">
+            <div className="flex flex-2 flex-col justify-center bg-black/5 p-6">
               <div className="grid grid-cols-3 gap-4">
                 <div className="flex flex-col">
-                  <span className="text-[10px] font-bold text-white/60 uppercase mb-1 tracking-tighter">
+                  <span className="mb-1 text-[10px] font-bold tracking-tighter text-white/60 uppercase">
                     Contratos Activos
                   </span>
                   <span className="text-2xl font-black">{activeContracts}</span>
                 </div>
                 <div className="flex flex-col border-x border-white/10 px-4">
-                  <span className="text-[10px] font-bold text-white/60 uppercase mb-1 tracking-tighter">
+                  <span className="mb-1 text-[10px] font-bold tracking-tighter text-white/60 uppercase">
                     Nuevos Mes
                   </span>
                   <span className="text-2xl font-black text-white">
@@ -158,7 +158,7 @@ export default function AgentStatsGrid({
                   </span>
                 </div>
                 <div className="flex flex-col pl-4">
-                  <span className="text-[10px] font-bold text-white/60 uppercase mb-1 tracking-tighter">
+                  <span className="mb-1 text-[10px] font-bold tracking-tighter text-white/60 uppercase">
                     Vencen Mes
                   </span>
                   <span className="text-2xl font-black text-white">
@@ -173,4 +173,3 @@ export default function AgentStatsGrid({
     </div>
   );
 }
-

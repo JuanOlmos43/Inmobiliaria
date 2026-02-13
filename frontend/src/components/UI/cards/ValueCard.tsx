@@ -17,10 +17,10 @@ export function ValueCard({ icon, title, description, color }: ValueCardProps) {
 
   return (
     <div
-      className={`bg-linear-to-br ${colorClasses} p-8 rounded-2xl shadow-xl text-white transform hover:scale-105 transition-all duration-300 hover:shadow-2xl`}
+      className={`bg-linear-to-br ${colorClasses} transform rounded-2xl p-8 text-white shadow-xl transition-all duration-300 hover:scale-105 hover:shadow-2xl`}
     >
       <div className="mb-4">{icon}</div>
-      <h3 className="text-2xl font-bold mb-4">{title}</h3>
+      <h3 className="mb-4 text-2xl font-bold">{title}</h3>
       <p className={`${textColor} leading-relaxed`}>{description}</p>
     </div>
   );

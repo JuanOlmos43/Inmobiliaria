@@ -1,6 +1,11 @@
 import { useAgentFilters } from "./agent/useAgentFilters";
 import { useAgentUI } from "./agent/useAgentUI";
-import { useAgentQueries, usePropertyStats, useAgentContracts, useContractStats } from "./agent/useAgentQueries";
+import {
+  useAgentQueries,
+  usePropertyStats,
+  useAgentContracts,
+  useContractStats,
+} from "./agent/useAgentQueries";
 import { useAgentMutations } from "./agent/useAgentMutations";
 import { Property } from "@/types/property";
 import { CreateRentalDto } from "@/types/api";
@@ -70,9 +75,19 @@ export function useAgentProperties() {
   } = useAgentUI();
 
   // 3. Capa de Datos (Queries)
-  const { properties, isLoading, error, refetch, meta: propertyMeta } = useAgentQueries(activeFilters);
+  const {
+    properties,
+    isLoading,
+    error,
+    refetch,
+    meta: propertyMeta,
+  } = useAgentQueries(activeFilters);
   const { stats, isLoading: isLoadingStats } = usePropertyStats();
-  const { contracts, isLoading: isLoadingContracts, meta: contractMeta } = useAgentContracts(activeContractFilters);
+  const {
+    contracts,
+    isLoading: isLoadingContracts,
+    meta: contractMeta,
+  } = useAgentContracts(activeContractFilters);
   const { contractStats } = useContractStats();
 
   // 4. Capa de Acciones (Mutations)
@@ -97,7 +112,8 @@ export function useAgentProperties() {
   const handleSaveRentalHandler = async (data: CreateRentalDto) => {
     await handleSaveRental(data, editingContract);
   };
-  const handleDeletePropertyHandler = (id: string) => initiateDeleteProperty(id);
+  const handleDeletePropertyHandler = (id: string) =>
+    initiateDeleteProperty(id);
   const executeDeleteProperty = async () => {
     if (confirmDelete.propertyId) {
       setDeleteLoading(true);

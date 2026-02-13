@@ -43,13 +43,13 @@ export default function LandlordSection({
 
   return (
     <div className="relative">
-      <label className="block text-sm font-medium text-gray-700 mb-2">
+      <label className="mb-2 block text-sm font-medium text-gray-700">
         Propietario *
       </label>
       <div className="relative">
         <Icon
           name="user"
-          className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400"
+          className="absolute top-1/2 left-3 h-5 w-5 -translate-y-1/2 text-gray-400"
         />
         <input
           type="text"
@@ -70,21 +70,21 @@ export default function LandlordSection({
             }
           }}
           onFocus={() => setShowLandlordDropdown(true)}
-          className="w-full pl-10 px-4 py-2 border rounded-lg transition-all duration-300 border-gray-300 bg-white text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-(--accent) focus:border-transparent disabled:bg-gray-100 disabled:text-gray-500"
+          className="w-full rounded-lg border border-gray-300 bg-white px-4 py-2 pl-10 text-gray-900 placeholder-gray-500 transition-all duration-300 focus:border-transparent focus:ring-2 focus:ring-(--accent) focus:outline-none disabled:bg-gray-100 disabled:text-gray-500"
           placeholder="Buscar propietario..."
           maxLength={100}
         />
       </div>
 
       {showLandlordDropdown && landlordSearch && (
-        <div className="absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-lg shadow-lg max-h-60 overflow-y-auto">
+        <div className="absolute z-10 mt-1 max-h-60 w-full overflow-y-auto rounded-lg border border-gray-300 bg-white shadow-lg">
           {landlords.length > 0 ? (
             landlords.map((landlord) => (
               <button
                 key={landlord.id}
                 type="button"
                 onClick={() => handleSelect(landlord)}
-                className="w-full px-4 py-3 text-left hover:bg-gray-50 border-b last:border-0"
+                className="w-full border-b px-4 py-3 text-left last:border-0 hover:bg-gray-50"
               >
                 <div className="font-medium">
                   {landlord.name || landlord.email}
@@ -101,7 +101,7 @@ export default function LandlordSection({
       )}
 
       {formData.ownerId && (
-        <div className="mt-3 p-3 bg-green-50 border border-green-200 rounded-lg text-sm">
+        <div className="mt-3 rounded-lg border border-green-200 bg-green-50 p-3 text-sm">
           <div className="font-semibold text-green-800">
             {formData.landlordName}
           </div>
@@ -112,4 +112,3 @@ export default function LandlordSection({
     </div>
   );
 }
-

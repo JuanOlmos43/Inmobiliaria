@@ -30,7 +30,7 @@ function PropiedadesContent() {
     const urlMaxPrice = params.get("maxPrice");
 
     const isValidOperationType = (
-      value: string | null,
+      value: string | null
     ): value is "venta" | "alquiler" => {
       return value === "venta" || value === "alquiler";
     };
@@ -58,7 +58,7 @@ function PropiedadesContent() {
       // Convertimos a string para asegurar compatibilidad si es necesario o pasamos directo
       const params = new URLSearchParams(searchParams.toString());
       return getFiltersFromURL(params);
-    },
+    }
   );
 
   const [properties, setProperties] = useState<Property[]>([]);
@@ -111,7 +111,7 @@ function PropiedadesContent() {
           Object.entries(filters).filter(([_, value]) => {
             // Mantener valores que no sean undefined, null, o strings vacíos
             return value !== undefined && value !== null && value !== "";
-          }),
+          })
         ) as PropertyFiltersType;
 
         console.log("Filters being sent to backend:", cleanFilters);
@@ -129,7 +129,7 @@ function PropiedadesContent() {
         if (isMounted) {
           console.error("Error fetching properties:", err);
           setError(
-            "Error al cargar propiedades. Por favor intenta nuevamente.",
+            "Error al cargar propiedades. Por favor intenta nuevamente."
           );
         }
       } finally {
@@ -168,12 +168,12 @@ function PropiedadesContent() {
 
   if (error) {
     return (
-      <main className="grow bg-(--background) flex items-center justify-center">
+      <main className="flex grow items-center justify-center bg-(--background)">
         <div className="text-center">
-          <p className="text-(--danger) mb-4">{error}</p>
+          <p className="mb-4 text-(--danger)">{error}</p>
           <button
             onClick={() => window.location.reload()}
-            className="px-4 py-2 bg-(--primary) text-white rounded hover:bg-(--primary-light) transition-colors"
+            className="rounded bg-(--primary) px-4 py-2 text-white transition-colors hover:bg-(--primary-light)"
           >
             Reintentar
           </button>
@@ -195,8 +195,8 @@ function PropiedadesContent() {
       />
 
       {/* Content */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="flex flex-col lg:flex-row gap-8">
+      <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+        <div className="flex flex-col gap-8 lg:flex-row">
           {/* Sidebar - Filtros */}
           <PropertyFilters
             initialFilters={appliedFilters}
@@ -207,22 +207,22 @@ function PropiedadesContent() {
           {/* Main Content - Grid de propiedades */}
           <div className="flex-1">
             {isLoading ? (
-              <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 mb-8">
+              <div className="mb-8 grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3">
                 {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].map((i) => (
                   <div
                     key={i}
-                    className="h-[400px] bg-gray-100 rounded-lg animate-pulse"
+                    className="h-[400px] animate-pulse rounded-lg bg-gray-100"
                   />
                 ))}
               </div>
             ) : properties.length > 0 ? (
               <>
-                <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 mb-8">
+                <div className="mb-8 grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3">
                   {properties.map((property) => (
                     <Link
                       key={property.id}
                       href={`/propiedades/${property.id}`}
-                      className="block group"
+                      className="group block"
                     >
                       <BasePropertyCard
                         title={property.title}
@@ -266,7 +266,7 @@ function PropiedadesContent() {
                 onAction={handleReset}
                 actionIcon={
                   <svg
-                    className="w-5 h-5"
+                    className="h-5 w-5"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -292,7 +292,7 @@ export default function PropiedadesPage() {
   return (
     <Suspense
       fallback={
-        <div className="min-h-screen flex items-center justify-center">
+        <div className="flex min-h-screen items-center justify-center">
           Cargando...
         </div>
       }

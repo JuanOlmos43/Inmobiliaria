@@ -1,3 +1,3 @@
-export * from './Navbar';
-export * from './Footer';
-export * from './DashboardHeader';
+export * from "./Navbar";
+export * from "./Footer";
+export * from "./DashboardHeader";

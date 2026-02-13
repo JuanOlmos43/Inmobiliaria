@@ -3,12 +3,12 @@ import { Icon } from "@/components/ui";
 
 export function Footer() {
   return (
-    <footer className="bg-(--primary) text-white mt-auto">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
+    <footer className="mt-auto bg-(--primary) text-white">
+      <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
+        <div className="grid grid-cols-1 gap-12 md:grid-cols-3">
           {/* Company Info */}
           <div>
-            <div className="flex items-center gap-3 mb-4">
+            <div className="mb-4 flex items-center gap-3">
               <Image
                 src="/icon.png"
                 alt="InmoHogar Logo"
@@ -18,7 +18,7 @@ export function Footer() {
               />
               <h3 className="text-3xl font-bold text-(--accent)">InmoHogar</h3>
             </div>
-            <p className="text-gray-300 text-sm leading-relaxed">
+            <p className="text-sm leading-relaxed text-gray-300">
               Tu socio de confianza en bienes raíces. Ayudándote a encontrar el
               hogar perfecto desde 2024.
             </p>
@@ -26,25 +26,25 @@ export function Footer() {
 
           {/* Contact Info */}
           <div>
-            <h4 className="text-xl font-bold mb-6 text-(--accent)">Contacto</h4>
-            <ul className="space-y-4 text-gray-300 text-sm">
-              <li className="flex items-center gap-3 group">
-                <div className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center transition-all duration-300">
-                  <Icon name="mail" className="w-5 h-5 shrink-0" />
+            <h4 className="mb-6 text-xl font-bold text-(--accent)">Contacto</h4>
+            <ul className="space-y-4 text-sm text-gray-300">
+              <li className="group flex items-center gap-3">
+                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-white/10 transition-all duration-300">
+                  <Icon name="mail" className="h-5 w-5 shrink-0" />
                 </div>
                 <span>info@inmohogar.com</span>
               </li>
-              <li className="flex items-center gap-3 group">
-                <div className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center transition-all duration-300">
-                  <Icon name="whatsapp" className="w-5 h-5 shrink-0" />
+              <li className="group flex items-center gap-3">
+                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-white/10 transition-all duration-300">
+                  <Icon name="whatsapp" className="h-5 w-5 shrink-0" />
                 </div>
                 <span>+54 11 1234-5678</span>
               </li>
-              <li className="flex items-center gap-3 group">
-                <div className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center transition-all duration-300">
+              <li className="group flex items-center gap-3">
+                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-white/10 transition-all duration-300">
                   <Icon
                     name="location"
-                    className="w-5 h-5 shrink-0"
+                    className="h-5 w-5 shrink-0"
                     fill="currentColor"
                   />
                 </div>
@@ -55,11 +55,11 @@ export function Footer() {
 
           {/* Social Media */}
           <div>
-            <h4 className="text-xl font-bold mb-6 text-(--accent)">Síguenos</h4>
+            <h4 className="mb-6 text-xl font-bold text-(--accent)">Síguenos</h4>
             <div className="flex space-x-4">
               <a
                 href="#"
-                className="w-12 h-12 rounded-full bg-white/10 hover:bg-(--accent) flex items-center justify-center transition-all duration-300 transform hover:scale-110 hover:shadow-lg"
+                className="flex h-12 w-12 transform items-center justify-center rounded-full bg-white/10 transition-all duration-300 hover:scale-110 hover:bg-(--accent) hover:shadow-lg"
               >
                 <span className="sr-only">Facebook</span>
                 <svg
@@ -72,7 +72,7 @@ export function Footer() {
               </a>
               <a
                 href="#"
-                className="w-12 h-12 rounded-full bg-white/10 hover:bg-(--accent) flex items-center justify-center transition-all duration-300 transform hover:scale-110 hover:shadow-lg"
+                className="flex h-12 w-12 transform items-center justify-center rounded-full bg-white/10 transition-all duration-300 hover:scale-110 hover:bg-(--accent) hover:shadow-lg"
               >
                 <span className="sr-only">Instagram</span>
                 <svg
@@ -88,7 +88,7 @@ export function Footer() {
         </div>
 
         {/* Copyright */}
-        <div className="border-t border-white/20 mt-12 pt-8 text-center text-gray-400 text-sm">
+        <div className="mt-12 border-t border-white/20 pt-8 text-center text-sm text-gray-400">
           <p>
             &copy; {new Date().getFullYear()} InmoHogar. Todos los derechos
             reservados.
@@ -98,4 +98,3 @@ export function Footer() {
     </footer>
   );
 }
-

@@ -77,7 +77,7 @@ export function useAdminUsers() {
     handleUserCreated,
     handleSaveInlineEdit: async (
       userId: string,
-      data: Partial<UserProfile>,
+      data: Partial<UserProfile>
     ) => {
       await executeEdit(userId, data);
     },

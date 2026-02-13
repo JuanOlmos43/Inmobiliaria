@@ -201,7 +201,7 @@ export class ApiRequestError extends Error {
   constructor(
     message: string,
     public statusCode: number,
-    public errorDetail: string,
+    public errorDetail: string
   ) {
     super(message);
     this.name = "ApiRequestError";

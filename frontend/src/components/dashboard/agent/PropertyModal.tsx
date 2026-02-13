@@ -83,11 +83,11 @@ export default function PropertyModal({
 
         features:
           features?.map((f: string | { name: string }) =>
-            typeof f === "string" ? f : f.name,
+            typeof f === "string" ? f : f.name
           ) || [],
         images:
           images?.map((img: string | { url: string }) =>
-            typeof img === "string" ? img : img.url,
+            typeof img === "string" ? img : img.url
           ) || [],
         landlordName: owner?.name || prev.landlordName,
         landlordEmail: owner?.email || prev.landlordEmail,
@@ -143,7 +143,7 @@ export default function PropertyModal({
             const list = await propertiesService.getCalles(currentLocalidadId);
             currentCalleId = list.find(
               (c: { nombre: string; id: string }) =>
-                c.nombre.toLowerCase() === formData.street?.toLowerCase(),
+                c.nombre.toLowerCase() === formData.street?.toLowerCase()
             )?.id;
           }
         }
@@ -158,7 +158,7 @@ export default function PropertyModal({
           localidadId: currentLocalidadId,
           calleId: currentCalleId,
         },
-        selectedFiles,
+        selectedFiles
       );
     } catch (error) {
       console.error("Error en submit:", error);
@@ -373,7 +373,7 @@ export default function PropertyModal({
               <div className="flex gap-2">
                 <input
                   type="text"
-                  className="flex-1 px-4 py-2 border border-gray-300 bg-white text-gray-900 placeholder-gray-500 rounded-lg focus:outline-none focus:ring-2 focus:ring-(--accent) focus:border-transparent transition-all duration-300"
+                  className="flex-1 rounded-lg border border-gray-300 bg-white px-4 py-2 text-gray-900 placeholder-gray-500 transition-all duration-300 focus:border-transparent focus:ring-2 focus:ring-(--accent) focus:outline-none"
                   placeholder="Ej: Aire Acondicionado, Patio, Cochera..."
                   value={featureInput}
                   onChange={(e) => setFeatureInput(e.target.value)}
@@ -408,7 +408,7 @@ export default function PropertyModal({
                       setFeatureInput("");
                     }
                   }}
-                  className="px-6 py-2 bg-gray-100 text-gray-700 font-medium rounded-lg hover:bg-(--accent-hover) hover:text-white transition-colors"
+                  className="rounded-lg bg-gray-100 px-6 py-2 font-medium text-gray-700 transition-colors hover:bg-(--accent-hover) hover:text-white"
                 >
                   Agregar
                 </button>
@@ -417,7 +417,7 @@ export default function PropertyModal({
                 {formData.features?.map((feature, idx) => (
                   <span
                     key={idx}
-                    className="px-3 py-1 bg-(--accent)/10 text-(--accent) rounded-full text-sm flex items-center gap-2"
+                    className="flex items-center gap-2 rounded-full bg-(--accent)/10 px-3 py-1 text-sm text-(--accent)"
                   >
                     {feature}
                     <button
@@ -426,11 +426,11 @@ export default function PropertyModal({
                         setFormData({
                           ...formData,
                           features: formData.features?.filter(
-                            (_, i) => i !== idx,
+                            (_, i) => i !== idx
                           ),
                         })
                       }
-                      className="hover:text-red-500 w-4 h-4 flex items-center justify-center rounded-full hover:bg-black/5"
+                      className="flex h-4 w-4 items-center justify-center rounded-full hover:bg-black/5 hover:text-red-500"
                     >
                       ✕
                     </button>
@@ -444,7 +444,7 @@ export default function PropertyModal({
               key={property?.id || "new-property"}
               initialUrls={fullProperty?.images?.map(
                 (img: string | { url: string }) =>
-                  typeof img === "string" ? img : img.url,
+                  typeof img === "string" ? img : img.url
               )}
               onFilesChange={setSelectedFiles}
               onExistingImagesChange={handleExistingImagesChange}
@@ -454,13 +454,13 @@ export default function PropertyModal({
               <button
                 type="button"
                 onClick={onClose}
-                className="flex-1 px-4 py-2.5 border border-gray-300 text-gray-700 rounded-lg font-medium hover:bg-red-600 hover:text-white hover:border-red-600 transition-all duration-200 disabled:opacity-50"
+                className="flex-1 rounded-lg border border-gray-300 px-4 py-2.5 font-medium text-gray-700 transition-all duration-200 hover:border-red-600 hover:bg-red-600 hover:text-white disabled:opacity-50"
               >
                 Cancelar
               </button>
               <button
                 type="submit"
-                className="flex-1 px-4 py-2.5 bg-(--accent) text-white rounded-lg font-medium hover:bg-(--accent-hover) transition-all shadow-md hover:shadow-lg disabled:opacity-50 flex justify-center items-center gap-2"
+                className="flex flex-1 items-center justify-center gap-2 rounded-lg bg-(--accent) px-4 py-2.5 font-medium text-white shadow-md transition-all hover:bg-(--accent-hover) hover:shadow-lg disabled:opacity-50"
               >
                 Guardar Propiedad
               </button>
@@ -471,4 +471,3 @@ export default function PropertyModal({
     </Modal>
   );
 }
-

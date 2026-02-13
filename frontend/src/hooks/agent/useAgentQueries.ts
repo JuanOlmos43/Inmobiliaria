@@ -6,21 +6,16 @@ import { Contract, ContractFilters } from "@/types/api";
 
 /**
  * useAgentQueries
- * 
+ *
  * Maneja la obtención de datos (propiedades) del servidor.
  * Transforma los datos del backend al formato esperado por el frontend.
- * 
+ *
  * @param filters - Filtros opcionales para búsqueda y status
  * @returns {Object} Propiedades, estado de carga y funciones de retry
  */
 export function useAgentQueries(filters?: PropertyFilters) {
   // Query para la lista de propiedades (re-ejecuta si cambian los filtros)
-  const {
-    data,
-    isLoading,
-    error,
-    refetch,
-  } = useQuery({
+  const { data, isLoading, error, refetch } = useQuery({
     queryKey: ["properties", filters],
     queryFn: async () => {
       const response = await propertiesService.findAll(filters);
@@ -45,10 +40,10 @@ export function useAgentQueries(filters?: PropertyFilters) {
 
 /**
  * usePropertyStats
- * 
+ *
  * Obtiene las estadísticas de propiedades desde el backend.
  * Incluye totales, distribución por estado y tipo de listado.
- * 
+ *
  * @returns {Object} Estadísticas, estado de carga y funciones de retry
  */
 export function usePropertyStats(): {
@@ -79,18 +74,13 @@ export function usePropertyStats(): {
 
 /**
  * useAgentContracts
- * 
+ *
  * Obtiene la lista de contratos de alquiler con filtros opcionales.
- * 
+ *
  * @param filters - Filtros de búsqueda (dirección, nombres, status)
  */
 export function useAgentContracts(filters?: ContractFilters) {
-  const {
-    data,
-    isLoading,
-    error,
-    refetch,
-  } = useQuery({
+  const { data, isLoading, error, refetch } = useQuery({
     queryKey: ["contracts", filters],
     queryFn: async () => {
       return await contratosService.findAll(filters);
@@ -113,11 +103,16 @@ export function useAgentContracts(filters?: ContractFilters) {
 
 /**
  * useContractStats
- * 
+ *
  * Obtiene estadísticas específicas de contratos (activos, vencimientos del mes, etc)
  */
 export function useContractStats() {
-  const { data: contractStats, isLoading, error, refetch } = useQuery({
+  const {
+    data: contractStats,
+    isLoading,
+    error,
+    refetch,
+  } = useQuery({
     queryKey: ["contract-stats"],
     queryFn: () => contratosService.getStats(),
   });

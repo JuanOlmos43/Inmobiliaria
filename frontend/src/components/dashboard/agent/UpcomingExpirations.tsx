@@ -16,19 +16,19 @@ export default function UpcomingExpirations({
   if (isLoading) {
     return (
       <div className="flex justify-center py-12">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-(--accent)"></div>
+        <div className="h-12 w-12 animate-spin rounded-full border-b-2 border-(--accent)"></div>
       </div>
     );
   }
 
   if (expiringContracts.length === 0 && adjustmentContracts.length === 0) {
     return (
-      <div className="bg-white rounded-xl shadow-md p-8 text-center border border-gray-100">
+      <div className="rounded-xl border border-gray-100 bg-white p-8 text-center shadow-md">
         <Icon
           name="check"
-          className="w-16 h-16 mx-auto mb-4 text-(--success)"
+          className="mx-auto mb-4 h-16 w-16 text-(--success)"
         />
-        <h3 className="text-xl font-semibold text-(--primary) mb-2">
+        <h3 className="mb-2 text-xl font-semibold text-(--primary)">
           No hay vencimientos próximos
         </h3>
         <p className="text-gray-500">
@@ -55,12 +55,12 @@ export default function UpcomingExpirations({
       showDetails={false}
       footerSlot={
         <button
-          className="w-full px-4 py-3 bg-(--accent) text-white rounded-lg hover:bg-(--accent-hover) transition-all shadow-md hover:shadow-lg flex items-center justify-center gap-2 font-semibold group/btn"
+          className="group/btn flex w-full items-center justify-center gap-2 rounded-lg bg-(--accent) px-4 py-3 font-semibold text-white shadow-md transition-all hover:bg-(--accent-hover) hover:shadow-lg"
           onClick={() => onViewContract?.(contract)}
         >
           <Icon
             name="document"
-            className="w-5 h-5 transition-transform group-hover/btn:scale-110"
+            className="h-5 w-5 transition-transform group-hover/btn:scale-110"
           />
           Ver Contrato
         </button>
@@ -69,22 +69,22 @@ export default function UpcomingExpirations({
   );
 
   return (
-    <div className="space-y-12 animate-fade-in">
+    <div className="animate-fade-in space-y-12">
       {/* Contratos que vencen */}
       {expiringContracts.length > 0 && (
         <div className="animate-slide-up">
-          <div className="flex items-center justify-between mb-6">
-            <h3 className="text-xl font-bold text-(--primary) flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-red-50 flex items-center justify-center">
-                <Icon name="calendar" className="w-6 h-6 text-(--danger)" />
+          <div className="mb-6 flex items-center justify-between">
+            <h3 className="flex items-center gap-3 text-xl font-bold text-(--primary)">
+              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-red-50">
+                <Icon name="calendar" className="h-6 w-6 text-(--danger)" />
               </div>
               Vencimientos del Mes
-              <span className="px-3 py-1 bg-(--danger)/10 text-(--danger) rounded-full text-sm">
+              <span className="rounded-full bg-(--danger)/10 px-3 py-1 text-sm text-(--danger)">
                 {expiringContracts.length}
               </span>
             </h3>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
             {expiringContracts.map((contract) => renderContractCard(contract))}
           </div>
         </div>
@@ -93,20 +93,20 @@ export default function UpcomingExpirations({
       {/* Ajustes de precio próximos */}
       {adjustmentContracts.length > 0 && (
         <div className="animate-slide-up" style={{ animationDelay: "0.1s" }}>
-          <div className="flex items-center justify-between mb-6">
-            <h3 className="text-xl font-bold text-(--primary) flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-amber-50 flex items-center justify-center">
-                <Icon name="trending-up" className="w-6 h-6 text-(--warning)" />
+          <div className="mb-6 flex items-center justify-between">
+            <h3 className="flex items-center gap-3 text-xl font-bold text-(--primary)">
+              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-amber-50">
+                <Icon name="trending-up" className="h-6 w-6 text-(--warning)" />
               </div>
               Ajustes de Precio del Mes
-              <span className="px-3 py-1 bg-amber-100 text-amber-600 rounded-full text-sm">
+              <span className="rounded-full bg-amber-100 px-3 py-1 text-sm text-amber-600">
                 {adjustmentContracts.length}
               </span>
             </h3>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
             {adjustmentContracts.map((contract) =>
-              renderContractCard(contract),
+              renderContractCard(contract)
             )}
           </div>
         </div>

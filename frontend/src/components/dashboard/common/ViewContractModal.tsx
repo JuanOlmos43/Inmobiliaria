@@ -34,9 +34,9 @@ export default function ViewContractModal({
     >
       <div className="space-y-6">
         {/* Información de la Propiedad */}
-        <div className="bg-gray-50 rounded-lg p-4">
-          <h3 className="text-lg font-semibold text-(--primary) mb-3 flex items-center gap-2">
-            <Icon name="home" className="w-5 h-5 text-(--accent)" />
+        <div className="rounded-lg bg-gray-50 p-4">
+          <h3 className="mb-3 flex items-center gap-2 text-lg font-semibold text-(--primary)">
+            <Icon name="home" className="h-5 w-5 text-(--accent)" />
             Propiedad
           </h3>
           <div className="space-y-2">
@@ -52,9 +52,9 @@ export default function ViewContractModal({
 
           {/* Información del Propietario - Ocultar si el visor es el propietario */}
           {contract.landlord && viewerRole !== "landlord" && (
-            <div className="mt-4 pt-4 border-t border-gray-200">
-              <h4 className="text-lg font-semibold text-(--primary) mb-3 flex items-center gap-2">
-                <Icon name="user" className="w-5 h-5 text-(--accent)" />
+            <div className="mt-4 border-t border-gray-200 pt-4">
+              <h4 className="mb-3 flex items-center gap-2 text-lg font-semibold text-(--primary)">
+                <Icon name="user" className="h-5 w-5 text-(--accent)" />
                 Propietario
               </h4>
               <div className="space-y-1">
@@ -73,9 +73,9 @@ export default function ViewContractModal({
 
         {/* Información del Inquilino - Ocultar si el visor es el inquilino */}
         {contract.tenant && viewerRole !== "tenant" && (
-          <div className="bg-gray-50 rounded-lg p-4">
-            <h3 className="text-lg font-semibold text-(--primary) mb-3 flex items-center gap-2">
-              <Icon name="key" className="w-5 h-5 text-(--accent)" />
+          <div className="rounded-lg bg-gray-50 p-4">
+            <h3 className="mb-3 flex items-center gap-2 text-lg font-semibold text-(--primary)">
+              <Icon name="key" className="h-5 w-5 text-(--accent)" />
               Inquilino
             </h3>
             <div className="space-y-1">
@@ -92,9 +92,9 @@ export default function ViewContractModal({
         )}
 
         {/* Información del Agente */}
-        <div className="bg-gray-50 rounded-lg p-4">
-          <h3 className="text-lg font-semibold text-(--primary) mb-3 flex items-center gap-2">
-            <Icon name="briefcase" className="w-5 h-5 text-(--accent)" />
+        <div className="rounded-lg bg-gray-50 p-4">
+          <h3 className="mb-3 flex items-center gap-2 text-lg font-semibold text-(--primary)">
+            <Icon name="briefcase" className="h-5 w-5 text-(--accent)" />
             Agente Responsable
           </h3>
           <div className="space-y-1">
@@ -110,12 +110,12 @@ export default function ViewContractModal({
         </div>
 
         {/* Fechas del Contrato */}
-        <div className="bg-gray-50 rounded-lg p-4">
-          <h3 className="text-lg font-semibold text-(--primary) mb-3 flex items-center gap-2">
-            <Icon name="calendar" className="w-5 h-5 text-(--accent)" />
+        <div className="rounded-lg bg-gray-50 p-4">
+          <h3 className="mb-3 flex items-center gap-2 text-lg font-semibold text-(--primary)">
+            <Icon name="calendar" className="h-5 w-5 text-(--accent)" />
             Vigencia del Contrato
           </h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
             <p className="text-gray-700">
               <span className="font-medium">Fecha de Inicio:</span>
               <br />
@@ -130,7 +130,7 @@ export default function ViewContractModal({
         </div>
 
         {/* Condiciones Económicas */}
-        <div className="bg-gray-50 rounded-lg p-4 space-y-3">
+        <div className="space-y-3 rounded-lg bg-gray-50 p-4">
           <div>
             <span className="font-semibold text-gray-700">Depósito:</span>{" "}
             <span className="text-gray-600">
@@ -150,11 +150,11 @@ export default function ViewContractModal({
             <span className="text-gray-600">
               Cada {contract.adjustmentFrequency} meses
               {contract.nextAdjustmentDate && contract.status === "active" && (
-                <span className="text-(--warning) font-medium ml-1">
+                <span className="ml-1 font-medium text-(--warning)">
                   (próximo ajuste en{" "}
                   {new Date(contract.nextAdjustmentDate).toLocaleDateString(
                     "es-AR",
-                    { month: "long" },
+                    { month: "long" }
                   )}
                   )
                 </span>
@@ -167,7 +167,7 @@ export default function ViewContractModal({
         <div className="flex gap-3 pt-6">
           <button
             onClick={onClose}
-            className="w-full px-4 py-2.5 border border-gray-300 text-gray-700 rounded-lg font-medium hover:bg-(--danger) hover:text-white hover:border-(--danger) transition-all duration-200"
+            className="w-full rounded-lg border border-gray-300 px-4 py-2.5 font-medium text-gray-700 transition-all duration-200 hover:border-(--danger) hover:bg-(--danger) hover:text-white"
           >
             Cerrar
           </button>

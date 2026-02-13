@@ -21,14 +21,14 @@ export default function AgentPropertyCard({
       label: "Editar",
       onClick: () => onEdit(property),
       variant: "primary" as const,
-      icon: <Icon name="edit" className="w-4 h-4" />,
+      icon: <Icon name="edit" className="h-4 w-4" />,
       show: true,
     },
     {
       label: "Alquilar",
       onClick: () => onRent && onRent(property),
       variant: "info" as const,
-      icon: <Icon name="document" className="w-4 h-4" />,
+      icon: <Icon name="document" className="h-4 w-4" />,
       show:
         property.listingType === "alquiler" &&
         property.status === "activa" &&
@@ -41,7 +41,7 @@ export default function AgentPropertyCard({
       variant: "danger" as const,
       icon: (
         <svg
-          className="w-4 h-4"
+          className="h-4 w-4"
           fill="none"
           viewBox="0 0 24 24"
           stroke="currentColor"
@@ -71,7 +71,7 @@ export default function AgentPropertyCard({
   };
 
   const renderActions = () => (
-    <div className="flex gap-2 pt-4 border-t border-gray-200">
+    <div className="flex gap-2 border-t border-gray-200 pt-4">
       {actions.map((action, index) => {
         if (!action.show) return null;
         return (
@@ -81,7 +81,7 @@ export default function AgentPropertyCard({
               e.stopPropagation();
               action.onClick();
             }}
-            className={`flex-1 px-3 py-2 rounded-lg transition-all duration-300 shadow-md hover:shadow-lg text-sm font-semibold flex items-center justify-center gap-2 ${getActionStyles(action.variant)}`}
+            className={`flex flex-1 items-center justify-center gap-2 rounded-lg px-3 py-2 text-sm font-semibold shadow-md transition-all duration-300 hover:shadow-lg ${getActionStyles(action.variant)}`}
             title={action.label || undefined}
           >
             {action.icon}
@@ -118,4 +118,3 @@ export default function AgentPropertyCard({
     />
   );
 }
-

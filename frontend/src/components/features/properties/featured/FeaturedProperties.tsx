@@ -56,29 +56,29 @@ export default function FeaturedProperties() {
   // Loading state
   if (isLoading) {
     return (
-      <section className="pb-12 bg-linear-to-b from-(--primary) via-(--primary) to-(--primary-light)">
+      <section className="bg-linear-to-b from-(--primary) via-(--primary) to-(--primary-light) pb-12">
         {/* Header */}
         <div className="pt-8 pb-8">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <h2 className="text-white text-3xl md:text-4xl font-bold text-left animate-slide-in-right">
+          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+            <h2 className="animate-slide-in-right text-left text-3xl font-bold text-white md:text-4xl">
               Propiedades Destacadas
             </h2>
           </div>
         </div>
 
         {/* Loading Skeleton */}
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-8">
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div className="mx-auto mt-8 max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
             {[1, 2, 3].map((i) => (
               <div
                 key={i}
-                className="bg-white rounded-2xl shadow-lg overflow-hidden animate-pulse"
+                className="animate-pulse overflow-hidden rounded-2xl bg-white shadow-lg"
               >
                 <div className="h-64 bg-gray-300"></div>
-                <div className="p-6 space-y-4">
-                  <div className="h-6 bg-gray-300 rounded w-3/4"></div>
-                  <div className="h-4 bg-gray-300 rounded w-1/2"></div>
-                  <div className="h-4 bg-gray-300 rounded w-full"></div>
+                <div className="space-y-4 p-6">
+                  <div className="h-6 w-3/4 rounded bg-gray-300"></div>
+                  <div className="h-4 w-1/2 rounded bg-gray-300"></div>
+                  <div className="h-4 w-full rounded bg-gray-300"></div>
                 </div>
               </div>
             ))}
@@ -94,18 +94,18 @@ export default function FeaturedProperties() {
   }
 
   return (
-    <section className="pb-12 bg-linear-to-b from-(--primary) via-(--primary) to-(--primary-light)">
+    <section className="bg-linear-to-b from-(--primary) via-(--primary) to-(--primary-light) pb-12">
       {/* Header */}
       <div className="pt-8 pb-8">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="text-white text-3xl md:text-4xl font-bold text-left animate-slide-in-right">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <h2 className="animate-slide-in-right text-left text-3xl font-bold text-white md:text-4xl">
             Propiedades Destacadas
           </h2>
         </div>
       </div>
 
       {/* Properties Grid */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-8">
+      <div className="mx-auto mt-8 max-w-7xl px-4 sm:px-6 lg:px-8">
         <div
           className="relative"
           onMouseEnter={() => setIsPaused(true)}
@@ -116,11 +116,11 @@ export default function FeaturedProperties() {
             <>
               <button
                 onClick={handlePrev}
-                className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-4 z-10 bg-(--accent) hover:brightness-90 text-white p-4 rounded-full shadow-xl transition-all duration-300 hidden lg:block transform hover:scale-95"
+                className="absolute top-1/2 left-0 z-10 hidden -translate-x-4 -translate-y-1/2 transform rounded-full bg-(--accent) p-4 text-white shadow-xl transition-all duration-300 hover:scale-95 hover:brightness-90 lg:block"
                 aria-label="Anterior"
               >
                 <svg
-                  className="w-6 h-6"
+                  className="h-6 w-6"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -136,11 +136,11 @@ export default function FeaturedProperties() {
 
               <button
                 onClick={handleNext}
-                className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-4 z-10 bg-(--accent) hover:brightness-90 text-white p-4 rounded-full shadow-xl transition-all duration-300 hidden lg:block transform hover:scale-95"
+                className="absolute top-1/2 right-0 z-10 hidden translate-x-4 -translate-y-1/2 transform rounded-full bg-(--accent) p-4 text-white shadow-xl transition-all duration-300 hover:scale-95 hover:brightness-90 lg:block"
                 aria-label="Siguiente"
               >
                 <svg
-                  className="w-6 h-6"
+                  className="h-6 w-6"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -157,7 +157,7 @@ export default function FeaturedProperties() {
           )}
 
           {/* Cards Grid con animación de deslizamiento */}
-          <div className="overflow-hidden pt-3 pb-1 -mt-3 -mb-1">
+          <div className="-mt-3 -mb-1 overflow-hidden pt-3 pb-1">
             <div
               className="flex transition-transform duration-700 ease-in-out"
               style={{
@@ -168,18 +168,18 @@ export default function FeaturedProperties() {
               {Array.from({ length: totalPages }).map((_, pageIndex) => (
                 <div
                   key={pageIndex}
-                  className="shrink-0 w-full grid grid-cols-1 lg:grid-cols-3 gap-6"
+                  className="grid w-full shrink-0 grid-cols-1 gap-6 lg:grid-cols-3"
                 >
                   {properties
                     .slice(
                       pageIndex * itemsPerPage,
-                      (pageIndex + 1) * itemsPerPage,
+                      (pageIndex + 1) * itemsPerPage
                     )
                     .map((property) => (
                       <Link
                         key={property.id}
                         href={`/propiedades/${property.id}`}
-                        className="block group"
+                        className="group block"
                       >
                         <BasePropertyCard
                           title={property.title}
@@ -214,14 +214,14 @@ export default function FeaturedProperties() {
 
         {/* Mobile Navigation Dots - Solo mostrar si hay más de 1 página */}
         {totalPages > 1 && (
-          <div className="flex justify-center gap-2 mt-6 lg:hidden">
+          <div className="mt-6 flex justify-center gap-2 lg:hidden">
             {Array.from({ length: totalPages }).map((_, index) => (
               <button
                 key={index}
                 onClick={() => setCurrentIndex(index)}
-                className={`w-3 h-3 rounded-full transition-all duration-300 ${
+                className={`h-3 w-3 rounded-full transition-all duration-300 ${
                   index === currentIndex
-                    ? "bg-linear-to-r from-(--accent) to-(--accent-hover) w-8"
+                    ? "w-8 bg-linear-to-r from-(--accent) to-(--accent-hover)"
                     : "bg-gray-300"
                 }`}
                 aria-label={`Ir a página ${index + 1}`}

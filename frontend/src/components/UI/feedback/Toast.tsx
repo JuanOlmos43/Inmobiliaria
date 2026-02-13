@@ -44,13 +44,13 @@ export function Toast({
   const style = styles[type];
 
   return (
-    <div className="fixed top-6 left-0 right-0 flex justify-center z-9999 pointer-events-none">
+    <div className="pointer-events-none fixed top-6 right-0 left-0 z-9999 flex justify-center">
       <div className="animate-slide-in-down pointer-events-auto">
         <div
-          className={`${style.bg} text-white rounded-lg shadow-2xl px-6 py-3 flex items-center gap-3 min-w-[300px]`}
+          className={`${style.bg} flex min-w-[300px] items-center gap-3 rounded-lg px-6 py-3 text-white shadow-2xl`}
         >
-          <Icon name={style.icon} className="w-5 h-5 shrink-0" />
-          <p className="font-medium text-sm">{message}</p>
+          <Icon name={style.icon} className="h-5 w-5 shrink-0" />
+          <p className="text-sm font-medium">{message}</p>
         </div>
       </div>
     </div>

@@ -86,7 +86,7 @@ export default function RentalPropertyCard({
   showPropertyDetails = true,
 }: RentalPropertyCardProps) {
   const getActionStyles = (
-    actionVariant: PropertyAction["variant"] = "primary",
+    actionVariant: PropertyAction["variant"] = "primary"
   ) => {
     const styles = {
       primary: "bg-(--primary) text-white hover:bg-(--primary-light)",
@@ -169,9 +169,9 @@ export default function RentalPropertyCard({
 
         return (
           <span
-            className={`px-3 py-1 ${nextEvent === "adjustment" ? "bg-(--warning)" : "bg-(--danger)"} text-white rounded-full text-xs font-semibold flex items-center gap-1`}
+            className={`px-3 py-1 ${nextEvent === "adjustment" ? "bg-(--warning)" : "bg-(--danger)"} flex items-center gap-1 rounded-full text-xs font-semibold text-white`}
           >
-            <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
+            <svg className="h-3 w-3" fill="currentColor" viewBox="0 0 20 20">
               <path
                 fillRule="evenodd"
                 d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z"
@@ -195,7 +195,7 @@ export default function RentalPropertyCard({
 
       return (
         <span
-          className={`px-3 py-1 ${badgeColors[statusBadge.variant]} text-white rounded-full text-xs font-semibold flex items-center gap-1`}
+          className={`px-3 py-1 ${badgeColors[statusBadge.variant]} flex items-center gap-1 rounded-full text-xs font-semibold text-white`}
         >
           {statusBadge.text}
         </span>
@@ -212,7 +212,7 @@ export default function RentalPropertyCard({
     if (!hasActions) return null;
 
     return (
-      <div className="flex gap-2 pt-4 border-t border-gray-200">
+      <div className="flex gap-2 border-t border-gray-200 pt-4">
         {actions.map((action, index) => {
           if (action.show === false) return null;
           return (
@@ -223,7 +223,7 @@ export default function RentalPropertyCard({
                 e.stopPropagation();
                 action.onClick();
               }}
-              className={`flex-1 px-3 py-2 rounded-lg transition-all duration-300 shadow-md hover:shadow-lg text-sm font-semibold flex items-center justify-center gap-2 ${getActionStyles(action.variant)}`}
+              className={`flex flex-1 items-center justify-center gap-2 rounded-lg px-3 py-2 text-sm font-semibold shadow-md transition-all duration-300 hover:shadow-lg ${getActionStyles(action.variant)}`}
             >
               {action.icon}
               {action.label}
@@ -260,11 +260,11 @@ export default function RentalPropertyCard({
   return (
     <>
       {href ? (
-        <Link href={href} className="block group">
+        <Link href={href} className="group block">
           {BaseCard}
         </Link>
       ) : (
-        <div className="block group">{BaseCard}</div>
+        <div className="group block">{BaseCard}</div>
       )}
     </>
   );

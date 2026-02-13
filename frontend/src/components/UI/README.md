@@ -36,9 +36,9 @@ Los componentes en esta carpeta siguen estos principios:
 ## 📝 Uso
 
 Importa los componentes usando el alias `@/components/ui`:
- 
- ```tsx
- import { FormInput, Icon, Modal } from "@/components/ui";
+
+```tsx
+import { FormInput, Icon, Modal } from "@/components/ui";
 ```
 
 ## 🔧 Agregar Nuevos Componentes

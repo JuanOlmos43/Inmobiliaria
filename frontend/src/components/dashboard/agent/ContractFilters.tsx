@@ -26,7 +26,7 @@ export default function ContractFilters({
   setContractStatus,
 }: ContractFiltersProps) {
   return (
-    <div className="grid grid-cols-1 md:grid-cols-4 gap-4 bg-gray-50 p-4 rounded-xl border border-gray-100">
+    <div className="grid grid-cols-1 gap-4 rounded-xl border border-gray-100 bg-gray-50 p-4 md:grid-cols-4">
       {/* Buscar por dirección */}
       <FormInput
         label="Buscar propiedades por dirección"
@@ -73,4 +73,3 @@ export default function ContractFilters({
     </div>
   );
 }
-

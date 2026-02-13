@@ -4,7 +4,7 @@ import { Contract } from "@/types/api";
 
 /**
  * useAgentUI
- * 
+ *
  * Maneja estados visuales del dashboard de agente: Modales y Notificaciones (Toasts).
  * Centraliza toda la lógica de UI sin incluir lógica de negocio.
  */

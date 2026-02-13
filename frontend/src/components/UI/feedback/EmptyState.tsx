@@ -21,25 +21,25 @@ export function EmptyState({
   actionIcon,
 }: EmptyStateProps) {
   return (
-    <div className="bg-white rounded-xl shadow-lg p-12 text-center">
+    <div className="rounded-xl bg-white p-12 text-center shadow-lg">
       {/* Icon */}
       {icon ? (
-        <div className="w-16 h-16 mx-auto text-gray-400 mb-4">{icon}</div>
+        <div className="mx-auto mb-4 h-16 w-16 text-gray-400">{icon}</div>
       ) : (
-        <Icon name="home" className="w-16 h-16 mx-auto text-gray-400 mb-4" />
+        <Icon name="home" className="mx-auto mb-4 h-16 w-16 text-gray-400" />
       )}
 
       {/* Title */}
-      <h3 className="text-xl font-semibold text-gray-700 mb-2">{title}</h3>
+      <h3 className="mb-2 text-xl font-semibold text-gray-700">{title}</h3>
 
       {/* Description */}
-      <p className="text-gray-500 mb-6">{description}</p>
+      <p className="mb-6 text-gray-500">{description}</p>
 
       {/* Action Button */}
       {actionLabel && onAction && (
         <button
           onClick={onAction}
-          className="bg-(--primary) hover:bg-(--primary-light) text-white font-bold py-3 px-8 rounded-full transition-all duration-300 shadow-xl hover:shadow-2xl transform hover:-translate-y-1 hover:scale-105 inline-flex items-center justify-center gap-2"
+          className="inline-flex transform items-center justify-center gap-2 rounded-full bg-(--primary) px-8 py-3 font-bold text-white shadow-xl transition-all duration-300 hover:-translate-y-1 hover:scale-105 hover:bg-(--primary-light) hover:shadow-2xl"
         >
           {actionIcon && actionIcon}
           {actionLabel}

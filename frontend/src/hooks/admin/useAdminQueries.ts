@@ -19,10 +19,10 @@ export function useAdminQueries(filters?: UserFilters) {
   });
 
   // Query para las estadísticas generales
-  const { 
-    data: stats = null, 
+  const {
+    data: stats = null,
     isLoading: isLoadingStats,
-    error: statsError 
+    error: statsError,
   } = useQuery({
     queryKey: ["stats"],
     queryFn: () => usersService.getStats(),
@@ -32,7 +32,8 @@ export function useAdminQueries(filters?: UserFilters) {
     users,
     stats,
     isLoading: isLoadingUsers || isLoadingStats,
-    error: (usersError || statsError) ? "Error al sincronizar con el servidor" : null,
+    error:
+      usersError || statsError ? "Error al sincronizar con el servidor" : null,
     retryLoadUsers,
   };
 }

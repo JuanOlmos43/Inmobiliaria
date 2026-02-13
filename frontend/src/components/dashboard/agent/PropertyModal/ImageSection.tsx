@@ -24,7 +24,7 @@ export default function ImageSection({
       id: url,
       url,
       isExisting: true,
-    })),
+    }))
   );
 
   // Effect to notify parent whenever items change
@@ -79,14 +79,14 @@ export default function ImageSection({
       <label className="block text-sm font-medium text-gray-700">
         Imágenes ({items.length})
       </label>
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
         {items.map((item, index) => (
           <div
             key={item.id}
-            className="relative group aspect-video bg-gray-100 rounded-lg overflow-hidden border border-gray-200 shadow-sm transition-all hover:shadow-md"
+            className="group relative aspect-video overflow-hidden rounded-lg border border-gray-200 bg-gray-100 shadow-sm transition-all hover:shadow-md"
           >
             {/* Number Badge */}
-            <div className="absolute top-2 left-2 z-10 bg-black/60 text-white text-xs font-bold px-2 py-1 rounded-md backdrop-blur-sm shadow-sm ring-1 ring-white/20">
+            <div className="absolute top-2 left-2 z-10 rounded-md bg-black/60 px-2 py-1 text-xs font-bold text-white shadow-sm ring-1 ring-white/20 backdrop-blur-sm">
               #{index + 1}
             </div>
 
@@ -99,13 +99,13 @@ export default function ImageSection({
             />
 
             {/* Overlay Controls */}
-            <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2 backdrop-blur-[1px]">
+            <div className="absolute inset-0 flex items-center justify-center gap-2 bg-black/40 opacity-0 backdrop-blur-[1px] transition-opacity group-hover:opacity-100">
               {/* Move Left */}
               <button
                 type="button"
                 disabled={index === 0}
                 onClick={() => moveImage(index, "left")}
-                className={`p-2 rounded-full bg-white/20 text-white hover:bg-white/40 transition-colors ${index === 0 ? "opacity-30 cursor-not-allowed hidden" : ""}`}
+                className={`rounded-full bg-white/20 p-2 text-white transition-colors hover:bg-white/40 ${index === 0 ? "hidden cursor-not-allowed opacity-30" : ""}`}
                 title="Mover al anterior"
               >
                 <svg
@@ -127,7 +127,7 @@ export default function ImageSection({
               <button
                 type="button"
                 onClick={() => removeImage(index)}
-                className="p-2 rounded-full bg-red-500/90 text-white hover:bg-red-600 transition-all hover:scale-110 shadow-lg"
+                className="rounded-full bg-red-500/90 p-2 text-white shadow-lg transition-all hover:scale-110 hover:bg-red-600"
                 title="Eliminar imagen"
               >
                 <svg
@@ -151,7 +151,7 @@ export default function ImageSection({
                 type="button"
                 disabled={index === items.length - 1}
                 onClick={() => moveImage(index, "right")}
-                className={`p-2 rounded-full bg-white/20 text-white hover:bg-white/40 transition-colors ${index === items.length - 1 ? "opacity-30 cursor-not-allowed hidden" : ""}`}
+                className={`rounded-full bg-white/20 p-2 text-white transition-colors hover:bg-white/40 ${index === items.length - 1 ? "hidden cursor-not-allowed opacity-30" : ""}`}
                 title="Mover al siguiente"
               >
                 <svg
@@ -172,13 +172,13 @@ export default function ImageSection({
           </div>
         ))}
 
-        <label className="border-2 border-dashed border-gray-300 rounded-lg flex flex-col items-center justify-center aspect-video cursor-pointer hover:border-(--accent) hover:bg-gray-50 transition-all group relative overflow-hidden">
-          <div className="w-12 h-12 rounded-full bg-gray-100 flex items-center justify-center group-hover:bg-(--accent)/10 group-hover:text-(--accent) transition-all mb-2 group-hover:scale-110">
-            <span className="text-3xl text-gray-400 group-hover:text-(--accent) leading-none pb-1">
+        <label className="group relative flex aspect-video cursor-pointer flex-col items-center justify-center overflow-hidden rounded-lg border-2 border-dashed border-gray-300 transition-all hover:border-(--accent) hover:bg-gray-50">
+          <div className="mb-2 flex h-12 w-12 items-center justify-center rounded-full bg-gray-100 transition-all group-hover:scale-110 group-hover:bg-(--accent)/10 group-hover:text-(--accent)">
+            <span className="pb-1 text-3xl leading-none text-gray-400 group-hover:text-(--accent)">
               +
             </span>
           </div>
-          <span className="text-xs text-gray-500 font-medium group-hover:text-(--accent)">
+          <span className="text-xs font-medium text-gray-500 group-hover:text-(--accent)">
             Agregar foto
           </span>
           <input

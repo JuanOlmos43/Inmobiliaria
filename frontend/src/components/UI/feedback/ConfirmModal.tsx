@@ -52,9 +52,9 @@ export function ConfirmModal({
   const modalHeader = (
     <div className="flex items-center gap-4">
       <div
-        className={`shrink-0 w-10 h-10 rounded-full flex items-center justify-center ${colors[variant]}`}
+        className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-full ${colors[variant]}`}
       >
-        <Icon name={iconName} className="w-5 h-5" />
+        <Icon name={iconName} className="h-5 w-5" />
       </div>
       <span className="text-xl font-bold text-(--primary)">{title}</span>
     </div>
@@ -63,23 +63,23 @@ export function ConfirmModal({
   return (
     <Modal isOpen={isOpen} onClose={onClose} title={modalHeader} maxWidth="md">
       <div className="p-2">
-        <p className="text-gray-600 leading-relaxed">{message}</p>
+        <p className="leading-relaxed text-gray-600">{message}</p>
 
-        <div className="flex gap-3 mt-8">
+        <div className="mt-8 flex gap-3">
           <button
             onClick={onClose}
             disabled={isLoading}
-            className="flex-1 px-4 py-2.5 border border-gray-300 text-gray-700 rounded-lg font-medium hover:bg-red-600 hover:text-white hover:border-red-600 transition-all duration-200 disabled:opacity-50"
+            className="flex-1 rounded-lg border border-gray-300 px-4 py-2.5 font-medium text-gray-700 transition-all duration-200 hover:border-red-600 hover:bg-red-600 hover:text-white disabled:opacity-50"
           >
             {cancelText}
           </button>
           <button
             onClick={onConfirm}
             disabled={isLoading}
-            className={`flex-1 px-4 py-2.5 text-white font-medium rounded-lg transition-all disabled:opacity-50 inline-flex items-center justify-center gap-2 ${buttonColors[variant]}`}
+            className={`inline-flex flex-1 items-center justify-center gap-2 rounded-lg px-4 py-2.5 font-medium text-white transition-all disabled:opacity-50 ${buttonColors[variant]}`}
           >
             {isLoading && (
-              <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+              <div className="h-4 w-4 animate-spin rounded-full border-2 border-white/30 border-t-white" />
             )}
             {confirmText}
           </button>

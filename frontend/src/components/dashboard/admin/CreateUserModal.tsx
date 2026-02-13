@@ -52,7 +52,7 @@ export default function CreateUserModal({
 
   const showToast = (
     message: string,
-    type: "success" | "error" = "success",
+    type: "success" | "error" = "success"
   ) => {
     const duration = type === "error" ? 6000 : 3000;
     setToast({ show: true, message, type, duration });
@@ -83,7 +83,7 @@ export default function CreateUserModal({
       console.error("Error al guardar usuario:", error);
       showToast(
         `Error al guardar usuario: ${error instanceof Error ? error.message : "Error desconocido"}`,
-        "error",
+        "error"
       );
     } finally {
       setIsSubmitting(false);
@@ -129,7 +129,7 @@ export default function CreateUserModal({
             maxLength={100}
           />
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
             <FormInput
               label="Nombre completo"
               type="text"
@@ -175,17 +175,17 @@ export default function CreateUserModal({
               type="button"
               onClick={onClose}
               disabled={isSubmitting}
-              className="flex-1 px-4 py-2.5 border border-gray-300 text-gray-700 rounded-lg font-medium hover:bg-red-600 hover:text-white hover:border-red-600 transition-all duration-200 disabled:opacity-50"
+              className="flex-1 rounded-lg border border-gray-300 px-4 py-2.5 font-medium text-gray-700 transition-all duration-200 hover:border-red-600 hover:bg-red-600 hover:text-white disabled:opacity-50"
             >
               Cancelar
             </button>
             <button
               type="submit"
               disabled={isSubmitting}
-              className="flex-1 px-4 py-2.5 bg-(--accent) text-white rounded-lg font-medium hover:bg-(--accent-hover) transition-all shadow-md hover:shadow-lg disabled:opacity-50 flex justify-center items-center gap-2"
+              className="flex flex-1 items-center justify-center gap-2 rounded-lg bg-(--accent) px-4 py-2.5 font-medium text-white shadow-md transition-all hover:bg-(--accent-hover) hover:shadow-lg disabled:opacity-50"
             >
               {isSubmitting && (
-                <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                <div className="h-4 w-4 animate-spin rounded-full border-2 border-white/30 border-t-white" />
               )}
               {isSubmitting ? "Creando..." : "Crear usuario"}
             </button>
@@ -195,4 +195,3 @@ export default function CreateUserModal({
     </>
   );
 }
-

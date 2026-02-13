@@ -24,7 +24,7 @@ export default function PropertyDetailPage() {
         setIsLoading(true);
         setError(null);
         const data = await propertiesService.getPublicProperty(
-          params.id as string,
+          params.id as string
         );
         setProperty(data);
       } catch (err) {
@@ -43,10 +43,10 @@ export default function PropertyDetailPage() {
   // Loading state
   if (isLoading) {
     return (
-      <main className="grow bg-(--background) flex items-center justify-center min-h-screen">
+      <main className="flex min-h-screen grow items-center justify-center bg-(--background)">
         <div className="flex flex-col items-center gap-4">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-(--accent)"></div>
-          <p className="text-gray-500 font-medium">Cargando propiedad...</p>
+          <div className="h-12 w-12 animate-spin rounded-full border-b-2 border-(--accent)"></div>
+          <p className="font-medium text-gray-500">Cargando propiedad...</p>
         </div>
       </main>
     );
@@ -55,14 +55,14 @@ export default function PropertyDetailPage() {
   // Error state
   if (error || !property) {
     return (
-      <main className="grow bg-(--background) flex items-center justify-center">
+      <main className="flex grow items-center justify-center bg-(--background)">
         <div className="text-center">
-          <h1 className="text-4xl font-bold text-(--primary) mb-4">
+          <h1 className="mb-4 text-4xl font-bold text-(--primary)">
             Propiedad no encontrada
           </h1>
           <Link
             href="/propiedades"
-            className="text-(--accent) hover:text-(--accent-hover) font-semibold"
+            className="font-semibold text-(--accent) hover:text-(--accent-hover)"
           >
             Volver a propiedades
           </Link>
@@ -85,19 +85,19 @@ export default function PropertyDetailPage() {
 
   const prevImage = () => {
     setCurrentImageIndex(
-      (prev) => (prev - 1 + propertyImages.length) % propertyImages.length,
+      (prev) => (prev - 1 + propertyImages.length) % propertyImages.length
     );
   };
 
   return (
     <main className="grow bg-(--background)">
       {/* Property Details */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
+      <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+        <div className="grid grid-cols-1 gap-8 lg:grid-cols-4">
           {/* Main Content */}
           <div className="lg:col-span-3">
             {/* Image Carousel */}
-            <div className="relative w-full aspect-video bg-gray-200 rounded-2xl overflow-hidden mb-6 group shadow-xl">
+            <div className="group relative mb-6 aspect-video w-full overflow-hidden rounded-2xl bg-gray-200 shadow-xl">
               {propertyImages.length > 0 ? (
                 <Image
                   src={propertyImages[currentImageIndex]}
@@ -106,15 +106,15 @@ export default function PropertyDetailPage() {
                   className="object-cover transition-opacity duration-300"
                 />
               ) : (
-                <div className="flex items-center justify-center h-full bg-gray-300">
-                  <p className="text-gray-500 text-lg">
+                <div className="flex h-full items-center justify-center bg-gray-300">
+                  <p className="text-lg text-gray-500">
                     Sin imágenes disponibles
                   </p>
                 </div>
               )}
               <div className="absolute top-4 right-4 z-10">
                 <span
-                  className={`px-4 py-2 rounded-full text-sm font-bold backdrop-blur-sm shadow-sm ${
+                  className={`rounded-full px-4 py-2 text-sm font-bold shadow-sm backdrop-blur-sm ${
                     property.listingType === "venta"
                       ? "bg-(--primary) text-white"
                       : "bg-(--accent) text-white"
@@ -129,11 +129,11 @@ export default function PropertyDetailPage() {
                 <>
                   <button
                     onClick={prevImage}
-                    className="absolute left-4 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white text-gray-800 p-3 rounded-full shadow-lg transition-all opacity-0 group-hover:opacity-100 z-10"
+                    className="absolute top-1/2 left-4 z-10 -translate-y-1/2 rounded-full bg-white/90 p-3 text-gray-800 opacity-0 shadow-lg transition-all group-hover:opacity-100 hover:bg-white"
                     aria-label="Imagen anterior"
                   >
                     <svg
-                      className="w-6 h-6"
+                      className="h-6 w-6"
                       fill="none"
                       stroke="currentColor"
                       viewBox="0 0 24 24"
@@ -148,11 +148,11 @@ export default function PropertyDetailPage() {
                   </button>
                   <button
                     onClick={nextImage}
-                    className="absolute right-4 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white text-gray-800 p-3 rounded-full shadow-lg transition-all opacity-0 group-hover:opacity-100 z-10"
+                    className="absolute top-1/2 right-4 z-10 -translate-y-1/2 rounded-full bg-white/90 p-3 text-gray-800 opacity-0 shadow-lg transition-all group-hover:opacity-100 hover:bg-white"
                     aria-label="Imagen siguiente"
                   >
                     <svg
-                      className="w-6 h-6"
+                      className="h-6 w-6"
                       fill="none"
                       stroke="currentColor"
                       viewBox="0 0 24 24"
@@ -167,14 +167,14 @@ export default function PropertyDetailPage() {
                   </button>
 
                   {/* Image Indicators */}
-                  <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2 z-10">
+                  <div className="absolute bottom-4 left-1/2 z-10 flex -translate-x-1/2 gap-2">
                     {propertyImages.map((_, index) => (
                       <button
                         key={index}
                         onClick={() => setCurrentImageIndex(index)}
-                        className={`w-2 h-2 rounded-full transition-all ${
+                        className={`h-2 w-2 rounded-full transition-all ${
                           index === currentImageIndex
-                            ? "bg-white w-8"
+                            ? "w-8 bg-white"
                             : "bg-white/60 hover:bg-white/80"
                         }`}
                         aria-label={`Ir a imagen ${index + 1}`}
@@ -186,26 +186,26 @@ export default function PropertyDetailPage() {
             </div>
 
             {/* Title and Location */}
-            <div className="bg-white rounded-2xl shadow-xl p-8 mb-6 border border-gray-100">
-              <h1 className="text-3xl font-bold text-(--primary) mb-3">
+            <div className="mb-6 rounded-2xl border border-gray-100 bg-white p-8 shadow-xl">
+              <h1 className="mb-3 text-3xl font-bold text-(--primary)">
                 {property.title}
               </h1>
-              <div className="flex items-center mb-4">
+              <div className="mb-4 flex items-center">
                 <Icon
                   name="location"
-                  className="w-5 h-5 mr-2 text-(--accent)"
+                  className="mr-2 h-5 w-5 text-(--accent)"
                   fill="currentColor"
                 />
                 <span className="text-lg text-gray-600">
                   {property.location}
                 </span>
               </div>
-              <div className="flex flex-wrap items-center gap-4 text-gray-700 border-t pt-4">
+              <div className="flex flex-wrap items-center gap-4 border-t pt-4 text-gray-700">
                 {property.bedrooms > 0 && (
                   <div className="flex items-center">
                     <Icon
                       name="bed"
-                      className="w-6 h-6 mr-2"
+                      className="mr-2 h-6 w-6"
                       fill="currentColor"
                     />
                     <span>{property.bedrooms} Dormitorios</span>
@@ -214,7 +214,7 @@ export default function PropertyDetailPage() {
                 {property.rooms > 0 && (
                   <div className="flex items-center">
                     <svg
-                      className="w-6 h-6 mr-2"
+                      className="mr-2 h-6 w-6"
                       fill="currentColor"
                       viewBox="0 0 24 24"
                     >
@@ -227,19 +227,19 @@ export default function PropertyDetailPage() {
                   <div className="flex items-center">
                     <Icon
                       name="bath"
-                      className="w-6 h-6 mr-2"
+                      className="mr-2 h-6 w-6"
                       fill="currentColor"
                     />
                     <span>{property.bathrooms} Baños</span>
                   </div>
                 )}
                 <div className="flex items-center">
-                  <Icon name="area" className="w-6 h-6 mr-2" />
+                  <Icon name="area" className="mr-2 h-6 w-6" />
                   <span>{property.area} m²</span>
                 </div>
                 <div className="flex items-center">
                   <svg
-                    className="w-6 h-6 mr-2"
+                    className="mr-2 h-6 w-6"
                     fill="currentColor"
                     viewBox="0 0 24 24"
                   >
@@ -250,7 +250,7 @@ export default function PropertyDetailPage() {
                 {property.yearBuilt && (
                   <div className="flex items-center">
                     <svg
-                      className="w-6 h-6 mr-2"
+                      className="mr-2 h-6 w-6"
                       fill="currentColor"
                       viewBox="0 0 24 24"
                     >
@@ -263,25 +263,25 @@ export default function PropertyDetailPage() {
             </div>
 
             {/* Description */}
-            <div className="bg-white rounded-2xl shadow-xl p-8 mb-6 border border-gray-100">
-              <h2 className="text-2xl font-bold text-(--primary) mb-4">
+            <div className="mb-6 rounded-2xl border border-gray-100 bg-white p-8 shadow-xl">
+              <h2 className="mb-4 text-2xl font-bold text-(--primary)">
                 Descripción
               </h2>
-              <p className="text-gray-700 leading-relaxed">
+              <p className="leading-relaxed text-gray-700">
                 {property.description}
               </p>
             </div>
 
             {/* Features */}
-            <div className="bg-white rounded-2xl shadow-xl p-8 border border-gray-100">
-              <h2 className="text-2xl font-bold text-(--primary) mb-4">
+            <div className="rounded-2xl border border-gray-100 bg-white p-8 shadow-xl">
+              <h2 className="mb-4 text-2xl font-bold text-(--primary)">
                 Características
               </h2>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
                 {property.features?.map((feature, index) => (
                   <div key={index} className="flex items-center">
                     <svg
-                      className="w-5 h-5 text-(--accent) mr-2"
+                      className="mr-2 h-5 w-5 text-(--accent)"
                       fill="currentColor"
                       viewBox="0 0 20 20"
                     >
@@ -303,14 +303,14 @@ export default function PropertyDetailPage() {
           {/* Sidebar */}
           <div className="lg:col-span-1">
             {/* Price Card */}
-            <div className="bg-white rounded-2xl shadow-xl p-8 sticky top-20 mb-6 border border-gray-100">
+            <div className="sticky top-20 mb-6 rounded-2xl border border-gray-100 bg-white p-8 shadow-xl">
               <div className="mb-6">
-                <p className="text-gray-600 text-sm mb-2">Precio</p>
+                <p className="mb-2 text-sm text-gray-600">Precio</p>
                 <p className="text-4xl font-bold text-(--primary)">
                   {property.currency} {property.price.toLocaleString("es-AR")}
                 </p>
                 {property.listingType === "alquiler" && (
-                  <p className="text-(--primary) text-sm mt-1">por mes</p>
+                  <p className="mt-1 text-sm text-(--primary)">por mes</p>
                 )}
               </div>
 
@@ -318,7 +318,7 @@ export default function PropertyDetailPage() {
               <div className="flex justify-center">
                 <Link
                   href="/contacto"
-                  className="inline-block bg-(--accent) text-white px-8 py-3 rounded-full font-bold text-lg hover:bg-(--accent-hover) transform hover:scale-95 transition-all duration-300 shadow-2xl hover:shadow-xl"
+                  className="inline-block transform rounded-full bg-(--accent) px-8 py-3 text-lg font-bold text-white shadow-2xl transition-all duration-300 hover:scale-95 hover:bg-(--accent-hover) hover:shadow-xl"
                 >
                   Contactar
                 </Link>

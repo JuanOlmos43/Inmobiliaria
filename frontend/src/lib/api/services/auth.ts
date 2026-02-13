@@ -33,7 +33,7 @@ export const authService = {
     console.log("Login request data:", requestData);
     return apiClient.post<LoginResponse, LoginRequest>(
       API_ENDPOINTS.LOGIN,
-      requestData,
+      requestData
     );
   },
 
@@ -65,7 +65,7 @@ export const authService = {
 
     return apiClient.post<UserProfile, RegisterRequest>(
       API_ENDPOINTS.REGISTER,
-      requestData,
+      requestData
     );
   },
 

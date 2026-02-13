@@ -13,7 +13,10 @@ interface MutationStyles {
  * useAdminMutations
  * Maneja las operaciones de escritura (crear, editar, borrar) en el servidor.
  */
-export function useAdminMutations({ showToast, onSuccessClose }: MutationStyles) {
+export function useAdminMutations({
+  showToast,
+  onSuccessClose,
+}: MutationStyles) {
   const queryClient = useQueryClient();
 
   // Función para refrescar datos tras cualquier cambio
@@ -33,8 +36,13 @@ export function useAdminMutations({ showToast, onSuccessClose }: MutationStyles)
 
   // 2. Mutación: Editar Usuario
   const editMutation = useMutation({
-    mutationFn: ({ userId, data }: { userId: string; data: Partial<UserProfile> }) =>
-      usersService.updateUser(userId, data),
+    mutationFn: ({
+      userId,
+      data,
+    }: {
+      userId: string;
+      data: Partial<UserProfile>;
+    }) => usersService.updateUser(userId, data),
     onSuccess: () => {
       showToast("Usuario actualizado correctamente");
       refreshData();
@@ -62,7 +70,7 @@ export function useAdminMutations({ showToast, onSuccessClose }: MutationStyles)
 
   return {
     handleUserCreated,
-    executeEdit: (userId: string, data: Partial<UserProfile>) => 
+    executeEdit: (userId: string, data: Partial<UserProfile>) =>
       editMutation.mutateAsync({ userId, data }),
     executeReset: (userId: string) => resetMutation.mutate(userId),
     isResetting: resetMutation.isPending,

@@ -36,7 +36,7 @@ export function FormTextarea({
         required={required}
         {...props}
       />
-      {error && <p className="text-(--danger) text-sm mt-1">{error}</p>}
+      {error && <p className="mt-1 text-sm text-(--danger)">{error}</p>}
     </div>
   );
 }

@@ -68,13 +68,10 @@ export async function middleware(request: NextRequest) {
    * - null: no hay sesión válida
    * - { user, refreshResponse? }: sesión válida, y si refrescó, devuelve response para aplicar cookies
    */
-  const validateSession = async (): Promise<
-    | null
-    | {
-        user: UserProfile | { role: UserRole | string };
-        refreshResponse?: Response;
-      }
-  > => {
+  const validateSession = async (): Promise<null | {
+    user: UserProfile | { role: UserRole | string };
+    refreshResponse?: Response;
+  }> => {
     try {
       // 1) Intentar sesión actual
       const meResponse = await fetchWithCookies(`${backendUrl}/auth/me`, {
@@ -91,9 +88,12 @@ export async function middleware(request: NextRequest) {
         return null;
       }
 
-      const refreshResponse = await fetchWithCookies(`${backendUrl}/auth/refresh`, {
-        method: "POST",
-      });
+      const refreshResponse = await fetchWithCookies(
+        `${backendUrl}/auth/refresh`,
+        {
+          method: "POST",
+        }
+      );
 
       if (!refreshResponse.ok) {
         return null;
@@ -136,13 +136,16 @@ export async function middleware(request: NextRequest) {
     // Si es login y ya hay cookies, validar y redirigir
     if (
       pathname === "/login" &&
-      (request.cookies.has("access_token") || request.cookies.has("refresh_token"))
+      (request.cookies.has("access_token") ||
+        request.cookies.has("refresh_token"))
     ) {
       const session = await validateSession();
 
       if (session) {
         const defaultRoute = getDefaultRouteForRole(session.user.role);
-        const response = NextResponse.redirect(new URL(defaultRoute, request.url));
+        const response = NextResponse.redirect(
+          new URL(defaultRoute, request.url)
+        );
 
         if (session.refreshResponse) {
           applySetCookies(session.refreshResponse, response);

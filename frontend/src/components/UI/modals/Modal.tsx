@@ -57,22 +57,22 @@ export function Modal({
   };
 
   return (
-    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 backdrop-blur-sm">
       <div
-        className={`bg-white rounded-2xl shadow-2xl ${maxWidthClasses[maxWidth]} w-full max-h-[90vh] flex flex-col animate-scale-in`}
+        className={`rounded-2xl bg-white shadow-2xl ${maxWidthClasses[maxWidth]} animate-scale-in flex max-h-[90vh] w-full flex-col`}
       >
-        <div className="flex justify-between items-center p-6 border-b border-gray-100 shrink-0">
+        <div className="flex shrink-0 items-center justify-between border-b border-gray-100 p-6">
           <div className="text-2xl font-bold text-(--primary)">{title}</div>
           <button
             onClick={onClose}
-            className="text-gray-400 hover:text-gray-600 transition-colors"
+            className="text-gray-400 transition-colors hover:text-gray-600"
             aria-label="Cerrar modal"
           >
-            <Icon name="close" className="w-6 h-6" />
+            <Icon name="close" className="h-6 w-6" />
           </button>
         </div>
 
-        <div className="p-6 overflow-y-auto">{children}</div>
+        <div className="overflow-y-auto p-6">{children}</div>
       </div>
     </div>
   );

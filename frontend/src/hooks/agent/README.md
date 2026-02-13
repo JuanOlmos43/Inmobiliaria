@@ -370,7 +370,7 @@ test("debounce funciona correctamente", async () => {
     () => {
       expect(result.current.debouncedSearch).toBe("casa");
     },
-    { timeout: 600 },
+    { timeout: 600 }
   );
 });
 ```

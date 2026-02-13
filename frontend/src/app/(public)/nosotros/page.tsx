@@ -11,36 +11,36 @@ export default function NosotrosPage() {
       />
 
       {/* Nuestra Historia */}
-      <section className="py-16 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid md:grid-cols-2 gap-12 items-center">
+      <section className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
+        <div className="grid items-center gap-12 md:grid-cols-2">
           <div>
-            <h2 className="text-4xl font-bold text-(--primary) mb-6">
+            <h2 className="mb-6 text-4xl font-bold text-(--primary)">
               Nuestra Historia
             </h2>
-            <p className="text-lg text-gray-700 mb-4 leading-relaxed">
+            <p className="mb-4 text-lg leading-relaxed text-gray-700">
               InmoHogar nació en 2008 con una visión clara: revolucionar el
               mercado inmobiliario ofreciendo un servicio personalizado y
               transparente. Desde entonces, hemos ayudado a más de 5,000
               familias a encontrar su hogar perfecto.
             </p>
-            <p className="text-lg text-gray-700 mb-4 leading-relaxed">
+            <p className="mb-4 text-lg leading-relaxed text-gray-700">
               Nuestro equipo de profesionales altamente capacitados se dedica a
               entender las necesidades únicas de cada cliente, brindando
               asesoramiento experto en cada paso del proceso.
             </p>
-            <p className="text-lg text-gray-700 leading-relaxed">
+            <p className="text-lg leading-relaxed text-gray-700">
               Hoy somos líderes en el sector, con presencia en las principales
               ciudades del país y un compromiso inquebrantable con la excelencia
               y la satisfacción del cliente.
             </p>
           </div>
-          <div className="relative h-96 rounded-2xl overflow-hidden shadow-2xl transform hover:scale-105 transition-transform duration-300">
+          <div className="relative h-96 transform overflow-hidden rounded-2xl shadow-2xl transition-transform duration-300 hover:scale-105">
             <div className="absolute inset-0 bg-(--primary) opacity-20"></div>
             <div className="absolute inset-0 flex items-center justify-center">
               <div className="text-center text-white">
                 <Icon
                   name="building"
-                  className="w-24 h-24 mb-4 mx-auto"
+                  className="mx-auto mb-4 h-24 w-24"
                   strokeWidth={1.5}
                 />
                 <p className="text-2xl font-bold">15+ Años</p>
@@ -53,14 +53,14 @@ export default function NosotrosPage() {
 
       {/* Nuestros Valores */}
       <section className="py-16">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="text-4xl font-bold text-center text-(--primary) mb-12">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <h2 className="mb-12 text-center text-4xl font-bold text-(--primary)">
             Nuestros Valores
           </h2>
-          <div className="grid md:grid-cols-3 gap-8">
+          <div className="grid gap-8 md:grid-cols-3">
             {/* Valor 1 */}
             <ValueCard
-              icon={<Icon name="check" className="w-12 h-12" strokeWidth={2} />}
+              icon={<Icon name="check" className="h-12 w-12" strokeWidth={2} />}
               title="Transparencia"
               description="Creemos en la honestidad total. Cada propiedad, cada precio, cada detalle es presentado con claridad absoluta."
               color="dark"
@@ -69,7 +69,7 @@ export default function NosotrosPage() {
             {/* Valor 2 */}
             <ValueCard
               icon={
-                <Icon name="briefcase" className="w-12 h-12" strokeWidth={2} />
+                <Icon name="briefcase" className="h-12 w-12" strokeWidth={2} />
               }
               title="Profesionalismo"
               description="Nuestro equipo está altamente capacitado y actualizado con las últimas tendencias del mercado inmobiliario."
@@ -80,7 +80,7 @@ export default function NosotrosPage() {
             <ValueCard
               icon={
                 <svg
-                  className="w-12 h-12"
+                  className="h-12 w-12"
                   fill="none"
                   viewBox="0 0 24 24"
                   stroke="currentColor"
@@ -102,28 +102,28 @@ export default function NosotrosPage() {
       </section>
 
       {/* Estadísticas */}
-      <section className="py-16 bg-linear-to-r from-(--primary) to-(--primary-light) text-white shadow-inner">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="text-4xl font-bold text-center mb-12">
+      <section className="bg-linear-to-r from-(--primary) to-(--primary-light) py-16 text-white shadow-inner">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <h2 className="mb-12 text-center text-4xl font-bold">
             Nuestros Logros
           </h2>
-          <div className="grid md:grid-cols-4 gap-8 text-center">
-            <div className="transform hover:scale-110 transition-transform duration-300">
-              <div className="text-5xl font-bold text-(--accent) mb-2">
+          <div className="grid gap-8 text-center md:grid-cols-4">
+            <div className="transform transition-transform duration-300 hover:scale-110">
+              <div className="mb-2 text-5xl font-bold text-(--accent)">
                 5,000+
               </div>
               <p className="text-xl text-gray-100">Familias Felices</p>
             </div>
-            <div className="transform hover:scale-110 transition-transform duration-300">
-              <div className="text-5xl font-bold text-(--accent) mb-2">15+</div>
+            <div className="transform transition-transform duration-300 hover:scale-110">
+              <div className="mb-2 text-5xl font-bold text-(--accent)">15+</div>
               <p className="text-xl text-gray-100">Años de Experiencia</p>
             </div>
-            <div className="transform hover:scale-110 transition-transform duration-300">
-              <div className="text-5xl font-bold text-(--accent) mb-2">50+</div>
+            <div className="transform transition-transform duration-300 hover:scale-110">
+              <div className="mb-2 text-5xl font-bold text-(--accent)">50+</div>
               <p className="text-xl text-gray-100">Profesionales</p>
             </div>
-            <div className="transform hover:scale-110 transition-transform duration-300">
-              <div className="text-5xl font-bold text-(--accent) mb-2">98%</div>
+            <div className="transform transition-transform duration-300 hover:scale-110">
+              <div className="mb-2 text-5xl font-bold text-(--accent)">98%</div>
               <p className="text-xl text-gray-100">Satisfacción</p>
             </div>
           </div>
@@ -131,25 +131,25 @@ export default function NosotrosPage() {
       </section>
 
       {/* Nuestro Equipo */}
-      <section className="py-16 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <h2 className="text-4xl font-bold text-center text-(--primary) mb-12">
+      <section className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
+        <h2 className="mb-12 text-center text-4xl font-bold text-(--primary)">
           Nuestro Equipo
         </h2>
-        <div className="grid md:grid-cols-3 gap-8">
+        <div className="grid gap-8 md:grid-cols-3">
           {/* Miembro 1 */}
-          <div className="bg-white rounded-2xl shadow-xl overflow-hidden transform hover:scale-105 transition-all duration-300 hover:shadow-2xl">
-            <div className="h-64 bg-linear-to-br from-(--primary) to-(--primary-light) flex items-center justify-center">
+          <div className="transform overflow-hidden rounded-2xl bg-white shadow-xl transition-all duration-300 hover:scale-105 hover:shadow-2xl">
+            <div className="flex h-64 items-center justify-center bg-linear-to-br from-(--primary) to-(--primary-light)">
               <Icon
                 name="user"
-                className="w-32 h-32 text-white"
+                className="h-32 w-32 text-white"
                 strokeWidth={1.5}
               />
             </div>
             <div className="p-6">
-              <h3 className="text-2xl font-bold text-(--primary) mb-2">
+              <h3 className="mb-2 text-2xl font-bold text-(--primary)">
                 Carlos Rodríguez
               </h3>
-              <p className="text-(--accent) font-semibold mb-3">
+              <p className="mb-3 font-semibold text-(--accent)">
                 Director General
               </p>
               <p className="text-gray-600">
@@ -160,19 +160,19 @@ export default function NosotrosPage() {
           </div>
 
           {/* Miembro 2 */}
-          <div className="bg-white rounded-2xl shadow-xl overflow-hidden transform hover:scale-105 transition-all duration-300 hover:shadow-2xl">
-            <div className="h-64 bg-linear-to-br from-(--accent) to-(--accent-hover) flex items-center justify-center">
+          <div className="transform overflow-hidden rounded-2xl bg-white shadow-xl transition-all duration-300 hover:scale-105 hover:shadow-2xl">
+            <div className="flex h-64 items-center justify-center bg-linear-to-br from-(--accent) to-(--accent-hover)">
               <Icon
                 name="user"
-                className="w-32 h-32 text-white"
+                className="h-32 w-32 text-white"
                 strokeWidth={1.5}
               />
             </div>
             <div className="p-6">
-              <h3 className="text-2xl font-bold text-(--primary) mb-2">
+              <h3 className="mb-2 text-2xl font-bold text-(--primary)">
                 María González
               </h3>
-              <p className="text-(--accent) font-semibold mb-3">
+              <p className="mb-3 font-semibold text-(--accent)">
                 Gerente de Ventas
               </p>
               <p className="text-gray-600">
@@ -183,19 +183,19 @@ export default function NosotrosPage() {
           </div>
 
           {/* Miembro 3 */}
-          <div className="bg-white rounded-2xl shadow-xl overflow-hidden transform hover:scale-105 transition-all duration-300 hover:shadow-2xl">
-            <div className="h-64 bg-linear-to-br from-(--primary) to-(--primary-light) flex items-center justify-center">
+          <div className="transform overflow-hidden rounded-2xl bg-white shadow-xl transition-all duration-300 hover:scale-105 hover:shadow-2xl">
+            <div className="flex h-64 items-center justify-center bg-linear-to-br from-(--primary) to-(--primary-light)">
               <Icon
                 name="user"
-                className="w-32 h-32 text-white"
+                className="h-32 w-32 text-white"
                 strokeWidth={1.5}
               />
             </div>
             <div className="p-6">
-              <h3 className="text-2xl font-bold text-(--primary) mb-2">
+              <h3 className="mb-2 text-2xl font-bold text-(--primary)">
                 Juan Pérez
               </h3>
-              <p className="text-(--accent) font-semibold mb-3">
+              <p className="mb-3 font-semibold text-(--accent)">
                 Asesor Senior
               </p>
               <p className="text-gray-600">
@@ -208,17 +208,17 @@ export default function NosotrosPage() {
       </section>
 
       {/* Call to Action */}
-      <section className="py-16 bg-linear-to-r from-(--accent) to-(--accent-hover) text-white shadow-lg">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="text-4xl font-bold mb-6">
+      <section className="bg-linear-to-r from-(--accent) to-(--accent-hover) py-16 text-white shadow-lg">
+        <div className="mx-auto max-w-4xl px-4 text-center sm:px-6 lg:px-8">
+          <h2 className="mb-6 text-4xl font-bold">
             ¿Listo para encontrar tu hogar ideal?
           </h2>
-          <p className="text-xl mb-8 text-gray-50">
+          <p className="mb-8 text-xl text-gray-50">
             Nuestro equipo está esperando para ayudarte en cada paso del camino
           </p>
           <a
             href="/contacto"
-            className="inline-block bg-white text-(--primary) px-10 py-4 rounded-full font-bold text-lg hover:bg-gray-100 transform hover:scale-95 transition-all duration-300 shadow-2xl hover:shadow-xl"
+            className="inline-block transform rounded-full bg-white px-10 py-4 text-lg font-bold text-(--primary) shadow-2xl transition-all duration-300 hover:scale-95 hover:bg-gray-100 hover:shadow-xl"
           >
             Contáctanos Ahora
           </a>

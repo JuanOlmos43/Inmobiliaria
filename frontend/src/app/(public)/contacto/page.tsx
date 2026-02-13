@@ -27,7 +27,7 @@ export default function ContactoPage() {
   const handleChange = (
     e: React.ChangeEvent<
       HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
-    >,
+    >
   ) => {
     setFormData({
       ...formData,
@@ -65,11 +65,11 @@ export default function ContactoPage() {
       />
 
       {/* Contenido Principal */}
-      <section className="py-16 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid md:grid-cols-2 gap-8 items-start">
+      <section className="mx-auto max-w-6xl px-4 py-16 sm:px-6 lg:px-8">
+        <div className="grid items-start gap-8 md:grid-cols-2">
           {/* Información de Contacto */}
           <div>
-            <h2 className="text-4xl font-bold text-(--primary) mb-8">
+            <h2 className="mb-8 text-4xl font-bold text-(--primary)">
               Información de Contacto
             </h2>
 
@@ -80,7 +80,7 @@ export default function ContactoPage() {
                 icon={
                   <Icon
                     name="location"
-                    className="w-6 h-6 text-white"
+                    className="h-6 w-6 text-white"
                     fill="currentColor"
                   />
                 }
@@ -97,7 +97,7 @@ export default function ContactoPage() {
 
               {/* Teléfono */}
               <ContactInfoCard
-                icon={<Icon name="whatsapp" className="w-6 h-6 text-white" />}
+                icon={<Icon name="whatsapp" className="h-6 w-6 text-white" />}
                 title="Teléfono"
                 content={
                   <>
@@ -110,7 +110,7 @@ export default function ContactoPage() {
 
               {/* Email */}
               <ContactInfoCard
-                icon={<Icon name="mail" className="w-6 h-6 text-white" />}
+                icon={<Icon name="mail" className="h-6 w-6 text-white" />}
                 title="Email"
                 content={
                   <>
@@ -125,7 +125,7 @@ export default function ContactoPage() {
               <ContactInfoCard
                 icon={
                   <svg
-                    className="w-6 h-6 text-white"
+                    className="h-6 w-6 text-white"
                     fill="currentColor"
                     viewBox="0 0 24 24"
                   >
@@ -148,14 +148,14 @@ export default function ContactoPage() {
 
           {/* Formulario de Contacto */}
           <div>
-            <div className="bg-white p-6 rounded-2xl shadow-xl border-l-4 border-(--accent)">
-              <h2 className="text-2xl font-bold text-(--primary) mb-4">
+            <div className="rounded-2xl border-l-4 border-(--accent) bg-white p-6 shadow-xl">
+              <h2 className="mb-4 text-2xl font-bold text-(--primary)">
                 Envíanos un Mensaje
               </h2>
 
               {submitStatus === "success" && (
-                <div className="mb-4 bg-(--success)/20 border-l-4 border-(--success) text-(--success) p-3 rounded">
-                  <p className="font-bold text-sm">
+                <div className="mb-4 rounded border-l-4 border-(--success) bg-(--success)/20 p-3 text-(--success)">
+                  <p className="text-sm font-bold">
                     ¡Mensaje enviado con éxito!
                   </p>
                   <p className="text-sm">
@@ -239,14 +239,14 @@ export default function ContactoPage() {
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className={`w-full bg-(--primary)/95 hover:bg-(--primary) text-white py-3 rounded-lg font-bold text-base transition-all duration-300 transform hover:scale-95 shadow-lg hover:shadow-xl flex items-center justify-center gap-2 ${
-                    isSubmitting ? "opacity-50 cursor-not-allowed" : ""
+                  className={`flex w-full transform items-center justify-center gap-2 rounded-lg bg-(--primary)/95 py-3 text-base font-bold text-white shadow-lg transition-all duration-300 hover:scale-95 hover:bg-(--primary) hover:shadow-xl ${
+                    isSubmitting ? "cursor-not-allowed opacity-50" : ""
                   }`}
                 >
                   {isSubmitting ? (
                     <span className="flex items-center justify-center">
                       <svg
-                        className="animate-spin -ml-1 mr-3 h-5 w-5 text-white"
+                        className="mr-3 -ml-1 h-5 w-5 animate-spin text-white"
                         xmlns="http://www.w3.org/2000/svg"
                         fill="none"
                         viewBox="0 0 24 24"
@@ -269,7 +269,7 @@ export default function ContactoPage() {
                     </span>
                   ) : (
                     <>
-                      <Icon name="mail" className="w-5 h-5" />
+                      <Icon name="mail" className="h-5 w-5" />
                       Enviar Mensaje
                     </>
                   )}
@@ -281,7 +281,7 @@ export default function ContactoPage() {
                     <div className="w-full border-t border-gray-300"></div>
                   </div>
                   <div className="relative flex justify-center text-sm">
-                    <span className="px-4 bg-white text-gray-500">
+                    <span className="bg-white px-4 text-gray-500">
                       o también puedes
                     </span>
                   </div>
@@ -292,9 +292,9 @@ export default function ContactoPage() {
                   href="https://wa.me/5493434123456"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center justify-center w-full bg-(--success)/95 hover:bg-(--success)  text-white font-bold py-3 px-6 rounded-lg transition-all duration-300 transform hover:scale-95 shadow-lg hover:shadow-xl gap-3"
+                  className="flex w-full transform items-center justify-center gap-3 rounded-lg bg-(--success)/95 px-6 py-3 font-bold text-white shadow-lg transition-all duration-300 hover:scale-95 hover:bg-(--success) hover:shadow-xl"
                 >
-                  <Icon name="whatsapp" className="w-6 h-6" />
+                  <Icon name="whatsapp" className="h-6 w-6" />
                   <span className="text-lg">Consultar por WhatsApp</span>
                 </a>
               </form>

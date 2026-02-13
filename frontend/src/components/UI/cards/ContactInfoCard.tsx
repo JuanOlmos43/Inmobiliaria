@@ -12,13 +12,13 @@ export function ContactInfoCard({
   content,
 }: ContactInfoCardProps) {
   return (
-    <div className="bg-white p-6 rounded-2xl shadow-lg  border-l-4 border-(--accent)">
+    <div className="rounded-2xl border-l-4 border-(--accent) bg-white p-6 shadow-lg">
       <div className="flex items-start space-x-4">
-        <div className="shrink-0 w-12 h-12 bg-(--accent) rounded-full flex items-center justify-center">
+        <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-(--accent)">
           {icon}
         </div>
         <div>
-          <h3 className="text-xl font-bold text-(--primary) mb-2">{title}</h3>
+          <h3 className="mb-2 text-xl font-bold text-(--primary)">{title}</h3>
           <div className="text-gray-600">{content}</div>
         </div>
       </div>

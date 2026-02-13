@@ -6,40 +6,40 @@
 	Uso en Tailwind v4: className="bg-(--accent)"
 */
 :root {
-	/* Colores del fondo y texto base: El "lienzo" y la lectura principal de la app */
-	--background: #e2e8f0; /* Slate 200: Contraste robusto. Asegura que el contenido blanco destaque en cualquier pantalla. */
-	/* Fondo claro de la app (Gris slate suave) */
-	--foreground: #0f172a;
-	/* Texto principal oscuro (Gris slate profundo) */
+  /* Colores del fondo y texto base: El "lienzo" y la lectura principal de la app */
+  --background: #e2e8f0; /* Slate 200: Contraste robusto. Asegura que el contenido blanco destaque en cualquier pantalla. */
+  /* Fondo claro de la app (Gris slate suave) */
+  --foreground: #0f172a;
+  /* Texto principal oscuro (Gris slate profundo) */
 
-	/* Marca: Colores corporativos usados en Navbar, Footer y secciones importantes */
-	--primary: #0f172a;
-	/* Azul grafito oscuro: Transmite seriedad y elegancia */
-	--primary-light: #334155;
-	/* Versión clara para estados secundarios o hovers */
+  /* Marca: Colores corporativos usados en Navbar, Footer y secciones importantes */
+  --primary: #0f172a;
+  /* Azul grafito oscuro: Transmite seriedad y elegancia */
+  --primary-light: #334155;
+  /* Versión clara para estados secundarios o hovers */
 
-	/* Acento: Color llamativo para captar la atención del usuario */
-	--accent: #14b8a6;
-	/* Verde Teal: Usado en botones de acción y precios */
-	--accent-hover: #0d9488;
-	/* Teal oscuro: Feedback visual al pasar el ratón */
+  /* Acento: Color llamativo para captar la atención del usuario */
+  --accent: #14b8a6;
+  /* Verde Teal: Usado en botones de acción y precios */
+  --accent-hover: #0d9488;
+  /* Teal oscuro: Feedback visual al pasar el ratón */
 
-	--success: #10b981;
-	/* Emerald 500 */
-	--warning: #f59e0b;
-	/* Amber 500 */
-	--danger: #ef4444;
-	/* Red 500 */
+  --success: #10b981;
+  /* Emerald 500 */
+  --warning: #f59e0b;
+  /* Amber 500 */
+  --danger: #ef4444;
+  /* Red 500 */
 
-	/* Escala tipográfica clara */
-    --text-xs: 0.75rem;    /* 12px */
-    --text-sm: 0.875rem;   /* 14px */
-    --text-base: 1rem;     /* 16px */
-    --text-lg: 1.125rem;   /* 18px */
-    --text-xl: 1.25rem;    /* 20px */
-    --text-2xl: 1.5rem;    /* 24px */
-    --text-3xl: 1.875rem;  /* 30px */
-    --text-4xl: 2.25rem;   /* 36px */
+  /* Escala tipográfica clara */
+  --text-xs: 0.75rem; /* 12px */
+  --text-sm: 0.875rem; /* 14px */
+  --text-base: 1rem; /* 16px */
+  --text-lg: 1.125rem; /* 18px */
+  --text-xl: 1.25rem; /* 20px */
+  --text-2xl: 1.5rem; /* 24px */
+  --text-3xl: 1.875rem; /* 30px */
+  --text-4xl: 2.25rem; /* 36px */
 }
 
 @theme {
@@ -58,16 +58,16 @@
 	Configuración inicial que unifica el comportamiento de la página en todos los navegadores.
 */
 body {
-	background: var(--background);
-	/* Aplica el fondo claro a toda la web */
-	color: var(--foreground);
-	/* Aplica el color de texto por defecto */
-	font-family: var(--font-geist-sans), sans-serif;
+  background: var(--background);
+  /* Aplica el fondo claro a toda la web */
+  color: var(--foreground);
+  /* Aplica el color de texto por defecto */
+  font-family: var(--font-geist-sans), sans-serif;
 }
 
 /* Scroll suave: Hace que la página se deslice suavemente al usar enlaces internos */
 html {
-	scroll-behavior: smooth;
+  scroll-behavior: smooth;
 }
 
 /* 
@@ -75,23 +75,23 @@ html {
    Personalizada para que coincida con el color de acento del proyecto.
 */
 ::-webkit-scrollbar {
-	width: 8px;
+  width: 8px;
 }
 
 ::-webkit-scrollbar-track {
-	background: #f1f5f9;
+  background: #f1f5f9;
 }
 
 /* Color del carril de la barra */
 ::-webkit-scrollbar-thumb {
-	background: var(--accent);
-	/* Color de la pieza que se mueve */
-	border-radius: 10px;
-	/* Bordes redondeados para un look moderno */
+  background: var(--accent);
+  /* Color de la pieza que se mueve */
+  border-radius: 10px;
+  /* Bordes redondeados para un look moderno */
 }
 
 ::-webkit-scrollbar-thumb:hover {
-	background: var(--accent-hover);
+  background: var(--accent-hover);
 }
 
 /* 
@@ -99,63 +99,63 @@ html {
 	Añaden dinamismo y suavidad a la entrada de los elementos de la interfaz.
 */
 @keyframes fadeIn {
-	from {
-		opacity: 0;
-		transform: translateY(10px);
-	}
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
 
-	to {
-		opacity: 1;
-		transform: translateY(0);
-	}
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 @keyframes scaleIn {
-	from {
-		opacity: 0;
-		transform: scale(0.95);
-	}
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
 
-	to {
-		opacity: 1;
-		transform: scale(1);
-	}
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
 }
 
 @keyframes slideDown {
-	from {
-		opacity: 0;
-		transform: translateY(-20px);
-	}
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
 
-	to {
-		opacity: 1;
-		transform: translateY(0);
-	}
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 /* Clases de animación listas para aplicar: className="animate-fade-in" */
 .animate-fade-in {
-	animation: fadeIn 0.5s ease-out;
+  animation: fadeIn 0.5s ease-out;
 }
 
 .animate-scale-in {
-	animation: scaleIn 0.3s ease-out;
+  animation: scaleIn 0.3s ease-out;
 }
 
 .animate-slide-in-down {
-	animation: slideDown 0.3s ease-out forwards;
+  animation: slideDown 0.3s ease-out forwards;
 }
 
 /* 
 	UTILIDADES: Clases rápidas para resolver problemas visuales comunes.
 */
 .line-clamp-1 {
-	overflow: hidden;
-	display: -webkit-box;
-	-webkit-box-orient: vertical;
-	-webkit-line-clamp: 1;
-	/* Corta el texto y añade "..." si supera una línea */
-	line-clamp: 1;
-	/* Propiedad estándar para compatibilidad futura */
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 1;
+  /* Corta el texto y añade "..." si supera una línea */
+  line-clamp: 1;
+  /* Propiedad estándar para compatibilidad futura */
 }

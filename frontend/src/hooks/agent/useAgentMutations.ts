@@ -1,8 +1,6 @@
 import { useQueryClient } from "@tanstack/react-query";
 import { useAuth } from "@/hooks/useAuth";
-import {
-  propertiesService,
-} from "@/lib/api/services/properties";
+import { propertiesService } from "@/lib/api/services/properties";
 import { Property, CreatePropertyDto } from "@/types/property";
 import { CreateRentalDto, Contract } from "@/types/api";
 import { contratosService } from "@/lib/api/services/contratos";
@@ -15,10 +13,10 @@ interface UseAgentMutationsProps {
 
 /**
  * useAgentMutations
- * 
+ *
  * Maneja todas las operaciones de modificación de datos (CRUD) para propiedades.
  * Incluye creación, actualización, eliminación, toggle de status y contratos de alquiler.
- * 
+ *
  * @param props - Callbacks para feedback y acciones post-mutación
  * @returns {Object} Funciones para ejecutar mutaciones
  */
@@ -146,10 +144,10 @@ export function useAgentMutations({
   const handleDeleteProperty = async (id: string) => {
     try {
       await propertiesService.remove(id);
-      
+
       // Invalidar queries
       await refreshData();
-      
+
       showToast("Propiedad eliminada exitosamente", "success");
     } catch (error) {
       console.error("Error deleting property:", error);
@@ -167,13 +165,13 @@ export function useAgentMutations({
   const handleToggleStatus = async (id: string, currentStatus: string) => {
     try {
       const newStatus = currentStatus === "activa" ? "pausada" : "activa";
-      
+
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       await propertiesService.update(id, { status: newStatus as any });
-      
+
       // Invalidar queries
       await refreshData();
-      
+
       return newStatus;
     } catch (error) {
       console.error("Error updating status:", error);
@@ -228,11 +226,11 @@ export function useAgentMutations({
   const handleDeleteContract = async (id: string) => {
     try {
       await contratosService.remove(id);
-      
+
       // Invalidar queries
       await refreshData();
       await queryClient.invalidateQueries({ queryKey: ["contracts"] });
-      
+
       showToast("Contrato revocado exitosamente", "success");
       return true;
     } catch (error) {

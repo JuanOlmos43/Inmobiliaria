@@ -30,7 +30,9 @@ export const contratosService = {
       });
     }
     const queryString = params.toString() ? "?" + params.toString() : "";
-    return apiClient.get<PaginatedResponse<Contract>>(`/contratos${queryString}`);
+    return apiClient.get<PaginatedResponse<Contract>>(
+      `/contratos${queryString}`
+    );
   },
 
   /**
@@ -44,10 +46,7 @@ export const contratosService = {
    * Actualiza un contrato
    */
   async update(id: string, data: UpdateRentalDto): Promise<Contract> {
-    return apiClient.patch<Contract, UpdateRentalDto>(
-      `/contratos/${id}`,
-      data,
-    );
+    return apiClient.patch<Contract, UpdateRentalDto>(`/contratos/${id}`, data);
   },
 
   /**
@@ -79,7 +78,7 @@ export const contratosService = {
 
     const queryString = params.toString() ? "?" + params.toString() : "";
     return apiClient.get<ContractActivity[]>(
-      `/contratos/dashboard/expirations${queryString}`,
+      `/contratos/dashboard/expirations${queryString}`
     );
   },
   async getLandlordRentedProperties(): Promise<Contract[]> {

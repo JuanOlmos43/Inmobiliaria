@@ -80,7 +80,7 @@ export class ApiClient {
   private async handleResponse<T>(
     response: Response,
     retryRequest?: () => Promise<Response>,
-    skipRefresh?: boolean,
+    skipRefresh?: boolean
   ): Promise<T> {
     if (response.ok) {
       if (response.status === 204) return null as T;

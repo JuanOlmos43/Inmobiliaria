@@ -19,7 +19,8 @@ export default function TenantDashboardPage() {
 
   const activeRentals = rentals.filter((r) => r.status === "active");
   const historyRentals = rentals.filter((r) => r.status !== "active");
-  const currentRentals = activeTab === "active" ? activeRentals : historyRentals;
+  const currentRentals =
+    activeTab === "active" ? activeRentals : historyRentals;
 
   const getDaysUntilExpiration = (endDate: string) => {
     const today = new Date();
@@ -45,8 +46,8 @@ export default function TenantDashboardPage() {
 
   return (
     <div className="min-h-screen bg-(--background)">
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <h1 className="text-2xl font-bold text-gray-900 mb-6">
+      <main className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+        <h1 className="mb-6 text-2xl font-bold text-gray-900">
           Panel de Inquilino
         </h1>
 
@@ -62,20 +63,22 @@ export default function TenantDashboardPage() {
         <div className="mb-8">
           {isLoading ? (
             <div className="flex justify-center p-12">
-              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-900"></div>
+              <div className="h-12 w-12 animate-spin rounded-full border-b-2 border-gray-900"></div>
             </div>
           ) : currentRentals.length === 0 ? (
-            <div className="bg-white rounded-xl shadow-md p-12 text-center">
+            <div className="rounded-xl bg-white p-12 text-center shadow-md">
               <EmptyState type={activeTab} />
             </div>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
               {currentRentals.map((rental) => (
                 <RentalCardWrapper
                   key={rental.id}
                   rental={rental}
                   daysUntilExpiration={getDaysUntilExpiration(rental.endDate)}
-                  daysUntilAdjustment={getDaysUntilAdjustment(rental.nextAdjustmentDate)}
+                  daysUntilAdjustment={getDaysUntilAdjustment(
+                    rental.nextAdjustmentDate
+                  )}
                   onViewDetails={openViewContractModal}
                 />
               ))}
@@ -100,7 +103,7 @@ function EmptyState({ type }: { type: "active" | "history" }) {
   return (
     <>
       <svg
-        className="w-24 h-24 mx-auto mb-4 text-gray-300"
+        className="mx-auto mb-4 h-24 w-24 text-gray-300"
         fill="none"
         viewBox="0 0 24 24"
         stroke="currentColor"
@@ -112,7 +115,7 @@ function EmptyState({ type }: { type: "active" | "history" }) {
           d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"
         />
       </svg>
-      <h3 className="text-xl font-semibold text-gray-700 mb-2">
+      <h3 className="mb-2 text-xl font-semibold text-gray-700">
         {type === "active"
           ? "No tienes alquileres activos"
           : "No tienes historial de alquileres"}
@@ -177,9 +180,9 @@ function RentalCardWrapper({
       statusBadge={
         rental.status !== "active"
           ? {
-            text: rental.status === "terminated" ? "Revocado" : "Vencido",
-            variant: rental.status === "terminated" ? "danger" : "default",
-          }
+              text: rental.status === "terminated" ? "Revocado" : "Vencido",
+              variant: rental.status === "terminated" ? "danger" : "default",
+            }
           : undefined
       }
       actions={[
@@ -187,11 +190,10 @@ function RentalCardWrapper({
           label: "Ver Contrato",
           onClick: () => onViewDetails(rental),
           variant: "secondary",
-          icon: <Icon name="document" className="w-5 h-5" />,
+          icon: <Icon name="document" className="h-5 w-5" />,
           show: true,
         },
       ]}
     />
   );
 }
-

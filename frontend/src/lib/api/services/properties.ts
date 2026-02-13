@@ -22,13 +22,13 @@ export const propertiesService = {
 
   async getLocalidades(provinciaId: string): Promise<Localidad[]> {
     return apiClient.get<Localidad[]>(
-      `/ubicaciones/provincias/${provinciaId}/localidades`,
+      `/ubicaciones/provincias/${provinciaId}/localidades`
     );
   },
 
   async getCalles(localidadId: string): Promise<Calle[]> {
     return apiClient.get<Calle[]>(
-      `/ubicaciones/localidades/${localidadId}/calles`,
+      `/ubicaciones/localidades/${localidadId}/calles`
     );
   },
 
@@ -75,10 +75,14 @@ export const propertiesService = {
       });
     }
     const queryString = params.toString() ? "?" + params.toString() : "";
-    return apiClient.get<PaginatedResponse<Property>>(`/propiedades${queryString}`);
+    return apiClient.get<PaginatedResponse<Property>>(
+      `/propiedades${queryString}`
+    );
   },
 
-  async getPublicProperties(query?: PropertyFilters): Promise<PaginatedResponse<Property>> {
+  async getPublicProperties(
+    query?: PropertyFilters
+  ): Promise<PaginatedResponse<Property>> {
     const params = new URLSearchParams();
     if (query) {
       Object.entries(query).forEach(([key, value]) => {
@@ -88,7 +92,9 @@ export const propertiesService = {
       });
     }
     const queryString = params.toString() ? "?" + params.toString() : "";
-    return apiClient.get<PaginatedResponse<Property>>(`/propiedades/public${queryString}`);
+    return apiClient.get<PaginatedResponse<Property>>(
+      `/propiedades/public${queryString}`
+    );
   },
 
   /**
@@ -106,11 +112,13 @@ export const propertiesService = {
       },
       cache: "no-store",
     });
-    
+
     if (!response.ok) {
-      throw new Error(`Failed to fetch featured properties: ${response.status}`);
+      throw new Error(
+        `Failed to fetch featured properties: ${response.status}`
+      );
     }
-    
+
     return response.json();
   },
 
@@ -127,11 +135,11 @@ export const propertiesService = {
       },
       cache: "no-store",
     });
-    
+
     if (!response.ok) {
       throw new Error(`Failed to fetch property: ${response.status}`);
     }
-    
+
     return response.json();
   },
 
@@ -156,11 +164,11 @@ export const propertiesService = {
   // --- Imágenes ---
   async generateUploadUrl(
     id: string,
-    filename: string,
+    filename: string
   ): Promise<UploadUrlResponse> {
     return apiClient.post<UploadUrlResponse, { filename: string }>(
       `/propiedades/${id}/upload-url`,
-      { filename },
+      { filename }
     );
   },
 

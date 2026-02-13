@@ -23,7 +23,7 @@ export default function SearchBlock() {
     // Si tenemos un nombre de provincia seleccionado pero no su ID correspondiente
     if (province && provincias.length > 0) {
       const provinciaEncontrada = provincias.find(
-        (p) => p.nombre.toLowerCase() === province.toLowerCase(),
+        (p) => p.nombre.toLowerCase() === province.toLowerCase()
       );
 
       // Solo actualizamos si encontramos la provincia y el ID es diferente
@@ -68,7 +68,7 @@ export default function SearchBlock() {
     if (activeTab)
       params.append(
         "operationType",
-        activeTab === "alquilar" ? "alquiler" : "venta",
+        activeTab === "alquilar" ? "alquiler" : "venta"
       );
     if (propertyType) params.append("propertyType", propertyType);
     if (province) params.append("province", province);
@@ -104,32 +104,32 @@ export default function SearchBlock() {
 
   return (
     <section className="relative bg-linear-to-b from-(--primary-light) via-(--primary) to-(--primary) pt-16">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         {/* Title */}
-        <h2 className="text-white text-4xl md:text-5xl font-bold mb-10 text-center animate-fade-in">
+        <h2 className="animate-fade-in mb-10 text-center text-4xl font-bold text-white md:text-5xl">
           Encuentra tu hogar ideal con nosotros
         </h2>
 
         {/* Search Container */}
-        <div className="bg-white/98 backdrop-blur-md rounded-2xl shadow-2xl overflow-hidden border border-white/20 animate-scale-in">
+        <div className="animate-scale-in overflow-hidden rounded-2xl border border-white/20 bg-white/98 shadow-2xl backdrop-blur-md">
           {/* Tabs */}
           <div className="flex border-b border-gray-200">
             <button
               onClick={() => setActiveTab("alquilar")}
-              className={`flex-1 py-5 px-6 text-center font-bold transition-all duration-300 ${
+              className={`flex-1 px-6 py-5 text-center font-bold transition-all duration-300 ${
                 activeTab === "alquilar"
-                  ? "text-white bg-(--accent) shadow-lg"
-                  : "text-gray-700 bg-gray-50 hover:bg-(--accent) hover:text-white"
+                  ? "bg-(--accent) text-white shadow-lg"
+                  : "bg-gray-50 text-gray-700 hover:bg-(--accent) hover:text-white"
               }`}
             >
               Alquilar
             </button>
             <button
               onClick={() => setActiveTab("venta")}
-              className={`flex-1 py-5 px-6 text-center font-bold transition-all duration-300 ${
+              className={`flex-1 px-6 py-5 text-center font-bold transition-all duration-300 ${
                 activeTab === "venta"
-                  ? "text-white bg-(--primary) shadow-lg"
-                  : "text-gray-700 bg-gray-50 hover:bg-(--primary) hover:text-white"
+                  ? "bg-(--primary) text-white shadow-lg"
+                  : "bg-gray-50 text-gray-700 hover:bg-(--primary) hover:text-white"
               }`}
             >
               Venta
@@ -138,7 +138,7 @@ export default function SearchBlock() {
 
           {/* Search Form */}
           <div className="p-8 md:p-10">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
+            <div className="mb-6 grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
               {/* Tipo de Inmueble */}
               <FormSelect
                 label="Tipo de inmueble"
@@ -217,12 +217,12 @@ export default function SearchBlock() {
 
               {/* Precio */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="mb-2 block text-sm font-medium text-gray-700">
                   Precio {activeTab === "alquilar" ? "(ARS)" : "(USD)"}
                 </label>
                 <div className="flex gap-2">
                   <input
-                    className="w-full px-4 py-2 border border-gray-300 bg-white text-gray-900 placeholder-gray-500 rounded-lg transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-(--accent) focus:border-transparent"
+                    className="w-full rounded-lg border border-gray-300 bg-white px-4 py-2 text-gray-900 placeholder-gray-500 transition-all duration-300 focus:border-transparent focus:ring-2 focus:ring-(--accent) focus:outline-none"
                     type="number"
                     placeholder="Mín"
                     value={minPrice}
@@ -231,7 +231,7 @@ export default function SearchBlock() {
                     max="999999999"
                   />
                   <input
-                    className="w-full px-4 py-2 border border-gray-300 bg-white text-gray-900 placeholder-gray-500 rounded-lg transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-(--accent) focus:border-transparent"
+                    className="w-full rounded-lg border border-gray-300 bg-white px-4 py-2 text-gray-900 placeholder-gray-500 transition-all duration-300 focus:border-transparent focus:ring-2 focus:ring-(--accent) focus:outline-none"
                     type="number"
                     placeholder="Máx"
                     value={maxPrice}
@@ -243,7 +243,7 @@ export default function SearchBlock() {
                 {minPrice &&
                   maxPrice &&
                   parseFloat(minPrice) > parseFloat(maxPrice) && (
-                    <p className="text-(--danger) text-sm mt-1">
+                    <p className="mt-1 text-sm text-(--danger)">
                       El precio mínimo no puede ser mayor al máximo
                     </p>
                   )}
@@ -254,9 +254,9 @@ export default function SearchBlock() {
             <div className="flex justify-center">
               <button
                 onClick={handleSearch}
-                className="bg-(--primary)/95 hover:bg-(--primary)  text-white font-bold px-16 py-4 rounded-full transition-all duration-300 shadow-xl hover:shadow-2xl transform hover:scale-95 flex items-center justify-center gap-2"
+                className="flex transform items-center justify-center gap-2 rounded-full bg-(--primary)/95 px-16 py-4 font-bold text-white shadow-xl transition-all duration-300 hover:scale-95 hover:bg-(--primary) hover:shadow-2xl"
               >
-                <Icon name="search" className="w-5 h-5" />
+                <Icon name="search" className="h-5 w-5" />
                 Realizar búsqueda
               </button>
             </div>

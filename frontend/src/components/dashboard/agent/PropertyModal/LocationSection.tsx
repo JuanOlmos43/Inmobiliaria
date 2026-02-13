@@ -80,7 +80,7 @@ export default function LocationSection({
                 }));
               } else {
                 const loc = localidades.find(
-                  (l: Localidad) => l.nombre === nombre,
+                  (l: Localidad) => l.nombre === nombre
                 );
                 setFormData((prev) => ({
                   ...prev,
@@ -227,4 +227,3 @@ export default function LocationSection({
     </div>
   );
 }
-

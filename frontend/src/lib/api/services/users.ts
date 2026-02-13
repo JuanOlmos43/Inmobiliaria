@@ -16,7 +16,9 @@ export const usersService = {
     if (filters?.search) params.append("search", filters.search);
 
     const queryString = params.toString();
-    const url = queryString ? `${API_ENDPOINTS.USERS}?${queryString}` : API_ENDPOINTS.USERS;
+    const url = queryString
+      ? `${API_ENDPOINTS.USERS}?${queryString}`
+      : API_ENDPOINTS.USERS;
 
     return apiClient.get<UserProfile[]>(url);
   },
@@ -38,7 +40,13 @@ export const usersService = {
   /**
    * Actualiza un usuario existente
    */
-  async updateUser(userId: string, data: Partial<UserProfile>): Promise<UserProfile> {
-    return apiClient.patch<UserProfile>(`${API_ENDPOINTS.USERS}/${userId}`, data);
+  async updateUser(
+    userId: string,
+    data: Partial<UserProfile>
+  ): Promise<UserProfile> {
+    return apiClient.patch<UserProfile>(
+      `${API_ENDPOINTS.USERS}/${userId}`,
+      data
+    );
   },
 };

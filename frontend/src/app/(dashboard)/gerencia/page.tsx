@@ -31,13 +31,13 @@ export default function DashboardOwnerPage() {
       {/* Header */}
 
       {/* Main Content */}
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <main className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
         {/* Overview Stats */}
         <div className="mb-8">
-          <h2 className="text-2xl font-bold text-(--primary) mb-6">
+          <h2 className="mb-6 text-2xl font-bold text-(--primary)">
             Estadísticas de la Organización
           </h2>
-          <div className="flex flex-col gap-6 max-w-2xl mx-auto">
+          <div className="mx-auto flex max-w-2xl flex-col gap-6">
             <StatsCard
               title="Total Propiedades"
               value={stats.totalProperties}
@@ -103,21 +103,20 @@ function StatsCard({
 }) {
   return (
     <div
-      className={`bg-linear-to-br ${color} rounded-xl shadow-lg p-6 text-white transform hover:scale-105 transition-transform duration-300`}
+      className={`bg-linear-to-br ${color} transform rounded-xl p-6 text-white shadow-lg transition-transform duration-300 hover:scale-105`}
     >
-      <div className="flex items-start justify-between mb-3">
+      <div className="mb-3 flex items-start justify-between">
         <div
-          className={`text-xs px-2 py-1 rounded-full ${trendUp ? "bg-green-500/30" : "bg-red-500/30"}`}
+          className={`rounded-full px-2 py-1 text-xs ${trendUp ? "bg-green-500/30" : "bg-red-500/30"}`}
         >
           {trend}
         </div>
         <div className="opacity-80">
-          <Icon name={icon as any} className="w-8 h-8" />
+          <Icon name={icon as any} className="h-8 w-8" />
         </div>
       </div>
-      <p className="text-sm opacity-90 mb-1">{title}</p>
+      <p className="mb-1 text-sm opacity-90">{title}</p>
       <p className="text-3xl font-bold">{value}</p>
     </div>
   );
 }
-

@@ -21,23 +21,23 @@ export default function PropertyFilters({
     "venta" | "alquiler"
   >(initialFilters.operationType || "alquiler");
   const [tempPropertyType, setTempPropertyType] = useState(
-    initialFilters.propertyType || "",
+    initialFilters.propertyType || ""
   );
   const [tempProvince, setTempProvince] = useState(
-    initialFilters.province || "",
+    initialFilters.province || ""
   );
   const [tempCity, setTempCity] = useState(initialFilters.city || "");
   const [tempBedrooms, setTempBedrooms] = useState(
-    initialFilters.minBedrooms?.toString() || "",
+    initialFilters.minBedrooms?.toString() || ""
   );
   const [tempBathrooms, setTempBathrooms] = useState(
-    initialFilters.minBathrooms?.toString() || "",
+    initialFilters.minBathrooms?.toString() || ""
   );
   const [tempMinPrice, setTempMinPrice] = useState(
-    initialFilters.minPrice?.toString() || "",
+    initialFilters.minPrice?.toString() || ""
   );
   const [tempMaxPrice, setTempMaxPrice] = useState(
-    initialFilters.maxPrice?.toString() || "",
+    initialFilters.maxPrice?.toString() || ""
   );
 
   // Estados para manejo de lógica de ubicaciones (IDs necesarios para la API)
@@ -52,7 +52,7 @@ export default function PropertyFilters({
     // Si tenemos un nombre de provincia seleccionado pero no su ID correspondiente
     if (tempProvince && provincias.length > 0) {
       const provinciaEncontrada = provincias.find(
-        (p) => p.nombre.toLowerCase() === tempProvince.toLowerCase(),
+        (p) => p.nombre.toLowerCase() === tempProvince.toLowerCase()
       );
 
       // Solo actualizamos si encontramos la provincia y el ID es diferente
@@ -186,20 +186,20 @@ export default function PropertyFilters({
   };
 
   return (
-    <aside className="lg:w-64 shrink-0">
-      <div className="bg-white rounded-2xl shadow-lg p-6 sticky top-20 border-l-4 border-(--accent)">
-        <h2 className="text-xl font-bold text-(--primary) mb-6">Filtros</h2>
+    <aside className="shrink-0 lg:w-64">
+      <div className="sticky top-20 rounded-2xl border-l-4 border-(--accent) bg-white p-6 shadow-lg">
+        <h2 className="mb-6 text-xl font-bold text-(--primary)">Filtros</h2>
 
         {/* Tipo de operación - Tabs */}
         <div className="mb-6">
-          <label className="block text-sm font-medium text-gray-700 mb-2">
+          <label className="mb-2 block text-sm font-medium text-gray-700">
             Tipo de operación
           </label>
           <div className="flex gap-2">
             <button
               type="button"
               onClick={() => setTempOperationType("alquiler")}
-              className={`flex-1 py-2 px-4 rounded-lg font-medium transition-all duration-200 ${
+              className={`flex-1 rounded-lg px-4 py-2 font-medium transition-all duration-200 ${
                 tempOperationType === "alquiler"
                   ? "bg-(--accent) text-white shadow-md"
                   : "bg-gray-300 text-gray-700 hover:bg-(--accent) hover:text-white"
@@ -210,7 +210,7 @@ export default function PropertyFilters({
             <button
               type="button"
               onClick={() => setTempOperationType("venta")}
-              className={`flex-1 py-2 px-4 rounded-lg font-medium transition-all duration-200 ${
+              className={`flex-1 rounded-lg px-4 py-2 font-medium transition-all duration-200 ${
                 tempOperationType === "venta"
                   ? "bg-(--primary) text-white shadow-md"
                   : "bg-gray-300 text-gray-700 hover:bg-(--primary) hover:text-white"
@@ -300,7 +300,7 @@ export default function PropertyFilters({
 
         {/* Precio */}
         <div className="mb-6">
-          <label className="block text-sm font-medium text-gray-700 mb-2">
+          <label className="mb-2 block text-sm font-medium text-gray-700">
             Precio{" "}
             {tempOperationType === "alquiler"
               ? "(ARS)"
@@ -331,18 +331,18 @@ export default function PropertyFilters({
         {/* Botón Buscar */}
         <button
           onClick={handleSearch}
-          className="w-full bg-(--primary)/95 hover:bg-(--primary) text-white font-bold py-3 px-4 rounded-full transition-all duration-300 mb-3 shadow-lg hover:shadow-xl transform hover:scale-95 flex items-center justify-center gap-2"
+          className="mb-3 flex w-full transform items-center justify-center gap-2 rounded-full bg-(--primary)/95 px-4 py-3 font-bold text-white shadow-lg transition-all duration-300 hover:scale-95 hover:bg-(--primary) hover:shadow-xl"
         >
-          <Icon name="search" className="w-5 h-5" />
+          <Icon name="search" className="h-5 w-5" />
           Buscar
         </button>
 
         {/* Botón Limpiar filtros */}
         <button
           onClick={handleReset}
-          className="w-full text-gray-700 bg-gray-300 hover:bg-(--danger) hover:text-white  font-bold py-1 px-2 rounded-lg transition-all duration-300 shadow-md hover:shadow-lg flex items-center justify-center gap-2"
+          className="flex w-full items-center justify-center gap-2 rounded-lg bg-gray-300 px-2 py-1 font-bold text-gray-700 shadow-md transition-all duration-300 hover:bg-(--danger) hover:text-white hover:shadow-lg"
         >
-          <Icon name="close" className="w-5 h-5" />
+          <Icon name="close" className="h-5 w-5" />
           Limpiar filtros
         </button>
       </div>

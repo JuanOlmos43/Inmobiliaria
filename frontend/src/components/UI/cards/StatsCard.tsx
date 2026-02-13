@@ -21,25 +21,25 @@ export function StatsCard({
 }: StatsCardProps) {
   return (
     <div
-      className={`bg-linear-to-br ${color} rounded-xl shadow-lg p-5 text-white transform  flex flex-col justify-between whitespace-nowrap`}
+      className={`bg-linear-to-br ${color} flex transform flex-col justify-between rounded-xl p-5 whitespace-nowrap text-white shadow-lg`}
     >
       <div className="flex flex-col gap-3">
-        <p className="text-xs opacity-80 uppercase tracking-wider font-semibold">
+        <p className="text-xs font-semibold tracking-wider uppercase opacity-80">
           {title}
         </p>
         <div className="flex items-center gap-3">
-          <div className="opacity-90 shrink-0 bg-white/20 p-2 rounded-lg">
-            <Icon name={icon} className="w-6 h-6" />
+          <div className="shrink-0 rounded-lg bg-white/20 p-2 opacity-90">
+            <Icon name={icon} className="h-6 w-6" />
           </div>
           <p className="text-3xl font-bold tracking-tight">{value}</p>
         </div>
       </div>
 
       {subValue && subValue.length > 0 && (
-        <div className="mt-4 pt-3 border-t border-white/20 grid grid-cols-2 gap-2">
+        <div className="mt-4 grid grid-cols-2 gap-2 border-t border-white/20 pt-3">
           {subValue.map((sub, index) => (
             <div key={index} className="flex flex-col">
-              <span className="text-[10px] uppercase tracking-wider opacity-70">
+              <span className="text-[10px] tracking-wider uppercase opacity-70">
                 {sub.label}
               </span>
               <span className="text-sm font-semibold">+{sub.value}</span>

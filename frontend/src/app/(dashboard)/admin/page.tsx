@@ -45,22 +45,22 @@ export default function AdminDashboardPage() {
 
   return (
     <div className="min-h-screen bg-(--background)">
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <main className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
         {/* SECCIÓN: ESTADÍSTICAS */}
         <AdminStatsGrid stats={stats} />
 
         {/* SECCIÓN: GESTIÓN DE USUARIOS */}
-        <div className="bg-white rounded-xl shadow-lg p-6">
-          <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
+        <div className="rounded-xl bg-white p-6 shadow-lg">
+          <div className="mb-6 flex flex-col items-start justify-between gap-4 md:flex-row md:items-center">
             <h2 className="text-2xl font-bold text-(--primary)">
               Gestión de Usuarios
             </h2>
             {/*BOTON CREAR USUARIO */}
             <button
               onClick={() => setShowModal(true)}
-              className="px-6 py-3 bg-(--accent) text-white rounded-full hover:bg-(--accent-hover) transition-all shadow-md hover:shadow-lg flex items-center gap-2 transform hover:scale-95"
+              className="flex transform items-center gap-2 rounded-full bg-(--accent) px-6 py-3 text-white shadow-md transition-all hover:scale-95 hover:bg-(--accent-hover) hover:shadow-lg"
             >
-              <Icon name="plus" className="w-5 h-5" />
+              <Icon name="plus" className="h-5 w-5" />
               Crear usuario
             </button>
           </div>
@@ -75,18 +75,18 @@ export default function AdminDashboardPage() {
 
           {/* ESTADOS DE CARGA Y ERROR */}
           {isLoading && (
-            <div className="flex justify-center items-center py-12">
-              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-(--accent)"></div>
+            <div className="flex items-center justify-center py-12">
+              <div className="h-12 w-12 animate-spin rounded-full border-b-2 border-(--accent)"></div>
               <p className="ml-4 text-gray-600">Cargando...</p>
             </div>
           )}
 
           {error && !isLoading && (
-            <div className="bg-red-50 border border-red-200 rounded-lg p-6 text-center">
-              <p className="text-red-600 mb-4">{error}</p>
+            <div className="rounded-lg border border-red-200 bg-red-50 p-6 text-center">
+              <p className="mb-4 text-red-600">{error}</p>
               <button
                 onClick={() => retryLoadUsers()}
-                className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
+                className="rounded-lg bg-red-600 px-4 py-2 text-white transition-colors hover:bg-red-700"
               >
                 Reintentar
               </button>
@@ -132,4 +132,3 @@ export default function AdminDashboardPage() {
     </div>
   );
 }
-

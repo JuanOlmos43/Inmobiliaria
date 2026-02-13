@@ -56,11 +56,11 @@ export default function RentalModal({
   });
 
   const [tenantSearch, setTenantSearch] = useState(() =>
-    contract ? contract.tenant.name || contract.tenant.email : "",
+    contract ? contract.tenant.name || contract.tenant.email : ""
   );
 
   const [selectedTenant, setSelectedTenant] = useState<UserProfile | null>(
-    () => (contract ? (contract.tenant as unknown as UserProfile) : null),
+    () => (contract ? (contract.tenant as unknown as UserProfile) : null)
   );
 
   const debouncedTenantSearch = useDebounce(tenantSearch, 500);
@@ -146,8 +146,8 @@ export default function RentalModal({
     >
       <form onSubmit={handleSubmit} className="space-y-6">
         {/* Información de la Propiedad y Propietario */}
-        <div className="bg-gray-50 rounded-lg p-4">
-          <h3 className="text-lg font-semibold text-(--primary) mb-3">
+        <div className="rounded-lg bg-gray-50 p-4">
+          <h3 className="mb-3 text-lg font-semibold text-(--primary)">
             Propiedad
           </h3>
           <div className="space-y-2">
@@ -165,8 +165,8 @@ export default function RentalModal({
           </div>
 
           {/* Información del Propietario */}
-          <div className="mt-4 pt-4 border-t border-(--border)">
-            <h4 className="text-lg font-semibold text-(--primary) mb-3">
+          <div className="mt-4 border-t border-(--border) pt-4">
+            <h4 className="mb-3 text-lg font-semibold text-(--primary)">
               Propietario
             </h4>
             <div className="space-y-1">
@@ -200,20 +200,20 @@ export default function RentalModal({
               maxLength={100}
               icon="user"
               readOnly={isEditing}
-              className={isEditing ? "bg-gray-100 cursor-not-allowed" : ""}
+              className={isEditing ? "cursor-not-allowed bg-gray-100" : ""}
             />
           </div>
 
           {/* Dropdown de resultados */}
           {!isEditing && showTenantDropdown && tenantSearch && (
-            <div className="absolute z-10 w-full mt-1 bg-white border border-(--border) rounded-lg shadow-lg max-h-60 overflow-y-auto">
+            <div className="absolute z-10 mt-1 max-h-60 w-full overflow-y-auto rounded-lg border border-(--border) bg-white shadow-lg">
               {tenants.length > 0 ? (
                 tenants.map((tenant: UserProfile) => (
                   <button
                     key={tenant.email}
                     type="button"
                     onClick={() => handleTenantSelect(tenant)}
-                    className="w-full px-4 py-3 text-left hover:bg-gray-50 border-b border-gray-100 last:border-b-0 transition-colors"
+                    className="w-full border-b border-gray-100 px-4 py-3 text-left transition-colors last:border-b-0 hover:bg-gray-50"
                   >
                     <div className="font-medium text-gray-900">
                       {tenant.name || tenant.email}
@@ -230,13 +230,13 @@ export default function RentalModal({
           )}
 
           {isEditing && (
-            <p className="text-xs text-blue-600 mt-1">
+            <p className="mt-1 text-xs text-blue-600">
               El inquilino no se puede cambiar en un contrato establecido.
             </p>
           )}
 
           {!isEditing && tenants.length === 0 && tenantSearch.length > 0 && (
-            <p className="text-sm text-amber-600 mt-1">
+            <p className="mt-1 text-sm text-amber-600">
               No se encontraron inquilinos. Verifique el nombre o email.
             </p>
           )}
@@ -244,10 +244,10 @@ export default function RentalModal({
 
         {/* Fechas del Contrato */}
         <div>
-          <h3 className="text-lg font-semibold text-(--primary) mb-3">
+          <h3 className="mb-3 text-lg font-semibold text-(--primary)">
             Fechas del Contrato
           </h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
             <FormInput
               label="Fecha de Inicio"
               type="date"
@@ -270,9 +270,9 @@ export default function RentalModal({
         </div>
 
         {/* Ajuste de Precio y Depósito */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
           <div>
-            <h3 className="text-lg font-semibold text-(--primary) mb-3">
+            <h3 className="mb-3 text-lg font-semibold text-(--primary)">
               Meses de Ajuste
             </h3>
             <FormSelect
@@ -296,7 +296,7 @@ export default function RentalModal({
           </div>
 
           <div>
-            <h3 className="text-lg font-semibold text-(--primary) mb-3">
+            <h3 className="mb-3 text-lg font-semibold text-(--primary)">
               Garantía
             </h3>
             <FormInput
@@ -320,13 +320,13 @@ export default function RentalModal({
           <button
             type="button"
             onClick={onClose}
-            className="flex-1 px-4 py-2.5 border border-gray-300 text-gray-700 rounded-lg font-medium hover:bg-red-600 hover:text-white hover:border-red-600 transition-all duration-200 disabled:opacity-50"
+            className="flex-1 rounded-lg border border-gray-300 px-4 py-2.5 font-medium text-gray-700 transition-all duration-200 hover:border-red-600 hover:bg-red-600 hover:text-white disabled:opacity-50"
           >
             Cancelar
           </button>
           <button
             type="submit"
-            className="flex-1 px-4 py-2.5 bg-(--accent) text-white rounded-lg font-medium hover:bg-(--accent-hover) transition-all shadow-md hover:shadow-lg disabled:opacity-50 flex justify-center items-center gap-2"
+            className="flex flex-1 items-center justify-center gap-2 rounded-lg bg-(--accent) px-4 py-2.5 font-medium text-white shadow-md transition-all hover:bg-(--accent-hover) hover:shadow-lg disabled:opacity-50"
           >
             {isEditing ? "Guardar Cambios" : "Crear Contrato"}
           </button>
@@ -335,4 +335,3 @@ export default function RentalModal({
     </Modal>
   );
 }
-
