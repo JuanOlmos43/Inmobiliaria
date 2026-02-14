@@ -230,7 +230,7 @@ export default function AgentDashboardPage() {
               {/* GRID DE CONTRATOS */}
               {rentedProperties.length === 0 ? (
                 <EmptyState
-                  icon={<Icon name="document" className="h-15 w-15" />}
+                  icon="document"
                   title="No se encontraron contratos"
                   description="Los contratos de alquiler aparecerán aquí"
                 />

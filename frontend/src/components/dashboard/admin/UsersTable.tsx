@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Icon } from "@/components/ui";
+import { Icon, EmptyState } from "@/components/ui";
 import { UserProfile, UserRole, UserStatus } from "@/types/api";
 
 interface UsersTableProps {
@@ -319,9 +319,11 @@ export default function UsersTable({
           </tbody>
         </table>
         {users.length === 0 && (
-          <div className="py-12 text-center text-gray-500">
-            No se encontraron usuarios
-          </div>
+          <EmptyState
+            icon="user"
+            title="No se encontraron usuarios"
+            description="Los usuarios apareceran aqui"
+          />
         )}
       </div>
     </div>

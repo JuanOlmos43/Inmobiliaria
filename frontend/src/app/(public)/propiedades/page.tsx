@@ -108,7 +108,7 @@ function PropiedadesContent() {
 
         // Limpiar campos vacíos antes de enviar al backend
         const cleanFilters = Object.fromEntries(
-          Object.entries(filters).filter(([_, value]) => {
+          Object.entries(filters).filter(([, value]) => {
             // Mantener valores que no sean undefined, null, o strings vacíos
             return value !== undefined && value !== null && value !== "";
           })
