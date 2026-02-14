@@ -45,57 +45,54 @@ export default function TenantDashboardPage() {
   };
 
   return (
-    <div className="min-h-screen bg-(--background)">
-      <main className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
-        <h1 className="mb-6 text-2xl font-bold text-gray-900">
-          Panel de Inquilino
-        </h1>
+    <>
+      <h1 className="mb-6 text-2xl font-bold text-(--primary)">
+        Panel de Inquilino
+      </h1>
 
-        <TabNavigation
-          tabs={[
-            { id: "active", label: "Mis Alquileres" },
-            { id: "history", label: "Historial" },
-          ]}
-          activeTab={activeTab}
-          onTabChange={(tabId) => setActiveTab(tabId as "active" | "history")}
-        />
+      <TabNavigation
+        tabs={[
+          { id: "active", label: "Mis Alquileres" },
+          { id: "history", label: "Historial" },
+        ]}
+        activeTab={activeTab}
+        onTabChange={(tabId) => setActiveTab(tabId as "active" | "history")}
+      />
 
-        <div className="mb-8">
-          {isLoading ? (
-            <div className="flex justify-center p-12">
-              <div className="h-12 w-12 animate-spin rounded-full border-b-2 border-gray-900"></div>
-            </div>
-          ) : currentRentals.length === 0 ? (
-            <EmptyState
-              title={
-                activeTab === "active"
-                  ? "No tienes alquileres activos"
-                  : "No tienes historial de alquileres"
-              }
-              description={
-                activeTab === "active"
-                  ? "Tus contratos activos aparecerán aquí"
-                  : "Tus contratos finalizados aparecerán aquí"
-              }
-            />
-          ) : (
-            <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-              {currentRentals.map((rental) => (
-                <RentalCardWrapper
-                  key={rental.id}
-                  rental={rental}
-                  daysUntilExpiration={getDaysUntilExpiration(rental.endDate)}
-                  daysUntilAdjustment={getDaysUntilAdjustment(
-                    rental.nextAdjustmentDate
-                  )}
-                  onViewDetails={openViewContractModal}
-                />
-              ))}
-            </div>
-          )}
-        </div>
-      </main>
-
+      <div className="mb-8">
+        {isLoading ? (
+          <div className="flex justify-center p-12">
+            <div className="h-12 w-12 animate-spin rounded-full border-b-2 border-gray-900"></div>
+          </div>
+        ) : currentRentals.length === 0 ? (
+          <EmptyState
+            title={
+              activeTab === "active"
+                ? "No tienes alquileres activos"
+                : "No tienes historial de alquileres"
+            }
+            description={
+              activeTab === "active"
+                ? "Tus contratos activos aparecerán aquí"
+                : "Tus contratos finalizados aparecerán aquí"
+            }
+          />
+        ) : (
+          <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+            {currentRentals.map((rental) => (
+              <RentalCardWrapper
+                key={rental.id}
+                rental={rental}
+                daysUntilExpiration={getDaysUntilExpiration(rental.endDate)}
+                daysUntilAdjustment={getDaysUntilAdjustment(
+                  rental.nextAdjustmentDate
+                )}
+                onViewDetails={openViewContractModal}
+              />
+            ))}
+          </div>
+        )}
+      </div>
       {isViewModalOpen && viewingContract && (
         <ViewContractModal
           isOpen={isViewModalOpen}
@@ -104,7 +101,7 @@ export default function TenantDashboardPage() {
           viewerRole="tenant"
         />
       )}
-    </div>
+    </>
   );
 }
 

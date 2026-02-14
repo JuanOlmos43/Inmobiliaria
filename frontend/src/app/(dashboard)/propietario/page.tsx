@@ -101,124 +101,118 @@ export default function LandlordDashboardPage() {
   const properties = propertiesData?.data || [];
 
   return (
-    <div className="min-h-screen bg-(--background)">
-      {/* Main Content */}
-      <main className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
-        <h1 className="mb-6 text-2xl font-bold text-gray-900">
-          Panel de Propietario
-        </h1>
+    <>
+      <h1 className="mb-6 text-2xl font-bold text-(--primary)">
+        Panel de Propietario
+      </h1>
 
-        {/* Tabs */}
-        <TabNavigation
-          tabs={[
-            { id: "rentals", label: "Mis Rentas" },
-            { id: "properties", label: "Mis Propiedades Publicadas" },
-          ]}
-          activeTab={activeTab}
-          onTabChange={(tabId) =>
-            setActiveTab(tabId as "rentals" | "properties")
-          }
-        />
+      {/* Tabs */}
+      <TabNavigation
+        tabs={[
+          { id: "rentals", label: "Mis Rentas" },
+          { id: "properties", label: "Mis Propiedades Publicadas" },
+        ]}
+        activeTab={activeTab}
+        onTabChange={(tabId) => setActiveTab(tabId as "rentals" | "properties")}
+      />
 
-        {/* Rentals Tab */}
-        {activeTab === "rentals" && (
-          <div className="mb-8">
-            {isLoadingRentals ? (
-              <div className="flex justify-center p-12">
-                <div className="h-12 w-12 animate-spin rounded-full border-b-2 border-gray-900"></div>
-              </div>
-            ) : rentals.length === 0 ? (
-              <EmptyState
-                title="No tienes rentas activas"
-                description="No estás alquilando ninguna propiedad actualmente"
-              />
-            ) : (
-              <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-                {rentals.map((rental) => (
-                  <RentalCardWrapper
-                    key={rental.id}
-                    rental={rental}
-                    daysUntilExpiration={getDaysUntilExpiration(rental.endDate)}
-                    daysUntilAdjustment={getDaysUntilAdjustment(
-                      rental.nextAdjustmentDate
-                    )}
-                    onViewDetails={openViewContractModal}
-                  />
-                ))}
-              </div>
-            )}
-          </div>
-        )}
-
-        {/* Properties Tab */}
-        {activeTab === "properties" && (
-          <div className="mb-8">
-            {/* Filters Bar */}
-            <div className="mb-6 flex flex-wrap items-center gap-4 rounded-xl border border-gray-100 bg-white p-4 shadow-sm">
-              <FormSelect
-                label="Operación"
-                value={listingType}
-                onChange={(e) =>
-                  setListingType(e.target.value as "venta" | "alquiler" | "all")
-                }
-                className="min-w-[150px]"
-              >
-                <option value="all">Todas</option>
-                <option value="venta">Venta</option>
-                <option value="alquiler">Alquiler</option>
-              </FormSelect>
-
-              <FormSelect
-                label="Estado"
-                value={status}
-                onChange={(e) => setStatus(e.target.value)}
-                className="min-w-[150px]"
-              >
-                <option value="all">Todos</option>
-                <option value="activa">Activa</option>
-                <option value="pausada">Pausada</option>
-                {listingType === "alquiler" && (
-                  <>
-                    <option value="alquilada">Alquilada</option>
-                    <option value="expired">Con Contrato Vencido</option>
-                    <option value="terminated">Con Contrato Revocado</option>
-                  </>
-                )}
-              </FormSelect>
-
-              {(listingType !== "all" || status !== "all") && (
-                <button
-                  onClick={() => {
-                    setListingType("all");
-                    setStatus("all");
-                  }}
-                  className="mt-6 text-sm font-medium text-(--primary) hover:underline"
-                >
-                  Limpiar filtros
-                </button>
-              )}
+      {/* Alquileres Tab */}
+      {activeTab === "rentals" && (
+        <div className="mb-8">
+          {isLoadingRentals ? (
+            <div className="flex justify-center p-12">
+              <div className="h-12 w-12 animate-spin rounded-full border-b-2 border-gray-900"></div>
             </div>
+          ) : rentals.length === 0 ? (
+            <EmptyState
+              title="No tienes rentas activas"
+              description="No estás alquilando ninguna propiedad actualmente"
+            />
+          ) : (
+            <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+              {rentals.map((rental) => (
+                <RentalCardWrapper
+                  key={rental.id}
+                  rental={rental}
+                  daysUntilExpiration={getDaysUntilExpiration(rental.endDate)}
+                  daysUntilAdjustment={getDaysUntilAdjustment(
+                    rental.nextAdjustmentDate
+                  )}
+                  onViewDetails={openViewContractModal}
+                />
+              ))}
+            </div>
+          )}
+        </div>
+      )}
 
-            {isLoadingProperties ? (
-              <div className="flex justify-center p-12">
-                <div className="h-12 w-12 animate-spin rounded-full border-b-2 border-gray-900"></div>
-              </div>
-            ) : properties.length === 0 ? (
-              <EmptyState
-                title="No tienes propiedades publicadas"
-                description="Comienza publicando tu primera propiedad"
-              />
-            ) : (
-              <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-                {properties.map((property) => (
-                  <PropertyCardWrapper key={property.id} property={property} />
-                ))}
-              </div>
+      {/* Propiedades Tab */}
+      {activeTab === "properties" && (
+        <div className="mb-8">
+          {/* Filters Bar */}
+          <div className="mb-6 flex flex-wrap items-center gap-4 rounded-xl border border-gray-100 bg-white p-4 shadow-sm">
+            <FormSelect
+              label="Operación"
+              value={listingType}
+              onChange={(e) =>
+                setListingType(e.target.value as "venta" | "alquiler" | "all")
+              }
+              className="min-w-[150px]"
+            >
+              <option value="all">Todas</option>
+              <option value="venta">Venta</option>
+              <option value="alquiler">Alquiler</option>
+            </FormSelect>
+
+            <FormSelect
+              label="Estado"
+              value={status}
+              onChange={(e) => setStatus(e.target.value)}
+              className="min-w-[150px]"
+            >
+              <option value="all">Todos</option>
+              <option value="activa">Activa</option>
+              <option value="pausada">Pausada</option>
+              {listingType === "alquiler" && (
+                <>
+                  <option value="alquilada">Alquilada</option>
+                  <option value="expired">Con Contrato Vencido</option>
+                  <option value="terminated">Con Contrato Revocado</option>
+                </>
+              )}
+            </FormSelect>
+
+            {(listingType !== "all" || status !== "all") && (
+              <button
+                onClick={() => {
+                  setListingType("all");
+                  setStatus("all");
+                }}
+                className="mt-6 text-sm font-medium text-(--primary) hover:underline"
+              >
+                Limpiar filtros
+              </button>
             )}
           </div>
-        )}
-      </main>
 
+          {isLoadingProperties ? (
+            <div className="flex justify-center p-12">
+              <div className="h-12 w-12 animate-spin rounded-full border-b-2 border-gray-900"></div>
+            </div>
+          ) : properties.length === 0 ? (
+            <EmptyState
+              title="No tienes propiedades publicadas"
+              description="Comienza publicando tu primera propiedad"
+            />
+          ) : (
+            <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+              {properties.map((property) => (
+                <PropertyCardWrapper key={property.id} property={property} />
+              ))}
+            </div>
+          )}
+        </div>
+      )}
       {isViewModalOpen && viewingContract && (
         <ViewContractModal
           isOpen={isViewModalOpen}
@@ -227,7 +221,7 @@ export default function LandlordDashboardPage() {
           viewerRole="landlord"
         />
       )}
-    </div>
+    </>
   );
 }
 

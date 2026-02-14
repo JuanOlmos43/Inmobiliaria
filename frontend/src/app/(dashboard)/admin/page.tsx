@@ -44,65 +44,63 @@ export default function AdminDashboardPage() {
   } = useAdminUsers();
 
   return (
-    <div className="min-h-screen bg-(--background)">
-      <main className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
-        {/* SECCIÓN: ESTADÍSTICAS */}
-        <AdminStatsGrid stats={stats} />
+    <>
+      {/* SECCIÓN: ESTADÍSTICAS */}
+      <AdminStatsGrid stats={stats} />
 
-        {/* SECCIÓN: GESTIÓN DE USUARIOS */}
-        <div className="rounded-xl bg-white p-6 shadow-lg">
-          <div className="mb-6 flex flex-col items-start justify-between gap-4 md:flex-row md:items-center">
-            <h2 className="text-2xl font-bold text-(--primary)">
-              Gestión de Usuarios
-            </h2>
-            {/*BOTON CREAR USUARIO */}
+      {/* SECCIÓN: GESTIÓN DE USUARIOS */}
+      <div className="rounded-xl bg-white p-6 shadow-lg">
+        <div className="mb-6 flex flex-col items-start justify-between gap-4 md:flex-row md:items-center">
+          <h2 className="text-2xl font-bold text-(--primary)">
+            Gestión de Usuarios
+          </h2>
+          {/*BOTON CREAR USUARIO */}
+          <button
+            onClick={() => setShowModal(true)}
+            className="flex transform items-center gap-2 rounded-full bg-(--accent) px-6 py-3 text-white shadow-md transition-all hover:scale-95 hover:bg-(--accent-hover) hover:shadow-lg"
+          >
+            <Icon name="plus" className="h-5 w-5" />
+            Crear usuario
+          </button>
+        </div>
+
+        {/* FILTROS DE BÚSQUEDA */}
+        <AdminUsersFilters
+          searchEmail={searchEmail}
+          setSearchEmail={setSearchEmail}
+          filterRole={filterRole}
+          setFilterRole={setFilterRole}
+        />
+
+        {/* ESTADOS DE CARGA Y ERROR */}
+        {isLoading && (
+          <div className="flex items-center justify-center py-12">
+            <div className="h-12 w-12 animate-spin rounded-full border-b-2 border-(--accent)"></div>
+            <p className="ml-4 text-gray-600">Cargando...</p>
+          </div>
+        )}
+
+        {error && !isLoading && (
+          <div className="rounded-lg border border-red-200 bg-red-50 p-6 text-center">
+            <p className="mb-4 text-red-600">{error}</p>
             <button
-              onClick={() => setShowModal(true)}
-              className="flex transform items-center gap-2 rounded-full bg-(--accent) px-6 py-3 text-white shadow-md transition-all hover:scale-95 hover:bg-(--accent-hover) hover:shadow-lg"
+              onClick={() => retryLoadUsers()}
+              className="rounded-lg bg-red-600 px-4 py-2 text-white transition-colors hover:bg-red-700"
             >
-              <Icon name="plus" className="h-5 w-5" />
-              Crear usuario
+              Reintentar
             </button>
           </div>
+        )}
 
-          {/* FILTROS DE BÚSQUEDA */}
-          <AdminUsersFilters
-            searchEmail={searchEmail}
-            setSearchEmail={setSearchEmail}
-            filterRole={filterRole}
-            setFilterRole={setFilterRole}
+        {/* TABLA DE USUARIOS */}
+        {!isLoading && !error && (
+          <UsersTable
+            users={users}
+            onSaveEdit={handleSaveInlineEdit}
+            onResetPassword={initiateResetPassword}
           />
-
-          {/* ESTADOS DE CARGA Y ERROR */}
-          {isLoading && (
-            <div className="flex items-center justify-center py-12">
-              <div className="h-12 w-12 animate-spin rounded-full border-b-2 border-(--accent)"></div>
-              <p className="ml-4 text-gray-600">Cargando...</p>
-            </div>
-          )}
-
-          {error && !isLoading && (
-            <div className="rounded-lg border border-red-200 bg-red-50 p-6 text-center">
-              <p className="mb-4 text-red-600">{error}</p>
-              <button
-                onClick={() => retryLoadUsers()}
-                className="rounded-lg bg-red-600 px-4 py-2 text-white transition-colors hover:bg-red-700"
-              >
-                Reintentar
-              </button>
-            </div>
-          )}
-
-          {/* TABLA DE USUARIOS */}
-          {!isLoading && !error && (
-            <UsersTable
-              users={users}
-              onSaveEdit={handleSaveInlineEdit}
-              onResetPassword={initiateResetPassword}
-            />
-          )}
-        </div>
-      </main>
+        )}
+      </div>
 
       {/* COMPONENTES DE UI (MODALES Y FEEDBACK) */}
       <CreateUserModal
@@ -129,6 +127,6 @@ export default function AdminDashboardPage() {
         duration={toast.duration}
         onClose={hideToast}
       />
-    </div>
+    </>
   );
 }

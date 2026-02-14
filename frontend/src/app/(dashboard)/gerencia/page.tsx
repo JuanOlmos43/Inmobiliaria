@@ -1,122 +1,119 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
-import { Icon } from "@/components/ui";
+import GerenciaStatsGrid, {
+  ManagerStats,
+} from "@/components/dashboard/gerencia/GerenciaStatsGrid";
 
-import { useAuth } from "@/hooks/useAuth";
+// --- Mock Data Service ---
+const fetchManagerData = async (): Promise<ManagerStats> => {
+  // Simular delay de red
+  await new Promise((resolve) => setTimeout(resolve, 800));
 
-// Tipos
-interface OrganizationStats {
-  totalProperties: number;
-  occupancyRate: number;
-  avgMarketTime: number;
-  activeContracts: number;
-  completedContracts: number;
-}
+  return {
+    inventory: {
+      total: 142,
+      newMonth: 12,
+      active: 89,
+      paused: 15,
+      reserved: 24,
+      totalValue: 45000000,
+    },
+    sales: {
+      total: 78,
+      available: 45,
+      reserved: 18,
+      soldMonth: 6,
+      avgTimeMarket: 124,
+      totalValue: 12500000,
+    },
+    rentals: {
+      total: 64,
+      available: 8,
+      activeContracts: 45,
+      newContractsMonth: 4,
+      expiringContractsMonth: 2,
+      avgTimeMarket: 28,
+      totalValue: 28000,
+    },
+  };
+};
 
 export default function DashboardOwnerPage() {
-  const router = useRouter();
-  const { user } = useAuth(); // Usar hook de auth
-  const [stats, setStats] = useState<OrganizationStats>({
-    totalProperties: 127,
-    occupancyRate: 78.5,
-    avgMarketTime: 45,
-    activeContracts: 89,
-    completedContracts: 234,
-  });
+  const [stats, setStats] = useState<ManagerStats | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    let isMounted = true;
+
+    const loadData = async () => {
+      try {
+        setIsLoading(true);
+        const data = await fetchManagerData();
+        if (isMounted) {
+          setStats(data);
+        }
+      } catch (error) {
+        console.error("Error loading dashboard data", error);
+      } finally {
+        if (isMounted) setIsLoading(false);
+      }
+    };
+
+    loadData();
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
 
   return (
-    <div className="min-h-screen bg-(--background)">
-      {/* Header */}
-
-      {/* Main Content */}
-      <main className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
-        {/* Overview Stats */}
-        <div className="mb-8">
-          <h2 className="mb-6 text-2xl font-bold text-(--primary)">
-            Estadísticas de la Organización
+    <>
+      <div className="mb-6 flex items-center justify-between">
+        <div>
+          <h2 className="text-2xl font-bold text-(--primary)">
+            Panel de Gerencia
           </h2>
-          <div className="mx-auto flex max-w-2xl flex-col gap-6">
-            <StatsCard
-              title="Total Propiedades"
-              value={stats.totalProperties}
-              color="from-(--primary) to-(--primary-light)"
-              trend="+8 este mes"
-              trendUp={true}
-              icon="building"
-            />
-            <StatsCard
-              title="En Venta"
-              value={`${stats.avgMarketTime} días`}
-              color="from-(--primary-light) to-(--primary)"
-              trend="Tiempo Promedio en Mercado"
-              trendUp={true}
-              icon="tag"
-            />
-            <StatsCard
-              title="En Alquiler"
-              value={`${stats.avgMarketTime} días`}
-              color="from-slate-600 to-(--primary-light)"
-              trend="Tiempo Promedio en Mercado"
-              trendUp={true}
-              icon="key"
-            />
-            <StatsCard
-              title="Contratos Activos"
-              value={stats.activeContracts}
-              color="from-(--accent) to-(--accent-hover)"
-              trend="+12 este mes"
-              trendUp={true}
-              icon="document"
-            />
-            <StatsCard
-              title="Contratos Finalizados"
-              value={stats.completedContracts}
-              color="from-amber-500 to-amber-600"
-              trend="Total histórico"
-              trendUp={true}
-              icon="check"
-            />
-          </div>
+          <p className="text-slate-500">
+            Vista global de rendimiento y operaciones.
+          </p>
         </div>
-      </main>
-    </div>
-  );
-}
-
-// Stats Card Component
-function StatsCard({
-  title,
-  value,
-  color,
-  trend,
-  trendUp,
-  icon,
-}: {
-  title: string;
-  value: string | number;
-  color: string;
-  trend: string;
-  trendUp: boolean;
-  icon: string;
-}) {
-  return (
-    <div
-      className={`bg-linear-to-br ${color} transform rounded-xl p-6 text-white shadow-lg transition-transform duration-300 hover:scale-105`}
-    >
-      <div className="mb-3 flex items-start justify-between">
-        <div
-          className={`rounded-full px-2 py-1 text-xs ${trendUp ? "bg-green-500/30" : "bg-red-500/30"}`}
-        >
-          {trend}
-        </div>
-        <div className="opacity-80">
-          <Icon name={icon as any} className="h-8 w-8" />
+        <div className="text-sm text-slate-400">
+          Última actualización: {new Date().toLocaleDateString()}
         </div>
       </div>
-      <p className="mb-1 text-sm opacity-90">{title}</p>
-      <p className="text-3xl font-bold">{value}</p>
-    </div>
+
+      <GerenciaStatsGrid stats={stats} isLoading={isLoading} />
+
+      {/* Aquí irían otros componentes como gráficos o tablas de detalle */}
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
+        <div className="rounded-xl border border-slate-100 bg-white p-6 shadow-sm lg:col-span-2">
+          <h3 className="mb-4 text-lg font-bold text-(--primary)">
+            Actividad Reciente
+          </h3>
+          <div className="flex h-64 items-center justify-center rounded-lg border border-dashed border-slate-200 bg-slate-50 text-slate-400">
+            Gráfico de Actividad (Placeholder)
+          </div>
+        </div>
+        <div className="rounded-xl border border-slate-100 bg-white p-6 shadow-sm lg:col-span-1">
+          <h3 className="mb-4 text-lg font-bold text-(--primary)">
+            Top Agentes (Mes)
+          </h3>
+          <ul className="space-y-4">
+            {[1, 2, 3, 4, 5].map((i) => (
+              <li key={i} className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="h-8 w-8 rounded-full bg-slate-200"></div>
+                  <span className="text-sm font-medium">Agente {i}</span>
+                </div>
+                <span className="text-sm font-bold text-(--accent)">
+                  ${10000 * (6 - i)}
+                </span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </div>
+    </>
   );
 }
