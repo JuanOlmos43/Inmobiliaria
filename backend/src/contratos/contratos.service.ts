@@ -361,36 +361,52 @@ export class ContratosService {
     const endOfMonth = new Date(today.getFullYear(), today.getMonth() + 1, 0);
     endOfMonth.setHours(23, 59, 59, 999);
 
-    const [newThisMonth, active, expired, expiringThisMonth] =
-      await Promise.all([
-        // Contratos de alquiler nuevos este mes (por fecha de inicio)
-        this.prisma.rentalContract.count({
-          where: {
-            startDate: {
-              gte: startOfMonth,
-              lte: endOfMonth,
-            },
+    const [
+      newThisMonth,
+      active,
+      expired,
+      expiringThisMonth,
+      adjustmentsThisMonth,
+    ] = await Promise.all([
+      // Contratos de alquiler nuevos este mes (por fecha de inicio)
+      this.prisma.rentalContract.count({
+        where: {
+          startDate: {
+            gte: startOfMonth,
+            lte: endOfMonth,
           },
-        }),
-        // Activos totales
-        this.prisma.rentalContract.count({ where: { status: 'active' } }),
-        // Expirados totales
-        this.prisma.rentalContract.count({ where: { status: 'expired' } }),
-        // Vencen este mes
-        this.prisma.rentalContract.count({
-          where: {
-            endDate: {
-              gte: startOfMonth,
-              lte: endOfMonth,
-            },
+        },
+      }),
+      // Activos totales
+      this.prisma.rentalContract.count({ where: { status: 'active' } }),
+      // Expirados totales
+      this.prisma.rentalContract.count({ where: { status: 'expired' } }),
+      // Vencen este mes
+      this.prisma.rentalContract.count({
+        where: {
+          endDate: {
+            gte: startOfMonth,
+            lte: endOfMonth,
           },
-        }),
-      ]);
+        },
+      }),
+      // Ajustes este mes
+      this.prisma.rentalContract.count({
+        where: {
+          status: 'active',
+          nextAdjustmentDate: {
+            gte: startOfMonth,
+            lte: endOfMonth,
+          },
+        },
+      }),
+    ]);
 
     return {
       monthly: {
         new: newThisMonth,
         expiring: expiringThisMonth,
+        adjustments: adjustmentsThisMonth,
       },
       status: {
         active,

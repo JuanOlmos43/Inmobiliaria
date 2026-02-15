@@ -101,6 +101,7 @@ export interface ContractStats {
   monthly: {
     new: number;
     expiring: number;
+    adjustments: number;
   };
   status: {
     active: number;

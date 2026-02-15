@@ -79,9 +79,6 @@ export default function UpcomingExpirations({
                 <Icon name="calendar" className="h-6 w-6 text-(--danger)" />
               </div>
               Vencimientos del Mes
-              <span className="rounded-full bg-(--danger)/10 px-3 py-1 text-sm text-(--danger)">
-                {expiringContracts.length}
-              </span>
             </h3>
           </div>
           <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
@@ -99,9 +96,6 @@ export default function UpcomingExpirations({
                 <Icon name="trending-up" className="h-6 w-6 text-(--warning)" />
               </div>
               Ajustes de Precio del Mes
-              <span className="rounded-full bg-amber-100 px-3 py-1 text-sm text-amber-600">
-                {adjustmentContracts.length}
-              </span>
             </h3>
           </div>
           <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
