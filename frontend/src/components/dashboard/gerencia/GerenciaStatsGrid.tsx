@@ -1,5 +1,5 @@
 import { Icon } from "@/components/ui";
-import { PropertiesSummaryCard } from "../common/PropertiesSummaryCard";
+import { StatsSummaryCard } from "../common/StatsSummaryCard";
 
 // Mismas interfaces o mapeo directo para mantener consistencia
 export interface ManagerStats {
@@ -113,11 +113,15 @@ export default function GerenciaStatsGrid({
 
       <div className="space-y-8">
         {/* 1. BLOQUE SUPERIOR*/}
-        <PropertiesSummaryCard
+        <StatsSummaryCard
+          title="Total Propiedades"
+          icon="building"
           total={s.inventory.total}
           newThisMonth={s.inventory.newMonth}
           active={s.inventory.active}
+          activeLabel="Activas"
           paused={s.inventory.paused}
+          pausedLabel="Pausadas"
         />
 
         {/* 2. FILA INFERIOR: VENTAS y ALQUILERES */}

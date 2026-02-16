@@ -1,7 +1,7 @@
 import { Icon } from "@/components/ui";
 import { PropertyStats } from "@/types/property";
 import { ContractStats } from "@/types/api";
-import { PropertiesSummaryCard } from "../common/PropertiesSummaryCard";
+import { StatsSummaryCard } from "../common/StatsSummaryCard";
 
 interface AgentStatsGridProps {
   stats?: PropertyStats;
@@ -33,7 +33,7 @@ export default function AgentStatsGrid({
     );
   }
 
-return (
+  return (
     <div className="mb-8">
       <h2 className="mb-6 text-2xl font-bold text-(--primary)">
         Resumen General
@@ -41,7 +41,15 @@ return (
 
       <div className="space-y-8">
         {/* BLOQUE SUPERIOR*/}
-        <PropertiesSummaryCard total={stats?.total ?? 0} active={stats?.status.activa ?? 0} paused={stats?.status.pausada ?? 0} />
+        <StatsSummaryCard
+          title="Total Propiedades"
+          icon="building"
+          total={stats?.total ?? 0}
+          active={stats?.status.activa ?? 0}
+          activeLabel="Activas"
+          paused={stats?.status.pausada ?? 0}
+          pausedLabel="Pausadas"
+        />
 
         {/* Fila Inferior: Venta y Bloque Expandido de Alquiler/Contratos */}
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
@@ -55,7 +63,9 @@ return (
                 <p className="text-sm font-semibold tracking-wider text-white/80 uppercase">
                   En Venta
                 </p>
-                <h4 className="text-3xl font-black">{stats?.listingType.venta ?? 0}</h4>
+                <h4 className="text-3xl font-black">
+                  {stats?.listingType.venta ?? 0}
+                </h4>
               </div>
             </div>
           </div>
@@ -71,7 +81,9 @@ return (
                 <p className="text-sm font-semibold tracking-wider text-white uppercase">
                   En Alquiler
                 </p>
-                <h4 className="text-3xl font-black">{stats?.listingType.alquiler ?? 0}</h4>
+                <h4 className="text-3xl font-black">
+                  {stats?.listingType.alquiler ?? 0}
+                </h4>
               </div>
             </div>
 

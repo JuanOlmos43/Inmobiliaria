@@ -13,7 +13,6 @@ export * from "./modals/Modal";
 
 // Cards
 export * from "./cards/ContactInfoCard";
-export * from "./cards/StatsCard";
 export * from "./cards/ValueCard";
 
 // Navigation

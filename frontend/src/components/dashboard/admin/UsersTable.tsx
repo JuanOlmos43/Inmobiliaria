@@ -9,10 +9,10 @@ interface UsersTableProps {
 }
 
 const roleColors: Record<string, string> = {
-  [UserRole.Inquilino]: "bg-blue-600",
-  [UserRole.Propietario]: "bg-(--success)",
-  [UserRole.Agente]: "bg-purple-600",
-  [UserRole.Gerencia]: "bg-(--warning)",
+  [UserRole.Inquilino]: "bg-blue-500",
+  [UserRole.Propietario]: "bg-green-500",
+  [UserRole.Agente]: "bg-purple-500",
+  [UserRole.Gerencia]: "bg-amber-500",
   [UserRole.Administrador]: "bg-(--primary)",
 };
 
