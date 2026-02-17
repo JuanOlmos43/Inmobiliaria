@@ -197,6 +197,66 @@ export interface ContractActivity extends Contract {
 }
 
 // ============================================
+// Gerencia Dashboard Types
+// ============================================
+
+export interface ManagerInventoryStats {
+  total: number;
+  newMonth: number;
+  active: number;
+  paused: number;
+  reserved: number;
+  totalValue: number;
+}
+
+export interface ManagerSalesStats {
+  total: number;
+  available: number;
+  reserved: number;
+  soldMonth: number;
+  avgTimeMarket: number; // días promedio en el mercado
+  totalValue: number;
+}
+
+export interface ManagerRentalsStats {
+  total: number;
+  available: number;
+  activeContracts: number;
+  newContractsMonth: number;
+  expiringContractsMonth: number;
+  avgTimeMarket: number; // días promedio en el mercado
+  totalValue: number;
+}
+
+export interface ManagerStats {
+  inventory: ManagerInventoryStats;
+  sales: ManagerSalesStats;
+  rentals: ManagerRentalsStats;
+}
+
+export interface MonthlyActivity {
+  month: string; // "Ene", "Feb", etc.
+  venta: number;
+  alquiler: number;
+}
+
+export interface TopAgent {
+  id: string;
+  name: string;
+  contracts: number;
+}
+
+/**
+ * Respuesta completa del endpoint /gerencia/dashboard
+ * Contiene todas las estadísticas, actividad y top agentes
+ */
+export interface GerenciaDashboardResponse {
+  stats: ManagerStats;
+  activity: MonthlyActivity[]; // 12 meses de actividad
+  topAgents: TopAgent[]; // Top 5 agentes
+}
+
+// ============================================
 // Error Handling
 // ============================================
 

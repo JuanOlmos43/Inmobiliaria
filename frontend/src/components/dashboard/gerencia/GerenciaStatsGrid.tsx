@@ -1,34 +1,6 @@
 import { Icon } from "@/components/ui";
 import { StatsSummaryCard } from "../common/StatsSummaryCard";
-
-// Mismas interfaces o mapeo directo para mantener consistencia
-export interface ManagerStats {
-  inventory: {
-    total: number;
-    newMonth: number;
-    active: number;
-    paused: number;
-    reserved: number;
-    totalValue: number;
-  };
-  sales: {
-    total: number;
-    available: number;
-    reserved: number;
-    soldMonth: number;
-    avgTimeMarket: number;
-    totalValue: number;
-  };
-  rentals: {
-    total: number;
-    available: number;
-    activeContracts: number;
-    newContractsMonth: number;
-    expiringContractsMonth: number;
-    avgTimeMarket: number;
-    totalValue: number;
-  };
-}
+import { ManagerStats } from "@/types/api";
 
 interface GerenciaStatsGridProps {
   stats: ManagerStats | null;
@@ -59,7 +31,12 @@ export default function GerenciaStatsGrid({
     );
   }
 
-  // Valores default seguros
+  // Formatear números con separador de miles
+  const formatNumber = (val: number) => {
+    return new Intl.NumberFormat("es-AR").format(val);
+  };
+
+  // Si no hay stats, mostrar valores en 0
   const s = stats || {
     inventory: {
       total: 0,
@@ -88,23 +65,6 @@ export default function GerenciaStatsGrid({
     },
   };
 
-  const formatCurrencySimple = (val: number) => {
-    // Si es mayor a 1 millón, mostrar en M
-    if (val >= 1000000) {
-      return new Intl.NumberFormat("es-AR", {
-        style: "currency",
-        currency: "USD",
-        notation: "compact",
-        maximumFractionDigits: 1,
-      }).format(val);
-    }
-    return new Intl.NumberFormat("es-AR", {
-      style: "currency",
-      currency: "USD",
-      maximumFractionDigits: 0,
-    }).format(val);
-  };
-
   return (
     <div className="mb-8">
       <div className="space-y-8">
@@ -124,7 +84,7 @@ export default function GerenciaStatsGrid({
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
           {/* Card: EN VENTA */}
           <div className="flex flex-col justify-between rounded-2xl bg-linear-to-br from-(--primary) to-(--primary-light) p-6 text-white shadow-lg lg:col-span-1">
-            <div className="mb-2 flex items-start justify-between">
+            <div className="mb-4 flex items-start justify-between gap-3">
               <div className="flex items-center gap-4">
                 <div className="inline-flex rounded-lg border border-white/20 bg-white/20 p-2 opacity-90 backdrop-blur-sm">
                   <Icon name="tag" className="h-8 w-8 text-white" />
@@ -139,24 +99,36 @@ export default function GerenciaStatsGrid({
                 </div>
               </div>
 
-              <div className="flex flex-col items-end pt-1">
-                <span className="mb-1 text-[10px] font-semibold tracking-widest text-white/80 uppercase">
-                  Este mes
-                </span>
-                <span className="text-xl leading-none font-bold text-(--accent)">
-                  +{s.sales.soldMonth}
-                </span>
+              <div className="flex items-start gap-4">
+                <div className="flex flex-col items-center">
+                  <span className="mb-1 text-[10px] font-semibold tracking-widest text-white/80 uppercase">
+                    Este mes
+                  </span>
+                  <span className="text-xl leading-none font-bold text-(--accent)">
+                    +{s.sales.soldMonth}
+                  </span>
+                </div>
+
+                <div className="flex flex-col items-end">
+                  <span className="mb-1 text-[10px] font-semibold tracking-widest text-white/80 uppercase">
+                    Tiempo Prom.
+                  </span>
+                  <span className="text-lg leading-none font-bold text-white">
+                    {s.sales.avgTimeMarket} días
+                  </span>
+                </div>
               </div>
             </div>
 
             <div className="space-y-3">
               <div className="h-px w-full bg-white/20" />
+
               <div className="relative flex items-center justify-center">
                 <span className="absolute left-0 text-[10px] font-bold tracking-widest text-white/80 uppercase">
                   Valor
                 </span>
                 <span className="text-lg font-bold text-white">
-                  {formatCurrencySimple(s.sales.totalValue)}
+                  {formatNumber(s.sales.totalValue)}
                 </span>
               </div>
             </div>
@@ -166,7 +138,7 @@ export default function GerenciaStatsGrid({
           <div className="flex flex-col overflow-hidden rounded-2xl border border-white/20 bg-linear-to-br from-(--accent) to-(--accent-hover) text-white shadow-xl sm:flex-row lg:col-span-2">
             {/* Lado A: Propiedades en Alquiler */}
             <div className="flex flex-1 flex-col justify-between p-6">
-              <div className="mb-2 flex items-start justify-between">
+              <div className="mb-4 flex items-start justify-between gap-3">
                 <div className="flex items-center gap-4">
                   <div className="inline-flex rounded-lg border border-white/20 bg-white/20 p-3 backdrop-blur-sm">
                     <Icon name="key" className="h-8 w-8 text-white" />
@@ -181,24 +153,36 @@ export default function GerenciaStatsGrid({
                   </div>
                 </div>
 
-                <div className="flex flex-col items-end pt-1">
-                  <span className="mb-1 text-[10px] font-semibold tracking-widest text-white/80 uppercase">
-                    Este mes
-                  </span>
-                  <span className="text-xl leading-none font-bold text-emerald-200">
-                    +{s.rentals.newContractsMonth}
-                  </span>
+                <div className="flex items-start gap-4">
+                  <div className="flex flex-col items-center">
+                    <span className="mb-1 text-[10px] font-semibold tracking-widest text-white/80 uppercase">
+                      Este mes
+                    </span>
+                    <span className="text-xl leading-none font-bold text-emerald-200">
+                      +{s.rentals.newContractsMonth}
+                    </span>
+                  </div>
+
+                  <div className="flex flex-col items-end">
+                    <span className="mb-1 text-[10px] font-semibold tracking-widest text-white/80 uppercase">
+                      Tiempo Prom.
+                    </span>
+                    <span className="text-lg leading-none font-bold text-white">
+                      {s.rentals.avgTimeMarket} días
+                    </span>
+                  </div>
                 </div>
               </div>
 
-              <div className="mt-4 space-y-3 sm:mt-0">
+              <div className="space-y-3">
                 <div className="h-px w-full bg-white/20" />
+
                 <div className="relative flex items-center justify-center">
                   <span className="absolute left-0 text-[10px] font-bold tracking-widest text-white/80 uppercase">
                     Valor
                   </span>
                   <span className="text-lg font-bold text-white">
-                    {formatCurrencySimple(s.rentals.totalValue)}
+                    {formatNumber(s.rentals.totalValue)}
                   </span>
                 </div>
               </div>
@@ -251,7 +235,7 @@ export default function GerenciaStatsGrid({
                     Valor
                   </span>
                   <span className="text-lg font-bold text-white">
-                    {formatCurrencySimple(s.rentals.totalValue)}
+                    {formatNumber(s.rentals.totalValue)}
                   </span>
                 </div>
               </div>

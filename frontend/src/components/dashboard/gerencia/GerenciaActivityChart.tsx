@@ -10,32 +10,12 @@ import {
   Legend,
   ResponsiveContainer,
 } from "recharts";
+import { MonthlyActivity } from "@/types/api";
 
-const generateMockData = () => {
-  const data = [];
-  const today = new Date();
-  // Comenzamos desde el mes pasado para cumplir con "anterior al actual"
-  // Si hoy es Feb 2026, mostramos de Feb 2025 a Ene 2026
-
-  for (let i = 11; i >= 0; i--) {
-    const d = new Date(today.getFullYear(), today.getMonth() - 1 - i, 1);
-
-    // Obtener nombre del mes en español
-    const monthName = d.toLocaleString("es-ES", { month: "short" });
-    // Capitalizar primera letra (ene -> Ene)
-    const monthLabel = monthName.charAt(0).toUpperCase() + monthName.slice(1);
-
-    // Datos aleatorios simulados para el demo
-    data.push({
-      month: monthLabel,
-      venta: Math.floor(Math.random() * 8) + 2, // Valores entre 2 y 9
-      alquiler: Math.floor(Math.random() * 6) + 1, // Valores entre 1 y 6
-    });
-  }
-  return data;
-};
-
-const data = generateMockData();
+interface GerenciaActivityChartProps {
+  data: MonthlyActivity[];
+  isLoading?: boolean;
+}
 
 interface CustomTooltipProps {
   active?: boolean;
@@ -68,7 +48,23 @@ const CustomTooltip = ({ active, payload }: CustomTooltipProps) => {
   return null;
 };
 
-export default function GerenciaActivityChart() {
+export default function GerenciaActivityChart({
+  data,
+  isLoading,
+}: GerenciaActivityChartProps) {
+  if (isLoading) {
+    return (
+      <div className="rounded-xl border border-slate-100 bg-white p-6 shadow-sm lg:col-span-2">
+        <h3 className="mb-4 text-lg font-bold text-[#0f172a]">
+          Actividad Reciente (12 Meses)
+        </h3>
+        <div className="flex h-80 w-full items-center justify-center">
+          <div className="h-12 w-12 animate-spin rounded-full border-b-2 border-[#0f172a]"></div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="rounded-xl border border-slate-100 bg-white p-6 shadow-sm lg:col-span-2">
       <h3 className="mb-4 text-lg font-bold text-[#0f172a]">
@@ -81,7 +77,7 @@ export default function GerenciaActivityChart() {
             margin={{
               top: 20,
               right: 30,
-              left: -20, // Adjust left margin to minimize whitespace
+              left: -20,
               bottom: 5,
             }}
           >

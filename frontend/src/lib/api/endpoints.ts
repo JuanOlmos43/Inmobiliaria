@@ -14,6 +14,9 @@ export const API_ENDPOINTS = {
   // Users endpoints
   USERS: "/users",
 
+  // Gerencia endpoints
+  GERENCIA_DASHBOARD: "/gerencia/dashboard",
+
   // Locations endpoints
   PROVINCIAS: "/ubicaciones/provincias",
 } as const;

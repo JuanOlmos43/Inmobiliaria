@@ -10,6 +10,7 @@ import { StorageModule } from './storage/storage.module';
 
 import { ConfigModule } from '@nestjs/config';
 import { ContratosModule } from './contratos/contratos.module';
+import { GerenciaModule } from './gerencia/gerencia.module';
 
 @Module({
   imports: [
@@ -21,6 +22,7 @@ import { ContratosModule } from './contratos/contratos.module';
     AuthModule,
     StorageModule,
     ContratosModule,
+    GerenciaModule,
   ],
   controllers: [AppController],
   providers: [AppService],
