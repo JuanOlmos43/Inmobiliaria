@@ -425,6 +425,54 @@ export class PropiedadesService {
     return this.addCurrency(updatedProperty);
   }
 
+  async markAsSold(id: string) {
+    // Verificar que la propiedad existe
+    const property = await this.findOne(id);
+
+    // Validar que sea una propiedad en venta
+    if (property.listingType !== 'venta') {
+      throw new NotFoundException(
+        'Solo se pueden marcar como vendidas las propiedades en venta',
+      );
+    }
+
+    // Validar que esté activa
+    if (property.status !== 'activa') {
+      throw new NotFoundException(
+        'Solo se pueden marcar como vendidas las propiedades activas',
+      );
+    }
+
+    // Actualizar el status a vendida
+    const updatedProperty = await this.prisma.property.update({
+      where: { id },
+      data: { status: 'vendida' },
+      include: {
+        localidad: true,
+        calle: true,
+        features: true,
+        owner: {
+          select: {
+            id: true,
+            name: true,
+            email: true,
+            phone: true,
+          },
+        },
+        agent: {
+          select: {
+            id: true,
+            name: true,
+            email: true,
+            phone: true,
+          },
+        },
+      },
+    });
+
+    return this.addCurrency(updatedProperty);
+  }
+
   async remove(id: string) {
     // Verificar que la propiedad existe
     await this.findOne(id);

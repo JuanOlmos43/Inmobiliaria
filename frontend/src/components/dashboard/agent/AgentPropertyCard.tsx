@@ -7,6 +7,7 @@ interface AgentPropertyCardProps {
   onEdit: (property: Property) => void;
   onDelete: (id: string) => void;
   onRent?: (property: Property) => void;
+  onSell?: (property: Property) => void;
 }
 
 export default function AgentPropertyCard({
@@ -14,6 +15,7 @@ export default function AgentPropertyCard({
   onEdit,
   onDelete,
   onRent,
+  onSell,
 }: AgentPropertyCardProps) {
   // Definir acciones
   const actions = [
@@ -33,6 +35,16 @@ export default function AgentPropertyCard({
         property.listingType === "alquiler" &&
         property.status === "activa" &&
         !!onRent,
+    },
+    {
+      label: "Vendida",
+      onClick: () => onSell && onSell(property),
+      variant: "success" as const,
+      icon: <Icon name="check" className="h-4 w-4" />,
+      show:
+        property.listingType === "venta" &&
+        property.status === "activa" &&
+        !!onSell,
     },
 
     {
@@ -104,6 +116,7 @@ export default function AgentPropertyCard({
           activa: "Activa",
           pausada: "Pausada",
           alquilada: "Alquilada",
+          vendida: "Vendida",
           archivada: "Archivada",
         }[property.status]
       }

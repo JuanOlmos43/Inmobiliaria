@@ -19,7 +19,7 @@ export function useAgentFilters() {
   // --- Estados de Filtros (Propiedades) ---
   const [searchTerm, setSearchTerm] = useState("");
   const [filterStatus, setFilterStatus] = useState<
-    "all" | "activa" | "pausada" | "alquilada"
+    "all" | "activa" | "pausada" | "alquilada" | "vendida"
   >("all");
   const [filterListingType, setFilterListingType] = useState<
     "all" | "venta" | "alquiler"
@@ -50,7 +50,7 @@ export function useAgentFilters() {
   const activeFilters = useMemo(() => {
     const filters: {
       search?: string;
-      status?: "activa" | "pausada" | "alquilada";
+      status?: "activa" | "pausada" | "alquilada" | "vendida";
       listingType?: "venta" | "alquiler";
       page?: number;
       limit?: number;
@@ -106,12 +106,17 @@ export function useAgentFilters() {
     searchTerm,
     setSearchTerm: (v: string) => handlePropertyFilterChange(setSearchTerm, v),
     filterStatus,
-    setFilterStatus: (v: "all" | "activa" | "pausada" | "alquilada") =>
-      handlePropertyFilterChange(setFilterStatus, v),
+    setFilterStatus: (
+      v: "all" | "activa" | "pausada" | "alquilada" | "vendida"
+    ) => handlePropertyFilterChange(setFilterStatus, v),
     filterListingType,
     setFilterListingType: (v: "all" | "venta" | "alquiler") => {
       handlePropertyFilterChange(setFilterListingType, v);
+      // Resetear filtro de status si no es compatible con el tipo de negocio
       if (v !== "alquiler" && filterStatus === "alquilada") {
+        setFilterStatus("all");
+      }
+      if (v !== "venta" && filterStatus === "vendida") {
         setFilterStatus("all");
       }
     },
