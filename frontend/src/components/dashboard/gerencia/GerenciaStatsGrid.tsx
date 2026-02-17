@@ -107,10 +107,6 @@ export default function GerenciaStatsGrid({
 
   return (
     <div className="mb-8">
-      <h2 className="mb-6 text-2xl font-bold text-(--primary)">
-        Resumen Global
-      </h2>
-
       <div className="space-y-8">
         {/* 1. BLOQUE SUPERIOR*/}
         <StatsSummaryCard
@@ -144,10 +140,10 @@ export default function GerenciaStatsGrid({
               </div>
 
               <div className="flex flex-col items-end pt-1">
-                <span className="mb-1 text-[10px] font-semibold tracking-widest text-slate-500 uppercase">
+                <span className="mb-1 text-[10px] font-semibold tracking-widest text-white/80 uppercase">
                   Este mes
                 </span>
-                <span className="text-xl leading-none font-bold text-emerald-200">
+                <span className="text-xl leading-none font-bold text-(--accent)">
                   +{s.sales.soldMonth}
                 </span>
               </div>

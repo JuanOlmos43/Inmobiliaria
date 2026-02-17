@@ -35,10 +35,6 @@ export default function AgentStatsGrid({
 
   return (
     <div className="mb-8">
-      <h2 className="mb-6 text-2xl font-bold text-(--primary)">
-        Resumen General
-      </h2>
-
       <div className="space-y-8">
         {/* BLOQUE SUPERIOR*/}
         <StatsSummaryCard

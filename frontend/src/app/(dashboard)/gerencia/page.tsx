@@ -4,6 +4,8 @@ import { useState, useEffect } from "react";
 import GerenciaStatsGrid, {
   ManagerStats,
 } from "@/components/dashboard/gerencia/GerenciaStatsGrid";
+import GerenciaActivityChart from "@/components/dashboard/gerencia/GerenciaActivityChart";
+import GerenciaTopAgents from "@/components/dashboard/gerencia/GerenciaTopAgents";
 
 // --- Mock Data Service ---
 const fetchManagerData = async (): Promise<ManagerStats> => {
@@ -69,50 +71,12 @@ export default function DashboardOwnerPage() {
 
   return (
     <>
-      <div className="mb-6 flex items-center justify-between">
-        <div>
-          <h2 className="text-2xl font-bold text-(--primary)">
-            Panel de Gerencia
-          </h2>
-          <p className="text-slate-500">
-            Vista global de rendimiento y operaciones.
-          </p>
-        </div>
-        <div className="text-sm text-slate-400">
-          Última actualización: {new Date().toLocaleDateString()}
-        </div>
-      </div>
-
       <GerenciaStatsGrid stats={stats} isLoading={isLoading} />
 
       {/* Aquí irían otros componentes como gráficos o tablas de detalle */}
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
-        <div className="rounded-xl border border-slate-100 bg-white p-6 shadow-sm lg:col-span-2">
-          <h3 className="mb-4 text-lg font-bold text-(--primary)">
-            Actividad Reciente
-          </h3>
-          <div className="flex h-64 items-center justify-center rounded-lg border border-dashed border-slate-200 bg-slate-50 text-slate-400">
-            Gráfico de Actividad (Placeholder)
-          </div>
-        </div>
-        <div className="rounded-xl border border-slate-100 bg-white p-6 shadow-sm lg:col-span-1">
-          <h3 className="mb-4 text-lg font-bold text-(--primary)">
-            Top Agentes (Mes)
-          </h3>
-          <ul className="space-y-4">
-            {[1, 2, 3, 4, 5].map((i) => (
-              <li key={i} className="flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  <div className="h-8 w-8 rounded-full bg-slate-200"></div>
-                  <span className="text-sm font-medium">Agente {i}</span>
-                </div>
-                <span className="text-sm font-bold text-(--accent)">
-                  ${10000 * (6 - i)}
-                </span>
-              </li>
-            ))}
-          </ul>
-        </div>
+        <GerenciaActivityChart />
+        <GerenciaTopAgents />
       </div>
     </>
   );

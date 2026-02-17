@@ -104,7 +104,7 @@ export default function UsersTable({
                   className={`transition-all duration-300 ${
                     isEditing
                       ? "relative z-10 border-l-4 border-(--accent) bg-(--accent)/5 shadow-md"
-                      : "border-l-4 border-transparent hover:bg-gray-50"
+                      : "border-l-4 border-transparent hover:bg-(--accent)/20"
                   }`}
                 >
                   {/* Celda Email */}

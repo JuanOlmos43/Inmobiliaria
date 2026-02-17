@@ -13,10 +13,6 @@ interface AdminStatsGridProps {
 export default function AdminStatsGrid({ stats }: AdminStatsGridProps) {
   return (
     <div className="mb-8">
-      <h2 className="mb-6 text-2xl font-bold text-(--primary)">
-        Estadísticas del Sistema
-      </h2>
-
       <div className="space-y-8">
         {/* Bloque Unificado de Resumen */}
         <StatsSummaryCard
@@ -33,9 +29,6 @@ export default function AdminStatsGrid({ stats }: AdminStatsGridProps) {
 
         {/* Fila 2: Roles del Sistema */}
         <div>
-          <h3 className="mb-4 text-sm font-medium tracking-wider text-slate-500 uppercase">
-            Distribución por Roles
-          </h3>
           <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-5">
             {/* Role Cards */}
             <RoleCard
