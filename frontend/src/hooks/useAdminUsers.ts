@@ -21,6 +21,8 @@ export function useAdminUsers() {
     filterRole,
     setFilterRole,
     activeFilters,
+    page,
+    setPage,
   } = useAdminFilters();
 
   // 2. Capa de UI (Modales, Toasts)
@@ -36,7 +38,7 @@ export function useAdminUsers() {
   } = useAdminUI();
 
   // 3. Capa de Datos (Queries)
-  const { users, stats, isLoading, error, retryLoadUsers } =
+  const { users, pagination, stats, isLoading, error, retryLoadUsers } =
     useAdminQueries(activeFilters);
 
   // 4. Capa de Acciones (Mutations)
@@ -56,6 +58,11 @@ export function useAdminUsers() {
     stats,
     isLoading,
     error,
+    pagination: {
+        currentPage: page,
+        totalPages: pagination?.totalPages || 1,
+        onPageChange: setPage,
+    },
 
     // Filtros
     searchEmail,

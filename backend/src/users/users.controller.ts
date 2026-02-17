@@ -33,8 +33,10 @@ export class UsersController {
     @Query('role') role?: UserRole,
     @Query('email') email?: string,
     @Query('search') search?: string,
+    @Query('page') page: number = 1,
+    @Query('limit') limit: number = 10,
   ) {
-    return this.usersService.findAll(role, email, search);
+    return this.usersService.findAll(role, email, search, +page, +limit);
   }
 
   @Patch(':id')

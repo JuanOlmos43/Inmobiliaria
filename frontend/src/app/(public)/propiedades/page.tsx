@@ -183,7 +183,7 @@ function PropiedadesContent() {
   }
 
   return (
-    <main className="grow bg-(--background)">
+    <>
       {/* Header */}
       <HeroSection
         title="Propiedades"
@@ -267,7 +267,7 @@ function PropiedadesContent() {
           </div>
         </div>
       </div>
-    </main>
+    </>
   );
 }
 

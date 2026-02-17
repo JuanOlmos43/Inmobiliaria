@@ -6,10 +6,7 @@ export default function Home() {
     <>
       <SearchBlock />
 
-      <main>
-        {/* Propiedades destacadas */}
-        <FeaturedProperties />
-      </main>
+      <FeaturedProperties />
     </>
   );
 }

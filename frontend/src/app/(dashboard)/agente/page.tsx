@@ -191,15 +191,11 @@ export default function AgentDashboardPage() {
                 </div>
 
                 {/* PAGINACIÓN DE PROPIEDADES */}
-                {propertyMeta && (propertyMeta.totalPages ?? 0) > 1 && (
-                  <div className="mt-8 flex justify-center">
-                    <Pagination
-                      currentPage={propertyPage}
-                      totalPages={propertyMeta.totalPages ?? 0}
-                      onPageChange={setPropertyPage}
-                    />
-                  </div>
-                )}
+                <Pagination
+                  currentPage={propertyPage}
+                  totalPages={propertyMeta?.totalPages ?? 0}
+                  onPageChange={setPropertyPage}
+                />
               </>
             )}
           </>
@@ -300,15 +296,11 @@ export default function AgentDashboardPage() {
                 </div>
 
                 {/* PAGINACIÓN DE CONTRATOS */}
-                {contractMeta && (contractMeta.totalPages ?? 0) > 1 && (
-                  <div className="mt-8 flex justify-center">
-                    <Pagination
-                      currentPage={contractPage}
-                      totalPages={contractMeta.totalPages ?? 0}
-                      onPageChange={setContractPage}
-                    />
-                  </div>
-                )}
+                <Pagination
+                  currentPage={contractPage}
+                  totalPages={contractMeta?.totalPages ?? 0}
+                  onPageChange={setContractPage}
+                />
               </>
             )}
           </>

@@ -18,6 +18,7 @@ export default function AdminDashboardPage() {
     // Datos
     users,
     stats,
+    pagination,
     isLoading,
     error,
 
@@ -98,6 +99,7 @@ export default function AdminDashboardPage() {
             users={users}
             onSaveEdit={handleSaveInlineEdit}
             onResetPassword={initiateResetPassword}
+            pagination={pagination}
           />
         )}
       </div>

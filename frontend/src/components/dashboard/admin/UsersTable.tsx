@@ -1,11 +1,17 @@
 import { useState } from "react";
 import { Icon, EmptyState } from "@/components/ui";
+import { Pagination } from "@/components/ui/navigation/Pagination";
 import { UserProfile, UserRole, UserStatus } from "@/types/api";
 
 interface UsersTableProps {
   users: UserProfile[];
   onSaveEdit: (userId: string, data: Partial<UserProfile>) => Promise<void>;
   onResetPassword: (userId: string) => void;
+  pagination?: {
+    currentPage: number;
+    totalPages: number;
+    onPageChange: (page: number) => void;
+  };
 }
 
 const roleColors: Record<string, string> = {
@@ -20,6 +26,7 @@ export default function UsersTable({
   users,
   onSaveEdit,
   onResetPassword,
+  pagination,
 }: UsersTableProps) {
   // Estado para manejar la edición en línea
   const [editingId, setEditingId] = useState<string | null>(null);
@@ -326,6 +333,15 @@ export default function UsersTable({
           />
         )}
       </div>
+
+      {/* Paginación */}
+      {pagination && (
+        <Pagination
+          currentPage={pagination.currentPage}
+          totalPages={pagination.totalPages}
+          onPageChange={pagination.onPageChange}
+        />
+      )}
     </div>
   );
 }

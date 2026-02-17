@@ -3,7 +3,7 @@ import { Icon, ValueCard } from "@/components/ui";
 
 export default function NosotrosPage() {
   return (
-    <div>
+    <>
       {/* Hero Section */}
       <HeroSection
         title="Sobre Nosotros"
@@ -224,6 +224,6 @@ export default function NosotrosPage() {
           </a>
         </div>
       </section>
-    </div>
+    </>
   );
 }

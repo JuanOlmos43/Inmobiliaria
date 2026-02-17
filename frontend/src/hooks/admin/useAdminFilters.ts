@@ -9,23 +9,42 @@ import { useDebounce } from "@/hooks/useDebounce";
 export function useAdminFilters() {
   const [searchEmail, setSearchEmail] = useState("");
   const [filterRole, setFilterRole] = useState<UserRole | "all">("all");
+  const [page, setPage] = useState(1);
+  const [limit, setLimit] = useState(10);
 
   // Aplicamos debounce para no saturar la API en cada pulsación
   const debouncedSearch = useDebounce(searchEmail, 500);
 
   // Memorizamos el objeto de filtros para pasarlo a las queries
   const activeFilters = useMemo(() => {
-    const filters: { role?: UserRole; email?: string } = {};
+    const filters: {
+      role?: UserRole;
+      email?: string;
+      page: number;
+      limit: number;
+    } = { page, limit };
+
     if (filterRole !== "all") filters.role = filterRole;
     if (debouncedSearch.trim()) filters.email = debouncedSearch.trim();
-    return Object.keys(filters).length > 0 ? filters : undefined;
-  }, [debouncedSearch, filterRole]);
+    
+    return filters;
+  }, [debouncedSearch, filterRole, page, limit]);
 
   return {
     searchEmail,
-    setSearchEmail,
+    setSearchEmail: (val: string) => {
+        setSearchEmail(val);
+        setPage(1); // Reset page on search
+    },
     filterRole,
-    setFilterRole,
+    setFilterRole: (val: UserRole | "all") => {
+        setFilterRole(val);
+        setPage(1); // Reset page on filter change
+    },
+    page,
+    setPage,
+    limit,
+    setLimit,
     activeFilters,
   };
 }

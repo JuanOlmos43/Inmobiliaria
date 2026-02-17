@@ -36,7 +36,16 @@ export class UsersService {
     });
   }
 
-  async findAll(role?: UserRole, email?: string, search?: string) {
+  async findAll(
+    role?: UserRole,
+    email?: string,
+    search?: string,
+    page: number = 1,
+    limit: number = 10,
+  ) {
+    const skip = (page - 1) * limit;
+    const take = limit;
+
     const where: Prisma.UserWhereInput = {};
     if (role) where.role = role;
     if (email) where.email = { startsWith: email, mode: 'insensitive' };
@@ -48,20 +57,35 @@ export class UsersService {
       ];
     }
 
-    return this.prisma.user.findMany({
-      where,
-      select: {
-        id: true,
-        email: true,
-        name: true,
-        phone: true,
-        role: true,
-        status: true,
-        createdAt: true,
-        updatedAt: true,
+    const [users, total] = await this.prisma.$transaction([
+      this.prisma.user.findMany({
+        where,
+        skip,
+        take,
+        select: {
+          id: true,
+          email: true,
+          name: true,
+          phone: true,
+          role: true,
+          status: true,
+          createdAt: true,
+          updatedAt: true,
+        },
+        orderBy: [{ createdAt: 'desc' }],
+      }),
+      this.prisma.user.count({ where }),
+    ]);
+
+    return {
+      data: users,
+      meta: {
+        total,
+        page,
+        limit,
+        totalPages: Math.ceil(total / limit),
       },
-      orderBy: [{ name: 'asc' }, { email: 'asc' }],
-    });
+    };
   }
 
   async update(id: string, data: UpdateUserDto) {

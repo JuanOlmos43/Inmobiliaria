@@ -90,7 +90,7 @@ export default function PropertyDetailPage() {
   };
 
   return (
-    <main className="grow bg-(--background)">
+    <>
       {/* Property Details */}
       <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 gap-8 lg:grid-cols-4">
@@ -327,6 +327,6 @@ export default function PropertyDetailPage() {
           </div>
         </div>
       </div>
-    </main>
+    </>
   );
 }

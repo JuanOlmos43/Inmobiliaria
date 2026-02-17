@@ -126,6 +126,8 @@ export interface UserFilters {
   role?: UserRole;
   email?: string;
   search?: string;
+  page?: number;
+  limit?: number;
 }
 
 /**

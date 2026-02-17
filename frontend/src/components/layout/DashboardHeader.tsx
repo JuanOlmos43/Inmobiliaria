@@ -36,7 +36,7 @@ export function DashboardHeader({
             <Icon name={icon} className="h-8 w-8 text-(--accent)" />
             <div>
               <h1 className="text-2xl font-bold text-(--accent)">{role}</h1>
-              <p className="font-mono text-sm text-gray-300">
+              <p className="font-mono text-sm text-white">
                 Bienvenido, {userEmail || ""}
               </p>
             </div>

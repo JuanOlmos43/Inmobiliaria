@@ -20,7 +20,7 @@ export function Navbar() {
   };
 
   return (
-    <nav className="bg-opacity-95 sticky top-0 z-50 bg-(--primary) shadow-xl backdrop-blur-sm">
+    <nav className="sticky top-0 z-50 bg-(--primary)  text-white shadow-xl">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="flex h-20 items-center justify-between">
           {/* Logo */}
@@ -44,28 +44,28 @@ export function Navbar() {
           <div className="hidden items-center space-x-1 md:flex">
             <Link
               href="/"
-              className="group relative px-4 py-2 font-medium text-white transition-colors hover:text-(--accent)"
+              className="group relative px-4 py-2 font-medium transition-colors hover:text-(--accent)"
             >
               Inicio
               <span className="absolute bottom-0 left-0 h-0.5 w-0 bg-(--accent) transition-all duration-300 group-hover:w-full"></span>
             </Link>
             <Link
               href="/propiedades"
-              className="group relative px-4 py-2 font-medium text-white transition-colors hover:text-(--accent)"
+              className="group relative px-4 py-2 font-medium transition-colors hover:text-(--accent)"
             >
               Propiedades
               <span className="absolute bottom-0 left-0 h-0.5 w-0 bg-(--accent) transition-all duration-300 group-hover:w-full"></span>
             </Link>
             <Link
               href="/nosotros"
-              className="group relative px-4 py-2 font-medium text-white transition-colors hover:text-(--accent)"
+              className="group relative px-4 py-2 font-medium transition-colors hover:text-(--accent)"
             >
               Nosotros
               <span className="absolute bottom-0 left-0 h-0.5 w-0 bg-(--accent) transition-all duration-300 group-hover:w-full"></span>
             </Link>
             <Link
               href="/contacto"
-              className="group relative px-4 py-2 font-medium text-white transition-colors hover:text-(--accent)"
+              className="group relative px-4 py-2 font-medium transition-colors hover:text-(--accent)"
             >
               Contacto
               <span className="absolute bottom-0 left-0 h-0.5 w-0 bg-(--accent) transition-all duration-300 group-hover:w-full"></span>
@@ -74,7 +74,7 @@ export function Navbar() {
             {/* Login Button */}
             <Link
               href="/login"
-              className="ml-6 transform rounded-full bg-(--accent) px-8 py-3 font-bold text-white shadow-lg transition-all duration-300 hover:scale-95 hover:bg-(--accent-hover) hover:shadow-2xl"
+              className="ml-6 transform rounded-full bg-(--accent) px-8 py-3 font-bold shadow-lg transition-all duration-300 hover:scale-95 hover:bg-(--accent-hover) hover:shadow-2xl"
             >
               Iniciar Sesión
             </Link>

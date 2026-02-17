@@ -57,7 +57,7 @@ export default function ContactoPage() {
   };
 
   return (
-    <div>
+    <>
       {/* Hero Section */}
       <HeroSection
         title="Contáctanos"
@@ -302,6 +302,6 @@ export default function ContactoPage() {
           </div>
         </div>
       </section>
-    </div>
+    </>
   );
 }
