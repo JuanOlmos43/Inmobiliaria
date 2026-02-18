@@ -21,7 +21,8 @@ infra/backup/
 │   ├── restore-db.js       ← Recrea esquema + importa datos
 │   ├── restore-storage.js  ← Sube archivos al bucket
 │   ├── restore-all.js      ← Orquestador de restore completo
-│   └── cleanup.js          ← Política de retención
+│   ├── cleanup.js          ← Política de retención
+│   └── nuke-db.js          ← ⚠️ Elimina TODO (DB + Storage)
 ├── backups/                ← Datos de backup (gitignored)
 │   ├── db/                 ← Dumps por fecha
 │   └── storage/            ← Imágenes por fecha
@@ -120,6 +121,29 @@ También se puede ejecutar desde la raíz del monorepo:
 ```bash
 npm run backup       # Backup completo
 npm run restore      # Restore completo
+npm run nuke         # ⚠️ Eliminar TODO (DB + Storage)
+```
+
+## Prueba de restauración (nuke + restore)
+
+> ⚠️ **PELIGRO**: `npm run nuke` elimina **todos** los datos. Asegurate de tener un backup antes.
+
+Para probar que el restore funciona correctamente:
+
+```bash
+# 1. Crear backup
+npm run backup
+
+# 2. Borrar TODO (espera 5 seg, Ctrl+C para cancelar)
+npm run nuke
+
+# 3. Restaurar desde el backup
+npm run restore
+
+# 4. Verificar
+#    → Login funciona
+#    → Propiedades visibles
+#    → Imágenes cargan correctamente
 ```
 
 ## Backup automático
