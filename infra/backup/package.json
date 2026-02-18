@@ -1,0 +1,21 @@
+{
+    "name": "inmobiliaria-backup",
+    "version": "1.0.0",
+    "description": "Backup & Restore system for Inmobiliaria — DB + Supabase Storage",
+    "private": true,
+    "scripts": {
+        "backup": "node src/backup-all.js",
+        "backup:db": "node src/backup-db.js",
+        "backup:storage": "node src/backup-storage.js",
+        "restore": "node src/restore-all.js",
+        "restore:db": "node src/restore-db.js",
+        "restore:storage": "node src/restore-storage.js",
+        "cleanup": "node src/cleanup.js",
+        "nuke": "node src/nuke-db.js"
+    },
+    "dependencies": {
+        "@supabase/supabase-js": "^2.91.1",
+        "dotenv": "^17.2.3",
+        "pg": "^8.16.3"
+    }
+}

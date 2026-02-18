@@ -96,3 +96,10 @@ Thumbs.db
 .turbo
 
 .agents
+
+# ============================================
+# Backup Data (keep scripts, ignore dumps)
+# ============================================
+infra/backup/backups/
+infra/backup/.env.backup
+infra/backup/node_modules/

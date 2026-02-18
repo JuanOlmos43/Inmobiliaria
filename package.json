@@ -7,9 +7,16 @@
     "dev": "concurrently \"npm run dev:frontend\" \"npm run dev:backend\"",
     "dev:frontend": "cd frontend && npm run dev",
     "dev:backend": "cd backend && npm run start:dev",
-    "install:all": "npm install && cd frontend && npm install && cd ../backend && npm install",
+    "install:all": "npm install && cd frontend && npm install && cd ../backend && npm install && cd ../infra/backup && npm install",
     "build:all": "cd frontend && npm run build && cd ../backend && npm run build",
-    "quality": "set PYTHONUTF8=1 && semgrep --config p/ci"
+    "quality": "set PYTHONUTF8=1 && semgrep --config p/ci",
+    "backup": "cd infra/backup && node src/backup-all.js",
+    "backup:db": "cd infra/backup && node src/backup-db.js",
+    "backup:storage": "cd infra/backup && node src/backup-storage.js",
+    "restore": "cd infra/backup && node src/restore-all.js",
+    "restore:db": "cd infra/backup && node src/restore-db.js",
+    "restore:storage": "cd infra/backup && node src/restore-storage.js",
+    "nuke": "cd infra/backup && node src/nuke-db.js"
   },
   "keywords": [
     "nextjs",
