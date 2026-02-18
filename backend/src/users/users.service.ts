@@ -32,6 +32,7 @@ export class UsersService {
         phone: data.phone,
         role: data.role,
         status: data.status || UserStatus.active,
+        mustChangePassword: true, // El admin crea usuarios con contraseña predefinida
       },
     });
   }

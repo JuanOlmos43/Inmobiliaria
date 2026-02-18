@@ -5,6 +5,7 @@ import type {
   LoginResponse,
   UserProfile,
   RegisterRequest,
+  ChangePasswordRequest,
 } from "@/types/api";
 
 /**
@@ -74,6 +75,19 @@ export const authService = {
    */
   async getMe(): Promise<UserProfile> {
     return apiClient.get<UserProfile>(API_ENDPOINTS.ME);
+  },
+
+  /**
+   * Cambia la contraseña del usuario autenticado
+   * Se usa cuando mustChangePassword === true (primer login) o cambio voluntario
+   */
+  async changePassword(
+    data: ChangePasswordRequest
+  ): Promise<{ ok: boolean; message: string }> {
+    return apiClient.post<{ ok: boolean; message: string }, ChangePasswordRequest>(
+      API_ENDPOINTS.CHANGE_PASSWORD,
+      data
+    );
   },
 
   /**

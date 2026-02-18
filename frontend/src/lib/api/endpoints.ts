@@ -10,6 +10,7 @@ export const API_ENDPOINTS = {
   REFRESH: "/auth/refresh",
   LOGOUT: "/auth/logout",
   REGISTER: "/auth/register",
+  CHANGE_PASSWORD: "/auth/change-password",
 
   // Users endpoints
   USERS: "/users",

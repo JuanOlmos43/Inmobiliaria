@@ -3,6 +3,7 @@ import {
   UnauthorizedException,
   ConflictException,
   ForbiddenException,
+  BadRequestException,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { PrismaService } from '../prisma/prisma.service';
@@ -83,7 +84,50 @@ export class AuthService {
     return {
       access_token: accessToken,
       refresh_token: refreshToken,
+      mustChangePassword: user.mustChangePassword, // El frontend lo usa para mostrar el modal
     };
+  }
+
+  /**
+   * Cambia la contraseña del usuario (primer login o cambio voluntario)
+   */
+  async changePassword(
+    userId: string,
+    currentPassword: string,
+    newPassword: string,
+  ): Promise<void> {
+    // 1) Buscar usuario con contraseña
+    const user = await this.prisma.user.findUnique({ where: { id: userId } });
+    if (!user) {
+      throw new UnauthorizedException('Usuario no encontrado');
+    }
+
+    // 2) Verificar que la contraseña actual sea correcta
+    const isCurrentPasswordValid = await bcrypt.compare(
+      currentPassword,
+      user.password,
+    );
+    if (!isCurrentPasswordValid) {
+      throw new BadRequestException('La contraseña actual es incorrecta');
+    }
+
+    // 3) Validar que la nueva contraseña sea diferente a la actual
+    const isSamePassword = await bcrypt.compare(newPassword, user.password);
+    if (isSamePassword) {
+      throw new BadRequestException(
+        'La nueva contraseña debe ser diferente a la actual',
+      );
+    }
+
+    // 4) Hashear la nueva contraseña y actualizar
+    const hashedNewPassword = await bcrypt.hash(newPassword, 10);
+    await this.prisma.user.update({
+      where: { id: userId },
+      data: {
+        password: hashedNewPassword,
+        mustChangePassword: false, // Ya cambió su contraseña
+      },
+    });
   }
 
   /**

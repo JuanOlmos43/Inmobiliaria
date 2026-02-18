@@ -15,6 +15,7 @@ import type { Request, Response } from 'express';
 import { AuthService } from './auth.service';
 import { LoginDto } from './dto/login.dto';
 import { RegisterDto } from './dto/register.dto';
+import { ChangePasswordDto } from './dto/change-password.dto';
 import { LocalAuthGuard } from './guards/local-auth.guard';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { RolesGuard } from './guards/roles.guard';
@@ -73,6 +74,7 @@ export class AuthController {
 
     return {
       ok: true,
+      mustChangePassword: tokens.mustChangePassword,
     };
   }
 
@@ -94,9 +96,29 @@ export class AuthController {
   @Get('me')
   @UseGuards(JwtAuthGuard)
   getProfile(@CurrentUser() user: User) {
-    // Remove password from response
-    const { password, ...userWithoutPassword } = user;
-    return userWithoutPassword;
+    // Remove password from response using Prisma omit pattern
+    return Object.fromEntries(
+      Object.entries(user).filter(([key]) => key !== 'password'),
+    );
+  }
+
+  /**
+   * POST /auth/change-password
+   * Protected endpoint - allows authenticated user to change their password
+   */
+  @Post('change-password')
+  @UseGuards(JwtAuthGuard)
+  @HttpCode(HttpStatus.OK)
+  async changePassword(
+    @CurrentUser() user: User,
+    @Body(ValidationPipe) dto: ChangePasswordDto,
+  ) {
+    await this.authService.changePassword(
+      user.id,
+      dto.currentPassword,
+      dto.newPassword,
+    );
+    return { ok: true, message: 'Contraseña actualizada correctamente' };
   }
 
   /**

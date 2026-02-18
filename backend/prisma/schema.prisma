@@ -33,10 +33,11 @@ model User {
   password  String // Hash de la contraseña
   name      String?
   phone     String?
-  role      UserRole
-  status    UserStatus @default(active)
-  createdAt DateTime   @default(now())
-  updatedAt DateTime   @updatedAt
+  role               UserRole
+  status             UserStatus @default(active)
+  mustChangePassword Boolean    @default(false)
+  createdAt          DateTime   @default(now())
+  updatedAt          DateTime   @updatedAt
 
   // Relaciones
   propertiesOwned           Property[]       @relation("PropertyOwner")

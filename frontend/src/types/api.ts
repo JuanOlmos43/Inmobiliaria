@@ -19,12 +19,18 @@ export interface RegisterRequest {
   role: UserRole;
 }
 
+export interface ChangePasswordRequest {
+  currentPassword: string;
+  newPassword: string;
+}
+
 // ============================================
 // Response Types
 // ============================================
 
 export interface LoginResponse {
   access_token: string;
+  mustChangePassword: boolean;
 }
 
 export interface UserProfile {
@@ -35,6 +41,7 @@ export interface UserProfile {
   phone: string | null;
   role: UserRole;
   status: UserStatus;
+  mustChangePassword: boolean; // true si el usuario debe cambiar su contraseña
   createdAt: string;
   updatedAt: string;
 }
