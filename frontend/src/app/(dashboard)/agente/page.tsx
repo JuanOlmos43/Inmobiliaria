@@ -81,6 +81,8 @@ export default function AgentDashboardPage() {
     handleDeleteProperty,
     handleSave,
     handleRentProperty,
+    handleSellProperty,
+    executeSellProperty,
     handleSaveRental,
     handleDeleteContract,
     executeRevokeContract,
@@ -97,6 +99,8 @@ export default function AgentDashboardPage() {
     closeConfirmDelete,
     confirmRevoke,
     closeConfirmRevoke,
+    confirmSell,
+    closeConfirmSell,
 
     // Edición de Contratos
     editingContract,
@@ -186,6 +190,7 @@ export default function AgentDashboardPage() {
                       onEdit={handleEditProperty}
                       onDelete={handleDeleteProperty}
                       onRent={handleRentProperty}
+                      onSell={handleSellProperty}
                     />
                   ))}
                 </div>
@@ -362,6 +367,17 @@ export default function AgentDashboardPage() {
         confirmText="Revocar"
         isLoading={confirmRevoke.isLoading}
         variant="warning"
+      />
+
+      <ConfirmModal
+        isOpen={confirmSell.isOpen}
+        onClose={closeConfirmSell}
+        onConfirm={executeSellProperty}
+        title="Marcar como Vendida"
+        message="¿Estás seguro de que deseas marcar esta propiedad como vendida? Esta acción cambiará el estado de la propiedad."
+        confirmText="Vendida"
+        isLoading={confirmSell.isLoading}
+        variant="success"
       />
     </>
   );

@@ -3,8 +3,10 @@ import { FormInput, FormSelect } from "@/components/ui";
 interface AgentPropertiesFiltersProps {
   searchTerm: string;
   setSearchTerm: (val: string) => void;
-  filterStatus: "all" | "activa" | "pausada" | "alquilada";
-  setFilterStatus: (val: "all" | "activa" | "pausada" | "alquilada") => void;
+  filterStatus: "all" | "activa" | "pausada" | "alquilada" | "vendida";
+  setFilterStatus: (
+    val: "all" | "activa" | "pausada" | "alquilada" | "vendida"
+  ) => void;
   filterListingType: "all" | "venta" | "alquiler";
   setFilterListingType: (val: "all" | "venta" | "alquiler") => void;
 }
@@ -52,7 +54,12 @@ export default function AgentPropertiesFilters({
         value={filterStatus}
         onChange={(e) =>
           setFilterStatus(
-            e.target.value as "all" | "activa" | "pausada" | "alquilada"
+            e.target.value as
+              | "all"
+              | "activa"
+              | "pausada"
+              | "alquilada"
+              | "vendida"
           )
         }
       >
@@ -61,6 +68,9 @@ export default function AgentPropertiesFilters({
         <option value="pausada">Pausadas</option>
         {filterListingType === "alquiler" && (
           <option value="alquilada">Alquiladas</option>
+        )}
+        {filterListingType === "venta" && (
+          <option value="vendida">Vendidas</option>
         )}
       </FormSelect>
     </div>

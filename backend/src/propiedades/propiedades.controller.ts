@@ -80,6 +80,12 @@ export class PropiedadesController {
     return this.propiedadesService.update(id, updatePropiedadeDto);
   }
 
+  @Patch(':id/mark-sold')
+  @Roles(UserRole.Agente)
+  markAsSold(@Param('id') id: string) {
+    return this.propiedadesService.markAsSold(id);
+  }
+
   @Delete(':id')
   @Roles(UserRole.Agente)
   remove(@Param('id') id: string) {

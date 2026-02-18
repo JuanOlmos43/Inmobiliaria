@@ -181,6 +181,27 @@ export function useAgentMutations({
   };
 
   // ============================================
+  // MARCAR PROPIEDAD COMO VENDIDA
+  // ============================================
+
+  /**
+   * Marca una propiedad en venta como vendida
+   */
+  const handleSellProperty = async (id: string) => {
+    try {
+      await propertiesService.markAsSold(id);
+
+      // Invalidar queries
+      await refreshData();
+
+      showToast("Propiedad marcada como vendida exitosamente", "success");
+    } catch (error) {
+      console.error("Error marking property as sold:", error);
+      showToast("Error al marcar la propiedad como vendida", "error");
+    }
+  };
+
+  // ============================================
   // GUARDAR CONTRATO DE ALQUILER (CREAR/EDITAR)
   // ============================================
 
@@ -244,6 +265,7 @@ export function useAgentMutations({
     handleSaveProperty,
     handleDeleteProperty,
     handleToggleStatus,
+    handleSellProperty,
     handleSaveRental,
     handleDeleteContract,
   };

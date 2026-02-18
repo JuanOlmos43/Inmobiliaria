@@ -155,6 +155,13 @@ export const propertiesService = {
   },
 
   /**
+   * Mark a property as sold
+   */
+  async markAsSold(id: string): Promise<Property> {
+    return apiClient.patch(`/propiedades/${id}/mark-sold`, {});
+  },
+
+  /**
    * Delete a property
    */
   async remove(id: string): Promise<void> {

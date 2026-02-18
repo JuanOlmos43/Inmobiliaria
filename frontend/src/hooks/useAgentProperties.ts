@@ -72,6 +72,10 @@ export function useAgentProperties() {
     initiateRevokeContract,
     closeConfirmRevoke,
     setRevokeLoading,
+    confirmSell,
+    initiateSellProperty,
+    closeConfirmSell,
+    setSellLoading,
   } = useAgentUI();
 
   // 3. Capa de Datos (Queries)
@@ -94,6 +98,7 @@ export function useAgentProperties() {
   const {
     handleSaveProperty,
     handleDeleteProperty,
+    handleSellProperty,
     handleSaveRental,
     handleDeleteContract,
   } = useAgentMutations({
@@ -135,6 +140,18 @@ export function useAgentProperties() {
         closeConfirmRevoke();
         closeViewContractModal();
       }
+    }
+  };
+  const handleSellPropertyHandler = (p: Property) => {
+    // Usar el estado dedicado para venta
+    initiateSellProperty(p.id!);
+  };
+  const executeSellProperty = async () => {
+    if (confirmSell.propertyId) {
+      setSellLoading(true);
+      await handleSellProperty(confirmSell.propertyId);
+      setSellLoading(false);
+      closeConfirmSell();
     }
   };
 
@@ -179,6 +196,8 @@ export function useAgentProperties() {
     executeDeleteProperty,
     handleSave,
     handleRentProperty,
+    handleSellProperty: handleSellPropertyHandler,
+    executeSellProperty,
     handleSaveRental: handleSaveRentalHandler,
     handleDeleteContract: handleDeleteContractHandler,
     executeRevokeContract,
@@ -194,6 +213,8 @@ export function useAgentProperties() {
     closeConfirmDelete,
     confirmRevoke,
     closeConfirmRevoke,
+    confirmSell,
+    closeConfirmSell,
     refetch,
     contractMeta,
     propertyMeta,

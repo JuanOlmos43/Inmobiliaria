@@ -44,6 +44,17 @@ export function useAgentUI() {
     isLoading: false,
   });
 
+  // Estado de Confirmación de Venta de Propiedad
+  const [confirmSell, setConfirmSell] = useState<{
+    isOpen: boolean;
+    propertyId: string | null;
+    isLoading: boolean;
+  }>({
+    isOpen: false,
+    propertyId: null,
+    isLoading: false,
+  });
+
   // Estado de Notificaciones (Toast)
   const [toast, setToast] = useState({
     isVisible: false,
@@ -174,6 +185,18 @@ export function useAgentUI() {
     setConfirmRevoke((prev) => ({ ...prev, isLoading }));
   }, []);
 
+  const initiateSellProperty = useCallback((id: string) => {
+    setConfirmSell({ isOpen: true, propertyId: id, isLoading: false });
+  }, []);
+
+  const closeConfirmSell = useCallback(() => {
+    setConfirmSell((prev) => ({ ...prev, isOpen: false, propertyId: null }));
+  }, []);
+
+  const setSellLoading = useCallback((isLoading: boolean) => {
+    setConfirmSell((prev) => ({ ...prev, isLoading }));
+  }, []);
+
   return {
     // Estados de Modal de Propiedades
     isModalOpen,
@@ -205,6 +228,10 @@ export function useAgentUI() {
     initiateRevokeContract,
     closeConfirmRevoke,
     setRevokeLoading,
+    confirmSell,
+    initiateSellProperty,
+    closeConfirmSell,
+    setSellLoading,
 
     // Estados de Toast
     toast,
