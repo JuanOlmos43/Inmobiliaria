@@ -304,6 +304,7 @@ export default function RentalModal({
               type="number"
               required
               min={0}
+              max={1000000}
               value={formData.deposit}
               onChange={(e) =>
                 setFormData({

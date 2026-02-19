@@ -113,6 +113,7 @@ export default function ChangePasswordModal({
                 placeholder="••••••••"
                 autoComplete="current-password"
                 className="w-full rounded-lg border px-4 py-2.5 pr-11 text-sm transition-all duration-200 focus:border-transparent focus:ring-2 focus:ring-(--accent) focus:outline-none [&::-ms-clear]:hidden [&::-ms-reveal]:hidden [&::-webkit-contacts-auto-fill-button]:hidden [&::-webkit-credentials-auto-fill-button]:hidden"
+                maxLength={100}
                 style={{
                   background: "#f8fafc",
                   borderColor: "#e2e8f0",
@@ -148,6 +149,7 @@ export default function ChangePasswordModal({
                 placeholder="Mínimo 8 caracteres"
                 autoComplete="new-password"
                 className="w-full rounded-lg border px-4 py-2.5 pr-11 text-sm transition-all duration-200 focus:border-transparent focus:ring-2 focus:ring-(--accent) focus:outline-none [&::-ms-clear]:hidden [&::-ms-reveal]:hidden [&::-webkit-contacts-auto-fill-button]:hidden [&::-webkit-credentials-auto-fill-button]:hidden"
+                maxLength={100}
                 style={{
                   background: "#f8fafc",
                   borderColor: passwordTooShort ? "#ef4444" : "#e2e8f0",
@@ -188,6 +190,7 @@ export default function ChangePasswordModal({
                 placeholder="Repetí la nueva contraseña"
                 autoComplete="new-password"
                 className="w-full rounded-lg border px-4 py-2.5 pr-11 text-sm transition-all duration-200 focus:border-transparent focus:ring-2 focus:ring-(--accent) focus:outline-none [&::-ms-clear]:hidden [&::-ms-reveal]:hidden [&::-webkit-contacts-auto-fill-button]:hidden [&::-webkit-credentials-auto-fill-button]:hidden"
+                maxLength={100}
                 style={{
                   background: "#f8fafc",
                   borderColor: passwordsDontMatch ? "#ef4444" : "#e2e8f0",
