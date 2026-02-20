@@ -34,7 +34,8 @@ export const authService = {
     console.log("Login request data:", requestData);
     return apiClient.post<LoginResponse, LoginRequest>(
       API_ENDPOINTS.LOGIN,
-      requestData
+      requestData,
+      { skipAuthHandler: true }
     );
   },
 

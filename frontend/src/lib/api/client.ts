@@ -125,7 +125,10 @@ export class ApiClient {
   /**
    * GET request
    */
-  async get<T>(endpoint: string): Promise<T> {
+  async get<T>(
+    endpoint: string,
+    config?: { skipAuthHandler?: boolean }
+  ): Promise<T> {
     const url = `${this.baseUrl}${endpoint}`;
     const makeRequest = () =>
       fetch(url, {
@@ -135,13 +138,18 @@ export class ApiClient {
       });
 
     const response = await makeRequest();
-    return this.handleResponse<T>(response, makeRequest);
+    const retryCallback = config?.skipAuthHandler ? undefined : makeRequest;
+    return this.handleResponse<T>(response, retryCallback);
   }
 
   /**
    * POST request
    */
-  async post<T, D = unknown>(endpoint: string, data?: D): Promise<T> {
+  async post<T, D = unknown>(
+    endpoint: string,
+    data?: D,
+    config?: { skipAuthHandler?: boolean }
+  ): Promise<T> {
     const makeRequest = () =>
       fetch(`${this.baseUrl}${endpoint}`, {
         method: "POST",
@@ -151,13 +159,18 @@ export class ApiClient {
       });
 
     const response = await makeRequest();
-    return this.handleResponse<T>(response, makeRequest);
+    const retryCallback = config?.skipAuthHandler ? undefined : makeRequest;
+    return this.handleResponse<T>(response, retryCallback);
   }
 
   /**
    * PUT request
    */
-  async put<T, D = unknown>(endpoint: string, data?: D): Promise<T> {
+  async put<T, D = unknown>(
+    endpoint: string,
+    data?: D,
+    config?: { skipAuthHandler?: boolean }
+  ): Promise<T> {
     const makeRequest = () =>
       fetch(`${this.baseUrl}${endpoint}`, {
         method: "PUT",
@@ -167,13 +180,18 @@ export class ApiClient {
       });
 
     const response = await makeRequest();
-    return this.handleResponse<T>(response, makeRequest);
+    const retryCallback = config?.skipAuthHandler ? undefined : makeRequest;
+    return this.handleResponse<T>(response, retryCallback);
   }
 
   /**
    * PATCH request
    */
-  async patch<T, D = unknown>(endpoint: string, data?: D): Promise<T> {
+  async patch<T, D = unknown>(
+    endpoint: string,
+    data?: D,
+    config?: { skipAuthHandler?: boolean }
+  ): Promise<T> {
     const makeRequest = () =>
       fetch(`${this.baseUrl}${endpoint}`, {
         method: "PATCH",
@@ -183,13 +201,17 @@ export class ApiClient {
       });
 
     const response = await makeRequest();
-    return this.handleResponse<T>(response, makeRequest);
+    const retryCallback = config?.skipAuthHandler ? undefined : makeRequest;
+    return this.handleResponse<T>(response, retryCallback);
   }
 
   /**
    * DELETE request
    */
-  async delete<T>(endpoint: string): Promise<T> {
+  async delete<T>(
+    endpoint: string,
+    config?: { skipAuthHandler?: boolean }
+  ): Promise<T> {
     const makeRequest = () =>
       fetch(`${this.baseUrl}${endpoint}`, {
         method: "DELETE",
@@ -198,7 +220,8 @@ export class ApiClient {
       });
 
     const response = await makeRequest();
-    return this.handleResponse<T>(response, makeRequest);
+    const retryCallback = config?.skipAuthHandler ? undefined : makeRequest;
+    return this.handleResponse<T>(response, retryCallback);
   }
 }
 
