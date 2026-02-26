@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { FormSelect, Icon } from "@/components/ui";
+import { FormSelect, Icon, Button } from "@/components/ui";
 import { useLocationLogic } from "@/hooks/useLocationLogic";
 import type { Provincia, Localidad } from "@/types/location";
 
@@ -252,13 +252,15 @@ export default function SearchBlock() {
 
             {/* Search Button */}
             <div className="flex justify-center">
-              <button
+              <Button
+                variant="secondary"
+                size="lg"
+                icon={<Icon name="search" className="h-5 w-5" />}
                 onClick={handleSearch}
-                className="flex transform items-center justify-center gap-2 rounded-full bg-(--primary)/95 px-16 py-4 font-bold text-white shadow-xl transition-all duration-300 hover:scale-95 hover:bg-(--primary) hover:shadow-2xl"
+                className="px-16 py-4 font-bold"
               >
-                <Icon name="search" className="h-5 w-5" />
                 Realizar búsqueda
-              </button>
+              </Button>
             </div>
           </div>
         </div>

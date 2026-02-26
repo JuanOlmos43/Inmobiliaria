@@ -1,3 +1,7 @@
+// Buttons
+export * from "./buttons/Button";
+export * from "./buttons/IconButton";
+
 // Forms
 export * from "./forms/FormInput";
 export * from "./forms/FormSelect";

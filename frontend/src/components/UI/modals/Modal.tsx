@@ -2,6 +2,7 @@
 
 import { ReactNode, useEffect } from "react";
 import { Icon } from "../icons/Icon";
+import { IconButton } from "../buttons/IconButton";
 
 interface ModalProps {
   isOpen: boolean;
@@ -63,13 +64,13 @@ export function Modal({
       >
         <div className="flex shrink-0 items-center justify-between border-b border-gray-100 p-6">
           <div className="text-2xl font-bold text-(--primary)">{title}</div>
-          <button
+          <IconButton
+            variant="ghost"
+            size="md"
+            icon={<Icon name="close" className="h-6 w-6" />}
             onClick={onClose}
-            className="text-gray-400 transition-colors hover:text-gray-600"
             aria-label="Cerrar modal"
-          >
-            <Icon name="close" className="h-6 w-6" />
-          </button>
+          />
         </div>
 
         <div className="overflow-y-auto p-6">{children}</div>

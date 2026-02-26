@@ -1,6 +1,12 @@
 import { useState, useEffect, useCallback } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { Modal, FormInput, FormTextarea, FormSelect } from "@/components/ui";
+import {
+  Modal,
+  FormInput,
+  FormTextarea,
+  FormSelect,
+  Button,
+} from "@/components/ui";
 import { propertiesService } from "@/lib/api/services/properties";
 import { Property } from "@/types/property";
 
@@ -451,19 +457,17 @@ export default function PropertyModal({
             />
 
             <div className="flex gap-3 pt-6">
-              <button
+              <Button
                 type="button"
+                variant="outline"
+                fullWidth
                 onClick={onClose}
-                className="flex-1 rounded-lg border border-gray-300 px-4 py-2.5 font-medium text-gray-700 transition-all duration-200 hover:border-red-600 hover:bg-red-600 hover:text-white disabled:opacity-50"
               >
                 Cancelar
-              </button>
-              <button
-                type="submit"
-                className="flex flex-1 items-center justify-center gap-2 rounded-lg bg-(--accent) px-4 py-2.5 font-medium text-white shadow-md transition-all hover:bg-(--accent-hover) hover:shadow-lg disabled:opacity-50"
-              >
+              </Button>
+              <Button type="submit" fullWidth>
                 Guardar Propiedad
-              </button>
+              </Button>
             </div>
           </div>
         </form>

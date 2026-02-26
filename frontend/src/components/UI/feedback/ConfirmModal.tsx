@@ -2,6 +2,7 @@
 
 import { Modal } from "../modals/Modal";
 import { Icon, IconName } from "../icons/Icon";
+import { Button, type ButtonVariant } from "../buttons/Button";
 
 interface ConfirmModalProps {
   isOpen: boolean;
@@ -33,11 +34,12 @@ export function ConfirmModal({
     info: "bg-blue-100 text-blue-600",
   };
 
-  const buttonColors = {
-    danger: "bg-(--danger) hover:bg-red-700",
-    warning: "bg-(--warning) hover:bg-amber-700",
-    success: "bg-(--success) hover:bg-green-700",
-    info: "bg-blue-600 hover:bg-blue-700",
+  // Mapeo de variant local a ButtonVariant del componente Button
+  const buttonVariantMap: Record<string, ButtonVariant> = {
+    danger: "danger",
+    warning: "warning",
+    success: "success",
+    info: "primary",
   };
 
   const iconName: IconName = (
@@ -66,23 +68,22 @@ export function ConfirmModal({
         <p className="leading-relaxed text-gray-600">{message}</p>
 
         <div className="mt-8 flex gap-3">
-          <button
+          <Button
+            variant="outline"
+            fullWidth
             onClick={onClose}
             disabled={isLoading}
-            className="flex-1 rounded-lg border border-gray-300 px-4 py-2.5 font-medium text-gray-700 transition-all duration-200 hover:border-red-600 hover:bg-red-600 hover:text-white disabled:opacity-50"
           >
             {cancelText}
-          </button>
-          <button
+          </Button>
+          <Button
+            variant={buttonVariantMap[variant]}
+            fullWidth
             onClick={onConfirm}
-            disabled={isLoading}
-            className={`inline-flex flex-1 items-center justify-center gap-2 rounded-lg px-4 py-2.5 font-medium text-white transition-all disabled:opacity-50 ${buttonColors[variant]}`}
+            isLoading={isLoading}
           >
-            {isLoading && (
-              <div className="h-4 w-4 animate-spin rounded-full border-2 border-white/30 border-t-white" />
-            )}
             {confirmText}
-          </button>
+          </Button>
         </div>
       </div>
     </Modal>

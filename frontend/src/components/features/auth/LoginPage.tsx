@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { FormInput } from "@/components/ui";
+import { FormInput, Button } from "@/components/ui";
 import { authService } from "@/lib/api/services/auth";
 import { ChangePasswordModal } from "@/components/features/auth";
 
@@ -143,32 +143,30 @@ export default function LoginPage() {
               )}
 
               {/* Submit Button */}
-              <button
+              <Button
                 type="submit"
-                disabled={isLoading}
-                className="flex w-full transform items-center justify-center gap-2 rounded-full bg-(--accent) px-6 py-3 font-bold text-white shadow-xl transition-all duration-300 hover:scale-95 hover:bg-(--accent-hover) hover:shadow-2xl focus:bg-(--accent-hover) active:bg-(--accent-hover) disabled:transform-none disabled:cursor-not-allowed disabled:opacity-50"
+                size="lg"
+                fullWidth
+                isLoading={isLoading}
+                icon={
+                  <svg
+                    className="h-5 w-5 text-white/80"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    strokeWidth={2}
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
+                    />
+                  </svg>
+                }
+                className="font-bold shadow-xl hover:shadow-2xl"
               >
-                {isLoading ? (
-                  "Iniciando sesión..."
-                ) : (
-                  <>
-                    <svg
-                      className="h-5 w-5 text-white/80"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                      strokeWidth={2}
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
-                      />
-                    </svg>
-                    Iniciar Sesión
-                  </>
-                )}
-              </button>
+                Iniciar Sesión
+              </Button>
             </form>
 
             {/* volver a Home */}

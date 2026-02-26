@@ -1,5 +1,5 @@
 import React from "react";
-import { Modal, Icon } from "@/components/ui";
+import { Modal, Icon, Button } from "@/components/ui";
 import { Contract } from "@/types/api";
 
 interface ViewContractModalProps {
@@ -165,12 +165,9 @@ export default function ViewContractModal({
 
         {/* Botones */}
         <div className="flex gap-3 pt-6">
-          <button
-            onClick={onClose}
-            className="w-full rounded-lg border border-gray-300 px-4 py-2.5 font-medium text-gray-700 transition-all duration-200 hover:border-(--danger) hover:bg-(--danger) hover:text-white"
-          >
+          <Button variant="outline" fullWidth onClick={onClose}>
             Cerrar
-          </button>
+          </Button>
         </div>
       </div>
     </Modal>

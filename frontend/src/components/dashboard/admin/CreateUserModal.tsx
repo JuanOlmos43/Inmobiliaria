@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Modal, FormInput, FormSelect, Toast } from "@/components/ui";
+import { Modal, FormInput, FormSelect, Toast, Button } from "@/components/ui";
 import { authService } from "@/lib/api/services/auth";
 import { UserRole } from "@/types/api";
 
@@ -171,24 +171,18 @@ export default function CreateUserModal({
           </FormSelect>
 
           <div className="flex gap-3 pt-6">
-            <button
+            <Button
               type="button"
+              variant="outline"
+              fullWidth
               onClick={onClose}
               disabled={isSubmitting}
-              className="flex-1 rounded-lg border border-gray-300 px-4 py-2.5 font-medium text-gray-700 transition-all duration-200 hover:border-red-600 hover:bg-red-600 hover:text-white disabled:opacity-50"
             >
               Cancelar
-            </button>
-            <button
-              type="submit"
-              disabled={isSubmitting}
-              className="flex flex-1 items-center justify-center gap-2 rounded-lg bg-(--accent) px-4 py-2.5 font-medium text-white shadow-md transition-all hover:bg-(--accent-hover) hover:shadow-lg disabled:opacity-50"
-            >
-              {isSubmitting && (
-                <div className="h-4 w-4 animate-spin rounded-full border-2 border-white/30 border-t-white" />
-              )}
-              {isSubmitting ? "Creando..." : "Crear usuario"}
-            </button>
+            </Button>
+            <Button type="submit" fullWidth isLoading={isSubmitting}>
+              Crear usuario
+            </Button>
           </div>
         </form>
       </Modal>
