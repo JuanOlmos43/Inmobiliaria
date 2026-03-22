@@ -1,11 +1,11 @@
-
 import { Module } from '@nestjs/common';
 import { ContactService } from './contact.service';
 import { ContactController } from './contact.controller';
-import { GmailProvider } from './providers/gmail.provider';
+import { ResendProvider } from './providers/resend.provider';
 
 @Module({
     controllers: [ContactController],
-    providers: [ContactService, GmailProvider],
+    providers: [ContactService, ResendProvider],
+    exports: [ResendProvider],
 })
 export class ContactModule { }

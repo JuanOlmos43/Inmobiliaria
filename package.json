@@ -8,6 +8,7 @@
     "dev:frontend": "cd frontend && npm run dev",
     "dev:backend": "cd backend && npm run start:dev",
     "install:all": "npm install && cd frontend && npm install && cd ../backend && npm install && cd ../infra/backup && npm install",
+    "build": "cd frontend && npm run build && cd ../backend && npm run build",
     "build:all": "cd frontend && npm run build && cd ../backend && npm run build",
     "quality": "set PYTHONUTF8=1 && semgrep --config p/ci",
     "backup": "cd infra/backup && node src/backup-all.js",
@@ -17,7 +18,9 @@
     "restore:db": "cd infra/backup && node src/restore-db.js",
     "restore:storage": "cd infra/backup && node src/restore-storage.js",
     "nuke": "cd infra/backup && node src/nuke-db.js",
-    "generate-token": "npx ts-node scripts/generate-gmail-token.ts"
+    "format": "cd frontend && npm run format && cd ../backend && npm run format",
+    "format:frontend": "cd frontend && npm run format",
+    "format:backend": "cd backend && npm run format"
   },
   "keywords": [
     "nextjs",
@@ -30,8 +33,5 @@
   "license": "ISC",
   "devDependencies": {
     "concurrently": "^8.2.2"
-  },
-  "dependencies": {
-    "googleapis": "^171.4.0"
   }
 }

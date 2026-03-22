@@ -9,13 +9,16 @@ import { AuthModule } from './auth/auth.module';
 import { StorageModule } from './storage/storage.module';
 
 import { ConfigModule } from '@nestjs/config';
+import { ScheduleModule } from '@nestjs/schedule';
 import { ContratosModule } from './contratos/contratos.module';
 import { GerenciaModule } from './gerencia/gerencia.module';
 import { ContactModule } from './contact/contact.module';
+import { NotificationsModule } from './notifications/notifications.module';
 
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
+    ScheduleModule.forRoot(),
     PrismaModule,
     PropiedadesModule,
     UbicacionesModule,
@@ -25,6 +28,7 @@ import { ContactModule } from './contact/contact.module';
     ContratosModule,
     GerenciaModule,
     ContactModule,
+    NotificationsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

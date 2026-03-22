@@ -39,12 +39,6 @@ export function FormInput({
 
   const labelClasses = theme === "light" ? "text-gray-700" : "text-gray-200";
 
-  // Handler para llamar al onInput original si existe
-  const handleInput = (e: React.FormEvent<HTMLInputElement>) => {
-    if (onInput) {
-      onInput(e);
-    }
-  };
 
   return (
     <div className="mb-2">
@@ -66,7 +60,7 @@ export function FormInput({
           min={min}
           maxLength={maxLength}
           minLength={minLength}
-          onInput={handleInput}
+          onInput={onInput}
           {...props}
         />
       </div>

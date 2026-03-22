@@ -20,7 +20,7 @@ export function Navbar() {
   };
 
   return (
-    <nav className="sticky top-0 z-50 bg-(--primary)  text-white shadow-xl">
+    <nav className="sticky top-0 z-50 bg-(--primary) text-white shadow-xl">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="flex h-20 items-center justify-between">
           {/* Logo */}

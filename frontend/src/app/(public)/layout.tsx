@@ -10,9 +10,7 @@ export default function GroupNFLayout({
 
       <Navbar />
 
-      <main className="grow bg-(--background)">
-        {children}
-      </main>
+      <main className="grow bg-(--background)">{children}</main>
 
       <Footer />
     </div>

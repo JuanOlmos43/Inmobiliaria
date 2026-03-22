@@ -74,7 +74,8 @@ export default function RentalModal({
         search: debouncedTenantSearch,
       });
 
-      return users.filter((u: UserProfile) => u.status === UserStatus.ACTIVE);
+      const list = Array.isArray(users) ? users : users.data;
+      return list.filter((u: UserProfile) => u.status === UserStatus.ACTIVE);
     },
     enabled: !isEditing && !!debouncedTenantSearch,
   });

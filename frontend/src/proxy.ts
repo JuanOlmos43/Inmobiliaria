@@ -46,7 +46,7 @@ function applySetCookies(from: Response, to: NextResponse) {
  * - Después de refresh, NO reintenta /auth/me (mucho más robusto)
  *   => Si necesitás user luego del refresh, lo ideal es que /auth/refresh devuelva { user }
  */
-export async function middleware(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   const backendUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";

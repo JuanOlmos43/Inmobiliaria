@@ -73,7 +73,9 @@ export function useAgentMutations({
         calleId: propertyData.calleId || undefined,
         ownerId: propertyData.ownerId || undefined,
         agentId: user?.id || undefined,
-        features: propertyData.features,
+        features: propertyData.features?.map((f) =>
+          typeof f === "string" ? f : f.name
+        ),
         status: propertyData.status as "activa" | "pausada" | "archivada",
       };
 
@@ -84,7 +86,9 @@ export function useAgentMutations({
         savedPropertyId = editingProperty.id!;
         await propertiesService.update(editingProperty.id!, {
           ...baseApiData,
-          images: propertyData.images,
+          images: propertyData.images?.map((img) =>
+            typeof img === "string" ? img : img.url
+          ),
         });
       } else {
         // CREAR nueva propiedad

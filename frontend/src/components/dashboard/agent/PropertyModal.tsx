@@ -385,7 +385,7 @@ export default function PropertyModal({
                         setFormData({
                           ...formData,
                           features: [
-                            ...(formData.features || []),
+                            ...((formData.features || []) as string[]),
                             featureInput.trim(),
                           ],
                         });
@@ -401,7 +401,7 @@ export default function PropertyModal({
                       setFormData({
                         ...formData,
                         features: [
-                          ...(formData.features || []),
+                          ...((formData.features || []) as string[]),
                           featureInput.trim(),
                         ],
                       });
@@ -419,7 +419,7 @@ export default function PropertyModal({
                     key={idx}
                     className="flex items-center gap-2 rounded-full bg-(--accent)/10 px-3 py-1 text-sm text-(--accent)"
                   >
-                    {feature}
+                    {typeof feature === "string" ? feature : feature.name}
                     <button
                       type="button"
                       onClick={() =>
@@ -427,7 +427,7 @@ export default function PropertyModal({
                           ...formData,
                           features: formData.features?.filter(
                             (_, i) => i !== idx
-                          ),
+                          ) as typeof formData.features,
                         })
                       }
                       className="flex h-4 w-4 items-center justify-center rounded-full hover:bg-black/5 hover:text-red-500"

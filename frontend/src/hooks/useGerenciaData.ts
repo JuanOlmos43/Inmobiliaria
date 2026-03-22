@@ -1,10 +1,6 @@
 import { useState, useEffect } from "react";
 import { gerenciaService } from "@/lib/api/services/gerencia";
-import {
-  ManagerStats,
-  MonthlyActivity,
-  TopAgent,
-} from "@/types/api";
+import { ManagerStats, MonthlyActivity, TopAgent } from "@/types/api";
 
 interface UseGerenciaDataReturn {
   // Datos

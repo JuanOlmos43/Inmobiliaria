@@ -9,7 +9,7 @@ export function useLandlordSearch(initialSearch: string = "") {
   const [showLandlordDropdown, setShowLandlordDropdown] = useState(false);
   const debouncedSearch = useDebounce(landlordSearch, 500);
 
-  const { data: landlords = [], isLoading: isLoadingLandlords } = useQuery({
+  const { data: rawLandlords, isLoading: isLoadingLandlords } = useQuery({
     queryKey: ["users", "landlords", debouncedSearch],
     queryFn: () =>
       usersService.getUsers({
@@ -18,6 +18,10 @@ export function useLandlordSearch(initialSearch: string = "") {
       }),
     enabled: showLandlordDropdown, // Only query if dropdown is/was open
   });
+
+  const landlords = Array.isArray(rawLandlords)
+    ? rawLandlords
+    : rawLandlords?.data ?? [];
 
   return {
     landlordSearch,

@@ -26,20 +26,20 @@ export function useAdminFilters() {
 
     if (filterRole !== "all") filters.role = filterRole;
     if (debouncedSearch.trim()) filters.email = debouncedSearch.trim();
-    
+
     return filters;
   }, [debouncedSearch, filterRole, page, limit]);
 
   return {
     searchEmail,
     setSearchEmail: (val: string) => {
-        setSearchEmail(val);
-        setPage(1); // Reset page on search
+      setSearchEmail(val);
+      setPage(1); // Reset page on search
     },
     filterRole,
     setFilterRole: (val: UserRole | "all") => {
-        setFilterRole(val);
-        setPage(1); // Reset page on filter change
+      setFilterRole(val);
+      setPage(1); // Reset page on filter change
     },
     page,
     setPage,

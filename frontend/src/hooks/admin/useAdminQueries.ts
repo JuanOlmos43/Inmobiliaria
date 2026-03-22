@@ -20,11 +20,12 @@ export function useAdminQueries(filters?: UserFilters) {
 
   // Manejo seguro de la respuesta, soportando tanto array (legacy) como paginada
   const users = Array.isArray(usersData) ? usersData : usersData?.data || [];
-  
+
   // Si es array, simulamos meta. Si es objeto, usamos su meta.
-  const pagination = !Array.isArray(usersData) && usersData?.meta 
-    ? usersData.meta 
-    : { total: users.length, page: 1, totalPages: 1, limit: 10 };
+  const pagination =
+    !Array.isArray(usersData) && usersData?.meta
+      ? usersData.meta
+      : { total: users.length, page: 1, totalPages: 1, limit: 10 };
 
   // Query para las estadísticas generales
   const {

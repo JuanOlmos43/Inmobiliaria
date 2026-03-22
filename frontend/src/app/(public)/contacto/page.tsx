@@ -41,11 +41,11 @@ export default function ContactoPage() {
     setSubmitStatus("idle");
 
     try {
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
       const response = await fetch(`${apiUrl}/contact`, {
-        method: 'POST',
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({
           nombreCompleto: formData.nombre,
@@ -57,7 +57,7 @@ export default function ContactoPage() {
       });
 
       if (!response.ok) {
-        throw new Error('Failed to submit form');
+        throw new Error("Failed to submit form");
       }
 
       setSubmitStatus("success");
@@ -72,7 +72,7 @@ export default function ContactoPage() {
       // Resetear el mensaje de éxito después de 5 segundos
       setTimeout(() => setSubmitStatus("idle"), 5000);
     } catch (error) {
-      console.error('Error submitting contact form:', error);
+      console.error("Error submitting contact form:", error);
       setSubmitStatus("error");
     } finally {
       setIsSubmitting(false);
@@ -273,8 +273,9 @@ export default function ContactoPage() {
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className={`flex w-full transform items-center justify-center gap-2 rounded-lg bg-(--primary)/95 py-3 text-base font-bold text-white shadow-lg transition-all duration-300 hover:scale-95 hover:bg-(--primary) hover:shadow-xl ${isSubmitting ? "cursor-not-allowed opacity-50" : ""
-                    }`}
+                  className={`flex w-full transform items-center justify-center gap-2 rounded-lg bg-(--primary)/95 py-3 text-base font-bold text-white shadow-lg transition-all duration-300 hover:scale-95 hover:bg-(--primary) hover:shadow-xl ${
+                    isSubmitting ? "cursor-not-allowed opacity-50" : ""
+                  }`}
                 >
                   {isSubmitting ? (
                     <span className="flex items-center justify-center">

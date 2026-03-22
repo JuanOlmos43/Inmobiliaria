@@ -12,7 +12,7 @@ export function EmptyState({ icon, title, description }: EmptyStateProps) {
   return (
     <div className="rounded-xl bg-white p-12 text-center shadow-lg">
       {/* Icon */}
-      {icon ? (        
+      {icon ? (
         <Icon name={icon} className="mx-auto mb-4 h-16 w-16 text-gray-400" />
       ) : (
         <Icon name="home" className="mx-auto mb-4 h-16 w-16 text-gray-400" />

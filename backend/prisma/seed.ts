@@ -54,11 +54,12 @@ async function main() {
   });
 
   // Create landlord user
+  // NOTE: using real email for Resend free plan testing (only sends to your own email)
   const landlord = await prisma.user.upsert({
-    where: { email: 'landlord@inmobiliaria.com' },
+    where: { email: 'cuentadepruebasdevirgi@gmail.com' },
     update: {},
     create: {
-      email: 'landlord@inmobiliaria.com',
+      email: 'cuentadepruebasdevirgi@gmail.com',
       password: hashedPassword,
       name: 'Propietario de Inmueble',
       role: UserRole.Propietario,
@@ -148,6 +149,74 @@ async function main() {
   }
   console.log(`✅ ${provincias.length} provinces processed.`);
 
+  // Seed test property + contract for notification testing
+  console.log('\n🏠 Seeding test property and contract...');
+
+  const buenosAires = await prisma.provincia.findUnique({
+    where: { nombre: 'Buenos Aires' },
+  });
+
+  const testProperty = await prisma.property.upsert({
+    where: { id: 'test-property-001' },
+    update: {},
+    create: {
+      id: 'test-property-001',
+      title: 'Departamento Test - Av. Corrientes 1234',
+      description: 'Propiedad de prueba para testear notificaciones de contratos.',
+      propertyType: 'departamento',
+      listingType: 'alquiler',
+      status: 'alquilada',
+      price: 350000,
+      bedrooms: 2,
+      rooms: 3,
+      bathrooms: 1,
+      area: 65,
+      ownerId: landlord.id,
+      agentId: agent.id,
+      provinciaId: buenosAires?.id,
+    },
+  });
+
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
+  // Contract 1: expires in 30 days (triggers 30-day expiration alert)
+  const endDate30 = new Date(today);
+  endDate30.setDate(endDate30.getDate() + 30);
+
+  const adjustmentDate = new Date(today);
+  adjustmentDate.setDate(adjustmentDate.getDate() + 5);
+
+  const startDate = new Date(today);
+  startDate.setFullYear(startDate.getFullYear() - 1);
+
+  await prisma.rentalContract.upsert({
+    where: { id: 'test-contract-001' },
+    update: {
+      endDate: endDate30,
+      nextAdjustmentDate: adjustmentDate,
+    },
+    create: {
+      id: 'test-contract-001',
+      propertyId: testProperty.id,
+      tenantId: tenant.id,
+      landlordId: landlord.id,
+      agentId: agent.id,
+      monthlyRent: 350000,
+      deposit: 700000,
+      adjustmentFrequency: 3,
+      startDate,
+      endDate: endDate30,
+      nextAdjustmentDate: adjustmentDate,
+      status: 'active',
+    },
+  });
+
+  console.log('✅ Test property created:', testProperty.title);
+  console.log('✅ Test contract created:');
+  console.log(`   - endDate: ${endDate30.toLocaleDateString('es-AR')} (30 days from now → triggers expiration alert)`);
+  console.log(`   - nextAdjustmentDate: ${adjustmentDate.toLocaleDateString('es-AR')} (5 days from now → triggers adjustment alert)`);
+
   console.log('\n🎉 Seeding completed!');
   console.log('\n📋 Summary:');
   console.log('  - Admin:    admin@inmobiliaria.com');
@@ -156,6 +225,8 @@ async function main() {
   console.log('  - Tenant:   tenant@inmobiliaria.com');
   console.log('  - Manager:  manager@inmobiliaria.com');
   console.log('  - Password: admin123 (for all users)');
+  console.log('\n📧 Notification test data:');
+  console.log('  - Contract test-contract-001 will trigger BOTH alerts');
 }
 
 main()

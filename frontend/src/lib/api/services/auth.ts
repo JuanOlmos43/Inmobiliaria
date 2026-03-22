@@ -84,10 +84,10 @@ export const authService = {
   async changePassword(
     data: ChangePasswordRequest
   ): Promise<{ ok: boolean; message: string }> {
-    return apiClient.post<{ ok: boolean; message: string }, ChangePasswordRequest>(
-      API_ENDPOINTS.CHANGE_PASSWORD,
-      data
-    );
+    return apiClient.post<
+      { ok: boolean; message: string },
+      ChangePasswordRequest
+    >(API_ENDPOINTS.CHANGE_PASSWORD, data);
   },
 
   /**

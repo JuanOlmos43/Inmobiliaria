@@ -111,7 +111,7 @@ export interface UploadUrlResponse {
 
 export interface PropertyFilters {
   search?: string;
-  status?: "activa" | "pausada" | "alquilada" | "archivada";
+  status?: "activa" | "pausada" | "alquilada" | "archivada" | "vendida";
   listingType?: "venta" | "alquiler";
   operationType?: "venta" | "alquiler"; // UI-friendly, optional (undefined = all)
   propertyType?: string;

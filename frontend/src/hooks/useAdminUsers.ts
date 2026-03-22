@@ -59,9 +59,9 @@ export function useAdminUsers() {
     isLoading,
     error,
     pagination: {
-        currentPage: page,
-        totalPages: pagination?.totalPages || 1,
-        onPageChange: setPage,
+      currentPage: page,
+      totalPages: pagination?.totalPages || 1,
+      onPageChange: setPage,
     },
 
     // Filtros
