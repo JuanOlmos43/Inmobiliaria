@@ -103,3 +103,5 @@ Thumbs.db
 infra/backup/backups/
 infra/backup/.env.backup
 infra/backup/node_modules/
+
+config_google/
