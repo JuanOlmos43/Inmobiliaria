@@ -11,6 +11,7 @@ import { StorageModule } from './storage/storage.module';
 import { ConfigModule } from '@nestjs/config';
 import { ContratosModule } from './contratos/contratos.module';
 import { GerenciaModule } from './gerencia/gerencia.module';
+import { ContactModule } from './contact/contact.module';
 
 @Module({
   imports: [
@@ -23,8 +24,9 @@ import { GerenciaModule } from './gerencia/gerencia.module';
     StorageModule,
     ContratosModule,
     GerenciaModule,
+    ContactModule,
   ],
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule {}
+export class AppModule { }

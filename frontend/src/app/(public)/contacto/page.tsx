@@ -15,7 +15,7 @@ export default function ContactoPage() {
     nombre: "",
     email: "",
     telefono: "",
-    asunto: "",
+    asunto: "compra",
     mensaje: "",
   });
 
@@ -38,22 +38,45 @@ export default function ContactoPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
+    setSubmitStatus("idle");
 
-    // Simulación de envío (aquí conectarías con tu backend)
-    setTimeout(() => {
-      setIsSubmitting(false);
+    try {
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
+      const response = await fetch(`${apiUrl}/contact`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          nombreCompleto: formData.nombre,
+          email: formData.email,
+          telefono: formData.telefono,
+          asunto: formData.asunto,
+          mensaje: formData.mensaje,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to submit form');
+      }
+
       setSubmitStatus("success");
       setFormData({
         nombre: "",
         email: "",
         telefono: "",
-        asunto: "",
+        asunto: "compra",
         mensaje: "",
       });
 
       // Resetear el mensaje de éxito después de 5 segundos
       setTimeout(() => setSubmitStatus("idle"), 5000);
-    }, 1500);
+    } catch (error) {
+      console.error('Error submitting contact form:', error);
+      setSubmitStatus("error");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -164,6 +187,17 @@ export default function ContactoPage() {
                 </div>
               )}
 
+              {submitStatus === "error" && (
+                <div className="mb-4 rounded border-l-4 border-red-500 bg-red-100 p-3 text-red-700">
+                  <p className="text-sm font-bold">
+                    Error al enviar el mensaje.
+                  </p>
+                  <p className="text-sm">
+                    Por favor, inténtalo nuevamente más tarde.
+                  </p>
+                </div>
+              )}
+
               <form onSubmit={handleSubmit} className="space-y-4">
                 {/* Nombre */}
                 <FormInput
@@ -239,9 +273,8 @@ export default function ContactoPage() {
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className={`flex w-full transform items-center justify-center gap-2 rounded-lg bg-(--primary)/95 py-3 text-base font-bold text-white shadow-lg transition-all duration-300 hover:scale-95 hover:bg-(--primary) hover:shadow-xl ${
-                    isSubmitting ? "cursor-not-allowed opacity-50" : ""
-                  }`}
+                  className={`flex w-full transform items-center justify-center gap-2 rounded-lg bg-(--primary)/95 py-3 text-base font-bold text-white shadow-lg transition-all duration-300 hover:scale-95 hover:bg-(--primary) hover:shadow-xl ${isSubmitting ? "cursor-not-allowed opacity-50" : ""
+                    }`}
                 >
                   {isSubmitting ? (
                     <span className="flex items-center justify-center">

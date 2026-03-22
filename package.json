@@ -16,7 +16,8 @@
     "restore": "cd infra/backup && node src/restore-all.js",
     "restore:db": "cd infra/backup && node src/restore-db.js",
     "restore:storage": "cd infra/backup && node src/restore-storage.js",
-    "nuke": "cd infra/backup && node src/nuke-db.js"
+    "nuke": "cd infra/backup && node src/nuke-db.js",
+    "generate-token": "npx ts-node scripts/generate-gmail-token.ts"
   },
   "keywords": [
     "nextjs",
@@ -29,5 +30,8 @@
   "license": "ISC",
   "devDependencies": {
     "concurrently": "^8.2.2"
+  },
+  "dependencies": {
+    "googleapis": "^171.4.0"
   }
 }
