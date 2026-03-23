@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { FormSelect, FormInput, Icon } from "@/components/ui";
+import { FormSelect, FormInput, Icon, Button } from "@/components/ui";
 import { scrollToTop } from "@/components/ui/navigation/ScrollToTop";
 import { useLocationLogic } from "@/hooks/useLocationLogic";
 import type { PropertyFilters } from "@/types/property";
@@ -329,22 +329,28 @@ export default function PropertyFilters({
         </div>
 
         {/* Botón Buscar */}
-        <button
+        <Button
+          variant="secondary"
+          size="lg"
+          fullWidth
+          icon={<Icon name="search" className="h-5 w-5" />}
           onClick={handleSearch}
-          className="mb-3 flex w-full transform items-center justify-center gap-2 rounded-full bg-(--primary)/95 px-4 py-3 font-bold text-white shadow-lg transition-all duration-300 hover:scale-95 hover:bg-(--primary) hover:shadow-xl"
+          className="mb-3 font-bold"
         >
-          <Icon name="search" className="h-5 w-5" />
           Buscar
-        </button>
+        </Button>
 
         {/* Botón Limpiar filtros */}
-        <button
+        <Button
+          variant="outline"
+          size="sm"
+          fullWidth
+          icon={<Icon name="close" className="h-5 w-5" />}
           onClick={handleReset}
-          className="flex w-full items-center justify-center gap-2 rounded-lg bg-gray-300 px-2 py-1 font-bold text-gray-700 shadow-md transition-all duration-300 hover:bg-(--danger) hover:text-white hover:shadow-lg"
+          className="font-bold"
         >
-          <Icon name="close" className="h-5 w-5" />
           Limpiar filtros
-        </button>
+        </Button>
       </div>
     </aside>
   );

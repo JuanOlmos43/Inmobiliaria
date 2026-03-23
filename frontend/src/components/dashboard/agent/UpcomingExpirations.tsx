@@ -1,4 +1,4 @@
-import { Icon } from "@/components/ui";
+import { Icon, Button } from "@/components/ui";
 import { BasePropertyCard } from "@/components/features/properties/cards";
 import { useContractExpirations } from "@/hooks/agent/useContractExpirations";
 import { ContractActivity, Contract } from "@/types/api";
@@ -54,16 +54,14 @@ export default function UpcomingExpirations({
       showStatusBadge={false}
       showDetails={false}
       footerSlot={
-        <button
-          className="group/btn flex w-full items-center justify-center gap-2 rounded-lg bg-(--accent) px-4 py-3 font-semibold text-white shadow-md transition-all hover:bg-(--accent-hover) hover:shadow-lg"
+        <Button
+          fullWidth
+          icon={<Icon name="document" className="h-5 w-5" />}
           onClick={() => onViewContract?.(contract)}
+          className="py-3 font-semibold"
         >
-          <Icon
-            name="document"
-            className="h-5 w-5 transition-transform group-hover/btn:scale-110"
-          />
           Ver Contrato
-        </button>
+        </Button>
       }
     />
   );
