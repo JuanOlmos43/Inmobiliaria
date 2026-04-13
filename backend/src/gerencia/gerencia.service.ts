@@ -1,6 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
-import { PropertyStatus, PropertyListingType, ContractStatus } from '@prisma/client';
+import {
+  PropertyStatus,
+  PropertyListingType,
+  ContractStatus,
+} from '@prisma/client';
 
 /**
  * Service para el dashboard de Gerencia
@@ -51,36 +55,37 @@ export class GerenciaService {
     const now = new Date();
     const firstDayOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
 
-    const [total, newMonth, active, paused, reserved, totalValueResult] = await Promise.all([
-      // Total de propiedades
-      this.prisma.property.count(),
+    const [total, newMonth, active, paused, reserved, totalValueResult] =
+      await Promise.all([
+        // Total de propiedades
+        this.prisma.property.count(),
 
-      // Nuevas este mes
-      this.prisma.property.count({
-        where: { createdAt: { gte: firstDayOfMonth } },
-      }),
+        // Nuevas este mes
+        this.prisma.property.count({
+          where: { createdAt: { gte: firstDayOfMonth } },
+        }),
 
-      // Activas
-      this.prisma.property.count({
-        where: { status: PropertyStatus.activa },
-      }),
+        // Activas
+        this.prisma.property.count({
+          where: { status: PropertyStatus.activa },
+        }),
 
-      // Pausadas
-      this.prisma.property.count({
-        where: { status: PropertyStatus.pausada },
-      }),
+        // Pausadas
+        this.prisma.property.count({
+          where: { status: PropertyStatus.pausada },
+        }),
 
-      // Reservadas (consideramos alquiladas como reservadas)
-      this.prisma.property.count({
-        where: { status: PropertyStatus.alquilada },
-      }),
+        // Reservadas (consideramos alquiladas como reservadas)
+        this.prisma.property.count({
+          where: { status: PropertyStatus.alquilada },
+        }),
 
-      // Valor total del inventario (suma de precios de propiedades activas)
-      this.prisma.property.aggregate({
-        where: { status: PropertyStatus.activa },
-        _sum: { price: true },
-      }),
-    ]);
+        // Valor total del inventario (suma de precios de propiedades activas)
+        this.prisma.property.aggregate({
+          where: { status: PropertyStatus.activa },
+          _sum: { price: true },
+        }),
+      ]);
 
     return {
       total,
@@ -337,7 +342,8 @@ export class GerenciaService {
     });
 
     // Convertir a array con formato esperado por el frontend
-    const result: Array<{ month: string; venta: number; alquiler: number }> = [];
+    const result: Array<{ month: string; venta: number; alquiler: number }> =
+      [];
     for (let i = 11; i >= 0; i--) {
       const date = new Date(now.getFullYear(), now.getMonth() - i, 1);
       const monthKey = this.getMonthKey(date);

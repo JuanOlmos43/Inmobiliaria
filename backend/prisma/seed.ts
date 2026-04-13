@@ -162,7 +162,8 @@ async function main() {
     create: {
       id: 'test-property-001',
       title: 'Departamento Test - Av. Corrientes 1234',
-      description: 'Propiedad de prueba para testear notificaciones de contratos.',
+      description:
+        'Propiedad de prueba para testear notificaciones de contratos.',
       propertyType: 'departamento',
       listingType: 'alquiler',
       status: 'alquilada',
@@ -214,8 +215,12 @@ async function main() {
 
   console.log('✅ Test property created:', testProperty.title);
   console.log('✅ Test contract created:');
-  console.log(`   - endDate: ${endDate30.toLocaleDateString('es-AR')} (30 days from now → triggers expiration alert)`);
-  console.log(`   - nextAdjustmentDate: ${adjustmentDate.toLocaleDateString('es-AR')} (5 days from now → triggers adjustment alert)`);
+  console.log(
+    `   - endDate: ${endDate30.toLocaleDateString('es-AR')} (30 days from now → triggers expiration alert)`,
+  );
+  console.log(
+    `   - nextAdjustmentDate: ${adjustmentDate.toLocaleDateString('es-AR')} (5 days from now → triggers adjustment alert)`,
+  );
 
   console.log('\n🎉 Seeding completed!');
   console.log('\n📋 Summary:');

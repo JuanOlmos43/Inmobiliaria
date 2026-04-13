@@ -18,7 +18,7 @@ export class GerenciaController {
    * GET /gerencia/dashboard
    * Obtiene todas las estadísticas del dashboard de gerencia
    * Incluye: stats, activity (12 meses), y top 5 agentes
-   * 
+   *
    * Acceso: Solo Gerencia y Administrador
    */
   @Get('dashboard')
