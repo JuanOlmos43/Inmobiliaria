@@ -4,8 +4,8 @@ import { ContactController } from './contact.controller';
 import { ResendProvider } from './providers/resend.provider';
 
 @Module({
-    controllers: [ContactController],
-    providers: [ContactService, ResendProvider],
-    exports: [ResendProvider],
+  controllers: [ContactController],
+  providers: [ContactService, ResendProvider],
+  exports: [ResendProvider],
 })
-export class ContactModule { }
+export class ContactModule {}

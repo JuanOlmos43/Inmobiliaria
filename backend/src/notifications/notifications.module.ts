@@ -5,8 +5,8 @@ import { ContactModule } from '../contact/contact.module';
 import { PrismaModule } from '../prisma/prisma.module';
 
 @Module({
-    imports: [PrismaModule, ContactModule],
-    controllers: [NotificationsController],
-    providers: [NotificationsService],
+  imports: [PrismaModule, ContactModule],
+  controllers: [NotificationsController],
+  providers: [NotificationsService],
 })
-export class NotificationsModule { }
+export class NotificationsModule {}
