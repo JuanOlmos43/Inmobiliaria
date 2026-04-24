@@ -287,6 +287,8 @@ function RentalCardWrapper({
 
 // Property Card Component - Using shared component
 function PropertyCardWrapper({ property }: { property: Property }) {
+  const [showAllContracts, setShowAllContracts] = React.useState(false);
+
   const publishedDate = property.createdAt
     ? new Date(property.createdAt).toLocaleDateString("es-ES", {
         day: "numeric",
@@ -294,6 +296,10 @@ function PropertyCardWrapper({ property }: { property: Property }) {
         year: "numeric",
       })
     : null;
+
+  const contractsToShow = showAllContracts
+    ? property.rentalContracts
+    : property.rentalContracts?.slice(0, 2);
 
   const renderHistory = () => (
     <div className="mt-4 border-t border-gray-100 pt-4 text-sm">
@@ -310,8 +316,11 @@ function PropertyCardWrapper({ property }: { property: Property }) {
             Historial de Alquileres
           </h4>
           <div className="space-y-2">
-            {property.rentalContracts.slice(0, 2).map((contract) => (
-              <div key={contract.id} className="rounded bg-gray-50 p-2 text-xs">
+            {contractsToShow?.map((contract) => (
+              <div
+                key={contract.id}
+                className="animate-in fade-in slide-in-from-top-1 rounded bg-gray-50 p-2 text-xs duration-300"
+              >
                 <div className="font-medium text-gray-700">
                   {contract.tenant?.name || "Inquilino"}
                 </div>
@@ -326,9 +335,30 @@ function PropertyCardWrapper({ property }: { property: Property }) {
                 </div>
               </div>
             ))}
-            {property.rentalContracts.length > 2 && (
-              <div className="cursor-pointer text-center text-xs text-(--primary) hover:underline">
+
+            {!showAllContracts && property.rentalContracts.length > 2 && (
+              <div
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  setShowAllContracts(true);
+                }}
+                className="cursor-pointer text-center text-xs font-medium text-(--primary) hover:underline"
+              >
                 + {property.rentalContracts.length - 2} contratos más
+              </div>
+            )}
+
+            {showAllContracts && property.rentalContracts.length > 2 && (
+              <div
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  setShowAllContracts(false);
+                }}
+                className="cursor-pointer text-center text-xs font-medium text-(--primary) hover:underline"
+              >
+                Ver menos
               </div>
             )}
           </div>
