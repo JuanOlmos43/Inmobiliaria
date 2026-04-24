@@ -138,5 +138,20 @@ export function useAgentFilters() {
     contractPage,
     setContractPage,
     activeContractFilters,
+
+    // Acciones de limpieza
+    clearPropertyFilters: () => {
+      setSearchTerm("");
+      setFilterStatus("all");
+      setFilterListingType("all");
+      setPropertyPage(1);
+    },
+    clearContractFilters: () => {
+      setSearchAddress("");
+      setSearchOwner("");
+      setSearchTenant("");
+      setContractStatus("all");
+      setContractPage(1);
+    },
   };
 }

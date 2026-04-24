@@ -1,4 +1,4 @@
-import { FormInput, FormSelect, EmptyState, Pagination } from "@/components/ui";
+import { FormInput, FormSelect, Button, Icon } from "@/components/ui";
 
 interface ContractFiltersProps {
   searchAddress: string;
@@ -9,6 +9,7 @@ interface ContractFiltersProps {
   setSearchTenant: (val: string) => void;
   contractStatus: string;
   setContractStatus: (val: string) => void;
+  onClearFilters: () => void;
 }
 
 /**
@@ -24,7 +25,14 @@ export default function ContractFilters({
   setSearchTenant,
   contractStatus,
   setContractStatus,
+  onClearFilters,
 }: ContractFiltersProps) {
+  const hasFilters =
+    searchAddress.trim() !== "" ||
+    searchOwner.trim() !== "" ||
+    searchTenant.trim() !== "" ||
+    contractStatus !== "all";
+
   return (
     <div className="grid grid-cols-1 gap-4 rounded-xl border border-gray-100 bg-gray-50 p-4 md:grid-cols-4">
       {/* Buscar por dirección */}
@@ -70,6 +78,20 @@ export default function ContractFilters({
         <option value="expired">Vencido</option>
         <option value="terminated">Terminado</option>
       </FormSelect>
+
+      {hasFilters && (
+        <div className="flex items-center md:col-span-4 md:justify-end">
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={onClearFilters}
+            icon={<Icon name="close" className="h-4 w-4" />}
+            className="animate-in fade-in slide-in-from-right-2 duration-300"
+          >
+            Limpiar filtros
+          </Button>
+        </div>
+      )}
     </div>
   );
 }

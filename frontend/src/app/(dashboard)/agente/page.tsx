@@ -64,6 +64,8 @@ export default function AgentDashboardPage() {
     setContractPage,
     activeTab,
     setActiveTab,
+    clearPropertyFilters,
+    clearContractFilters,
 
     // UI State - Modales
     isModalOpen,
@@ -167,6 +169,7 @@ export default function AgentDashboardPage() {
                 setFilterStatus={setFilterStatus}
                 filterListingType={filterListingType}
                 setFilterListingType={setFilterListingType}
+                onClearFilters={clearPropertyFilters}
               />
             </div>
 
@@ -224,6 +227,7 @@ export default function AgentDashboardPage() {
                 setSearchTenant={setSearchTenant}
                 contractStatus={contractStatus}
                 setContractStatus={setContractStatus}
+                onClearFilters={clearContractFilters}
               />
             </div>
 

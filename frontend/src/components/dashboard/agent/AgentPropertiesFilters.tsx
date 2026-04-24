@@ -1,4 +1,4 @@
-import { FormInput, FormSelect } from "@/components/ui";
+import { FormInput, FormSelect, Button, Icon } from "@/components/ui";
 
 interface AgentPropertiesFiltersProps {
   searchTerm: string;
@@ -9,6 +9,7 @@ interface AgentPropertiesFiltersProps {
   ) => void;
   filterListingType: "all" | "venta" | "alquiler";
   setFilterListingType: (val: "all" | "venta" | "alquiler") => void;
+  onClearFilters: () => void;
 }
 
 /**
@@ -22,7 +23,13 @@ export default function AgentPropertiesFilters({
   setFilterStatus,
   filterListingType,
   setFilterListingType,
+  onClearFilters,
 }: AgentPropertiesFiltersProps) {
+  const hasFilters =
+    searchTerm.trim() !== "" ||
+    filterStatus !== "all" ||
+    filterListingType !== "all";
+
   return (
     <div className="grid grid-cols-1 gap-4 rounded-xl border border-gray-100 bg-gray-50 p-4 md:grid-cols-4">
       <div className="md:col-span-2">
@@ -73,6 +80,20 @@ export default function AgentPropertiesFilters({
           <option value="vendida">Vendidas</option>
         )}
       </FormSelect>
+
+      {hasFilters && (
+        <div className="flex items-center md:col-span-4 md:justify-end">
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={onClearFilters}
+            icon={<Icon name="close" className="h-4 w-4" />}
+            className="animate-in fade-in slide-in-from-right-2 duration-300"
+          >
+            Limpiar filtros
+          </Button>
+        </div>
+      )}
     </div>
   );
 }

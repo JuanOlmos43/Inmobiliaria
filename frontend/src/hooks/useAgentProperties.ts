@@ -42,6 +42,8 @@ export function useAgentProperties() {
     activeContractFilters,
     propertyPage,
     setPropertyPage,
+    clearPropertyFilters,
+    clearContractFilters,
   } = useAgentFilters();
 
   // 2. Capa de UI (Modales, Toasts)
@@ -184,6 +186,8 @@ export function useAgentProperties() {
     setPropertyPage,
     activeTab,
     setActiveTab,
+    clearPropertyFilters,
+    clearContractFilters,
     isModalOpen,
     editingProperty,
     isRentalModalOpen,
