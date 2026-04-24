@@ -30,13 +30,24 @@ export class ContratosService {
     startDate: Date,
     endDate: Date,
     frequencyMonths?: number | null,
+    relativeTo?: Date,
   ): Date | null {
-    if (!frequencyMonths) return null;
+    if (!frequencyMonths || frequencyMonths <= 0) return null;
 
-    const nextDate = this.addMonths(startDate, frequencyMonths);
+    // Usar el inicio del mes actual como referencia predeterminada para evitar confusiones de días
+    const today = new Date();
+    const reference =
+      relativeTo || new Date(today.getFullYear(), today.getMonth(), 1);
 
-    // "siempre comprobando que el resultado sea menor o igual a endDate"
-    // Si la fecha calculada supera el fin del contrato, no hay próximo ajuste (null)
+    let nextDate = this.addMonths(startDate, frequencyMonths);
+
+    // Si la fecha inicial calculada ya pasó respecto a la referencia,
+    // incrementamos por la frecuencia hasta encontrar la próxima fecha futura
+    while (nextDate < reference && nextDate <= endDate) {
+      nextDate = this.addMonths(nextDate, frequencyMonths);
+    }
+
+    // Si la fecha calculada supera el fin del contrato, no hay próximo ajuste
     if (nextDate > endDate) {
       return null;
     }
@@ -514,6 +525,9 @@ export class ContratosService {
   }
 
   async findLandlordRentedProperties(landlordId: string) {
+    // Asegurar que las fechas de ajuste estén al día antes de mostrar
+    await this.updateOverdueAdjustments();
+
     const contracts = await this.prisma.rentalContract.findMany({
       where: {
         landlordId,
@@ -572,6 +586,9 @@ export class ContratosService {
   }
 
   async findTenantRentals(tenantId: string) {
+    // Asegurar que las fechas de ajuste estén al día antes de mostrar
+    await this.updateOverdueAdjustments();
+
     const contracts = await this.prisma.rentalContract.findMany({
       where: {
         tenantId,
