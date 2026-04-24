@@ -38,6 +38,23 @@ function createSupabaseClient(): SupabaseClient | null {
   return createClient(url, key);
 }
 
+
+// IDs de propiedades (Generados dinámicamente pero fijos durante la ejecución)
+const ID_PROP_001 = randomUUID();
+const ID_PROP_002 = randomUUID();
+const ID_PROP_003 = randomUUID();
+const ID_PROP_004 = randomUUID();
+const ID_PROP_005 = randomUUID();
+const ID_PROP_006 = randomUUID();
+const ID_PROP_007 = randomUUID();
+const ID_PROP_008 = randomUUID();
+
+// IDs de contratos (Generados dinámicamente pero fijos durante la ejecución)
+const ID_CONT_001 = randomUUID();
+const ID_CONT_002 = randomUUID();
+const ID_CONT_003 = randomUUID();
+const ID_CONT_004 = randomUUID();
+
 async function uploadImagesForProperty(
   supabase: SupabaseClient,
   propertyId: string,
@@ -341,10 +358,10 @@ async function main() {
 
   // prop-001: Departamento moderno en alquiler, actualmente ocupado
   await prisma.property.upsert({
-    where: { id: 'prop-001' },
+    where: { id: ID_PROP_001 },
     update: {},
     create: {
-      id: 'prop-001',
+      id: ID_PROP_001,
       title: 'Departamento 2 amb. en alquiler — Av. Colón 272, Mar del Plata',
       description:
         'Moderno departamento de 2 ambientes con living-comedor integrado y cocina completa con mesada de granito y muebles oscuros. Piso flotante, excelente luminosidad.',
@@ -367,22 +384,22 @@ async function main() {
       calleId: calleColon.id,
     },
   });
-  await prisma.propertyFeature.deleteMany({ where: { propertyId: 'prop-001' } });
+  await prisma.propertyFeature.deleteMany({ where: { propertyId: ID_PROP_001 } });
   await prisma.propertyFeature.createMany({
     data: [
-      { name: 'Cocina equipada con granito', propertyId: 'prop-001' },
-      { name: 'Piso flotante', propertyId: 'prop-001' },
-      { name: 'Living-comedor integrado', propertyId: 'prop-001' },
-      { name: 'AC split', propertyId: 'prop-001' },
+      { name: 'Cocina equipada con granito', propertyId: ID_PROP_001 },
+      { name: 'Piso flotante', propertyId: ID_PROP_001 },
+      { name: 'Living-comedor integrado', propertyId: ID_PROP_001 },
+      { name: 'AC split', propertyId: ID_PROP_001 },
     ],
   });
 
   // prop-002: Departamento en alquiler, disponible
   await prisma.property.upsert({
-    where: { id: 'prop-002' },
+    where: { id: ID_PROP_002 },
     update: {},
     create: {
-      id: 'prop-002',
+      id: ID_PROP_002,
       title: 'Departamento 2 amb. en Palermo — Av. Santa Fe 3420',
       description:
         'Luminoso departamento en piso 8 con balcón y vista despejada. Edificio con amenities: SUM, laundry y seguridad 24hs.',
@@ -405,22 +422,22 @@ async function main() {
       calleId: calleSantaFe.id,
     },
   });
-  await prisma.propertyFeature.deleteMany({ where: { propertyId: 'prop-002' } });
+  await prisma.propertyFeature.deleteMany({ where: { propertyId: ID_PROP_002 } });
   await prisma.propertyFeature.createMany({
     data: [
-      { name: 'Balcón', propertyId: 'prop-002' },
-      { name: 'Seguridad 24hs', propertyId: 'prop-002' },
-      { name: 'SUM', propertyId: 'prop-002' },
-      { name: 'Laundry en planta baja', propertyId: 'prop-002' },
+      { name: 'Balcón', propertyId: ID_PROP_002 },
+      { name: 'Seguridad 24hs', propertyId: ID_PROP_002 },
+      { name: 'SUM', propertyId: ID_PROP_002 },
+      { name: 'Laundry en planta baja', propertyId: ID_PROP_002 },
     ],
   });
 
   // prop-003: Departamento luminoso con balcón en alquiler
   await prisma.property.upsert({
-    where: { id: 'prop-003' },
+    where: { id: ID_PROP_003 },
     update: {},
     create: {
-      id: 'prop-003',
+      id: ID_PROP_003,
       title: 'Departamento luminoso con balcón — Rivadavia 1850, Mar del Plata',
       description:
         'Departamento muy luminoso con piso de madera y amplio balcón con vista despejada. Paredes blancas, espacios bien distribuidos. Ideal para profesional o pareja.',
@@ -443,22 +460,22 @@ async function main() {
       calleId: calleRivadavia.id,
     },
   });
-  await prisma.propertyFeature.deleteMany({ where: { propertyId: 'prop-003' } });
+  await prisma.propertyFeature.deleteMany({ where: { propertyId: ID_PROP_003 } });
   await prisma.propertyFeature.createMany({
     data: [
-      { name: 'Balcón amplio', propertyId: 'prop-003' },
-      { name: 'Piso de madera', propertyId: 'prop-003' },
-      { name: 'Mucha luz natural', propertyId: 'prop-003' },
-      { name: 'Vista despejada', propertyId: 'prop-003' },
+      { name: 'Balcón amplio', propertyId: ID_PROP_003 },
+      { name: 'Piso de madera', propertyId: ID_PROP_003 },
+      { name: 'Mucha luz natural', propertyId: ID_PROP_003 },
+      { name: 'Vista despejada', propertyId: ID_PROP_003 },
     ],
   });
 
   // prop-004: Departamento en alquiler, ocupado (contrato vencido)
   await prisma.property.upsert({
-    where: { id: 'prop-004' },
+    where: { id: ID_PROP_004 },
     update: {},
     create: {
-      id: 'prop-004',
+      id: ID_PROP_004,
       title: 'Departamento en Recoleta — Av. Callao 890, 3° A',
       description:
         'Clásico departamento en Recoleta con pisos de madera, techos altos y gran luminosidad. Edificio histórico.',
@@ -481,22 +498,22 @@ async function main() {
       calleId: calleCallao.id,
     },
   });
-  await prisma.propertyFeature.deleteMany({ where: { propertyId: 'prop-004' } });
+  await prisma.propertyFeature.deleteMany({ where: { propertyId: ID_PROP_004 } });
   await prisma.propertyFeature.createMany({
     data: [
-      { name: 'Pisos de madera', propertyId: 'prop-004' },
-      { name: 'Techos altos', propertyId: 'prop-004' },
-      { name: 'Portero 24hs', propertyId: 'prop-004' },
-      { name: 'Baulera', propertyId: 'prop-004' },
+      { name: 'Pisos de madera', propertyId: ID_PROP_004 },
+      { name: 'Techos altos', propertyId: ID_PROP_004 },
+      { name: 'Portero 24hs', propertyId: ID_PROP_004 },
+      { name: 'Baulera', propertyId: ID_PROP_004 },
     ],
   });
 
   // prop-005: Departamento moderno en venta
   await prisma.property.upsert({
-    where: { id: 'prop-005' },
+    where: { id: ID_PROP_005 },
     update: {},
     create: {
-      id: 'prop-005',
+      id: ID_PROP_005,
       title: 'Departamento moderno en venta — Bv. San Juan 540, Córdoba',
       description:
         'Estreno. Departamento de diseño con living amplio, sofá en L y cocina americana con barra. Iluminación ambiental LED, terminaciones de primera calidad. Piso de porcelanato claro.',
@@ -519,22 +536,22 @@ async function main() {
       calleId: calleBvSanJuan.id,
     },
   });
-  await prisma.propertyFeature.deleteMany({ where: { propertyId: 'prop-005' } });
+  await prisma.propertyFeature.deleteMany({ where: { propertyId: ID_PROP_005 } });
   await prisma.propertyFeature.createMany({
     data: [
-      { name: 'Cocina americana con barra', propertyId: 'prop-005' },
-      { name: 'Iluminación LED ambiental', propertyId: 'prop-005' },
-      { name: 'Porcelanato 60x60', propertyId: 'prop-005' },
-      { name: 'Terminaciones de lujo', propertyId: 'prop-005' },
+      { name: 'Cocina americana con barra', propertyId: ID_PROP_005 },
+      { name: 'Iluminación LED ambiental', propertyId: ID_PROP_005 },
+      { name: 'Porcelanato 60x60', propertyId: ID_PROP_005 },
+      { name: 'Terminaciones de lujo', propertyId: ID_PROP_005 },
     ],
   });
 
   // prop-006: Casa antigua en venta
   await prisma.property.upsert({
-    where: { id: 'prop-006' },
+    where: { id: ID_PROP_006 },
     update: {},
     create: {
-      id: 'prop-006',
+      id: ID_PROP_006,
       title: 'Casa en venta — Av. San Martín 1100, Mendoza',
       description:
         'Clásica casa de estilo con comedor formal, araña de techo, ventanas amplias y chimenea. Construcción sólida de los años 60. Gran potencial para refuncionalizar o habitar tal cual.',
@@ -556,23 +573,23 @@ async function main() {
       calleId: calleSanMartin.id,
     },
   });
-  await prisma.propertyFeature.deleteMany({ where: { propertyId: 'prop-006' } });
+  await prisma.propertyFeature.deleteMany({ where: { propertyId: ID_PROP_006 } });
   await prisma.propertyFeature.createMany({
     data: [
-      { name: 'Comedor formal', propertyId: 'prop-006' },
-      { name: 'Araña de techo original', propertyId: 'prop-006' },
-      { name: 'Chimenea', propertyId: 'prop-006' },
-      { name: 'Ventanas amplias', propertyId: 'prop-006' },
-      { name: 'Construcción sólida', propertyId: 'prop-006' },
+      { name: 'Comedor formal', propertyId: ID_PROP_006 },
+      { name: 'Araña de techo original', propertyId: ID_PROP_006 },
+      { name: 'Chimenea', propertyId: ID_PROP_006 },
+      { name: 'Ventanas amplias', propertyId: ID_PROP_006 },
+      { name: 'Construcción sólida', propertyId: ID_PROP_006 },
     ],
   });
 
   // prop-007: Casa con interiores originales en alquiler
   await prisma.property.upsert({
-    where: { id: 'prop-007' },
+    where: { id: ID_PROP_007 },
     update: {},
     create: {
-      id: 'prop-007',
+      id: ID_PROP_007,
       title: 'Casa en alquiler — Av. Argentina 2300, Neuquén',
       description:
         'Casa con carácter. Living amplio con piso de madera, biblioteca empotrada y excelente ventilación natural. Comedor separado con pisos de mosaico original y bloques de vidrio. Espacios únicos y bien conservados.',
@@ -594,23 +611,23 @@ async function main() {
       calleId: calleArgentina.id,
     },
   });
-  await prisma.propertyFeature.deleteMany({ where: { propertyId: 'prop-007' } });
+  await prisma.propertyFeature.deleteMany({ where: { propertyId: ID_PROP_007 } });
   await prisma.propertyFeature.createMany({
     data: [
-      { name: 'Piso de madera original', propertyId: 'prop-007' },
-      { name: 'Biblioteca empotrada', propertyId: 'prop-007' },
-      { name: 'Pisos de mosaico', propertyId: 'prop-007' },
-      { name: 'Bloques de vidrio', propertyId: 'prop-007' },
-      { name: 'Comedor separado', propertyId: 'prop-007' },
+      { name: 'Piso de madera original', propertyId: ID_PROP_007 },
+      { name: 'Biblioteca empotrada', propertyId: ID_PROP_007 },
+      { name: 'Pisos de mosaico', propertyId: ID_PROP_007 },
+      { name: 'Bloques de vidrio', propertyId: ID_PROP_007 },
+      { name: 'Comedor separado', propertyId: ID_PROP_007 },
     ],
   });
 
   // prop-008: Local comercial con frente vidriado en alquiler
   await prisma.property.upsert({
-    where: { id: 'prop-008' },
+    where: { id: ID_PROP_008 },
     update: {},
     create: {
-      id: 'prop-008',
+      id: ID_PROP_008,
       title: 'Local comercial — Calle 7 Nro. 450, La Plata',
       description:
         'Local premium con frente totalmente vidriado, piso de mármol y puerta de madera de roble. Excelente visibilidad. Apto para showroom, boutique, consultorio u oficina comercial.',
@@ -632,13 +649,13 @@ async function main() {
       calleId: calleCalle7.id,
     },
   });
-  await prisma.propertyFeature.deleteMany({ where: { propertyId: 'prop-008' } });
+  await prisma.propertyFeature.deleteMany({ where: { propertyId: ID_PROP_008 } });
   await prisma.propertyFeature.createMany({
     data: [
-      { name: 'Frente totalmente vidriado', propertyId: 'prop-008' },
-      { name: 'Piso de mármol', propertyId: 'prop-008' },
-      { name: 'Puerta de madera de roble', propertyId: 'prop-008' },
-      { name: 'Apto showroom o boutique', propertyId: 'prop-008' },
+      { name: 'Frente totalmente vidriado', propertyId: ID_PROP_008 },
+      { name: 'Piso de mármol', propertyId: ID_PROP_008 },
+      { name: 'Puerta de madera de roble', propertyId: ID_PROP_008 },
+      { name: 'Apto showroom o boutique', propertyId: ID_PROP_008 },
     ],
   });
 
@@ -652,14 +669,14 @@ async function main() {
 
   if (supabase) {
     const propertyImageMap: Array<{ id: string; folder: number }> = [
-      { id: 'prop-001', folder: 1 },
-      { id: 'prop-002', folder: 2 },
-      { id: 'prop-003', folder: 3 },
-      { id: 'prop-004', folder: 4 },
-      { id: 'prop-005', folder: 5 },
-      { id: 'prop-006', folder: 6 },
-      { id: 'prop-007', folder: 7 },
-      { id: 'prop-008', folder: 8 },
+      { id: ID_PROP_001, folder: 1 },
+      { id: ID_PROP_002, folder: 2 },
+      { id: ID_PROP_003, folder: 3 },
+      { id: ID_PROP_004, folder: 4 },
+      { id: ID_PROP_005, folder: 5 },
+      { id: ID_PROP_006, folder: 6 },
+      { id: ID_PROP_007, folder: 7 },
+      { id: ID_PROP_008, folder: 8 },
     ];
 
     for (const { id, folder } of propertyImageMap) {
@@ -675,14 +692,14 @@ async function main() {
 
   // contrato-001: Activo, vence en 30 días, ajuste en 5 días (test notificaciones)
   await prisma.rentalContract.upsert({
-    where: { id: 'contrato-001' },
+    where: { id: ID_CONT_001 },
     update: {
       endDate: addDays(today, 30),
       nextAdjustmentDate: addDays(today, 5),
     },
     create: {
-      id: 'contrato-001',
-      propertyId: 'prop-001',
+      id: ID_CONT_001,
+      propertyId: ID_PROP_001,
       tenantId: inquilino1.id,
       landlordId: propietario1.id,
       agentId: agente.id,
@@ -698,11 +715,11 @@ async function main() {
 
   // contrato-002: Vencido hace 60 días
   await prisma.rentalContract.upsert({
-    where: { id: 'contrato-002' },
+    where: { id: ID_CONT_002 },
     update: {},
     create: {
-      id: 'contrato-002',
-      propertyId: 'prop-004',
+      id: ID_CONT_002,
+      propertyId: ID_PROP_004,
       tenantId: inquilino2.id,
       landlordId: propietario2.id,
       agentId: agente.id,
@@ -718,11 +735,11 @@ async function main() {
 
   // contrato-003: Terminado anticipadamente (histórico sobre prop-001)
   await prisma.rentalContract.upsert({
-    where: { id: 'contrato-003' },
+    where: { id: ID_CONT_003 },
     update: {},
     create: {
-      id: 'contrato-003',
-      propertyId: 'prop-001',
+      id: ID_CONT_003,
+      propertyId: ID_PROP_001,
       tenantId: inquilino2.id,
       landlordId: propietario1.id,
       agentId: agente.id,
@@ -738,11 +755,11 @@ async function main() {
 
   // contrato-004: Activo, vence en 8 meses (local comercial)
   await prisma.rentalContract.upsert({
-    where: { id: 'contrato-004' },
+    where: { id: ID_CONT_004 },
     update: {},
     create: {
-      id: 'contrato-004',
-      propertyId: 'prop-008',
+      id: ID_CONT_004,
+      propertyId: ID_PROP_008,
       tenantId: inquilino1.id,
       landlordId: propietario2.id,
       agentId: agente.id,
