@@ -167,7 +167,7 @@ async function main() {
     create: {
       email: 'cuentadepruebasdevirgi@gmail.com',
       password: hashedPassword,
-      name: 'Virgilio Müller',
+      name: 'Virginia Müller',
       role: UserRole.Propietario,
       status: UserStatus.active,
     },
