@@ -2,116 +2,203 @@ import { PrismaClient, UserRole, UserStatus } from '@prisma/client';
 import { PrismaPg } from '@prisma/adapter-pg';
 import { Pool } from 'pg';
 import * as bcrypt from 'bcrypt';
+import * as fs from 'fs';
+import * as path from 'path';
+import { randomUUID } from 'crypto';
+import { createClient, SupabaseClient } from '@supabase/supabase-js';
 import 'dotenv/config';
 
-// Create PostgreSQL connection pool
 const pool = new Pool({ connectionString: process.env.DIRECT_URL });
 const adapter = new PrismaPg(pool);
 const prisma = new PrismaClient({ adapter });
 
-async function main() {
-  console.log('🌱 Seeding database...');
+const BUCKET = 'propiedades';
+const SEED_IMAGES_DIR = path.join(__dirname, 'seed-images');
+const VALID_EXTENSIONS = /\.(jpg|jpeg|png|webp)$/i;
 
-  // Hash password
+function addDays(date: Date, days: number): Date {
+  const d = new Date(date);
+  d.setDate(d.getDate() + days);
+  return d;
+}
+
+function addMonths(date: Date, months: number): Date {
+  const d = new Date(date);
+  d.setMonth(d.getMonth() + months);
+  return d;
+}
+
+function createSupabaseClient(): SupabaseClient | null {
+  const url = process.env.SUPABASE_URL;
+  const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  if (!url || !key) {
+    console.warn('⚠️  SUPABASE_URL o SUPABASE_SERVICE_ROLE_KEY no configurados. Se omite la subida de imágenes.');
+    return null;
+  }
+  return createClient(url, key);
+}
+
+async function uploadImagesForProperty(
+  supabase: SupabaseClient,
+  propertyId: string,
+  folderNumber: number,
+): Promise<{ mainImageUrl: string | null; count: number }> {
+  const folderPath = path.join(SEED_IMAGES_DIR, `propiedad-${folderNumber}`);
+
+  if (!fs.existsSync(folderPath)) {
+    console.log(`   ℹ️  Sin imágenes para propiedad-${folderNumber} (carpeta no existe)`);
+    return { mainImageUrl: null, count: 0 };
+  }
+
+  const files = fs
+    .readdirSync(folderPath)
+    .filter((f) => VALID_EXTENSIONS.test(f))
+    .sort();
+
+  if (files.length === 0) {
+    console.log(`   ℹ️  Sin imágenes para propiedad-${folderNumber} (carpeta vacía)`);
+    return { mainImageUrl: null, count: 0 };
+  }
+
+  await prisma.propertyImage.deleteMany({ where: { propertyId } });
+
+  const publicUrls: string[] = [];
+
+  for (let i = 0; i < files.length; i++) {
+    const file = files[i];
+    const ext = path.extname(file).slice(1).toLowerCase();
+    const storagePath = `${propertyId}/${randomUUID()}.${ext}`;
+    const buffer = fs.readFileSync(path.join(folderPath, file));
+    const contentType = ext === 'jpg' ? 'image/jpeg' : `image/${ext}`;
+
+    const { error } = await supabase.storage
+      .from(BUCKET)
+      .upload(storagePath, buffer, { contentType, upsert: false });
+
+    if (error) {
+      console.warn(`   ⚠️  Error subiendo ${file}: ${error.message}`);
+      continue;
+    }
+
+    const { data } = supabase.storage.from(BUCKET).getPublicUrl(storagePath);
+    publicUrls.push(data.publicUrl);
+
+    await prisma.propertyImage.create({
+      data: { url: data.publicUrl, order: i + 1, propertyId },
+    });
+  }
+
+  const mainImageUrl = publicUrls[0] ?? null;
+
+  if (mainImageUrl) {
+    await prisma.property.update({
+      where: { id: propertyId },
+      data: { mainImage: mainImageUrl },
+    });
+  }
+
+  return { mainImageUrl, count: publicUrls.length };
+}
+
+async function main() {
+  console.log('🌱 Iniciando seed...\n');
+
+  // ─── USUARIOS ────────────────────────────────────────────────────────────
+  console.log('👤 Creando usuarios...');
   const hashedPassword = await bcrypt.hash('admin123', 10);
 
-  // Create admin user
   const admin = await prisma.user.upsert({
     where: { email: 'admin@inmobiliaria.com' },
     update: {},
     create: {
       email: 'admin@inmobiliaria.com',
       password: hashedPassword,
-      name: 'Administrador',
+      name: 'Admin Sistema',
       role: UserRole.Administrador,
       status: UserStatus.active,
     },
   });
 
-  console.log('✅ Admin user created:', {
-    email: admin.email,
-    role: admin.role,
-    password: 'admin123 (change this after first login!)',
-  });
-
-  // Create agent user
-  const agent = await prisma.user.upsert({
-    where: { email: 'agent@inmobiliaria.com' },
+  const gerente = await prisma.user.upsert({
+    where: { email: 'gerente@inmobiliaria.com' },
     update: {},
     create: {
-      email: 'agent@inmobiliaria.com',
+      email: 'gerente@inmobiliaria.com',
       password: hashedPassword,
-      name: 'Agente Inmobiliario',
-      role: UserRole.Agente,
-      status: UserStatus.active,
-    },
-  });
-
-  console.log('✅ Agent user created:', {
-    email: agent.email,
-    role: agent.role,
-    password: 'admin123 (change this after first login!)',
-  });
-
-  // Create landlord user
-  // NOTE: using real email for Resend free plan testing (only sends to your own email)
-  const landlord = await prisma.user.upsert({
-    where: { email: 'cuentadepruebasdevirgi@gmail.com' },
-    update: {},
-    create: {
-      email: 'cuentadepruebasdevirgi@gmail.com',
-      password: hashedPassword,
-      name: 'Propietario de Inmueble',
-      role: UserRole.Propietario,
-      status: UserStatus.active,
-    },
-  });
-
-  console.log('✅ Landlord user created:', {
-    email: landlord.email,
-    role: landlord.role,
-    password: 'admin123 (change this after first login!)',
-  });
-
-  // Create tenant user
-  const tenant = await prisma.user.upsert({
-    where: { email: 'tenant@inmobiliaria.com' },
-    update: {},
-    create: {
-      email: 'tenant@inmobiliaria.com',
-      password: hashedPassword,
-      name: 'Inquilino',
-      role: UserRole.Inquilino,
-      status: UserStatus.active,
-    },
-  });
-
-  console.log('✅ Tenant user created:', {
-    email: tenant.email,
-    role: tenant.role,
-    password: 'admin123 (change this after first login!)',
-  });
-
-  // Create manager user
-  const manager = await prisma.user.upsert({
-    where: { email: 'manager@inmobiliaria.com' },
-    update: {},
-    create: {
-      email: 'manager@inmobiliaria.com',
-      password: hashedPassword,
-      name: 'Gerente General',
+      name: 'Carlos Méndez',
       role: UserRole.Gerencia,
       status: UserStatus.active,
     },
   });
 
-  console.log('✅ Manager user created:', {
-    email: manager.email,
-    role: manager.role,
-    password: 'admin123 (change this after first login!)',
+  const agente = await prisma.user.upsert({
+    where: { email: 'agente@inmobiliaria.com' },
+    update: {},
+    create: {
+      email: 'agente@inmobiliaria.com',
+      password: hashedPassword,
+      name: 'Laura Fernández',
+      role: UserRole.Agente,
+      status: UserStatus.active,
+    },
   });
 
-  // Seed Provinces
+  // Propietario 1: email real para testing con Resend
+  const propietario1 = await prisma.user.upsert({
+    where: { email: 'cuentadepruebasdevirgi@gmail.com' },
+    update: {},
+    create: {
+      email: 'cuentadepruebasdevirgi@gmail.com',
+      password: hashedPassword,
+      name: 'Virgilio Müller',
+      role: UserRole.Propietario,
+      status: UserStatus.active,
+    },
+  });
+
+  const propietario2 = await prisma.user.upsert({
+    where: { email: 'propietario2@inmobiliaria.com' },
+    update: {},
+    create: {
+      email: 'propietario2@inmobiliaria.com',
+      password: hashedPassword,
+      name: 'Roberto Salinas',
+      role: UserRole.Propietario,
+      status: UserStatus.active,
+    },
+  });
+
+  const inquilino1 = await prisma.user.upsert({
+    where: { email: 'inquilino1@inmobiliaria.com' },
+    update: {},
+    create: {
+      email: 'inquilino1@inmobiliaria.com',
+      password: hashedPassword,
+      name: 'Marcela Gómez',
+      role: UserRole.Inquilino,
+      status: UserStatus.active,
+    },
+  });
+
+  const inquilino2 = await prisma.user.upsert({
+    where: { email: 'inquilino2@inmobiliaria.com' },
+    update: {},
+    create: {
+      email: 'inquilino2@inmobiliaria.com',
+      password: hashedPassword,
+      name: 'Sebastián Torres',
+      role: UserRole.Inquilino,
+      status: UserStatus.active,
+    },
+  });
+
+  console.log(`✅ 7 usuarios creados`);
+  // Suppress unused variable warnings
+  void admin;
+  void gerente;
+
+  // ─── PROVINCIAS ──────────────────────────────────────────────────────────
+  console.log('\n📍 Creando provincias...');
   const provincias = [
     'Ciudad Autónoma de Buenos Aires',
     'Neuquén',
@@ -139,7 +226,6 @@ async function main() {
     'Tierra del Fuego, Antártida e Islas del Atlántico Sur',
   ];
 
-  console.log('\n📍 Seeding provinces...');
   for (const nombre of provincias) {
     await prisma.provincia.upsert({
       where: { nombre },
@@ -147,96 +233,567 @@ async function main() {
       create: { nombre },
     });
   }
-  console.log(`✅ ${provincias.length} provinces processed.`);
+  console.log(`✅ ${provincias.length} provincias procesadas`);
 
-  // Seed test property + contract for notification testing
-  console.log('\n🏠 Seeding test property and contract...');
+  // ─── LOCALIDADES Y CALLES ─────────────────────────────────────────────────
+  console.log('\n🗺️  Creando localidades y calles...');
 
-  const buenosAires = await prisma.provincia.findUnique({
-    where: { nombre: 'Buenos Aires' },
+  const provBA = await prisma.provincia.findUniqueOrThrow({ where: { nombre: 'Buenos Aires' } });
+  const provCABA = await prisma.provincia.findUniqueOrThrow({ where: { nombre: 'Ciudad Autónoma de Buenos Aires' } });
+  const provCBA = await prisma.provincia.findUniqueOrThrow({ where: { nombre: 'Córdoba' } });
+  const provMDZ = await prisma.provincia.findUniqueOrThrow({ where: { nombre: 'Mendoza' } });
+  const provNQN = await prisma.provincia.findUniqueOrThrow({ where: { nombre: 'Neuquén' } });
+
+  const locMdP = await prisma.localidad.upsert({
+    where: { nombre_provinciaId: { nombre: 'Mar del Plata', provinciaId: provBA.id } },
+    update: {},
+    create: { nombre: 'Mar del Plata', provinciaId: provBA.id },
   });
 
-  const testProperty = await prisma.property.upsert({
-    where: { id: 'test-property-001' },
+  const locLaPlata = await prisma.localidad.upsert({
+    where: { nombre_provinciaId: { nombre: 'La Plata', provinciaId: provBA.id } },
+    update: {},
+    create: { nombre: 'La Plata', provinciaId: provBA.id },
+  });
+
+  const locPalermo = await prisma.localidad.upsert({
+    where: { nombre_provinciaId: { nombre: 'Palermo', provinciaId: provCABA.id } },
+    update: {},
+    create: { nombre: 'Palermo', provinciaId: provCABA.id },
+  });
+
+  const locRecoleta = await prisma.localidad.upsert({
+    where: { nombre_provinciaId: { nombre: 'Recoleta', provinciaId: provCABA.id } },
+    update: {},
+    create: { nombre: 'Recoleta', provinciaId: provCABA.id },
+  });
+
+  const locCBA = await prisma.localidad.upsert({
+    where: { nombre_provinciaId: { nombre: 'Córdoba Capital', provinciaId: provCBA.id } },
+    update: {},
+    create: { nombre: 'Córdoba Capital', provinciaId: provCBA.id },
+  });
+
+  const locMDZ = await prisma.localidad.upsert({
+    where: { nombre_provinciaId: { nombre: 'Mendoza Capital', provinciaId: provMDZ.id } },
+    update: {},
+    create: { nombre: 'Mendoza Capital', provinciaId: provMDZ.id },
+  });
+
+  const locNQN = await prisma.localidad.upsert({
+    where: { nombre_provinciaId: { nombre: 'Neuquén Capital', provinciaId: provNQN.id } },
+    update: {},
+    create: { nombre: 'Neuquén Capital', provinciaId: provNQN.id },
+  });
+
+  const calleColon = await prisma.calle.upsert({
+    where: { nombre_localidadId: { nombre: 'Av. Colón', localidadId: locMdP.id } },
+    update: {},
+    create: { nombre: 'Av. Colón', localidadId: locMdP.id },
+  });
+
+  const calleRivadavia = await prisma.calle.upsert({
+    where: { nombre_localidadId: { nombre: 'Calle Rivadavia', localidadId: locMdP.id } },
+    update: {},
+    create: { nombre: 'Calle Rivadavia', localidadId: locMdP.id },
+  });
+
+  const calleCalle7 = await prisma.calle.upsert({
+    where: { nombre_localidadId: { nombre: 'Calle 7', localidadId: locLaPlata.id } },
+    update: {},
+    create: { nombre: 'Calle 7', localidadId: locLaPlata.id },
+  });
+
+  const calleSantaFe = await prisma.calle.upsert({
+    where: { nombre_localidadId: { nombre: 'Av. Santa Fe', localidadId: locPalermo.id } },
+    update: {},
+    create: { nombre: 'Av. Santa Fe', localidadId: locPalermo.id },
+  });
+
+  const calleCallao = await prisma.calle.upsert({
+    where: { nombre_localidadId: { nombre: 'Av. Callao', localidadId: locRecoleta.id } },
+    update: {},
+    create: { nombre: 'Av. Callao', localidadId: locRecoleta.id },
+  });
+
+  const calleBvSanJuan = await prisma.calle.upsert({
+    where: { nombre_localidadId: { nombre: 'Bv. San Juan', localidadId: locCBA.id } },
+    update: {},
+    create: { nombre: 'Bv. San Juan', localidadId: locCBA.id },
+  });
+
+  const calleSanMartin = await prisma.calle.upsert({
+    where: { nombre_localidadId: { nombre: 'Av. San Martín', localidadId: locMDZ.id } },
+    update: {},
+    create: { nombre: 'Av. San Martín', localidadId: locMDZ.id },
+  });
+
+  const calleArgentina = await prisma.calle.upsert({
+    where: { nombre_localidadId: { nombre: 'Av. Argentina', localidadId: locNQN.id } },
+    update: {},
+    create: { nombre: 'Av. Argentina', localidadId: locNQN.id },
+  });
+
+  console.log('✅ Localidades y calles creadas');
+
+  // ─── PROPIEDADES ─────────────────────────────────────────────────────────
+  console.log('\n🏠 Creando propiedades...');
+
+  // prop-001: Departamento moderno en alquiler, actualmente ocupado
+  await prisma.property.upsert({
+    where: { id: 'prop-001' },
     update: {},
     create: {
-      id: 'test-property-001',
-      title: 'Departamento Test - Av. Corrientes 1234',
+      id: 'prop-001',
+      title: 'Departamento 2 amb. en alquiler — Av. Colón 272, Mar del Plata',
       description:
-        'Propiedad de prueba para testear notificaciones de contratos.',
+        'Moderno departamento de 2 ambientes con living-comedor integrado y cocina completa con mesada de granito y muebles oscuros. Piso flotante, excelente luminosidad.',
       propertyType: 'departamento',
       listingType: 'alquiler',
       status: 'alquilada',
-      price: 350000,
+      price: 450000,
+      bedrooms: 1,
+      rooms: 2,
+      bathrooms: 1,
+      area: 48,
+      yearBuilt: 2017,
+      streetNumber: '272',
+      apartment: '4A',
+      location: 'Av. Colón 272 4A, Mar del Plata, Buenos Aires',
+      ownerId: propietario1.id,
+      agentId: agente.id,
+      localidadId: locMdP.id,
+      provinciaId: provBA.id,
+      calleId: calleColon.id,
+    },
+  });
+  await prisma.propertyFeature.deleteMany({ where: { propertyId: 'prop-001' } });
+  await prisma.propertyFeature.createMany({
+    data: [
+      { name: 'Cocina equipada con granito', propertyId: 'prop-001' },
+      { name: 'Piso flotante', propertyId: 'prop-001' },
+      { name: 'Living-comedor integrado', propertyId: 'prop-001' },
+      { name: 'AC split', propertyId: 'prop-001' },
+    ],
+  });
+
+  // prop-002: Departamento en alquiler, disponible
+  await prisma.property.upsert({
+    where: { id: 'prop-002' },
+    update: {},
+    create: {
+      id: 'prop-002',
+      title: 'Departamento 2 amb. en Palermo — Av. Santa Fe 3420',
+      description:
+        'Luminoso departamento en piso 8 con balcón y vista despejada. Edificio con amenities: SUM, laundry y seguridad 24hs.',
+      propertyType: 'departamento',
+      listingType: 'alquiler',
+      status: 'activa',
+      price: 320000,
+      bedrooms: 1,
+      rooms: 2,
+      bathrooms: 1,
+      area: 48,
+      yearBuilt: 2018,
+      streetNumber: '3420',
+      apartment: '8B',
+      location: 'Av. Santa Fe 3420 8B, Palermo, CABA',
+      ownerId: propietario1.id,
+      agentId: agente.id,
+      localidadId: locPalermo.id,
+      provinciaId: provCABA.id,
+      calleId: calleSantaFe.id,
+    },
+  });
+  await prisma.propertyFeature.deleteMany({ where: { propertyId: 'prop-002' } });
+  await prisma.propertyFeature.createMany({
+    data: [
+      { name: 'Balcón', propertyId: 'prop-002' },
+      { name: 'Seguridad 24hs', propertyId: 'prop-002' },
+      { name: 'SUM', propertyId: 'prop-002' },
+      { name: 'Laundry en planta baja', propertyId: 'prop-002' },
+    ],
+  });
+
+  // prop-003: Departamento luminoso con balcón en alquiler
+  await prisma.property.upsert({
+    where: { id: 'prop-003' },
+    update: {},
+    create: {
+      id: 'prop-003',
+      title: 'Departamento luminoso con balcón — Rivadavia 1850, Mar del Plata',
+      description:
+        'Departamento muy luminoso con piso de madera y amplio balcón con vista despejada. Paredes blancas, espacios bien distribuidos. Ideal para profesional o pareja.',
+      propertyType: 'departamento',
+      listingType: 'alquiler',
+      status: 'activa',
+      price: 310000,
+      bedrooms: 1,
+      rooms: 2,
+      bathrooms: 1,
+      area: 42,
+      yearBuilt: 2010,
+      streetNumber: '1850',
+      apartment: '6C',
+      location: 'Calle Rivadavia 1850 6C, Mar del Plata, Buenos Aires',
+      ownerId: propietario2.id,
+      agentId: agente.id,
+      localidadId: locMdP.id,
+      provinciaId: provBA.id,
+      calleId: calleRivadavia.id,
+    },
+  });
+  await prisma.propertyFeature.deleteMany({ where: { propertyId: 'prop-003' } });
+  await prisma.propertyFeature.createMany({
+    data: [
+      { name: 'Balcón amplio', propertyId: 'prop-003' },
+      { name: 'Piso de madera', propertyId: 'prop-003' },
+      { name: 'Mucha luz natural', propertyId: 'prop-003' },
+      { name: 'Vista despejada', propertyId: 'prop-003' },
+    ],
+  });
+
+  // prop-004: Departamento en alquiler, ocupado (contrato vencido)
+  await prisma.property.upsert({
+    where: { id: 'prop-004' },
+    update: {},
+    create: {
+      id: 'prop-004',
+      title: 'Departamento en Recoleta — Av. Callao 890, 3° A',
+      description:
+        'Clásico departamento en Recoleta con pisos de madera, techos altos y gran luminosidad. Edificio histórico.',
+      propertyType: 'departamento',
+      listingType: 'alquiler',
+      status: 'alquilada',
+      price: 280000,
       bedrooms: 2,
       rooms: 3,
       bathrooms: 1,
-      area: 65,
-      ownerId: landlord.id,
-      agentId: agent.id,
-      provinciaId: buenosAires?.id,
+      area: 72,
+      yearBuilt: 1965,
+      streetNumber: '890',
+      apartment: '3A',
+      location: 'Av. Callao 890 3A, Recoleta, CABA',
+      ownerId: propietario2.id,
+      agentId: agente.id,
+      localidadId: locRecoleta.id,
+      provinciaId: provCABA.id,
+      calleId: calleCallao.id,
     },
   });
+  await prisma.propertyFeature.deleteMany({ where: { propertyId: 'prop-004' } });
+  await prisma.propertyFeature.createMany({
+    data: [
+      { name: 'Pisos de madera', propertyId: 'prop-004' },
+      { name: 'Techos altos', propertyId: 'prop-004' },
+      { name: 'Portero 24hs', propertyId: 'prop-004' },
+      { name: 'Baulera', propertyId: 'prop-004' },
+    ],
+  });
 
+  // prop-005: Departamento moderno en venta
+  await prisma.property.upsert({
+    where: { id: 'prop-005' },
+    update: {},
+    create: {
+      id: 'prop-005',
+      title: 'Departamento moderno en venta — Bv. San Juan 540, Córdoba',
+      description:
+        'Estreno. Departamento de diseño con living amplio, sofá en L y cocina americana con barra. Iluminación ambiental LED, terminaciones de primera calidad. Piso de porcelanato claro.',
+      propertyType: 'departamento',
+      listingType: 'venta',
+      status: 'activa',
+      price: 89000,
+      bedrooms: 2,
+      rooms: 3,
+      bathrooms: 1,
+      area: 68,
+      yearBuilt: 2023,
+      streetNumber: '540',
+      apartment: '2B',
+      location: 'Bv. San Juan 540 2B, Córdoba Capital, Córdoba',
+      ownerId: propietario1.id,
+      agentId: agente.id,
+      localidadId: locCBA.id,
+      provinciaId: provCBA.id,
+      calleId: calleBvSanJuan.id,
+    },
+  });
+  await prisma.propertyFeature.deleteMany({ where: { propertyId: 'prop-005' } });
+  await prisma.propertyFeature.createMany({
+    data: [
+      { name: 'Cocina americana con barra', propertyId: 'prop-005' },
+      { name: 'Iluminación LED ambiental', propertyId: 'prop-005' },
+      { name: 'Porcelanato 60x60', propertyId: 'prop-005' },
+      { name: 'Terminaciones de lujo', propertyId: 'prop-005' },
+    ],
+  });
+
+  // prop-006: Casa antigua en venta
+  await prisma.property.upsert({
+    where: { id: 'prop-006' },
+    update: {},
+    create: {
+      id: 'prop-006',
+      title: 'Casa en venta — Av. San Martín 1100, Mendoza',
+      description:
+        'Clásica casa de estilo con comedor formal, araña de techo, ventanas amplias y chimenea. Construcción sólida de los años 60. Gran potencial para refuncionalizar o habitar tal cual.',
+      propertyType: 'casa',
+      listingType: 'venta',
+      status: 'activa',
+      price: 95000,
+      bedrooms: 3,
+      rooms: 5,
+      bathrooms: 2,
+      area: 160,
+      yearBuilt: 1962,
+      streetNumber: '1100',
+      location: 'Av. San Martín 1100, Mendoza Capital, Mendoza',
+      ownerId: propietario2.id,
+      agentId: agente.id,
+      localidadId: locMDZ.id,
+      provinciaId: provMDZ.id,
+      calleId: calleSanMartin.id,
+    },
+  });
+  await prisma.propertyFeature.deleteMany({ where: { propertyId: 'prop-006' } });
+  await prisma.propertyFeature.createMany({
+    data: [
+      { name: 'Comedor formal', propertyId: 'prop-006' },
+      { name: 'Araña de techo original', propertyId: 'prop-006' },
+      { name: 'Chimenea', propertyId: 'prop-006' },
+      { name: 'Ventanas amplias', propertyId: 'prop-006' },
+      { name: 'Construcción sólida', propertyId: 'prop-006' },
+    ],
+  });
+
+  // prop-007: Casa con interiores originales en alquiler
+  await prisma.property.upsert({
+    where: { id: 'prop-007' },
+    update: {},
+    create: {
+      id: 'prop-007',
+      title: 'Casa en alquiler — Av. Argentina 2300, Neuquén',
+      description:
+        'Casa con carácter. Living amplio con piso de madera, biblioteca empotrada y excelente ventilación natural. Comedor separado con pisos de mosaico original y bloques de vidrio. Espacios únicos y bien conservados.',
+      propertyType: 'casa',
+      listingType: 'alquiler',
+      status: 'activa',
+      price: 380000,
+      bedrooms: 2,
+      rooms: 4,
+      bathrooms: 1,
+      area: 110,
+      yearBuilt: 1975,
+      streetNumber: '2300',
+      location: 'Av. Argentina 2300, Neuquén Capital, Neuquén',
+      ownerId: propietario1.id,
+      agentId: agente.id,
+      localidadId: locNQN.id,
+      provinciaId: provNQN.id,
+      calleId: calleArgentina.id,
+    },
+  });
+  await prisma.propertyFeature.deleteMany({ where: { propertyId: 'prop-007' } });
+  await prisma.propertyFeature.createMany({
+    data: [
+      { name: 'Piso de madera original', propertyId: 'prop-007' },
+      { name: 'Biblioteca empotrada', propertyId: 'prop-007' },
+      { name: 'Pisos de mosaico', propertyId: 'prop-007' },
+      { name: 'Bloques de vidrio', propertyId: 'prop-007' },
+      { name: 'Comedor separado', propertyId: 'prop-007' },
+    ],
+  });
+
+  // prop-008: Local comercial con frente vidriado en alquiler
+  await prisma.property.upsert({
+    where: { id: 'prop-008' },
+    update: {},
+    create: {
+      id: 'prop-008',
+      title: 'Local comercial — Calle 7 Nro. 450, La Plata',
+      description:
+        'Local premium con frente totalmente vidriado, piso de mármol y puerta de madera de roble. Excelente visibilidad. Apto para showroom, boutique, consultorio u oficina comercial.',
+      propertyType: 'local_comercial',
+      listingType: 'alquiler',
+      status: 'activa',
+      price: 750000,
+      bedrooms: 0,
+      rooms: 1,
+      bathrooms: 1,
+      area: 85,
+      yearBuilt: 2005,
+      streetNumber: '450',
+      location: 'Calle 7 Nro. 450, La Plata, Buenos Aires',
+      ownerId: propietario2.id,
+      agentId: agente.id,
+      localidadId: locLaPlata.id,
+      provinciaId: provBA.id,
+      calleId: calleCalle7.id,
+    },
+  });
+  await prisma.propertyFeature.deleteMany({ where: { propertyId: 'prop-008' } });
+  await prisma.propertyFeature.createMany({
+    data: [
+      { name: 'Frente totalmente vidriado', propertyId: 'prop-008' },
+      { name: 'Piso de mármol', propertyId: 'prop-008' },
+      { name: 'Puerta de madera de roble', propertyId: 'prop-008' },
+      { name: 'Apto showroom o boutique', propertyId: 'prop-008' },
+    ],
+  });
+
+  console.log('✅ 8 propiedades creadas');
+
+  // ─── IMÁGENES ────────────────────────────────────────────────────────────
+  console.log('\n🖼️  Procesando imágenes...');
+  const supabase = createSupabaseClient();
+
+  const imageResults: { id: string; count: number }[] = [];
+
+  if (supabase) {
+    const propertyImageMap: Array<{ id: string; folder: number }> = [
+      { id: 'prop-001', folder: 1 },
+      { id: 'prop-002', folder: 2 },
+      { id: 'prop-003', folder: 3 },
+      { id: 'prop-004', folder: 4 },
+      { id: 'prop-005', folder: 5 },
+      { id: 'prop-006', folder: 6 },
+      { id: 'prop-007', folder: 7 },
+      { id: 'prop-008', folder: 8 },
+    ];
+
+    for (const { id, folder } of propertyImageMap) {
+      const { count } = await uploadImagesForProperty(supabase, id, folder);
+      imageResults.push({ id, count });
+    }
+  }
+
+  // ─── CONTRATOS ───────────────────────────────────────────────────────────
+  console.log('\n📄 Creando contratos...');
   const today = new Date();
   today.setHours(0, 0, 0, 0);
 
-  // Contract 1: expires in 30 days (triggers 30-day expiration alert)
-  const endDate30 = new Date(today);
-  endDate30.setDate(endDate30.getDate() + 30);
-
-  const adjustmentDate = new Date(today);
-  adjustmentDate.setDate(adjustmentDate.getDate() + 5);
-
-  const startDate = new Date(today);
-  startDate.setFullYear(startDate.getFullYear() - 1);
-
+  // contrato-001: Activo, vence en 30 días, ajuste en 5 días (test notificaciones)
   await prisma.rentalContract.upsert({
-    where: { id: 'test-contract-001' },
+    where: { id: 'contrato-001' },
     update: {
-      endDate: endDate30,
-      nextAdjustmentDate: adjustmentDate,
+      endDate: addDays(today, 30),
+      nextAdjustmentDate: addDays(today, 5),
     },
     create: {
-      id: 'test-contract-001',
-      propertyId: testProperty.id,
-      tenantId: tenant.id,
-      landlordId: landlord.id,
-      agentId: agent.id,
-      monthlyRent: 350000,
-      deposit: 700000,
+      id: 'contrato-001',
+      propertyId: 'prop-001',
+      tenantId: inquilino1.id,
+      landlordId: propietario1.id,
+      agentId: agente.id,
+      monthlyRent: 450000,
+      deposit: 900000,
       adjustmentFrequency: 3,
-      startDate,
-      endDate: endDate30,
-      nextAdjustmentDate: adjustmentDate,
+      startDate: addMonths(today, -12),
+      endDate: addDays(today, 30),
+      nextAdjustmentDate: addDays(today, 5),
       status: 'active',
     },
   });
 
-  console.log('✅ Test property created:', testProperty.title);
-  console.log('✅ Test contract created:');
-  console.log(
-    `   - endDate: ${endDate30.toLocaleDateString('es-AR')} (30 days from now → triggers expiration alert)`,
-  );
-  console.log(
-    `   - nextAdjustmentDate: ${adjustmentDate.toLocaleDateString('es-AR')} (5 days from now → triggers adjustment alert)`,
-  );
+  // contrato-002: Vencido hace 60 días
+  await prisma.rentalContract.upsert({
+    where: { id: 'contrato-002' },
+    update: {},
+    create: {
+      id: 'contrato-002',
+      propertyId: 'prop-004',
+      tenantId: inquilino2.id,
+      landlordId: propietario2.id,
+      agentId: agente.id,
+      monthlyRent: 280000,
+      deposit: 560000,
+      adjustmentFrequency: 6,
+      startDate: addMonths(today, -24),
+      endDate: addDays(today, -60),
+      actualEndDate: addDays(today, -60),
+      status: 'expired',
+    },
+  });
 
-  console.log('\n🎉 Seeding completed!');
-  console.log('\n📋 Summary:');
-  console.log('  - Admin:    admin@inmobiliaria.com');
-  console.log('  - Agent:    agent@inmobiliaria.com');
-  console.log('  - Landlord: landlord@inmobiliaria.com');
-  console.log('  - Tenant:   tenant@inmobiliaria.com');
-  console.log('  - Manager:  manager@inmobiliaria.com');
-  console.log('  - Password: admin123 (for all users)');
-  console.log('\n📧 Notification test data:');
-  console.log('  - Contract test-contract-001 will trigger BOTH alerts');
+  // contrato-003: Terminado anticipadamente (histórico sobre prop-001)
+  await prisma.rentalContract.upsert({
+    where: { id: 'contrato-003' },
+    update: {},
+    create: {
+      id: 'contrato-003',
+      propertyId: 'prop-001',
+      tenantId: inquilino2.id,
+      landlordId: propietario1.id,
+      agentId: agente.id,
+      monthlyRent: 380000,
+      deposit: 760000,
+      adjustmentFrequency: 3,
+      startDate: addMonths(today, -28),
+      endDate: addMonths(today, -15),
+      actualEndDate: addMonths(today, -16),
+      status: 'terminated',
+    },
+  });
+
+  // contrato-004: Activo, vence en 8 meses (local comercial)
+  await prisma.rentalContract.upsert({
+    where: { id: 'contrato-004' },
+    update: {},
+    create: {
+      id: 'contrato-004',
+      propertyId: 'prop-008',
+      tenantId: inquilino1.id,
+      landlordId: propietario2.id,
+      agentId: agente.id,
+      monthlyRent: 750000,
+      deposit: 1500000,
+      adjustmentFrequency: 6,
+      startDate: addMonths(today, -4),
+      endDate: addMonths(today, 8),
+      nextAdjustmentDate: addMonths(today, 2),
+      status: 'active',
+    },
+  });
+
+  console.log('✅ 4 contratos creados');
+
+  // ─── RESUMEN ─────────────────────────────────────────────────────────────
+  console.log('\n' + '═'.repeat(50));
+  console.log('  SEED COMPLETADO');
+  console.log('═'.repeat(50));
+  console.log('\n  Usuarios (password: admin123):');
+  console.log('    admin@inmobiliaria.com             → Administrador');
+  console.log('    gerente@inmobiliaria.com           → Gerencia');
+  console.log('    agente@inmobiliaria.com            → Agente');
+  console.log('    cuentadepruebasdevirgi@gmail.com   → Propietario');
+  console.log('    propietario2@inmobiliaria.com      → Propietario');
+  console.log('    inquilino1@inmobiliaria.com        → Inquilino');
+  console.log('    inquilino2@inmobiliaria.com        → Inquilino');
+  console.log('\n  Propiedades: 8 creadas');
+  console.log('  Contratos:   4 creados');
+  console.log('    contrato-001: ACTIVO — vence en 30d, ajuste en 5d ⚠️');
+  console.log('    contrato-002: VENCIDO — expiró hace 60 días');
+  console.log('    contrato-003: TERMINADO anticipadamente');
+  console.log('    contrato-004: ACTIVO — vence en 8 meses');
+
+  if (supabase) {
+    const totalImages = imageResults.reduce((sum, r) => sum + r.count, 0);
+    console.log(`\n  Imágenes:    ${totalImages} subidas a Supabase`);
+    for (const r of imageResults) {
+      if (r.count > 0) console.log(`    ${r.id}: ${r.count} imagen(es)`);
+    }
+    if (totalImages === 0) {
+      console.log('    (ninguna — podés agregar fotos en backend/prisma/seed-images/)');
+    }
+  }
+
+  console.log('\n' + '═'.repeat(50) + '\n');
 }
 
 main()
   .catch((e) => {
-    console.error('❌ Error seeding database:', e);
+    console.error('❌ Error en el seed:', e);
     process.exit(1);
   })
   .finally(async () => {
