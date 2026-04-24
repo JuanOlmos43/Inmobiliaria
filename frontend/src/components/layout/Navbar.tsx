@@ -30,7 +30,7 @@ export function Navbar() {
               className="flex transform items-center gap-3 text-3xl font-bold text-(--accent) transition-all duration-300 hover:scale-105 hover:text-(--accent-hover)"
             >
               <Image
-                src="/icon.png"
+                src="/logo.png"
                 alt="InmoHogar Logo"
                 width={60}
                 height={60}

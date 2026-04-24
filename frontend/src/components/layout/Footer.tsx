@@ -10,7 +10,7 @@ export function Footer() {
           <div>
             <div className="mb-4 flex items-center gap-3">
               <Image
-                src="/icon.png"
+                src="/logo.png"
                 alt="InmoHogar Logo"
                 width={60}
                 height={60}
