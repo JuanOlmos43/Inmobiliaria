@@ -1,6 +1,8 @@
 # Inmobiliaria — Full Stack Application
 
-Aplicación full-stack moderna para gestión inmobiliaria construida con **Next.js 16**, **Nest.js 11**, **PostgreSQL (Supabase)** y **Prisma 7**.
+Sistema de gestión integral para agencias inmobiliarias. Permite registrar y publicar propiedades en venta o alquiler, gestionar contratos con seguimiento de vencimientos y ajustes periódicos, y administrar usuarios con dashboards diferenciados según su rol (Administrador, Agente, Gerencia, Propietario e Inquilino). Incluye notificaciones automáticas por email ante eventos relevantes de los contratos, un panel de KPIs para gerencia, y herramientas de backup y restore de base de datos y almacenamiento.
+
+Aplicación full-stack moderna construida con **Next.js 16**, **Nest.js 11**, **PostgreSQL (Supabase)** y **Prisma 7**.
 
 ---
 
@@ -262,6 +264,7 @@ El schema completo se encuentra en `backend/prisma/schema.prisma`.
 | `PropertyImage`     | Imágenes asociadas a una propiedad                     |
 | `PropertyFeature`   | Características adicionales de una propiedad           |
 | `RentalContract`    | Contratos de alquiler entre partes                     |
+| `Notification`      | Notificaciones enviadas a usuarios (vencimientos, ajustes) |
 
 ### Enums
 
@@ -273,6 +276,9 @@ El schema completo se encuentra en `backend/prisma/schema.prisma`.
 | `PropertyListingType`   | venta, alquiler                                           |
 | `PropertyStatus`        | activa, pausada, alquilada, vendida, archivada            |
 | `ContractStatus`        | active, expired, terminated                               |
+| `NotificationType`      | contract_expiration, rent_adjustment                      |
+| `NotificationChannel`   | email                                                     |
+| `NotificationStatus`    | sent, failed                                              |
 
 ---
 
@@ -312,23 +318,6 @@ El proyecto usa **cookies httpOnly** para tokens de autenticación. La configura
 > 2. O uses un **proxy reverso** (Nginx) para servir ambos desde el mismo origen
 > 3. Ambos usen **HTTPS**
 
-### Opciones de Despliegue
-
-| Opción | Frontend | Backend |
-| ------ | -------- | ------- |
-| Subdominios | `https://app.inmobiliaria.com` | `https://api.inmobiliaria.com` |
-| Proxy reverso | `https://inmobiliaria.com/` | `https://inmobiliaria.com/api/` (proxy) |
-| Serverless | Vercel / Netlify | Railway / Render / Fly.io |
-
-### Checklist Pre-Producción
-
-- [ ] Configurar `NODE_ENV=production` en el backend
-- [ ] Configurar certificados SSL (HTTPS)
-- [ ] Verificar que `FRONTEND_URL` apunta al dominio correcto
-- [ ] Configurar CORS con el dominio de producción
-- [ ] Cambiar secretos JWT (`JWT_ACCESS_SECRET`, `JWT_REFRESH_SECRET`)
-- [ ] Configurar variables de entorno en la plataforma de hosting
-- [ ] Probar login y cookies en el entorno de producción
 
 ---
 
@@ -356,11 +345,3 @@ npm run dev
 - [Resend (Email)](https://resend.com/docs)
 
 ---
-
-## 🤝 Contribuir
-
-Este es un proyecto privado. Para contribuir, contacta al administrador del repositorio.
-
-## 📄 Licencia
-
-ISC
