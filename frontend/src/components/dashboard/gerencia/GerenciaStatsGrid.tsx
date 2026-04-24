@@ -194,6 +194,9 @@ export default function GerenciaStatsGrid({
 
             {/* Lado B: Métricas de Contratos (RESTANTES) */}
             <div className="flex flex-1 flex-col justify-between bg-black/5 p-6">
+              <div className="mb-4 text-[10px] font-black tracking-widest text-white/50 uppercase">
+                Contratos
+              </div>
               <div className="mb-2 flex items-start justify-between">
                 <div className="flex items-center gap-3">
                   <div className="inline-flex rounded-lg bg-white/20 p-2 backdrop-blur-sm">
