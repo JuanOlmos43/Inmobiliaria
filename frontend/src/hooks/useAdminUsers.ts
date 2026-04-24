@@ -23,6 +23,7 @@ export function useAdminUsers() {
     activeFilters,
     page,
     setPage,
+    clearFilters,
   } = useAdminFilters();
 
   // 2. Capa de UI (Modales, Toasts)
@@ -69,6 +70,7 @@ export function useAdminUsers() {
     setSearchEmail,
     filterRole,
     setFilterRole,
+    onClearFilters: clearFilters,
 
     // UI State
     showModal,

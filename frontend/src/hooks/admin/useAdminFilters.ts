@@ -30,6 +30,12 @@ export function useAdminFilters() {
     return filters;
   }, [debouncedSearch, filterRole, page, limit]);
 
+  const clearFilters = () => {
+    setSearchEmail("");
+    setFilterRole("all");
+    setPage(1);
+  };
+
   return {
     searchEmail,
     setSearchEmail: (val: string) => {
@@ -46,5 +52,6 @@ export function useAdminFilters() {
     limit,
     setLimit,
     activeFilters,
+    clearFilters,
   };
 }

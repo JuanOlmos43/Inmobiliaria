@@ -27,6 +27,7 @@ export default function AdminDashboardPage() {
     setSearchEmail,
     filterRole,
     setFilterRole,
+    onClearFilters,
 
     // UI State
     showModal,
@@ -71,6 +72,7 @@ export default function AdminDashboardPage() {
           setSearchEmail={setSearchEmail}
           filterRole={filterRole}
           setFilterRole={setFilterRole}
+          onClearFilters={onClearFilters}
         />
 
         {/* ESTADOS DE CARGA Y ERROR */}
