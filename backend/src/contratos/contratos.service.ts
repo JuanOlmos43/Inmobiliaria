@@ -308,7 +308,7 @@ export class ContratosService {
       where,
       include: {
         property: {
-          select: { title: true, location: true },
+          select: { title: true, location: true, mainImage: true },
         },
         tenant: {
           select: { name: true, email: true },
