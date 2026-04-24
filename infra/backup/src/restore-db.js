@@ -29,6 +29,7 @@ const TABLES = [
     'PropertyImage',
     'PropertyFeature',
     'RentalContract',
+    'Notification',
 ];
 
 // Reverse order for deletion (children first)

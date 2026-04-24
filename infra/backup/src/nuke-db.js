@@ -13,6 +13,7 @@ const { config, validate } = require('./config');
 
 // Tables in reverse dependency order (children first)
 const TABLES_REVERSE = [
+    'Notification',
     'RentalContract',
     'PropertyFeature',
     'PropertyImage',

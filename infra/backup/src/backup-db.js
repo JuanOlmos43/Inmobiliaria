@@ -21,6 +21,7 @@ const TABLES = [
     'PropertyImage',
     'PropertyFeature',
     'RentalContract',
+    'Notification',
     '_prisma_migrations',
 ];
 
