@@ -5,9 +5,5 @@ import { PropertyStatus } from '@prisma/client';
 
 export class UpdatePropiedadeDto extends PartialType(CreatePropiedadeDto) {
   @IsOptional()
-  @IsEnum(PropertyStatus)
-  status?: PropertyStatus;
-
-  @IsOptional()
   images?: string[];
 }

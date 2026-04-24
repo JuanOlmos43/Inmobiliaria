@@ -8,7 +8,11 @@ import {
   IsInt,
   MaxLength,
 } from 'class-validator';
-import { PropertyType, PropertyListingType } from '@prisma/client';
+import {
+  PropertyType,
+  PropertyListingType,
+  PropertyStatus,
+} from '@prisma/client';
 
 export class CreatePropiedadeDto {
   @IsString()
@@ -32,6 +36,10 @@ export class CreatePropiedadeDto {
   @IsNumber()
   @Min(0)
   price: number;
+
+  @IsOptional()
+  @IsEnum(PropertyStatus)
+  status?: PropertyStatus;
 
   // Características físicas
   @IsInt()
