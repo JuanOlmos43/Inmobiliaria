@@ -39,23 +39,64 @@ export class NotificationsService {
                     endDate: { gte: targetDate, lt: nextDate },
                 },
                 include: {
-                    tenant: { select: { email: true, name: true } },
-                    landlord: { select: { email: true, name: true } },
+                    tenant: { select: { id: true, email: true, name: true } },
+                    landlord: { select: { id: true, email: true, name: true } },
                     property: { select: { title: true } },
                 },
             });
 
             for (const contract of contracts) {
-                const recipients = [contract.tenant.email, contract.landlord.email];
+                const recipients = [
+                    { id: contract.tenant.id, email: contract.tenant.email },
+                    { id: contract.landlord.id, email: contract.landlord.email },
+                ];
                 const subject = `Contrato por vencer en ${days} días — ${contract.property.title}`;
                 const html = buildExpirationHtml(contract, days);
 
                 for (const recipient of recipients) {
                     try {
-                        await this.resend.sendEmail(recipient, subject, html);
-                        this.logger.log(`Expiration alert sent to ${recipient} for contract ${contract.id} (${days} days)`);
+                        await this.resend.sendEmail(recipient.email, subject, html);
+                        this.logger.log(`Expiration alert sent to ${recipient.email} for contract ${contract.id} (${days} days)`);
+                        await this.prisma.notification.create({
+                            data: {
+                                type: 'contract_expiration',
+                                channel: 'email',
+                                status: 'sent',
+                                scheduledAt: today,
+                                sentAt: new Date(),
+                                userId: recipient.id,
+                                payload: {
+                                    contractId: contract.id,
+                                    propertyTitle: contract.property.title,
+                                    daysLeft: days,
+                                    endDate: contract.endDate,
+                                    monthlyRent: contract.monthlyRent,
+                                },
+                            },
+                        });
                     } catch (error) {
-                        this.logger.error(`Failed to send expiration alert to ${recipient} for contract ${contract.id}`, error);
+                        this.logger.error(`Failed to send expiration alert to ${recipient.email} for contract ${contract.id}`, error);
+                        try {
+                            await this.prisma.notification.create({
+                                data: {
+                                    type: 'contract_expiration',
+                                    channel: 'email',
+                                    status: 'failed',
+                                    scheduledAt: today,
+                                    sentAt: null,
+                                    userId: recipient.id,
+                                    payload: {
+                                        contractId: contract.id,
+                                        propertyTitle: contract.property.title,
+                                        daysLeft: days,
+                                        endDate: contract.endDate,
+                                        errorMessage: error instanceof Error ? error.message : String(error),
+                                    },
+                                },
+                            });
+                        } catch (dbError) {
+                            this.logger.error(`Failed to log notification failure for contract ${contract.id}`, dbError);
+                        }
                     }
                 }
             }
@@ -78,23 +119,63 @@ export class NotificationsService {
                 nextAdjustmentDate: { gte: tomorrow, lte: in7Days },
             },
             include: {
-                tenant: { select: { email: true, name: true } },
-                landlord: { select: { email: true, name: true } },
+                tenant: { select: { id: true, email: true, name: true } },
+                landlord: { select: { id: true, email: true, name: true } },
                 property: { select: { title: true } },
             },
         });
 
         for (const contract of contracts) {
-            const recipients = [contract.tenant.email, contract.landlord.email];
+            const recipients = [
+                { id: contract.tenant.id, email: contract.tenant.email },
+                { id: contract.landlord.id, email: contract.landlord.email },
+            ];
             const subject = `Ajuste de alquiler próximo — ${contract.property.title}`;
             const html = buildAdjustmentHtml(contract);
 
             for (const recipient of recipients) {
                 try {
-                    await this.resend.sendEmail(recipient, subject, html);
-                    this.logger.log(`Adjustment alert sent to ${recipient} for contract ${contract.id}`);
+                    await this.resend.sendEmail(recipient.email, subject, html);
+                    this.logger.log(`Adjustment alert sent to ${recipient.email} for contract ${contract.id}`);
+                    await this.prisma.notification.create({
+                        data: {
+                            type: 'rent_adjustment',
+                            channel: 'email',
+                            status: 'sent',
+                            scheduledAt: today,
+                            sentAt: new Date(),
+                            userId: recipient.id,
+                            payload: {
+                                contractId: contract.id,
+                                propertyTitle: contract.property.title,
+                                adjustmentDate: contract.nextAdjustmentDate,
+                                monthlyRent: contract.monthlyRent,
+                                adjustmentFrequency: contract.adjustmentFrequency,
+                            },
+                        },
+                    });
                 } catch (error) {
-                    this.logger.error(`Failed to send adjustment alert to ${recipient} for contract ${contract.id}`, error);
+                    this.logger.error(`Failed to send adjustment alert to ${recipient.email} for contract ${contract.id}`, error);
+                    try {
+                        await this.prisma.notification.create({
+                            data: {
+                                type: 'rent_adjustment',
+                                channel: 'email',
+                                status: 'failed',
+                                scheduledAt: today,
+                                sentAt: null,
+                                userId: recipient.id,
+                                payload: {
+                                    contractId: contract.id,
+                                    propertyTitle: contract.property.title,
+                                    adjustmentDate: contract.nextAdjustmentDate,
+                                    errorMessage: error instanceof Error ? error.message : String(error),
+                                },
+                            },
+                        });
+                    } catch (dbError) {
+                        this.logger.error(`Failed to log notification failure for contract ${contract.id}`, dbError);
+                    }
                 }
             }
         }

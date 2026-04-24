@@ -46,6 +46,7 @@ model User {
   rentalContractsAsLandlord RentalContract[] @relation("LandlordContracts")
   rentalContractsAsAgent    RentalContract[] @relation("AgentContracts")
   refreshTokens             RefreshToken[]
+  notifications             Notification[]
 }
 
 // ============================================
@@ -212,6 +213,20 @@ enum ContractStatus {
   terminated // Terminado anticipadamente
 }
 
+enum NotificationType {
+  contract_expiration
+  rent_adjustment
+}
+
+enum NotificationChannel {
+  email
+}
+
+enum NotificationStatus {
+  sent
+  failed
+}
+
 model RentalContract {
   id String @id @default(uuid())
 
@@ -249,4 +264,27 @@ model RentalContract {
   @@index([endDate])
   @@index([tenantId])
   @@index([landlordId])
+}
+
+// ============================================
+// NOTIFICACIONES
+// ============================================
+
+model Notification {
+  id          String              @id @default(uuid())
+  type        NotificationType
+  payload     Json
+  scheduledAt DateTime?
+  sentAt      DateTime?
+  channel     NotificationChannel @default(email)
+  status      NotificationStatus
+
+  userId      String
+  user        User                @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt   DateTime            @default(now())
+
+  @@index([userId])
+  @@index([status])
+  @@index([type])
 }
