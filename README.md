@@ -154,10 +154,46 @@ npx prisma studio                         # (Opcional) GUI de la base de datos
 
 ### 5. Seed de Datos
 
-```bash
-cd backend
-npx tsx prisma/seed.ts
+El seed crea 7 usuarios, 24 provincias, 8 propiedades con datos realistas y 4 contratos de alquiler.
+
+**Opcional — agregar imágenes:**
+Copiá las fotos de cada propiedad en las carpetas correspondientes antes de correr el seed:
+
 ```
+backend/prisma/seed-images/
+├── propiedad-1/   → Departamento 2 amb. — Av. Colón, Mar del Plata
+├── propiedad-2/   → Departamento en edificio — Palermo, CABA
+├── propiedad-3/   → Departamento con balcón — Rivadavia, Mar del Plata
+├── propiedad-4/   → Departamento clásico — Recoleta, CABA
+├── propiedad-5/   → Departamento moderno — Córdoba Capital
+├── propiedad-6/   → Casa clásica en venta — Mendoza Capital
+├── propiedad-7/   → Casa con interiores originales — Neuquén Capital
+└── propiedad-8/   → Local comercial — La Plata
+```
+
+Formatos aceptados: `.jpg`, `.jpeg`, `.png`, `.webp`. Las carpetas vacías se omiten sin error.
+
+**Correr el seed:**
+```bash
+# Desde la raíz — limpiar DB y storage primero (opcional)
+npm run nuke
+
+# Desde backend/
+cd backend
+npm run prisma:seed
+```
+
+Usuarios creados (password: `admin123` para todos):
+
+| Email | Rol |
+|---|---|
+| admin@inmobiliaria.com | Administrador |
+| gerente@inmobiliaria.com | Gerencia |
+| agente@inmobiliaria.com | Agente |
+| cuentadepruebasdevirgi@gmail.com | Propietario |
+| propietario2@inmobiliaria.com | Propietario |
+| inquilino1@inmobiliaria.com | Inquilino |
+| inquilino2@inmobiliaria.com | Inquilino |
 
 ---
 
